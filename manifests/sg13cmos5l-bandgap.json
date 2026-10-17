@@ -1,5 +1,5 @@
 {
   "block": "sg13cmos5l-bandgap",
-  "kind": "analog",
+  "kind": "digital",
   "evidence": {}
 }
