@@ -6,8 +6,7 @@ reduced-metal-stack sibling of IHP's SG13G2 130 nm open PDK — designed by AI
 agents driving [klayout-tools](https://github.com/2AMLogic/klayout-tools) and
 the open-source xschem + ngspice flow.
 
-**Status: just opened, specification phase.** Nothing is designed in this
-repo yet. The work starts from the SG13CMOS5L branch already carried in
+**Status: specification ratified (issue #2), nothing designed or simulated here yet.** The work starts from the SG13CMOS5L branch already carried in
 [sg13g2-bandgap](https://github.com/2AMLogic/sg13g2-bandgap), not from a
 blank page.
 
@@ -54,28 +53,36 @@ around them.
 `sg13g2-bandgap` is the master for this block by lineage. Its SG13CMOS5L
 branch — `spec/porting-plan-sg13cmos5l.md`, decision records 0004 and 0005,
 `design/sg13cmos5l/`, the `sim/sg13cmos5l-*` benches and the
-`layout/sg13cmos5l-*` cells — is the starting point. How that branch moves
-here, and how it is pinned (`reuse.lock.json`), is the first decision this
-repo records, so the block is designed once.
+`layout/sg13cmos5l-*` cells — is the starting point. It is **pinned**, not
+migrated: [`reuse.lock.json`](reuse.lock.json) names the commit
+([`0002`](spec/decision-records/0002-sg13g2-bandgap-branch-reuse.md)), so the
+block is designed once. Sibling commits read: [`spec/porting-plan.md`](spec/porting-plan.md).
 
-## Target specification (DRAFT — engineering to ratify, see issue #1)
+## Target specification (RATIFIED, targets only; see issue #2)
 
-Port parity: the rows mirror `sg13g2-bandgap`'s ratified table where the
-target is device-independent. Every row is a *target*, not a result.
+Ratified by [`spec/decision-records/0001-target-spec-ratification.md`](spec/decision-records/0001-target-spec-ratification.md);
+binding conditions, planned testbenches, the PVT box, model files and
+per-row evidence status are in [`spec/target-spec.md`](spec/target-spec.md).
+Port parity: the row shapes mirror `sg13g2-bandgap`'s ratified table; the
+values that depend on the bipolar device are derived here, not copied. Every
+row is a *target*, not a result, and no row has SG13CMOS5L evidence in this
+repo yet.
 
 | Parameter | Fallback | Target | Stretch |
 |---|---|---|---|
-| Output reference | nominal set by the core's TC-null point, untrimmed line only | nominal at the TC-null point; untrimmed line from mismatch Monte Carlo; trimmed line with a 1-point trim at 27 °C | tighter trimmed line |
+| Output reference | nominal set by the core's TC-null point, untrimmed line only | nominal at the TC-null point; untrimmed line (3σ) from the device-mismatch Monte Carlo on this core; trimmed line with a 1-point trim at 27 °C | tighter trimmed line |
+| Trim | none (untrimmed line only) | 1-point @ 27 °C, magnitude only; range and resolution derived from this core's Monte Carlo | — |
 | Temp coefficient (−40…125 °C) | < 100 ppm/°C | < 50 ppm/°C | < 20 ppm/°C |
 | PSRR @ DC | > 50 dB | > 60 dB | > 70 dB |
 | Supply | 3.3 V ±10% (HV devices) | 3.3 V ±10% (HV devices) | 1.2 V (LV devices) |
 | Iq | < 100 µA | < 50 µA | < 20 µA |
 | Startup | self-starting | self-starting, < 1 ms | — |
-| Signoff | DRC clean, LVS gaps attributed upstream | DRC + LVS clean | — |
+| Area | budget set after the first assembled floorplan | budget set after the first assembled floorplan | — |
+| Signoff | DRC clean, every LVS gap attributed to a filed klayout-tools issue | DRC + LVS clean | — |
 
 Maturity ladder: tooling resolved → spec ratified → schematic simulated
 across PVT → layout DRC/LVS-clean → post-layout re-verification → shuttle
-seat → measured silicon. **Current position: pre-spec.**
+seat → measured silicon. **Current position: spec ratified.**
 
 ## Tool flow
 
