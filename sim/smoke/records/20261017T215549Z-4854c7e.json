@@ -1,0 +1,223 @@
+{
+  "corner": {
+    "process": "typ",
+    "temperature_c": 27,
+    "vdd_v": 3.3
+  },
+  "deck_sha256": "50fb4273759375d0e4177b75b1fab4ac7c86ed1264ec6acd05ed6def3e48dfa1",
+  "kind": "pdk-smoke",
+  "klt_envelope": {
+    "corner_count": 1,
+    "corners": [
+      {
+        "artifacts": {
+          "deck": "/home/ubuntu/GitHub/sg13cmos5l-bandgap/.loom/worktrees/issue-4/sim/build/smoke/out/typ_3p300V_27C/corner.cir",
+          "log": "/home/ubuntu/GitHub/sg13cmos5l-bandgap/.loom/worktrees/issue-4/sim/build/smoke/out/typ_3p300V_27C/ngspice.log",
+          "raw": null,
+          "waveform": null
+        },
+        "corner_id": "typ/3.300V/27C",
+        "diagnostics": [],
+        "engine_exit_code": 0,
+        "engine_killed_by_signal": null,
+        "measurements": [
+          {
+            "margin": null,
+            "name": "v_drain_v",
+            "status": "pass",
+            "unit": null,
+            "value": 0.201545
+          },
+          {
+            "margin": null,
+            "name": "v_emitter_v",
+            "status": "pass",
+            "unit": null,
+            "value": 0.825959
+          },
+          {
+            "margin": null,
+            "name": "i_vdd_a",
+            "status": "pass",
+            "unit": null,
+            "value": -5.5725e-05
+          }
+        ],
+        "monte_carlo": null,
+        "process": "typ",
+        "runtime_s": 0.034,
+        "status": "pass",
+        "supply_v": {
+          "Vdd": 3.3
+        },
+        "temperature_c": 27
+      }
+    ],
+    "coverage": {
+      "checked": [
+        "measurement:[0,\"typ/3.300V/27C\",\"i_vdd_a\"]/observation",
+        "measurement:[0,\"typ/3.300V/27C\",\"v_drain_v\"]/observation",
+        "measurement:[0,\"typ/3.300V/27C\",\"v_emitter_v\"]/observation"
+      ],
+      "corners_simulated": 1,
+      "inapplicable": [
+        {
+          "id": "measurement:[0,\"typ/3.300V/27C\",\"i_vdd_a\"]/limits",
+          "reason": "characterization_without_limits"
+        },
+        {
+          "id": "measurement:[0,\"typ/3.300V/27C\",\"v_drain_v\"]/limits",
+          "reason": "characterization_without_limits"
+        },
+        {
+          "id": "measurement:[0,\"typ/3.300V/27C\",\"v_emitter_v\"]/limits",
+          "reason": "characterization_without_limits"
+        }
+      ],
+      "known": true,
+      "measurements_declared": 3,
+      "measurements_with_limits": 0,
+      "nothing_checked": false,
+      "nothing_checked_reasons": [],
+      "schema_version": 1,
+      "skipped": [],
+      "unknown": [],
+      "unrecognized_limit_keys": []
+    },
+    "diagnostic_counts": {
+      "by_code": {},
+      "by_severity": {},
+      "corners_with_diagnostics": 0
+    },
+    "environment": {
+      "backend": {
+        "requested": "local",
+        "resolved": "local",
+        "source": "flag"
+      },
+      "engine": "ngspice",
+      "engine_build": {
+        "binary_sha256": "0af169ea153cbbb4613662d75bba440e364c2a10e8b5638c5b82c0f60251241e",
+        "probe": "ok",
+        "reason": null,
+        "version_banner": "******\n** ngspice-46 : Circuit level simulation program\n** Compiled with Sparse Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2025, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at http://ngspice.sourceforge.net/bugrep.html\n** Creation Date: Sat Oct 17 21:51:26 UTC 2026\n******"
+      },
+      "engine_host": "local",
+      "engine_version": "46",
+      "models_lib": {
+        "path": "sim/build/smoke/corners.lib",
+        "scope": "repo"
+      },
+      "models_lib_sha256": "87fd3d9d0e25772fe084410c8deb6840e9cd86f963bcd42fb6ca9b12ef1dafa8",
+      "models_lib_sha256_scope": "local",
+      "netlist_closure": [
+        {
+          "path": "sim/build/smoke/deck.cir",
+          "scope": "repo",
+          "sha256": "50fb4273759375d0e4177b75b1fab4ac7c86ed1264ec6acd05ed6def3e48dfa1"
+        }
+      ],
+      "netlist_identity": "sha256:47b20169dd3646b7abe476ff77e9e7e8afbd753e7c7573dcb88c340024fa2801",
+      "netlist_sha256": "50fb4273759375d0e4177b75b1fab4ac7c86ed1264ec6acd05ed6def3e48dfa1",
+      "netlist_source": "extracted",
+      "ngspice_binary": "/home/ubuntu/GitHub/sg13cmos5l-bandgap/.loom/worktrees/issue-4/sim/build/ngspice-46/bin/ngspice",
+      "osdi_preload": [
+        {
+          "name": "psp103.osdi",
+          "path": "sim/build/IHP-Open-PDK/ihp-sg13cmos5l/libs.tech/ngspice/osdi/psp103.osdi",
+          "scope": "repo",
+          "sha256": "38b72b6044881daf28145678c408e1c60285ae561912b8f4b12de75b6788f469"
+        }
+      ]
+    },
+    "errored": 0,
+    "failed": 0,
+    "inconclusive": 0,
+    "measurements": [
+      {
+        "limits": null,
+        "name": "v_drain_v",
+        "status": "pass",
+        "unit": null,
+        "worst_case": {
+          "corner_id": "typ/3.300V/27C",
+          "margin": null,
+          "value": 0.201545
+        }
+      },
+      {
+        "limits": null,
+        "name": "v_emitter_v",
+        "status": "pass",
+        "unit": null,
+        "worst_case": {
+          "corner_id": "typ/3.300V/27C",
+          "margin": null,
+          "value": 0.825959
+        }
+      },
+      {
+        "limits": null,
+        "name": "i_vdd_a",
+        "status": "pass",
+        "unit": null,
+        "worst_case": {
+          "corner_id": "typ/3.300V/27C",
+          "margin": null,
+          "value": -5.5725e-05
+        }
+      }
+    ],
+    "metrics": {
+      "sim__corner__count": 1,
+      "sim__corner__errored_count": 0,
+      "sim__corner__failed_count": 0,
+      "sim__corner__inconclusive_count": 0,
+      "sim__corner__passed_count": 1
+    },
+    "netlist": {
+      "path": "sim/build/smoke/deck.cir",
+      "scope": "repo"
+    },
+    "passed": 1,
+    "provenance": {
+      "deck": {
+        "content_hash": "sha256:87fd3d9d0e25772fe084410c8deb6840e9cd86f963bcd42fb6ca9b12ef1dafa8",
+        "name": "corners.lib",
+        "released": false
+      },
+      "input": {
+        "content_hash": "sha256:50fb4273759375d0e4177b75b1fab4ac7c86ed1264ec6acd05ed6def3e48dfa1",
+        "role": "netlist"
+      },
+      "klayout_version": "0.30.12",
+      "klt_version": "0.7.1.dev1757+ge7cca478ef21",
+      "pdk": null
+    },
+    "schema_version": 3,
+    "status": "pass"
+  },
+  "label": "SIMULATED",
+  "measurements": {
+    "i_vdd_a": -5.5725e-05,
+    "v_drain_v": 0.201545,
+    "v_emitter_v": 0.825959
+  },
+  "osdi_preload": [
+    "psp103.osdi"
+  ],
+  "pdk": {
+    "name": "ihp-sg13cmos5l",
+    "pin_file": "sim/pdk.json",
+    "revision": "f7bca32694fe3d58be0cc7d9df4b9f5db7161a14"
+  },
+  "repo_git_sha": "4854c7e",
+  "simulator": {
+    "backend": "local",
+    "klt": "klt 0.7.1.dev1757+ge7cca478ef21",
+    "ngspice": "ngspice-46"
+  },
+  "source_deck_sha256": "14b0e14a43ae58d1e09b139d141662fe63c35b01a71808cb4d47323051ec0f22",
+  "testbench": "sim/smoke/smoke.cir",
+  "timestamp_utc": "20261017T215549Z"
+}

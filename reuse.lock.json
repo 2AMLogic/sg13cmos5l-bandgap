@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "pinned": [
+    {
+      "block": "osdi_build",
+      "sibling": "2AMLogic/sg13g2-bandgap",
+      "path": "sim/tools/build-osdi.sh",
+      "commit": "66f9d846130fc6f06ecaa24b1021c3304496f6b9",
+      "status": "adopt",
+      "note": "Fetched at this commit at cold start (sim/README.md 'OSDI build'), never copied into this tree. Its sim/env.sh is not adopted: see sim/ENV-DECISION.md."
+    }
+  ]
+}

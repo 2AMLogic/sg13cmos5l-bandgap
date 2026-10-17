@@ -1,0 +1,35 @@
+{
+  "_comment": "PDK pin for this repo's benches (issue #4, T1 item 9). Consumed by sim/env.sh (revision check) and sim/smoke/run_smoke.sh (model files, OSDI objects). The pin value is the SG13CMOS5L target pin that 2AMLogic/sg13g2-bandgap sim/pdk-sg13cmos5l.json carries (same commit and tarball sha256); this repo adds the first runtime evidence for it: sim/smoke/records/. Pin bumps need a decision record under sim/ENV-DECISION.md or spec/.",
+  "pdk": "ihp-sg13cmos5l",
+  "variant_of_checkout": "combined IHP-Open-PDK checkout: PDK_ROOT must hold BOTH ihp-sg13g2/ and ihp-sg13cmos5l/ (the shared MOS, pnpMPA-adjacent and resistor corner files are relative symlinks into ../ihp-sg13g2)",
+  "source": "IHP-GmbH/IHP-Open-PDK",
+  "branch": "dev",
+  "revision": "f7bca32694fe3d58be0cc7d9df4b9f5db7161a14",
+  "revision_kind": "commit (no IHP-Open-PDK release tag ships ihp-sg13cmos5l; v0.3.0 has no such directory)",
+  "revision_date": "2026-10-09T12:21:18+02:00",
+  "tarball_url": "https://codeload.github.com/IHP-GmbH/IHP-Open-PDK/tar.gz/f7bca32694fe3d58be0cc7d9df4b9f5db7161a14",
+  "tarball_sha256": "5eb6f8a9b0b2ecc4fa08cc30627668406f85b1a97834f278036c43f0c0dbc70b",
+  "tarball_sha256_note": "copied from sg13g2-bandgap sim/pdk-sg13cmos5l.json; the tarball was not re-hashed here. The revision itself was verified by git (rev-parse HEAD of the checkout used for the smoke record).",
+  "install_method": "direct git checkout: git init; git fetch --depth 1 origin <revision>; git checkout FETCH_HEAD (equivalently git clone --branch dev then checkout the revision). Not open_pdks/ciel: neither ships ihp-sg13cmos5l at this pin.",
+  "revision_probe": "git -C $PDK_ROOT rev-parse HEAD, or the first line of $PDK_ROOT/.pdk-revision when the install has no .git",
+  "ngspice_models_dir": "ihp-sg13cmos5l/libs.tech/ngspice/models",
+  "model_files": [
+    { "file": "cornerPNP.lib", "section": "typ", "real_file": true, "device": "pnpMPA (Gummel-Poon level 1, no OSDI); includes sg13cmos5l_pnpMPA_mod.lib" },
+    { "file": "cornerMOShv.lib", "section": "mos_tt", "real_file": false, "device": "sg13_hv_nmos / sg13_hv_pmos (PSP103.6, needs psp103.osdi); symlink into ihp-sg13g2" },
+    { "file": "sg13cmos5l_pnpMPA_mod.lib", "section": null, "real_file": true, "device": "pulled in by cornerPNP.lib" },
+    { "file": "sg13g2_moshv_mod.lib", "section": null, "real_file": false, "device": "sg13_hv_* subckts; symlink into ihp-sg13g2, pulled in by cornerMOShv.lib" }
+  ],
+  "osdi": {
+    "dir": "ihp-sg13cmos5l/libs.tech/ngspice/osdi",
+    "shipped_prebuilt": false,
+    "loaded_by_smoke": ["psp103.osdi"],
+    "objects_the_pdk_spiceinit_loads": ["psp103.osdi", "psp103_nqs.osdi", "r3_cmc.osdi", "mosvar.osdi", "cap_cmomi.osdi", "cap_cmomf.osdi"],
+    "build_step": "sim/README.md 'OSDI build': sg13g2-bandgap sim/tools/build-osdi.sh at the commit pinned in reuse.lock.json builds psp103, psp103_nqs, r3_cmc and mosvar from the PDK's Verilog-A with a checksum-pinned openvaf-r. cap_cmomi.osdi and cap_cmomf.osdi (MoM capacitors) are NOT built by it and are not exercised by the smoke bench; a bench that needs them needs a build step added first.",
+    "output_path": "$PDK_ROOT/ihp-sg13cmos5l/libs.tech/ngspice/osdi/"
+  },
+  "simulator": {
+    "ngspice_min": "43",
+    "observed_good": "46",
+    "observed_bad": "42 (Ubuntu 24.04 apt): 'NGSPICE only supports OSDI v0.3 but psp103.osdi targets v0.4' -- the pinned openvaf-r emits OSDI v0.4, so psp103 never loads and every MOS fails with 'could not find a valid modelname'"
+  }
+}
