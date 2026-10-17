@@ -1,0 +1,29 @@
+{
+  "_comment": "Pinned reuse of the SG13CMOS5L branch of 2AMLogic/sg13g2-bandgap (decision record 0002). Nothing is migrated: these paths are read at the pinned commit. Bump only with a decision record naming the old and new commit.",
+  "schema_version": 1,
+  "sources": [
+    {
+      "repo": "2AMLogic/sg13g2-bandgap",
+      "commit": "52535387e6ccf0a89f6490901a9abb2b78144176",
+      "first_read_commit": "e936e1653655197319e5765f6f59aa0da970bb5d",
+      "read_date": "2026-10-17",
+      "mode": "pin",
+      "paths": [
+        "spec/porting-plan-sg13cmos5l.md",
+        "spec/decision-records/0004-cmos5l-bipolar-device-selection.md",
+        "spec/decision-records/0005-cmos5l-q2-matched-array-construction.md",
+        "design/sg13cmos5l/",
+        "sim/sg13cmos5l-closed-loop-startup/",
+        "sim/sg13cmos5l-closed-loop-startup-pex/",
+        "sim/sg13cmos5l-core-open-loop-bias/",
+        "sim/sg13cmos5l-startup-trip-point/",
+        "sim/pdk-sg13cmos5l.json",
+        "layout/common_sg13cmos5l.py",
+        "layout/sg13cmos5l-bandgap_amp/",
+        "layout/sg13cmos5l-bandgap_core/",
+        "layout/sg13cmos5l-bandgap_startup/",
+        "layout/sg13cmos5l-bandgap_top/"
+      ]
+    }
+  ]
+}
