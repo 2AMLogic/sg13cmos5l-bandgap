@@ -1,0 +1,99 @@
+# sg13cmos5l-bandgap
+
+A CMOS bandgap voltage reference on
+[IHP SG13CMOS5L](https://github.com/IHP-GmbH/IHP-Open-PDK), the CMOS-only,
+reduced-metal-stack sibling of IHP's SG13G2 130 nm open PDK — designed by AI
+agents driving [klayout-tools](https://github.com/2AMLogic/klayout-tools) and
+the open-source xschem + ngspice flow.
+
+**Status: just opened, specification phase.** Nothing is designed in this
+repo yet. The work starts from the SG13CMOS5L branch already carried in
+[sg13g2-bandgap](https://github.com/2AMLogic/sg13g2-bandgap), not from a
+blank page.
+
+**Built agent-native.** Every specification, decision record, testbench, and
+line of documentation here is produced by AI agents working from a ratified
+spec and an append-only evidence trail — not human-authored work that agents
+merely assisted with. Verification is the product: every claim traces to a
+recorded result under PVT corners. Where the agents hit friction with the
+open-source tooling — most often
+[klayout-tools](https://github.com/2AMLogic/klayout-tools) — that friction is
+filed as a public issue against the tool itself, so the fix benefits everyone
+using SG13CMOS5L, not just this repo.
+
+## Why this block, on this PDK
+
+This is a **port, not a new design.** The bandgap is the fleet's most mature
+block — [gf180-bandgap](https://github.com/2AMLogic/gf180-bandgap),
+[sky130-bandgap](https://github.com/2AMLogic/sky130-bandgap) and
+[sg13g2-bandgap](https://github.com/2AMLogic/sg13g2-bandgap) — so the spec
+structure, the verification harness and the decision-record trail are known
+quantities. The PDK is the variable, not the design.
+
+SG13CMOS5L differs from SG13G2 in exactly the ways that matter to a
+reference:
+
+- **No HBT.** The SG13G2 core is built around the `npn13G2` SiGe HBT, which
+  SG13CMOS5L does not offer. The only bipolar device is the parasitic
+  `pnpMPA`, whose model card puts its current gain near unity. The core
+  therefore follows the grounded-collector parasitic-PNP shape of the gf180
+  and sky130 bandgaps, as `sg13g2-bandgap`'s decision record 0004 already
+  argued.
+- **No MIM capacitor.** Compensation and filtering use MoM or MOS
+  capacitors only.
+- **Shared front-end devices.** The MOS, `pnpMPA` and resistor models are
+  the same as SG13G2's, so the device-level reading done in `sg13g2-bandgap`
+  carries over directly; what changes is the back-end metal stack.
+
+The klayout-tools SG13CMOS5L deck is young. Part of this canary's job is to
+find what it cannot check yet and file those gaps upstream — never to route
+around them.
+
+## Inherited from sg13g2-bandgap
+
+`sg13g2-bandgap` is the master for this block by lineage. Its SG13CMOS5L
+branch — `spec/porting-plan-sg13cmos5l.md`, decision records 0004 and 0005,
+`design/sg13cmos5l/`, the `sim/sg13cmos5l-*` benches and the
+`layout/sg13cmos5l-*` cells — is the starting point. How that branch moves
+here, and how it is pinned (`reuse.lock.json`), is the first decision this
+repo records, so the block is designed once.
+
+## Target specification (DRAFT — engineering to ratify, see issue #1)
+
+Port parity: the rows mirror `sg13g2-bandgap`'s ratified table where the
+target is device-independent. Every row is a *target*, not a result.
+
+| Parameter | Fallback | Target | Stretch |
+|---|---|---|---|
+| Output reference | nominal set by the core's TC-null point, untrimmed line only | nominal at the TC-null point; untrimmed line from mismatch Monte Carlo; trimmed line with a 1-point trim at 27 °C | tighter trimmed line |
+| Temp coefficient (−40…125 °C) | < 100 ppm/°C | < 50 ppm/°C | < 20 ppm/°C |
+| PSRR @ DC | > 50 dB | > 60 dB | > 70 dB |
+| Supply | 3.3 V ±10% (HV devices) | 3.3 V ±10% (HV devices) | 1.2 V (LV devices) |
+| Iq | < 100 µA | < 50 µA | < 20 µA |
+| Startup | self-starting | self-starting, < 1 ms | — |
+| Signoff | DRC clean, LVS gaps attributed upstream | DRC + LVS clean | — |
+
+Maturity ladder: tooling resolved → spec ratified → schematic simulated
+across PVT → layout DRC/LVS-clean → post-layout re-verification → shuttle
+seat → measured silicon. **Current position: pre-spec.**
+
+## Tool flow
+
+- **Design and simulation**: xschem + ngspice, SG13CMOS5L models (installed
+  inside a combined IHP-Open-PDK checkout, because the shared device
+  symbols and models link to the SG13G2 tree).
+- **Layout, DRC, LVS, extraction**: klayout-tools (`klt`).
+
+## Repo layout
+
+```
+spec/          ratified spec + decision records + porting plan
+design/        schematics / netlists (xschem)
+sim/           testbenches + PVT corner results (ngspice)
+layout/        GDS + DRC/LVS reports (klayout-tools driven)
+measurements/  silicon characterization (empty until tape-out)
+```
+
+## License
+
+Apache License 2.0 — see [LICENSE](LICENSE).
