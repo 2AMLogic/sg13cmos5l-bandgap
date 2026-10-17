@@ -24,6 +24,17 @@
         "layout/sg13cmos5l-bandgap_startup/",
         "layout/sg13cmos5l-bandgap_top/"
       ]
+    },
+    {
+      "repo": "2AMLogic/sg13g2-bandgap",
+      "commit": "66f9d846130fc6f06ecaa24b1021c3304496f6b9",
+      "mode": "pin",
+      "block": "osdi_build",
+      "status": "adopt",
+      "paths": [
+        "sim/tools/build-osdi.sh"
+      ],
+      "note": "Fetched at this commit at cold start (sim/README.md 'OSDI build'), never copied into this tree. Its sim/env.sh is not adopted: see sim/ENV-DECISION.md."
     }
   ]
 }

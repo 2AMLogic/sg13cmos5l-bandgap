@@ -1,0 +1,10 @@
+* sg13cmos5l-bandgap -- PDK bring-up smoke bench (issue #4). NOT part of the design.
+* Proves only that the pinned PDK's models load and converge: one sg13_hv_nmos
+* (PSP103.6 via OSDI) and one pnpMPA (grounded collector+base, emitter biased)
+* at the typical corner, 27 C, 3.3 V. Sizes are arbitrary.
+Vdd vdd 0 dc 3.3
+Vg g 0 dc 1.0
+Rn vdd d 100k
+XMN d g 0 0 sg13_hv_nmos w=2u l=0.5u ng=1 m=1
+Rp vdd e 100k
+XQ 0 0 e pnpMPA
