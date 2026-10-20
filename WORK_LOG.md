@@ -3,6 +3,11 @@
 Chronological record of merged PRs and closed issues, maintained by the Guide
 triage agent. Newest first.
 
+### 2026-10-20
+
+- **PR #8**: ci: add klt signoff manifest, T1 checklist, verdict record and workflow
+- **Issue #3** (closed): Add the T1 signoff scaffolding: block manifest, vendored checklist and CI (item 10)
+
 ### 2026-10-17
 
 - **PR #7**: feat: pin SG13CMOS5L PDK, add refusing env.sh and typ-corner smoke bench
