@@ -91,12 +91,20 @@ seat → measured silicon. **Current position: spec ratified.**
   symbols and models link to the SG13G2 tree).
 - **Layout, DRC, LVS, extraction**: klayout-tools (`klt`).
 
+## T1 status
+
+The T1 evidence tier is graded by `klt signoff`, not restated here. The
+verdict of record is
+[manifests/sg13cmos5l-bandgap.signoff.json](manifests/sg13cmos5l-bandgap.signoff.json);
+see [manifests/README.md](manifests/README.md) for how it is regenerated.
+
 ## Repo layout
 
 ```
 spec/          ratified spec + decision records + porting plan
 design/        schematics / netlists (xschem)
 sim/           testbenches + PVT corner results (ngspice)
+manifests/     T1 block manifest, vendored checklist, signoff record
 layout/        GDS + DRC/LVS reports (klayout-tools driven)
 measurements/  silicon characterization (empty until tape-out)
 ```
