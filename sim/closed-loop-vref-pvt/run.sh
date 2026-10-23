@@ -84,16 +84,17 @@ with open(out, "w") as f:
 PY
 
 DECK="${WORK}/deck.cir"
-sed -e 's|@@VDD@@|3.3|' -e "s|@@OSDI_DIR@@|${CM5_OSDI_DIR}|" -e "s|@@WORK@@|${WORK}|" "${BENCH_DIR}/vref.cir.tmpl" | grep -v '^\*' > "${DECK}"
+sed -e 's|@@VDD@@|3.3|' -e "s|@@WORK@@|${WORK}|" "${BENCH_DIR}/vref.cir.tmpl" | grep -v '^\*' > "${DECK}"
 
 # One point of the committed 45-point request: same measurements and analysis, narrowed to typ/27/3.30.
-python3 -I - "${BENCH_DIR}/request-45pt.json" "${WORK}/request.json" "${DECK}" "${BUNDLE}" <<'PY'
+python3 -I - "${BENCH_DIR}/request-45pt.json" "${WORK}/request.json" "${DECK}" "${BUNDLE}" "${CM5_OSDI_DIR}" <<'PY'
 import json, sys
-src, dst, deck, bundle = sys.argv[1:]
+src, dst, deck, bundle, osdi_dir = sys.argv[1:]
 r = json.load(open(src))
 r["netlist"], r["models"] = deck, {"lib": bundle}
 r["corners"] = {"process": ["typ"], "supply_v": {"Vvdd": [3.3]}, "temperature_c": [27]}
-r["options"]["timeout_s"] = 300
+r["options"]["timeout_s"] = 300  # narrowed from the request file's 600 for the single unit
+r["options"]["osdi_preload"] = [osdi_dir + "/psp103.osdi", osdi_dir + "/r3_cmc.osdi"]
 json.dump(r, open(dst, "w"), indent=2)
 PY
 

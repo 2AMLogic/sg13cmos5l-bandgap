@@ -1,5 +1,6 @@
+sg13cmos5l closed-loop vref bench
 * sg13cmos5l-bandgap -- closed-loop vref bench body (issue #14, Part of #5).
-* Template: run.sh substitutes @@VDD@@, @@OSDI_DIR@@ and @@WORK@@ and writes the deck to
+* Template: run.sh substitutes @@VDD@@ and @@WORK@@ and writes the deck to
 * sim/build/closed-loop-vref-pvt/deck.cir. Model `.lib` cards, temperature and
 * (for the 45-point request) the supply value come from the `klt sim` request.
 *
@@ -14,10 +15,9 @@
 * net in the source) tied to vss through a 0 V source. The loop starts from the
 * solver's own operating point and settles during the transient; the startup cell
 * in the DUT is what keeps it off the zero state.
-.control
-pre_osdi @@OSDI_DIR@@/psp103.osdi
-pre_osdi @@OSDI_DIR@@/r3_cmc.osdi
-.endc
+* OSDI objects are loaded through the request's options.osdi_preload (as the smoke bench
+* does), not a .control block: the comment strip below would make `.control` the SPICE
+* title line.
 
 * rshunt/gmin: convergence aids only, far below any current read here (same values
 * the source closed-loop bench uses).

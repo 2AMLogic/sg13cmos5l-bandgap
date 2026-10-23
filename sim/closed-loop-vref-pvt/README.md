@@ -47,13 +47,16 @@ with `status: failed`, no `vref_v` and the reason, and exits 5. The source netli
 `cornerRES.lib res_typ` is the §PVT-table name and is not exercised by the smoke bench; if it does
 not resolve at this pin the failure is recorded here and cross-referenced to #15.
 
+`run.sh` narrows the request to one corner (typ/27 C/3.30 V) and also lowers `timeout_s` from 600 to 300.
+
 ## The 45-point grid is un-run
 
 `request-45pt.json` is committed so the grid is reviewable, and it is **not executed**. Host rules
 forbid a local grid and the batch backends refuse `ihp-sg13cmos5l` until klayout-tools#2727 and
 #3134 land. The request uses a DC `Vvdd` so `klt` can alter it for the supply axis; its absolute
 `netlist`/`models.lib` paths point at the runner's generated files under `sim/build/`, and the
-deck's `pre_osdi` paths are host-local, so a batch run needs both addressed first.
+`options.osdi_preload` paths (written by `run.sh` from `CM5_OSDI_DIR`, as the smoke bench does; no
+`.control` block in the deck) are host-local, so a batch run needs both addressed first.
 
 ## Not verified here
 
