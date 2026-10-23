@@ -3,6 +3,12 @@
 Chronological record of merged PRs and closed issues, maintained by the Guide
 triage agent. Newest first.
 
+### 2026-10-23
+
+- **PR #18**: feat(sim): closed-loop vref bench against the pinned source netlist
+- **Issue #14** (closed): Closed-loop vref bench at the nominal point on the dev PDK pin (sim/closed-loop-vref-pvt)
+- **PR #17**: feat(sim): add static checker for PVT model-library sections
+
 ### 2026-10-21
 
 - **PR #11**: Bump Repo Skills 0.24.3 -> 0.24.7
