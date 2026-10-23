@@ -1,0 +1,64 @@
+{
+  "_comment": [
+    "Committed, NEVER EXECUTED in this repo: the full spec/target-spec.md \u00a7PVT grid, 5 process labels x 3 temperatures x 3 supplies = 45 points, for the closed-loop vref bench.",
+    "Un-run until klayout-tools#2727 and #3134 give ihp-sg13cmos5l a batch path; see README.md. sim/closed-loop-vref-pvt/run.sh narrows this file to typ/27 C/3.30 V and substitutes `netlist` and `models.lib` with generated absolute paths (sim/build/closed-loop-vref-pvt/).",
+    "Process labels select the corner bundle's sections per the \u00a7PVT table. The supply axis alters the DC source Vvdd in the deck (a DC, not PWL, source so klt can alter it)."
+  ],
+  "engine": "ngspice",
+  "netlist": "sim/build/closed-loop-vref-pvt/deck.cir",
+  "netlist_source": "extracted",
+  "models": {
+    "lib": "sim/build/closed-loop-vref-pvt/corners.lib"
+  },
+  "corners": {
+    "process": [
+      "typ",
+      "bcs",
+      "wcs",
+      "sf",
+      "fs"
+    ],
+    "supply_v": {
+      "Vvdd": [
+        2.97,
+        3.3,
+        3.63
+      ]
+    },
+    "temperature_c": [
+      -40,
+      27,
+      125
+    ]
+  },
+  "analysis": {
+    "kind": "tran",
+    "args": "2u 2m"
+  },
+  "measurements": [
+    {
+      "name": "vref_v",
+      "spice": ".meas tran vref_v find v(vref) at=2m"
+    },
+    {
+      "name": "vref_prev_v",
+      "spice": ".meas tran vref_prev_v find v(vref) at=1.5m"
+    },
+    {
+      "name": "fb_v",
+      "spice": ".meas tran fb_v find v(fb) at=2m"
+    },
+    {
+      "name": "sns1_v",
+      "spice": ".meas tran sns1_v find v(sns1) at=2m"
+    },
+    {
+      "name": "sns2_v",
+      "spice": ".meas tran sns2_v find v(sns2) at=2m"
+    }
+  ],
+  "options": {
+    "timeout_s": 600,
+    "keep_artifacts": true
+  }
+}
