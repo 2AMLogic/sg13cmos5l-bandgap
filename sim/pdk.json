@@ -16,6 +16,16 @@
   "model_files": [
     { "file": "cornerPNP.lib", "section": "typ", "real_file": true, "device": "pnpMPA (Gummel-Poon level 1, no OSDI); includes sg13cmos5l_pnpMPA_mod.lib" },
     { "file": "cornerMOShv.lib", "section": "mos_tt", "real_file": false, "device": "sg13_hv_nmos / sg13_hv_pmos (PSP103.6, needs psp103.osdi); symlink into ihp-sg13g2" },
+    { "file": "cornerPNP.lib", "section": "bcs", "real_file": true, "device": "pnpMPA corner; section present in an UNPINNED local copy only (sim/tools/check-model-sections.py, issue #15); not yet re-established at the pin" },
+    { "file": "cornerPNP.lib", "section": "wcs", "real_file": true, "device": "pnpMPA corner; section present in an UNPINNED local copy only (sim/tools/check-model-sections.py, issue #15); not yet re-established at the pin" },
+    { "file": "cornerPNP.lib", "section": "stat", "real_file": true, "device": "pnpMPA corner; section present in an UNPINNED local copy only (sim/tools/check-model-sections.py, issue #15); not yet re-established at the pin" },
+    { "file": "cornerMOShv.lib", "section": "mos_ff", "real_file": false, "device": "sg13_hv_* corner (symlink into ihp-sg13g2); section present in an UNPINNED local copy only (sim/tools/check-model-sections.py, issue #15); not yet re-established at the pin" },
+    { "file": "cornerMOShv.lib", "section": "mos_ss", "real_file": false, "device": "sg13_hv_* corner (symlink into ihp-sg13g2); section present in an UNPINNED local copy only (sim/tools/check-model-sections.py, issue #15); not yet re-established at the pin" },
+    { "file": "cornerMOShv.lib", "section": "mos_sf", "real_file": false, "device": "sg13_hv_* corner (symlink into ihp-sg13g2); section present in an UNPINNED local copy only (sim/tools/check-model-sections.py, issue #15); not yet re-established at the pin" },
+    { "file": "cornerMOShv.lib", "section": "mos_fs", "real_file": false, "device": "sg13_hv_* corner (symlink into ihp-sg13g2); section present in an UNPINNED local copy only (sim/tools/check-model-sections.py, issue #15); not yet re-established at the pin" },
+    { "file": "cornerRES.lib", "section": "res_typ", "real_file": false, "device": "rppd/rhigh corner (symlink into ihp-sg13g2 at the pin; a real file in the unpinned copy); section present in an UNPINNED local copy only (sim/tools/check-model-sections.py, issue #15); not yet re-established at the pin" },
+    { "file": "cornerRES.lib", "section": "res_bcs", "real_file": false, "device": "rppd/rhigh corner (symlink into ihp-sg13g2 at the pin; a real file in the unpinned copy); section present in an UNPINNED local copy only (sim/tools/check-model-sections.py, issue #15); not yet re-established at the pin" },
+    { "file": "cornerRES.lib", "section": "res_wcs", "real_file": false, "device": "rppd/rhigh corner (symlink into ihp-sg13g2 at the pin; a real file in the unpinned copy); section present in an UNPINNED local copy only (sim/tools/check-model-sections.py, issue #15); not yet re-established at the pin" },
     { "file": "sg13cmos5l_pnpMPA_mod.lib", "section": null, "real_file": true, "device": "pulled in by cornerPNP.lib" },
     { "file": "sg13g2_moshv_mod.lib", "section": null, "real_file": false, "device": "sg13_hv_* subckts; symlink into ihp-sg13g2, pulled in by cornerMOShv.lib" }
   ],
