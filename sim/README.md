@@ -1,13 +1,14 @@
 # sim
 
 Simulation environment for the SG13CMOS5L bandgap. Today this holds only the
-PDK pin and a bring-up smoke bench (issue #4, T1 item 9); no design bench yet.
+PDK pin, a bring-up smoke bench (issue #4, T1 item 9) and the first design bench, closed-loop `vref` (issue #14).
 
 | File | Role |
 |---|---|
 | `pdk.json` | The pin: IHP-Open-PDK `dev` @ `f7bca326…`, model files, OSDI objects, minimum ngspice |
 | `env.sh` | Sourced; resolves `PDK_ROOT`/`PDK`, **refuses** unless the install is the pinned revision |
 | `smoke/` | `.op`-style smoke deck (one `sg13_hv_nmos`, one `pnpMPA`, typ/27 °C/3.3 V), runner, append-only `records/` |
+| `closed-loop-vref-pvt/` | Closed-loop `vref` bench (typ/27 °C/3.30 V run, 45-point request committed un-run), fetches the DUT at the `reuse.lock.json` pin |
 | `ENV-DECISION.md` | Why `env.sh` is this repo's own and the OSDI builder is adopted by pin |
 
 Every figure these produce is **simulated**. The smoke circuit is not part of the

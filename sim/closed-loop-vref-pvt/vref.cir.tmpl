@@ -1,0 +1,30 @@
+* sg13cmos5l-bandgap -- closed-loop vref bench body (issue #14, Part of #5).
+* Template: run.sh substitutes @@VDD@@, @@OSDI_DIR@@ and @@WORK@@ and writes the deck to
+* sim/build/closed-loop-vref-pvt/deck.cir. Model `.lib` cards, temperature and
+* (for the 45-point request) the supply value come from the `klt sim` request.
+*
+* The DUT is NOT in this repo. run.sh fetches design/sg13cmos5l/netlist/bandgap_top.spice
+* from the commit pinned in reuse.lock.json and appends it below as
+* sim/build/closed-loop-vref-pvt/bandgap_top.spice with only its final `.end`
+* card removed (so this deck's own end card is the only one). The fetched file is a
+* flattened xschem export: bare instance lines Xx1 (core), Xx2 (amp), Xx3 (startup)
+* on nets vdd vss vref fb sns1 sns2, then the three .subckt definitions.
+*
+* Fixture: a DC supply, vss at 0, and the substrate net `sub!` (the rppd/rhigh bulk
+* net in the source) tied to vss through a 0 V source. The loop starts from the
+* solver's own operating point and settles during the transient; the startup cell
+* in the DUT is what keeps it off the zero state.
+.control
+pre_osdi @@OSDI_DIR@@/psp103.osdi
+pre_osdi @@OSDI_DIR@@/r3_cmc.osdi
+.endc
+
+* rshunt/gmin: convergence aids only, far below any current read here (same values
+* the source closed-loop bench uses).
+.options rshunt=1e9 gmin=1e-9
+
+Vvdd vdd 0 dc @@VDD@@
+Vvss vss 0 dc 0
+Vsub sub! vss dc 0
+
+.include "@@WORK@@/bandgap_top.spice"
