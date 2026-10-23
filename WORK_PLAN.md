@@ -19,7 +19,8 @@ _None._
 
 `loom:important`; taken before unlabelled work.
 
-_None._
+- **#14**: Closed-loop vref bench at the nominal point on the dev PDK pin (sim/closed-loop-vref-pvt)
+- **#15**: Verify the spec's corner and mismatch model sections resolve at the pinned IHP dev revision
 
 ## Ready
 
@@ -48,7 +49,7 @@ _None._
 
 Issues carrying `loom:curated`.
 
-_None._
+- **#15**: Verify the spec's corner and mismatch model sections resolve at the pinned IHP dev revision *(curated)*
 
 ## Proposed (Architect / Hermit)
 
@@ -64,12 +65,12 @@ _None._
 |------|-------|
 | Operator merge-risk holds | 0 |
 | Very important | 0 |
-| Important | 0 |
+| Important | 2 |
 | Ready (`loom:issue`) | 0 |
 | In Progress (`loom:building`) | 0 |
 | PRs awaiting review | 0 |
 | Approved PRs awaiting merge | 0 |
-| Curated | 0 |
+| Curated | 1 |
 | Architect / Hermit proposals | 0 |
 | Active epics | 0 |
 <!-- guide:plan-body:end -->
