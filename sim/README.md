@@ -73,3 +73,19 @@ Search order for `PDK_ROOT`: `$PDK_ROOT`, `sim/build/IHP-Open-PDK`, `/usr/share/
 `sim/smoke/records/*.json` are append-only: `run_smoke.sh` creates a new file per run and
 refuses to overwrite one. Each states the simulator version, PDK revision, deck sha256,
 corner and testbench, and embeds the `klt sim` envelope.
+
+## Model section check
+
+`source sim/env.sh && python3 -I sim/tools/check-model-sections.py` statically parses
+`cornerPNP.lib`, `cornerMOShv.lib` and `cornerRES.lib` and checks that every section
+`spec/target-spec.md` §PVT names exists (plus `cornerPNP.lib` `stat`), naming the defining
+file and the `.include` targets it resolves to. Exit 0 = all present, 1 = a section or include
+is missing (or a symlink dangles), 2 = no models directory. `--models-dir` overrides
+`$CM5_NGSPICE_MODELS`. Mismatch candidates (`mos_*_stat`, `mos_*_mismatch`, `res_stat`,
+`res_*_mismatch`) are listed as informational only.
+
+Finding (**not yet at the pin**): run against an unpinned local copy (`~/share/pdk`, no
+`.pdk-revision`, so `env.sh` refuses it), all 12 required names exist exactly as the spec
+writes them; no rename. Which mismatch sections the Monte Carlo benches use (`mos_tt_stat`
+vs `mos_*_mismatch`, `res_stat` vs `res_*_mismatch`) is deliberately not decided here. The
+`model_files` entries added to `pdk.json` carry that caveat until the tool is run at the pin.
