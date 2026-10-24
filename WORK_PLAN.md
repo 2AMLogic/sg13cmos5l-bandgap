@@ -32,7 +32,7 @@ _None._
 
 Issues currently being built (`loom:building`).
 
-- **#21**: sim/env.sh: accept a PDK-store tree (.pdk-store.json) at the pin
+_None._
 
 ## PRs Awaiting Review
 
@@ -44,7 +44,7 @@ _None._
 
 PRs that passed review and are queued for Champion auto-merge (`loom:pr`).
 
-- **#22**: feat(sim): accept fleet PDK store marker as revision proof in env.sh
+_None._
 
 ## Proposed
 
@@ -52,7 +52,6 @@ Issues carrying `loom:curated`.
 
 - **#15**: Verify the spec's corner and mismatch model sections resolve at the pinned IHP dev revision *(curated)*
 - **#19**: Record the first closed-loop vref run (sim/closed-loop-vref-pvt/run.sh) on a host with the pinned PDK *(curated)*
-- **#21**: sim/env.sh: accept a PDK-store tree (.pdk-store.json) at the pin *(curated)*
 
 ## Proposed (Architect / Hermit)
 
@@ -70,10 +69,10 @@ _None._
 | Very important | 0 |
 | Important | 1 |
 | Ready (`loom:issue`) | 0 |
-| In Progress (`loom:building`) | 1 |
+| In Progress (`loom:building`) | 0 |
 | PRs awaiting review | 0 |
-| Approved PRs awaiting merge | 1 |
-| Curated | 3 |
+| Approved PRs awaiting merge | 0 |
+| Curated | 2 |
 | Architect / Hermit proposals | 0 |
 | Active epics | 0 |
 <!-- guide:plan-body:end -->
