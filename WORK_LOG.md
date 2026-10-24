@@ -3,6 +3,11 @@
 Chronological record of merged PRs and closed issues, maintained by the Guide
 triage agent. Newest first.
 
+### 2026-10-24
+
+- **PR #22**: feat(sim): accept fleet PDK store marker as revision proof in env.sh
+- **Issue #21** (closed): sim/env.sh: accept a PDK-store tree (.pdk-store.json) at the pin
+
 ### 2026-10-23
 
 - **PR #18**: feat(sim): closed-loop vref bench against the pinned source netlist
