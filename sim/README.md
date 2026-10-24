@@ -26,6 +26,12 @@ design and proves only that the models load and converge.
 
 All commands from the repo root.
 
+**Fleet route.** On a fleet host the pinned PDK arrives through the fleet PDK store (2AMLogic/2am
+`infra/aws/pdk-store.md`), not a hand copy, so step 1 is skipped. The store tree has no `.git` and
+no `.pdk-revision`; `sim/env.sh` accepts its `$PDK_ROOT/ihp-sg13cmos5l/.pdk-store.json` marker when
+`name` is `ihp-sg13cmos5l` and `version` equals the pin. Check it with
+`bash sim/tests/test-env-pdk-store.sh` (fake trees, no real PDK needed).
+
 ```bash
 # 1. PDK: a combined checkout at the pinned commit (ihp-sg13cmos5l/ needs the ihp-sg13g2/ sibling).
 mkdir -p sim/build && git init -q sim/build/IHP-Open-PDK

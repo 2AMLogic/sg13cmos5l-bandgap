@@ -23,3 +23,19 @@
    `.spiceinit` loads for the MoM capacitors. No bench here needs them yet.
 4. The source's `build-osdi.sh --check` prints `OK` on its own check deck against SG13CMOS5L, so
    its hard-coded `cornerMOShv.lib` / `cornerRES.lib` paths work there via the symlinks.
+
+## 2026-10-24: fleet PDK store marker accepted as revision proof (issue #21)
+
+Operator ruling (rjwalters, attended fleet:decide round 20261024-r1, PDK question option 1): the
+pinned PDK reaches fleet hosts through the fleet PDK store, not a hand copy. A store tree has no
+`.git` and no `.pdk-revision`; it carries `$PDK_ROOT/ihp-sg13cmos5l/.pdk-store.json`
+(`{name, version, sha256, synced, bucket, key}`, per 2am `infra/aws/pdk-store.md`).
+
+`sim/env.sh` now tries `.pdk-revision`, then git HEAD, then that marker (last resort, so existing
+paths are unchanged). It requires `name == ihp-sg13cmos5l` and `version == sim/pdk.json revision`;
+named refusals are `PDK_STORE_VERSION_MISMATCH` (states found and pinned versions),
+`PDK_STORE_NAME_MISMATCH` and `PDK_STORE_MARKER_UNREADABLE`. The pin does not change. The marker's
+`sha256` is not checked. Not verified here: that the store writes `version` as the full 40-hex
+commit (2am `scripts/lib/pdk_store.py` was not available on this host); the check is an exact
+string match, so a short form or tag would be refused with `PDK_STORE_VERSION_MISMATCH`.
+Test: `sim/tests/test-env-pdk-store.sh`.
