@@ -7,6 +7,8 @@
 # /usr/local/share/pdk, ~/share/pdk, ~/.ciel, ~/.volare -- the same order as
 # 2AMLogic/sg13g2-bandgap sim/env.sh, with the PDK name and the revision
 # refusal changed (see sim/ENV-DECISION.md for why this file is its own).
+# Revision proof, first hit wins: $PDK_ROOT/.pdk-revision, git HEAD, then the fleet PDK store
+# marker $PDK_ROOT/$PDK/.pdk-store.json (name + version).
 # Needs python3 (stdlib only) and, to read the revision, git.
 #
 # Sourced, not executed: no shebang. Do not `set -e` here; callers keep their own.
@@ -19,7 +21,7 @@ _cm5_pin="${_cm5_sim_dir}/pdk.json"
 _cm5_fail() {
   echo "sg13cmos5l env: ERROR [$1] $2" >&2
   unset -f _cm5_fail
-  unset _cm5_self _cm5_sim_dir _cm5_pin _cm5_candidate _cm5_want _cm5_have _cm5_name
+  unset _cm5_self _cm5_sim_dir _cm5_pin _cm5_candidate _cm5_want _cm5_have _cm5_name _cm5_marker _cm5_mname
   return 1
 }
 
@@ -55,8 +57,30 @@ if [[ -f "${PDK_ROOT}/.pdk-revision" ]]; then
   _cm5_have="$(head -n1 "${PDK_ROOT}/.pdk-revision")"
 elif _cm5_have="$(git -C "${PDK_ROOT}" rev-parse HEAD 2>/dev/null)"; then
   :
+elif [[ -f "${PDK_ROOT}/${PDK}/.pdk-store.json" ]]; then
+  # Fleet PDK store tree: no .git, no .pdk-revision; the sync writes this marker into the
+  # ${PDK} subtree ({name, version, sha256, synced, bucket, key}). Only name and version are checked.
+  _cm5_marker="${PDK_ROOT}/${PDK}/.pdk-store.json"
+  if ! _cm5_have="$(python3 -I -c '
+import json, sys
+d = json.load(open(sys.argv[1]))
+print(str(d["name"]).strip() + "\n" + str(d["version"]).strip())
+' "${_cm5_marker}" 2>/dev/null)"; then
+    _cm5_fail PDK_STORE_MARKER_UNREADABLE "${_cm5_marker} is not JSON with name and version; cannot prove ${PDK_ROOT} is ${_cm5_want}"
+    return 1
+  fi
+  _cm5_mname="${_cm5_have%%$'\n'*}"
+  _cm5_have="${_cm5_have#*$'\n'}"
+  if [[ "${_cm5_mname}" != "${PDK}" ]]; then
+    _cm5_fail PDK_STORE_NAME_MISMATCH "${_cm5_marker} names '${_cm5_mname}', expected '${PDK}'"
+    return 1
+  fi
+  if [[ "${_cm5_have}" != "${_cm5_want}" ]]; then
+    _cm5_fail PDK_STORE_VERSION_MISMATCH "${_cm5_marker} names version ${_cm5_have}, sim/pdk.json pins ${_cm5_want}"
+    return 1
+  fi
 else
-  _cm5_fail REVISION_UNKNOWN "${PDK_ROOT} is not a git checkout and has no .pdk-revision; cannot prove it is ${_cm5_want}"
+  _cm5_fail REVISION_UNKNOWN "${PDK_ROOT} is not a git checkout and has no .pdk-revision or ${PDK}/.pdk-store.json; cannot prove it is ${_cm5_want}"
   return 1
 fi
 
@@ -76,4 +100,4 @@ if [[ ! -f "${CM5_OSDI_DIR}/psp103.osdi" ]]; then
 fi
 
 unset -f _cm5_fail
-unset _cm5_self _cm5_sim_dir _cm5_pin _cm5_candidate _cm5_want _cm5_have _cm5_name
+unset _cm5_self _cm5_sim_dir _cm5_pin _cm5_candidate _cm5_want _cm5_have _cm5_name _cm5_marker _cm5_mname
