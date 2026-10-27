@@ -16,17 +16,11 @@ REPO_DIR="$(cd "${SIM_DIR}/.." && pwd)"
 # shellcheck source=../env.sh
 source "${SIM_DIR}/env.sh" || { echo "run_smoke.sh: sim/env.sh refused; see the error above." >&2; exit 3; }
 
-for tool in ngspice klt python3 sha256sum; do
-  command -v "${tool}" >/dev/null 2>&1 || { echo "run_smoke.sh: ${tool} not on PATH." >&2; exit 3; }
-done
-NGSPICE_VERSION="$(ngspice --version 2>&1 | grep -m1 -oE 'ngspice-[0-9]+(\.[0-9]+)*')"
-NGSPICE_MAJOR="${NGSPICE_VERSION#ngspice-}"; NGSPICE_MAJOR="${NGSPICE_MAJOR%%.*}"
-if (( NGSPICE_MAJOR < 43 )); then
-  echo "run_smoke.sh: ${NGSPICE_VERSION} cannot load the OSDI v0.4 objects the pinned openvaf-r builds (needs >= 43; sim/pdk.json 'simulator')." >&2
-  exit 3
-fi
+# shellcheck source=../runner-lib.sh
+source "${SIM_DIR}/runner-lib.sh"
+cm5_gate run_smoke.sh ngspice klt python3 sha256sum
+cm5_osdi_gate run_smoke.sh psp103
 OSDI="${CM5_OSDI_DIR}/psp103.osdi"
-[[ -f "${OSDI}" ]] || { echo "run_smoke.sh: ${OSDI} missing; build it first (sim/README.md 'OSDI build')." >&2; exit 3; }
 
 WORK="${SIM_DIR}/build/smoke"
 rm -rf "${WORK}"; mkdir -p "${WORK}"
@@ -61,36 +55,19 @@ EOF
 # only DC sources, read at 40 ns. -o keeps klt's envelope; its exit status is the gate.
 klt sim --backend local --format json -o "${WORK}/out" "${WORK}/request.json" > "${WORK}/envelope.json"
 
-STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
-SHA="$(git -C "${REPO_DIR}" rev-parse --short HEAD)"
-REC="${SMOKE_DIR}/records/${STAMP}-${SHA}.json"
-[[ ! -e "${REC}" ]] || { echo "run_smoke.sh: ${REC} exists; records are append-only." >&2; exit 4; }
+cm5_record_path run_smoke.sh "${REPO_DIR}" "${SMOKE_DIR}/records"
 
 python3 -I - "${WORK}/envelope.json" "${REC}" "${DECK}" "${SMOKE_DIR}/smoke.cir" "${NGSPICE_VERSION}" \
-  "${CM5_PDK_REVISION}" "${SHA}" "${STAMP}" "${SIM_DIR}/pdk.json" <<'PY'
-import hashlib, json, subprocess, sys
-env_p, rec_p, deck_p, src_p, ngspice, pdk_rev, sha, stamp, pin_p = sys.argv[1:]
+  "${CM5_PDK_REVISION}" "${SHA}" "${STAMP}" "${SIM_DIR}/pdk.json" "${SIM_DIR}/tools" <<'PY'
+import json, sys
+env_p, rec_p, deck_p, src_p, ngspice, pdk_rev, sha, stamp, pin_p, tools_dir = sys.argv[1:]
+sys.path.insert(0, tools_dir)
+from cm5_record import collect, klt_version as get_klt_version, sha256, write_record
 envelope = json.load(open(env_p))
-sha256 = lambda p: hashlib.sha256(open(p, "rb").read()).hexdigest()
 pin = json.load(open(pin_p))
-klt_version = subprocess.run(["klt", "--version"], capture_output=True, text=True).stdout.strip()
+klt_version = get_klt_version()
 
-def walk(o):
-    if isinstance(o, dict):
-        yield o
-        for v in o.values():
-            yield from walk(v)
-    elif isinstance(o, list):
-        for v in o:
-            yield from walk(v)
-
-values = {}
-for d in walk(envelope):
-    for k in ("v_drain_v", "v_emitter_v", "i_vdd_a"):
-        if isinstance(d.get(k), (int, float)):
-            values[k] = d[k]
-        elif isinstance(d.get("name"), str) and d["name"] == k and isinstance(d.get("value"), (int, float)):
-            values[k] = d["value"]
+values = collect(envelope, ("v_drain_v", "v_emitter_v", "i_vdd_a"))
 if set(values) != {"v_drain_v", "v_emitter_v", "i_vdd_a"}:
     sys.exit("run_smoke.sh: klt envelope has no value for every measurement; refusing to write a record. Found: %r" % values)
 
@@ -109,7 +86,7 @@ record = {
     "measurements": values,
     "klt_envelope": envelope,
 }
-open(rec_p, "x").write(json.dumps(record, indent=2, sort_keys=True) + "\n")
+write_record(rec_p, record)
 print("run_smoke.sh: wrote", rec_p)
 for k, v in values.items():
     print("  %s = %.6g (simulated, typ/27C/3.3V)" % (k, v))
