@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "kind": "t1-attestation-inventory",
+  "t1_item": 10,
+  "hygiene": [
+    "README.md",
+    "LICENSE",
+    ".github/workflows/signoff.yml",
+    "manifests/README.md",
+    "spec/target-spec.md"
+  ],
+  "checks": [
+    {
+      "name": "env-pdk-store-fake-tree-test",
+      "argv": ["bash", "sim/tests/test-env-pdk-store.sh"]
+    }
+  ]
+}
