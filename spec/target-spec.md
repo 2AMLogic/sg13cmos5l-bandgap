@@ -43,7 +43,7 @@ carry).
 | Supply | 2.97 / 3.30 / 3.63 V on HV devices; the 1.2 V LV stretch needs an LV-flavour re-derivation of the core and amplifier | every bench above, run on the same supply grid | no | Target met **by construction** (HV device rating, inherited), not by a result. Stretch: `target-only`. |
 | Iq | Assembled, self-biased block; all 5 corners × −40/27/125 °C × 3 supplies; settled | closed-loop Iq (new: `sim/closed-loop-iq`) | no | `target-only`. |
 | Startup | Release from `vdd` = 0; all 5 corners × −40/27/125 °C × 3 supplies; time to settle inside the band | `sim/sg13cmos5l-closed-loop-startup` and `-pex` (inherited bench, source @ pin) | no | `partial`. Source record 20260829-085039-94869af: 45/45 points start (schematic). The `< 1 ms` time was not extracted from that record by this plan; it must be reread before the row is called met. Source PEX records cover startup only. |
-| Area | Whole `bandgap_top` cell | layout area from the assembled floorplan | no | `target-only`. No budget number is set. |
+| Area | Whole `bandgap_top` cell | layout area from the assembled floorplan | no | `target-only`. No budget number is set. Layout-derived footprint of the migrated floorplan: 33 607.5 µm² (`layout/README.md`, decision record 0007); not a budget. |
 | Signoff | `klt drc`, `klt lvs`, `klt erc` on every cell and on the top | per-cell reports under `layout/` | no | `target-only`. See §Signoff. |
 
 Capacitor rows: the first accuracy budget uses **no** compensation or filter
