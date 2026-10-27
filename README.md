@@ -91,6 +91,22 @@ seat → measured silicon. **Current position: spec ratified.**
   symbols and models link to the SG13G2 tree).
 - **Layout, DRC, LVS, extraction**: klayout-tools (`klt`).
 
+## Reproduce
+
+Every figure the repo produces is **simulated**, and each record names its
+corner and testbench. All commands run from the repo root; the full cold start
+(PDK pin, ngspice, OSDI build) is in [`sim/README.md`](sim/README.md) and is
+not repeated here.
+
+- **Smoke bench** (models load and converge, typ / 27 °C / 3.3 V): after the
+  cold start, `source sim/env.sh && sim/smoke/run_smoke.sh`.
+- **Closed-loop `vref` bench** (typ / 27 °C / 3.30 V; the 45-point PVT request
+  is committed un-run): `source sim/env.sh && sim/closed-loop-vref-pvt/run.sh`.
+  Prerequisites: [`sim/closed-loop-vref-pvt/README.md`](sim/closed-loop-vref-pvt/README.md).
+- **Signoff record** (T1 grading): regenerate it as described in
+  [`manifests/README.md`](manifests/README.md).
+- **Offline format check** (no PDK, no network): `bash sim/tests/test-env-pdk-store.sh`.
+
 ## T1 status
 
 The T1 evidence tier is graded by `klt signoff`, not restated here. The

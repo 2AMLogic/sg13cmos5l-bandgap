@@ -58,3 +58,10 @@ jobs:
             exit 1
           fi
           echo "Committed signoff record is fresh."
+
+      - name: Re-attest T1 item 10 against the committed envelope
+        run: |
+          # Exit 0 = still reproduces and passes; 3 = drifted or failing.
+          # Checks flagged local_only (none today) are skipped visibly.
+          klt signoff --attest 10 --inventory attest/item10.json \
+                      --check evidence/item10.json
