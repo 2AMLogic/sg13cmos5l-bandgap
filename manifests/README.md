@@ -3,14 +3,15 @@
 `sg13cmos5l-bandgap.json` is the block manifest graded by `klt signoff`
 against the T1 checklist. Its `evidence` map gains one
 citation per checklist item as artifacts land (item 2: `evidence/item2.json`,
-written by `attest/make-item2-envelope.py`, see `layout/README.md`; item 10: `evidence/item10.json`,
+written by `attest/make-item2-envelope.py`, see `layout/README.md`; item 9:
+`evidence/item9.json`, see `attest/README.md`; item 10: `evidence/item10.json`,
 produced from `attest/item10.json`).
 
 - `design-evidence-tiers.md` is the checklist, vendored byte-identical from
   `2AMLogic/klayout-tools` `docs/design-evidence-tiers.md` at commit
   `44cc42323184` (git blob `2f7f69825f8c`).
 - `sg13cmos5l-bandgap.signoff.json` is the verdict of record: the committed
-  output of `klt signoff`, pinned to `klayout-tools==0.8.0`.
+  output of `klt signoff`, pinned to `klayout-tools==0.8.0` (the first release with `--attest`).
 
 ## Regenerating the record
 
@@ -26,7 +27,7 @@ uvx --from "klayout-tools==0.8.0" klt signoff \
 
 Any change to the manifest, the checklist or cited evidence must regenerate
 the record in the same PR. `.github/workflows/signoff.yml` re-runs the
-command with the same pin, accepts exit 0 and 3 only, and byte-compares.
+command with the same pin (0.8.0), accepts exit 0 and 3 only, and byte-compares.
 
 ## Item 10 attestation
 

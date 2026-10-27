@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "kind": "generic",
+  "status": "pass",
+  "t1_item": 9,
+  "summary": "T1 item 9 (Testbenches shipped): 6/6 attestation checks passed (klt signoff --attest)",
+  "source": "attest/item9.json",
+  "attestation": {
+    "producer": "klt signoff --attest",
+    "inventory_schema_version": 1,
+    "hash_algorithm": "sha256-raw-bytes",
+    "check_count": 6,
+    "passed_count": 6,
+    "checks": [
+      {
+        "check": "present",
+        "role": "testbench",
+        "path": "sim/closed-loop-vref-pvt/request-45pt.json",
+        "passed": true,
+        "content_hash": "sha256:5cbdcd73302c11de4f942c71f5036ae25809745d0c7b610d9718614dbf364af9"
+      },
+      {
+        "check": "present",
+        "role": "testbench",
+        "path": "sim/closed-loop-vref-pvt/vref.cir.tmpl",
+        "passed": true,
+        "content_hash": "sha256:7264bd6ec4aa624a3b613f5f707f96d4cb1646e97d0f48da24403e61886e653b"
+      },
+      {
+        "check": "present",
+        "role": "testbench",
+        "path": "sim/smoke/smoke.cir",
+        "passed": true,
+        "content_hash": "sha256:14b0e14a43ae58d1e09b139d141662fe63c35b01a71808cb4d47323051ec0f22"
+      },
+      {
+        "check": "command",
+        "role": "cold_start",
+        "argv": [
+          "bash",
+          "-c",
+          "source sim/env.sh && sim/smoke/run_smoke.sh"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true,
+        "local_only": true
+      },
+      {
+        "check": "pin",
+        "role": "pdk",
+        "passed": true,
+        "value": {
+          "name": "ihp-sg13cmos5l",
+          "revision": "f7bca32694fe3d58be0cc7d9df4b9f5db7161a14"
+        }
+      },
+      {
+        "check": "pin",
+        "role": "tools",
+        "passed": true,
+        "value": {
+          "klt": "0.8.0",
+          "ngspice": "46",
+          "osdi_build": "2AMLogic/sg13g2-bandgap@66f9d846130fc6f06ecaa24b1021c3304496f6b9"
+        }
+      }
+    ]
+  },
+  "provenance": {
+    "klt_version": "0.8.0",
+    "klayout_version": null,
+    "pdk": null,
+    "deck": null,
+    "input": {
+      "path": {
+        "path": "attest/item9.json",
+        "scope": "repo"
+      },
+      "content_hash": "sha256:cb821cd7e429ee06672ef634f9229582ed1e9cb61399763736cae31834275e41"
+    }
+  }
+}
