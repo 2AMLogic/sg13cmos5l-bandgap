@@ -8,7 +8,7 @@ citation per checklist item as artifacts land.
   `2AMLogic/klayout-tools` `docs/design-evidence-tiers.md` at commit
   `44cc42323184` (git blob `2f7f69825f8c`).
 - `sg13cmos5l-bandgap.signoff.json` is the verdict of record: the committed
-  output of `klt signoff`, pinned to `klayout-tools==0.7.0`.
+  output of `klt signoff`, pinned to `klayout-tools==0.8.0`.
 
 ## Regenerating the record
 
@@ -16,7 +16,7 @@ Run from the repo root (the record embeds the `--tiers-doc` path). Exit 3
 means "grader ran, items unmet" and is expected until T1 is reached.
 
 ```
-uvx --from "klayout-tools==0.7.0" klt signoff \
+uvx --from "klayout-tools==0.8.0" klt signoff \
     --manifest manifests/sg13cmos5l-bandgap.json \
     --tiers-doc manifests/design-evidence-tiers.md \
     --format json > manifests/sg13cmos5l-bandgap.signoff.json

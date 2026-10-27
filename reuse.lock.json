@@ -1,5 +1,5 @@
 {
-  "_comment": "Pinned reuse of the SG13CMOS5L branch of 2AMLogic/sg13g2-bandgap (decision record 0002). Nothing is migrated: these paths are read at the pinned commit. Bump only with a decision record naming the old and new commit.",
+  "_comment": "Pinned reuse of the SG13CMOS5L branch of 2AMLogic/sg13g2-bandgap (decision record 0002). Paths listed under the first entry are read at the pinned commit, except those migrated by decision record 0006 (the 'migrate' entry), which are byte-identical copies in this tree. Bump only with a decision record naming the old and new commit.",
   "schema_version": 1,
   "sources": [
     {
@@ -12,7 +12,7 @@
         "spec/porting-plan-sg13cmos5l.md",
         "spec/decision-records/0004-cmos5l-bipolar-device-selection.md",
         "spec/decision-records/0005-cmos5l-q2-matched-array-construction.md",
-        "design/sg13cmos5l/",
+        "design/sg13cmos5l/README.md",
         "sim/sg13cmos5l-closed-loop-startup/",
         "sim/sg13cmos5l-closed-loop-startup-pex/",
         "sim/sg13cmos5l-core-open-loop-bias/",
@@ -24,6 +24,27 @@
         "layout/sg13cmos5l-bandgap_startup/",
         "layout/sg13cmos5l-bandgap_top/"
       ]
+    },
+    {
+      "repo": "2AMLogic/sg13g2-bandgap",
+      "commit": "52535387e6ccf0a89f6490901a9abb2b78144176",
+      "mode": "migrate",
+      "record": "spec/decision-records/0006-migrate-sg13cmos5l-design-sources.md",
+      "paths": [
+        "design/xschemrc",
+        "design/sg13cmos5l/bandgap_amp.sch",
+        "design/sg13cmos5l/bandgap_amp.sym",
+        "design/sg13cmos5l/bandgap_core.sch",
+        "design/sg13cmos5l/bandgap_core.sym",
+        "design/sg13cmos5l/bandgap_startup.sch",
+        "design/sg13cmos5l/bandgap_startup.sym",
+        "design/sg13cmos5l/bandgap_top.sch",
+        "design/sg13cmos5l/netlist/bandgap_amp.spice",
+        "design/sg13cmos5l/netlist/bandgap_core.spice",
+        "design/sg13cmos5l/netlist/bandgap_startup.spice",
+        "design/sg13cmos5l/netlist/bandgap_top.spice"
+      ],
+      "note": "Copied unedited; blob SHA-1 equals the source tree entry at this commit (see the record). Edits here diverge from the source and need their own record."
     },
     {
       "repo": "2AMLogic/sg13g2-bandgap",

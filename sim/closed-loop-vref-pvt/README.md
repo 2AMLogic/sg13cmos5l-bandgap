@@ -6,7 +6,7 @@ First closed-loop `vref` bench (issue #14, part of #5). It is the planned bench 
 | File | Role |
 |---|---|
 | `run.sh` | Runner: one `klt sim --backend local` unit at typ / 27 °C / 3.30 V, writes one record |
-| `vref.cir.tmpl` | Deck template: supply, substrate tie, OSDI preload, include of the fetched DUT |
+| `vref.cir.tmpl` | Deck template: supply, substrate tie, OSDI preload, include of the in-repo DUT netlist |
 | `request-45pt.json` | The full §PVT grid (5 process × 3 temperature × 3 supply = 45). **Committed, never run here** |
 | `records/` | Append-only JSON records (`<UTC>-<short sha>.json`) |
 
@@ -16,22 +16,21 @@ First closed-loop `vref` bench (issue #14, part of #5). It is the planned bench 
 source sim/env.sh && sim/closed-loop-vref-pvt/run.sh
 ```
 
-Prerequisites are those of the smoke bench (`sim/README.md` 'Cold start'), plus `gh` with read
-access to `2AMLogic/sg13g2-bandgap`, and both `psp103.osdi` and `r3_cmc.osdi` built (`rppd`/`rhigh`
+Prerequisites are those of the smoke bench (`sim/README.md` 'Cold start'), plus both `psp103.osdi` and `r3_cmc.osdi` built (`rppd`/`rhigh`
 need `r3_cmc`). Exit codes: 0 record with `vref_v`; 3 missing prerequisite; 4 record exists;
 5 simulation failed (a record with `status: failed` and `failure_reason` is written); 6 source
-fetch or pin refused (named `SOURCE_UNREACHABLE` / `SOURCE_COMMIT_MISMATCH`, no record).
+netlist missing or pin unreadable (named `SOURCE_MISSING`, no record).
 
-## What is fetched, not copied
+## Where the DUT comes from
 
-`design/sg13cmos5l/netlist/bandgap_top.spice` is read at run time from the commit pinned in
-`reuse.lock.json` (decision record 0002). The runner resolves that commit through the forge and
-refuses unless it equals the pinned 40-hex. The file is a flattened xschem export, not a
+`design/sg13cmos5l/netlist/bandgap_top.spice` is the in-repo copy migrated byte-for-byte from
+`2AMLogic/sg13g2-bandgap` at the commit in `reuse.lock.json` (decision record 0006, which amends
+0002 for these cells); the runner reads it, no forge access. The file is a flattened xschem export, not a
 `.subckt bandgap_top`: bare instances `Xx1`/`Xx2`/`Xx3` on nets `vdd vss vref fb sns1 sns2`, then
 `bandgap_core`, `bandgap_amp`, `bandgap_startup` subckts, no `.lib`/`.include`. The deck therefore
 drives `vdd`/`vss`, ties the `sub!` bulk net to `vss`, and supplies the model `.lib`s. The only
 change to the fetched text is dropping its final `.end` card; `source_file_sha256` in each record
-is the hash of the file as fetched.
+is the hash of the file as read (equal to the pinned source blob).
 
 ## Record
 
