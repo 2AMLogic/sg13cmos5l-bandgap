@@ -5,6 +5,10 @@ triage agent. Newest first.
 
 ### 2026-10-27
 
+- **PR #46**: refactor(sim): share bench runner gates, envelope parsing and record write
+- **PR #44**: feat(layout): commit klt drc reports and meet T1 item 3
+- **Issue #37** (closed): Deduplicate sim bench runners: share envelope parsing, tool gates and record writing
+- **Issue #28** (closed): T1 item 3 (DRC clean): klt drc on every bandgap cell and the top with the SG13CMOS5L deck coverage disclosed
 - **PR #41**: feat(layout): migrate SG13CMOS5L layout generators and GDS for T1 item 2
 - **PR #40**: feat(design): migrate SG13CMOS5L cells for T1 item 1 attestation
 - **PR #39**: feat: attest T1 item 9 with a bench inventory and committed envelope
