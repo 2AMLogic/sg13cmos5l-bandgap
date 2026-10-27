@@ -2,7 +2,14 @@
   "block": "sg13cmos5l-bandgap",
   "kind": "analog",
   "evidence": {
+    "2": {
+      "file": "evidence/item2.json",
+      "content_hash": "sha256:4e4e4f85fa0875651c294c95a1f65792fa1913dd20d027fbe6905f2d001cb330"
+    },
     "9": {"file": "evidence/item9.json", "content_hash": "sha256:cb821cd7e429ee06672ef634f9229582ed1e9cb61399763736cae31834275e41"},
-    "10": {"file": "evidence/item10.json", "content_hash": "sha256:7c747b39f5ad8d453f33e7fc86b30063c92e639a1fb349b79ebac6b2f6406771"}
+    "10": {
+      "file": "evidence/item10.json",
+      "content_hash": "sha256:7c747b39f5ad8d453f33e7fc86b30063c92e639a1fb349b79ebac6b2f6406771"
+    }
   }
 }

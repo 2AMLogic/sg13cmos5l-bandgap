@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "file": "layout/sg13cmos5l-bandgap_top/sg13cmos5l-bandgap_top.gds",
+  "dbu_um": 0.001,
+  "top_cell": "sg13cmos5l_bandgap_top",
+  "bbox_um": {
+    "left": -18.5,
+    "bottom": -3.21,
+    "right": 229.5,
+    "top": 132.304,
+    "width": 248.0,
+    "height": 135.514
+  },
+  "total": {
+    "area_um2": 21279.9558,
+    "density": 0.6331912081932256,
+    "merged_area_um2": 21177.442300000002,
+    "merged_density": 0.6301408895021916,
+    "polygon_count": 2816,
+    "vertex_count": 11264,
+    "flattened_polygon_count": 2816,
+    "flattened_vertex_count": 11264
+  },
+  "layers": null,
+  "density_windows": null
+}

@@ -1,5 +1,5 @@
 {
-  "_comment": "Pinned reuse of the SG13CMOS5L branch of 2AMLogic/sg13g2-bandgap (decision record 0002). Paths listed under the first entry are read at the pinned commit, except those migrated by decision record 0006 (the 'migrate' entry), which are byte-identical copies in this tree. Bump only with a decision record naming the old and new commit.",
+  "_comment": "Pinned reuse of the SG13CMOS5L branch of 2AMLogic/sg13g2-bandgap (decision record 0002). Paths in a `pin` entry are read at the pinned commit; `migrate` entries (decision records 0006 and 0007) are byte-identical copies in this tree. Bump only with a decision record naming the old and new commit.",
   "schema_version": 1,
   "sources": [
     {
@@ -18,11 +18,28 @@
         "sim/sg13cmos5l-core-open-loop-bias/",
         "sim/sg13cmos5l-startup-trip-point/",
         "sim/pdk-sg13cmos5l.json",
+        "layout/sg13cmos5l-bandgap_amp/ (reports and reference netlists only)",
+        "layout/sg13cmos5l-bandgap_core/ (reports and reference netlists only)",
+        "layout/sg13cmos5l-bandgap_startup/ (reports and reference netlists only)",
+        "layout/sg13cmos5l-bandgap_top/ (reports and reference netlists only)"
+      ]
+    },
+    {
+      "repo": "2AMLogic/sg13g2-bandgap",
+      "commit": "52535387e6ccf0a89f6490901a9abb2b78144176",
+      "mode": "migrate",
+      "decision_record": "spec/decision-records/0007-migrate-sg13cmos5l-layout.md",
+      "paths": [
+        "layout/_klayout_builder_base.py",
         "layout/common_sg13cmos5l.py",
-        "layout/sg13cmos5l-bandgap_amp/",
-        "layout/sg13cmos5l-bandgap_core/",
-        "layout/sg13cmos5l-bandgap_startup/",
-        "layout/sg13cmos5l-bandgap_top/"
+        "layout/sg13cmos5l-bandgap_amp/generate.py",
+        "layout/sg13cmos5l-bandgap_amp/sg13cmos5l-bandgap_amp.gds",
+        "layout/sg13cmos5l-bandgap_core/generate.py",
+        "layout/sg13cmos5l-bandgap_core/sg13cmos5l-bandgap_core.gds",
+        "layout/sg13cmos5l-bandgap_startup/generate.py",
+        "layout/sg13cmos5l-bandgap_startup/sg13cmos5l-bandgap_startup.gds",
+        "layout/sg13cmos5l-bandgap_top/generate.py",
+        "layout/sg13cmos5l-bandgap_top/sg13cmos5l-bandgap_top.gds"
       ]
     },
     {

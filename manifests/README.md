@@ -2,9 +2,10 @@
 
 `sg13cmos5l-bandgap.json` is the block manifest graded by `klt signoff`
 against the T1 checklist. Its `evidence` map gains one
-citation per checklist item as artifacts land (item 9: `evidence/item9.json`, see
-`attest/README.md`; item 10: `evidence/item10.json`, produced from
-`attest/item10.json`).
+citation per checklist item as artifacts land (item 2: `evidence/item2.json`,
+written by `attest/make-item2-envelope.py`, see `layout/README.md`; item 9:
+`evidence/item9.json`, see `attest/README.md`; item 10: `evidence/item10.json`,
+produced from `attest/item10.json`).
 
 - `design-evidence-tiers.md` is the checklist, vendored byte-identical from
   `2AMLogic/klayout-tools` `docs/design-evidence-tiers.md` at commit
