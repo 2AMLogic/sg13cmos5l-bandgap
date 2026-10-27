@@ -3,14 +3,14 @@
 #
 #   source sim/env.sh && sim/closed-loop-vref-pvt/run.sh   # prerequisites: sim/README.md
 #
-# One corner (typ / 27 C / 3.30 V), one `klt sim --backend local` unit. Fetches the DUT
-# at run time from the commit pinned in reuse.lock.json (nothing copied into the tree),
+# One corner (typ / 27 C / 3.30 V), one `klt sim --backend local` unit. Reads the DUT
+# netlist from design/sg13cmos5l/netlist/ (migrated from the commit in reuse.lock.json, record 0006),
 # then writes sim/closed-loop-vref-pvt/records/<UTC timestamp>-<short git sha>.json and
 # never overwrites an existing record. Scratch: sim/build/closed-loop-vref-pvt/
 # (gitignored). Figures are SIMULATED. The 45-point grid is NOT run here: see README.md.
 #
 # Exit: 0 record with vref_v; 3 missing prerequisite; 4 record exists; 5 simulation or
-# measurement failed (a record stating the failure is written); 6 source fetch/pin refused.
+# measurement failed (a record stating the failure is written); 6 source netlist or pin missing/refused.
 set -euo pipefail
 
 BENCH_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -52,13 +52,10 @@ WORK="${SIM_DIR}/build/closed-loop-vref-pvt"
 rm -rf "${WORK}"; mkdir -p "${WORK}"
 
 SRC_PATH="design/sg13cmos5l/netlist/bandgap_top.spice"
-RESOLVED="$(gh api "repos/${SRC_REPO}/commits/${SRC_COMMIT}" --jq .sha 2>"${WORK}/fetch.err")" \
-  || { echo "${TAG}: SOURCE_UNREACHABLE cannot resolve ${SRC_REPO}@${SRC_COMMIT}: $(head -c 300 "${WORK}/fetch.err")" >&2; exit 6; }
-[[ "${RESOLVED}" == "${SRC_COMMIT}" ]] \
-  || { echo "${TAG}: SOURCE_COMMIT_MISMATCH ${SRC_REPO} resolved ${RESOLVED}, reuse.lock.json pins ${SRC_COMMIT}." >&2; exit 6; }
-gh api -H "Accept: application/vnd.github.raw+json" "repos/${SRC_REPO}/contents/${SRC_PATH}?ref=${SRC_COMMIT}" \
-  > "${WORK}/bandgap_top.fetched.spice" 2>"${WORK}/fetch.err" \
-  || { echo "${TAG}: SOURCE_UNREACHABLE cannot fetch ${SRC_PATH}@${SRC_COMMIT}: $(head -c 300 "${WORK}/fetch.err")" >&2; exit 6; }
+# Migrated byte-for-byte from ${SRC_REPO}@${SRC_COMMIT} (decision record 0006): read the in-repo copy.
+[[ -f "${REPO_DIR}/${SRC_PATH}" ]] \
+  || { echo "${TAG}: SOURCE_MISSING ${SRC_PATH} is not in this tree (decision record 0006)." >&2; exit 6; }
+cp "${REPO_DIR}/${SRC_PATH}" "${WORK}/bandgap_top.fetched.spice"
 grep -q '^\.subckt bandgap_core ' "${WORK}/bandgap_top.fetched.spice" \
   || { echo "${TAG}: fetched ${SRC_PATH} has no 'bandgap_core' subckt; not the expected netlist." >&2; exit 6; }
 # Only transformation of the DUT: drop the final `.end` card. Nothing else is edited.
