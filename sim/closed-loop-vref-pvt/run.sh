@@ -21,19 +21,11 @@ TAG="closed-loop-vref-pvt/run.sh"
 # shellcheck source=../env.sh
 source "${SIM_DIR}/env.sh" || { echo "${TAG}: sim/env.sh refused; see the error above." >&2; exit 3; }
 
-for tool in ngspice klt python3 sha256sum gh git; do
-  command -v "${tool}" >/dev/null 2>&1 || { echo "${TAG}: ${tool} not on PATH." >&2; exit 3; }
-done
-NGSPICE_VERSION="$(ngspice --version 2>&1 | grep -m1 -oE 'ngspice-[0-9]+(\.[0-9]+)*')"
-NGSPICE_MAJOR="${NGSPICE_VERSION#ngspice-}"; NGSPICE_MAJOR="${NGSPICE_MAJOR%%.*}"
-if (( NGSPICE_MAJOR < 43 )); then
-  echo "${TAG}: ${NGSPICE_VERSION} cannot load the OSDI v0.4 objects the pinned openvaf-r builds (needs >= 43; sim/pdk.json 'simulator')." >&2
-  exit 3
-fi
+# shellcheck source=../runner-lib.sh
+source "${SIM_DIR}/runner-lib.sh"
+cm5_gate "${TAG}" ngspice klt python3 sha256sum gh git
 # psp103 for the MOS devices; r3_cmc for rppd/rhigh (sim/pdk.json lists it as built by the OSDI step).
-for obj in psp103 r3_cmc; do
-  [[ -f "${CM5_OSDI_DIR}/${obj}.osdi" ]] || { echo "${TAG}: ${CM5_OSDI_DIR}/${obj}.osdi missing; build it first (sim/README.md 'OSDI build')." >&2; exit 3; }
-done
+cm5_osdi_gate "${TAG}" psp103 r3_cmc
 
 # ---- pinned source: repo and commit from reuse.lock.json (first non-block `pin` source) ----
 read -r SRC_REPO SRC_COMMIT < <(python3 -I - "${REPO_DIR}/reuse.lock.json" <<'PY'
@@ -95,10 +87,7 @@ r["options"]["osdi_preload"] = [osdi_dir + "/psp103.osdi", osdi_dir + "/r3_cmc.o
 json.dump(r, open(dst, "w"), indent=2)
 PY
 
-STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
-SHA="$(git -C "${REPO_DIR}" rev-parse --short HEAD)"
-REC="${BENCH_DIR}/records/${STAMP}-${SHA}.json"
-[[ ! -e "${REC}" ]] || { echo "${TAG}: ${REC} exists; records are append-only." >&2; exit 4; }
+cm5_record_path "${TAG}" "${REPO_DIR}" "${BENCH_DIR}/records"
 
 KLT_RC=0
 klt sim --backend local --format json -o "${WORK}/out" "${WORK}/request.json" > "${WORK}/envelope.json" 2>"${WORK}/klt.err" || KLT_RC=$?
@@ -106,35 +95,21 @@ klt sim --backend local --format json -o "${WORK}/out" "${WORK}/request.json" > 
 set +e
 python3 -I - "${WORK}/envelope.json" "${REC}" "${DECK}" "${BENCH_DIR}/vref.cir.tmpl" "${WORK}/bandgap_top.fetched.spice" \
   "${NGSPICE_VERSION}" "${CM5_PDK_REVISION}" "${SHA}" "${STAMP}" "${SIM_DIR}/pdk.json" \
-  "${SRC_REPO}" "${SRC_COMMIT}" "${KLT_RC}" "${WORK}/klt.err" <<'PY'
-import hashlib, json, subprocess, sys
+  "${SRC_REPO}" "${SRC_COMMIT}" "${KLT_RC}" "${WORK}/klt.err" "${SIM_DIR}/tools" <<'PY'
+import json, sys
 (env_p, rec_p, deck_p, tmpl_p, fetched_p, ngspice, pdk_rev, sha, stamp, pin_p,
- src_repo, src_commit, klt_rc, klt_err_p) = sys.argv[1:]
-sha256 = lambda p: hashlib.sha256(open(p, "rb").read()).hexdigest()
+ src_repo, src_commit, klt_rc, klt_err_p, tools_dir) = sys.argv[1:]
+sys.path.insert(0, tools_dir)
+from cm5_record import collect, klt_version as get_klt_version, sha256, write_record
 pin = json.load(open(pin_p))
-klt_version = subprocess.run(["klt", "--version"], capture_output=True, text=True).stdout.strip()
+klt_version = get_klt_version()
 try:
     envelope = json.load(open(env_p))
 except Exception:
     envelope = None
 
-def walk(o):
-    if isinstance(o, dict):
-        yield o
-        for v in o.values():
-            yield from walk(v)
-    elif isinstance(o, list):
-        for v in o:
-            yield from walk(v)
-
 NAMES = ("vref_v", "vref_prev_v", "fb_v", "sns1_v", "sns2_v")
-values = {}
-for d in walk(envelope):
-    for k in NAMES:
-        if isinstance(d.get(k), (int, float)):
-            values[k] = d[k]
-        elif d.get("name") == k and isinstance(d.get("value"), (int, float)):
-            values[k] = d["value"]
+values = collect(envelope, NAMES)
 
 SETTLE_V = 1e-3  # settle criterion: |vref(2.0 ms) - vref(1.5 ms)| < 1 mV
 reason = None
@@ -172,7 +147,7 @@ if reason:
     record["failure_reason"] = reason
 else:
     record["vref_v"] = values["vref_v"]
-open(rec_p, "x").write(json.dumps(record, indent=2, sort_keys=True) + "\n")
+write_record(rec_p, record)
 print("closed-loop-vref-pvt/run.sh: wrote", rec_p)
 if reason:
     print("closed-loop-vref-pvt/run.sh: FAILED:", reason, file=sys.stderr)

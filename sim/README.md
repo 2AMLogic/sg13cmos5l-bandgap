@@ -9,6 +9,7 @@ PDK pin, a bring-up smoke bench (issue #4, T1 item 9) and the first design bench
 | `env.sh` | Sourced; resolves `PDK_ROOT`/`PDK`, **refuses** unless the install is the pinned revision |
 | `smoke/` | `.op`-style smoke deck (one `sg13_hv_nmos`, one `pnpMPA`, typ/27 °C/3.3 V), runner, append-only `records/` |
 | `closed-loop-vref-pvt/` | Closed-loop `vref` bench (typ/27 °C/3.30 V run, 45-point request committed un-run), fetches the DUT at the `reuse.lock.json` pin |
+| `runner-lib.sh`, `tools/cm5_record.py` | Shared by the bench runners: tool/ngspice gates, append-only record path and write, klt-envelope value extraction (record 0008) |
 | `ENV-DECISION.md` | Why `env.sh` is this repo's own and the OSDI builder is adopted by pin |
 
 Every figure these produce is **simulated**. The smoke circuit is not part of the
