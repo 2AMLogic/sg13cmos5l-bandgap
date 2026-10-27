@@ -3,6 +3,16 @@
 Chronological record of merged PRs and closed issues, maintained by the Guide
 triage agent. Newest first.
 
+### 2026-10-27
+
+- **PR #41**: feat(layout): migrate SG13CMOS5L layout generators and GDS for T1 item 2
+- **PR #40**: feat(design): migrate SG13CMOS5L cells for T1 item 1 attestation
+- **PR #39**: feat: attest T1 item 9 with a bench inventory and committed envelope
+- **PR #38**: docs: add README reproduce section and attested T1 item 10 envelope
+- **Issue #35** (closed): T1 item 10 (repo hygiene): hygiene inventory and klt signoff --attest 10 envelope
+- **Issue #34** (closed): T1 item 9 (testbenches shipped): testbench inventory and klt signoff --attest 9 envelope
+- **Issue #27** (closed): T1 item 2 (layout): committed bandgap_top GDS assembled from the amp, core and startup cells
+
 ### 2026-10-24
 
 - **PR #22**: feat(sim): accept fleet PDK store marker as revision proof in env.sh
