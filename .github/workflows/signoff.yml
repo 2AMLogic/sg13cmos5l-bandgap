@@ -27,7 +27,16 @@ jobs:
           python-version: "3.10"
 
       - name: Install pinned klt
-        run: pip install klayout-tools==0.7.0
+        run: pip install klayout-tools==0.8.0
+
+      - name: Check the item-9 inventory pins against sim/pdk.json and reuse.lock.json
+        run: bash sim/tests/test-attest-pins.sh
+
+      # cold_start is local_only (needs the pinned PDK, ngspice >= 43 and psp103.osdi), so it is
+      # not run here: it is listed under skipped_checks with its committed outcome. File presence
+      # and content hashes of every inventoried testbench are still re-verified.
+      - name: Check the item-9 attestation envelope has not drifted
+        run: klt signoff --attest 9 --inventory attest/item9.json --check evidence/item9.json --format text
 
       - name: Re-run klt signoff and compare against the committed record
         run: |

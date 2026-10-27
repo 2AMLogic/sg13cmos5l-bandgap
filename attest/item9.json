@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "kind": "t1-attestation-inventory",
+  "t1_item": 9,
+  "description": "T1 item 9 (Testbenches shipped). cold_start is local_only: it needs the pinned combined IHP-Open-PDK checkout, ngspice >= 43 and a built psp103.osdi (sim/README.md), none of which a GitHub runner has. It runs sim/smoke/run_smoke.sh, which appends one sim/smoke/records/*.json per run. The 45-point closed-loop grid is inventoried but not cold-started here: it goes to the batch fleet through klt sim. See attest/README.md.",
+  "testbenches": [
+    "sim/smoke/smoke.cir",
+    "sim/closed-loop-vref-pvt/vref.cir.tmpl",
+    "sim/closed-loop-vref-pvt/request-45pt.json"
+  ],
+  "cold_start": {
+    "argv": ["bash", "-c", "source sim/env.sh && sim/smoke/run_smoke.sh"],
+    "local_only": true
+  },
+  "pins": {
+    "pdk": {"name": "ihp-sg13cmos5l", "revision": "f7bca32694fe3d58be0cc7d9df4b9f5db7161a14"},
+    "tools": {
+      "klt": "0.8.0",
+      "ngspice": "46",
+      "osdi_build": "2AMLogic/sg13g2-bandgap@66f9d846130fc6f06ecaa24b1021c3304496f6b9"
+    }
+  }
+}

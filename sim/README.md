@@ -96,3 +96,8 @@ Finding (**not yet at the pin**): run against an unpinned local copy (`~/share/p
 writes them; no rename. Which mismatch sections the Monte Carlo benches use (`mos_tt_stat`
 vs `mos_*_mismatch`, `res_stat` vs `res_*_mismatch`) is deliberately not decided here. The
 `model_files` entries added to `pdk.json` carry that caveat until the tool is run at the pin.
+
+## Item 9 attestation
+
+`attest/item9.json` inventories the shipped benches and the documented cold start for T1 item 9;
+`evidence/item9.json` is the committed `klt signoff --attest 9` envelope. See `attest/README.md`.
