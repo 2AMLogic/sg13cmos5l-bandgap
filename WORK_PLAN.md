@@ -53,6 +53,7 @@ Issues carrying `loom:curated`.
 - **#15**: Verify the spec's corner and mismatch model sections resolve at the pinned IHP dev revision *(curated)*
 - **#19**: Record the first closed-loop vref run (sim/closed-loop-vref-pvt/run.sh) on a host with the pinned PDK *(curated)*
 - **#26**: T1 item 1 (design sources): attest the pinned SG13CMOS5L core/amp/startup/top schematics and derived netlists (or migrate them under decision record 0002) *(curated)*
+- **#47**: Run sim/smoke/run_smoke.sh once on a toolchain host and diff record keys after runner-lib refactor *(curated)*
 
 ## Proposed (Architect / Hermit)
 
@@ -73,7 +74,7 @@ _None._
 | In Progress (`loom:building`) | 0 |
 | PRs awaiting review | 0 |
 | Approved PRs awaiting merge | 0 |
-| Curated | 3 |
+| Curated | 4 |
 | Architect / Hermit proposals | 0 |
 | Active epics | 0 |
 <!-- guide:plan-body:end -->
