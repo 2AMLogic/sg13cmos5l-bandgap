@@ -3,14 +3,14 @@
   "kind": "generic",
   "status": "pass",
   "t1_item": 10,
-  "summary": "T1 item 10 (Repo hygiene): 6/6 attestation checks passed (klt signoff --attest)",
+  "summary": "T1 item 10 (Repo hygiene): 8/8 attestation checks passed (klt signoff --attest)",
   "source": "attest/item10.json",
   "attestation": {
     "producer": "klt signoff --attest",
     "inventory_schema_version": 1,
     "hash_algorithm": "sha256-raw-bytes",
-    "check_count": 6,
-    "passed_count": 6,
+    "check_count": 8,
+    "passed_count": 8,
     "checks": [
       {
         "check": "present",
@@ -58,6 +58,30 @@
         "cwd": ".",
         "exit_status": 0,
         "passed": true
+      },
+      {
+        "check": "command",
+        "role": "audit",
+        "name": "model-sections-fake-tree-test",
+        "argv": [
+          "bash",
+          "sim/tests/test-model-sections.sh"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true
+      },
+      {
+        "check": "command",
+        "role": "audit",
+        "name": "runner-lib-test",
+        "argv": [
+          "bash",
+          "sim/tests/test-runner-lib.sh"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true
       }
     ]
   },
@@ -71,7 +95,7 @@
         "path": "attest/item10.json",
         "scope": "repo"
       },
-      "content_hash": "sha256:7c747b39f5ad8d453f33e7fc86b30063c92e639a1fb349b79ebac6b2f6406771"
+      "content_hash": "sha256:8797ff0c813632fb5ef203c98868bd87402008b42f5edbac8c8f2c823ac34448"
     }
   }
 }

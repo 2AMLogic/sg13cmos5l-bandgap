@@ -92,6 +92,8 @@ is missing (or a symlink dangles), 2 = no models directory. `--models-dir` overr
 `$CM5_NGSPICE_MODELS`. Mismatch candidates (`mos_*_stat`, `mos_*_mismatch`, `res_stat`,
 `res_*_mismatch`) are listed as informational only.
 
+Offline exit-code test (fake models tree, no PDK needed): `bash sim/tests/test-model-sections.sh`.
+
 Finding (**not yet at the pin**): run against an unpinned local copy (`~/share/pdk`, no
 `.pdk-revision`, so `env.sh` refuses it), all 12 required names exist exactly as the spec
 writes them; no rename. Which mismatch sections the Monte Carlo benches use (`mos_tt_stat`
