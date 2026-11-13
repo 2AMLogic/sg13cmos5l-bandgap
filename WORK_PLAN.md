@@ -21,7 +21,7 @@ _None._
 `loom:important`; taken before unlabelled work.
 
 - **#26**: T1 item 1 (design sources): attest the pinned SG13CMOS5L core/amp/startup/top schematics and derived netlists (or migrate them under decision record 0002)
-- **#30**: T1 item 5 (corner verification): 45-point closed-loop benches for the nominal, TC (box and endpoint), PSRR, Iq and startup rows as klt sim envelopes
+- **#32**: T1 item 7 (post-layout verification): klt pex re-run of the closed-loop row benches on the extracted bandgap_top
 
 ## Ready
 
@@ -33,7 +33,7 @@ _None._
 
 Issues currently being built (`loom:building`).
 
-- **#30**: T1 item 5 (corner verification): 45-point closed-loop benches for the nominal, TC (box and endpoint), PSRR, Iq and startup rows as klt sim envelopes
+- **#31**: T1 item 6 (Monte Carlo): closed-loop vref mismatch MC (N >= 300 per point) as klt yield evidence for the untrimmed-line row
 
 ## PRs Awaiting Review
 
@@ -52,17 +52,15 @@ _None._
 Issues carrying `loom:curated`.
 
 - **#26**: T1 item 1 (design sources): attest the pinned SG13CMOS5L core/amp/startup/top schematics and derived netlists (or migrate them under decision record 0002) *(curated)*
-- **#30**: T1 item 5 (corner verification): 45-point closed-loop benches for the nominal, TC (box and endpoint), PSRR, Iq and startup rows as klt sim envelopes *(curated)*
+- **#31**: T1 item 6 (Monte Carlo): closed-loop vref mismatch MC (N >= 300 per point) as klt yield evidence for the untrimmed-line row *(curated)*
+- **#32**: T1 item 7 (post-layout verification): klt pex re-run of the closed-loop row benches on the extracted bandgap_top *(curated)*
 - **#47**: Run sim/smoke/run_smoke.sh once on a toolchain host and diff record keys after runner-lib refactor *(curated)*
 
 ## Proposed (Architect / Hermit)
 
-- **#61**: Single source for the §PVT corner table: run.sh and check-model-sections.py each hand-copy it *(hermit)*
-- **#64**: Remove fetch-era leftovers from the closed-loop vref runner: dead gh gate, scratch copy, stale DUT wording *(hermit)*
 - **#66**: Remove the unread model_files table from sim/pdk.json: fifth copy of the PVT section list, with a host-dependent column *(hermit)*
 - **#67**: Remove the tautological --regenerated default from attest/make-item2-envelope.py: the item-2 regeneration claim is true by construction *(hermit)*
-- **#70**: Remove template-era .gitignore rules for flow/, cocotb, a sim harness and per-corner logs that this repo does not have *(hermit)*
-- **#71**: Wire package.json test/check:ci to the four sim/tests suites: the Loom-template stubs report 'No tests configured' and exit 0 *(hermit)*
+- **#81**: Remove the vendored manifests/design-evidence-tiers.md: byte-identical to the checklist bundled in the pinned klayout-tools wheel *(hermit)*
 
 ## Epics
 
@@ -79,7 +77,7 @@ _None._
 | In Progress (`loom:building`) | 1 |
 | PRs awaiting review | 0 |
 | Approved PRs awaiting merge | 0 |
-| Curated | 3 |
-| Architect / Hermit proposals | 6 |
+| Curated | 4 |
+| Architect / Hermit proposals | 3 |
 | Active epics | 0 |
 <!-- guide:plan-body:end -->
