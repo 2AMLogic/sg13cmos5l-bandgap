@@ -1,4 +1,4 @@
-sg13cmos5l closed-loop vref bench
+* sg13cmos5l closed-loop vref bench
 * sg13cmos5l-bandgap -- closed-loop vref bench body (issue #14, Part of #5).
 * Template: run.sh substitutes @@VDD@@ and @@WORK@@ and writes the deck to
 * sim/build/closed-loop-vref-pvt/deck.cir. Model `.lib` cards, temperature and
@@ -16,8 +16,18 @@ sg13cmos5l closed-loop vref bench
 * solver's own operating point and settles during the transient; the startup cell
 * in the DUT is what keeps it off the zero state.
 * OSDI objects are loaded through the request's options.osdi_preload (as the smoke bench
-* does), not a .control block: the comment strip below would make `.control` the SPICE
-* title line.
+* does), not a .control block: a .control block here would land inside the deck `klt sim`
+* `.include`s, not in the top deck it generates, so its commands would never run.
+*
+* NO SPICE TITLE LINE (issue #19). `klt sim` writes its own top deck (title
+* `* klt sim -- generated corner deck, do not edit`) and pulls this deck in with
+* `.include`, so line 1 here is NOT in title position -- it is parsed as a netlist
+* element. A bare `sg13cmos5l closed-loop vref bench` title line was read as an
+* S-prefix (voltage-controlled switch) instance with no model, which failed the whole
+* run with "Unable to find definition of model" before any analysis started. Every line
+* of this template is therefore a comment or a card; run.sh also writes its own leading
+* `*` line so the generated deck has an inert line 1 either way. Same convention as
+* sim/smoke/smoke.cir, whose line 1 is a comment.
 
 * rshunt/gmin: convergence aids only, far below any current read here (same values
 * the source closed-loop bench uses).
