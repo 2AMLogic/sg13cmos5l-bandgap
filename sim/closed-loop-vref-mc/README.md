@@ -241,6 +241,13 @@ section on at a time (`envelopes/20261113T130110Z-d384aed.families.json`):
 | resistors (`cornerRES.lib res_stat`, **per instance**) | **18.76 mV** | dominant |
 | all three together | 22.52 mV | — |
 
+**Do not read 18.76 → 22.52 mV as a clean decomposition.** The three single-family
+figures add in quadrature to 18.8 mV, not to the 22.52 mV measured with all three on.
+At N = 100 per campaign the two differ by about **1.8 standard errors**
+(σ/√(2(N−1)) ≈ 1.6 mV on the combined run, 1.3 mV on `res_stat`), so the gap may be
+sampling noise rather than a real cross-family term; this campaign cannot tell the two
+apart. Larger N would be needed to say.
+
 The untrimmed line is **resistor-mismatch dominated**, by more than an order of
 magnitude over the next contributor. That is consistent with the circuit: R1 and R2
 are both `rppd`, and `res_stat` draws them independently, so the R1/R2 ratio that
@@ -291,12 +298,38 @@ that corner-level accuracy is unreachable without a trim.
 untrimmed MC shows a trimmable offset; if it does not, the Trim row falls back to
 'none'."*
 
-It does. The spread is a **static per-die offset** — it comes from a resistor ratio
-drawn once per die, not from drift — so a 1-point trim at 27 °C can remove it, and the
-range it must cover is the untrimmed line: **about ±67 mV (±5.6 %) at 3σ**, ±87 mV if
-sized on the worst point's 3σ. This bench does **not** edit the Trim or trimmed-line
-rows; sizing and ratifying a trim network is separate work with its own decision
-record.
+**A trimmable offset is indicated, not demonstrated**, and this bench does **not**
+edit the Trim or trimmed-line rows.
+
+What this campaign measured:
+
+- The spread is **device-drawn and large**: **about ±67 mV (±5.6 %) at 3σ** pooled,
+  ±87 mV if sized on the worst point's 3σ. That is the range a trim would have to
+  cover.
+- It comes from a **resistor ratio drawn once per die**, not from drift — the
+  `families` attribution puts σ = 18.76 mV on `res_stat` alone.
+- But **per-point σ scales with temperature**, about 1.8× across the range:
+
+  | Supply | −40 °C | 27 °C | 125 °C |
+  |---|---|---|---|
+  | 2.97 V | 15.72 mV | 20.24 mV | 27.34 mV |
+  | 3.30 V | 16.34 mV | 19.80 mV | 28.16 mV |
+  | 3.63 V | 14.99 mV | 21.49 mV | 28.96 mV |
+
+  (σ of `vref_v` per point, N = 300 each, from this bench's `line` envelope.)
+  Growth roughly in proportion to absolute temperature is the signature of a **gain
+  error on the PTAT term** — consistent with the R1/R2 attribution above — not of a
+  temperature-independent offset.
+
+What this campaign did **not** measure: per-die `vref(T)`. `monte_carlo.seed_scope`
+is `point`, so each of the nine points draws its own 300 dice and no sample index is
+the same die at two temperatures. Whether an additive correction set at 27 °C removes
+the spread over −40…125 °C therefore does not follow from these numbers, and in any
+case depends on what a trim network adjusts — none exists here. A campaign sharing
+one seed across the temperature axis would give per-die `vref(T)` directly; that is
+follow-up work, not part of this bench.
+
+Sizing and ratifying a trim network is separate work with its own decision record.
 
 ### One number that is easy to misread
 

@@ -121,11 +121,20 @@ request can set. The spread that *is* measured is dominated by resistor mismatch
 which `cornerRES.lib res_stat` does sample per instance. The row is therefore
 declared `ratified: false` and T1 item 6 grades `partial_coverage`, never `met`.
 
-What it does settle is the **Trim** row's condition — "a trim is ratified only if
-the untrimmed MC shows a trimmable offset". It does: a static per-die offset of
-about ±67 mV (3σ), which a 1-point trim at 27 °C can remove. Still unevidenced:
-the trimmed-line row and the Trim sweep itself, both of which need a trim network
-this design does not have.
+On the **Trim** row's condition — "a trim is ratified only if the untrimmed MC
+shows a trimmable offset" — the result is **indicated, not demonstrated**, and it
+does not edit the row. What is measured: the spread is device-drawn and large
+(±67 mV pooled at 3σ, ±87 mV at the worst point), and it comes from a resistor
+ratio rather than drift. What argues against the simple reading, also measured:
+per-point σ scales with temperature — 15.7/16.3/15.0 mV at −40 °C,
+20.2/19.8/21.5 mV at 27 °C, 27.3/28.2/29.0 mV at 125 °C, by supply, about 1.8×
+across the range — which is the signature of a gain error on the PTAT term rather
+than of a temperature-independent offset. What is *not* measured: the campaign
+uses `seed_scope: point`, so every point draws its own 300 dice and per-die
+`vref(T)` tracking was never sampled. Whether a 1-point trim at 27 °C removes the
+spread over −40…125 °C therefore does not follow from this campaign, and would
+also depend on what a trim network adjusts — none exists. Still unevidenced: the
+trimmed-line row and the Trim sweep itself.
 
 Maturity ladder: tooling resolved → spec ratified → schematic simulated
 across PVT → layout DRC/LVS-clean → post-layout re-verification → shuttle

@@ -221,11 +221,14 @@ Both are committed. Neither stands in for the other.
 - `manifests/sg13cmos5l-bandgap.json` gains `evidence."6"` and
   `spec_rows."6"`; item 6 moves from `unmet` / `no_evidence` to `unmet` /
   `partial_coverage`.
-- The **Trim** row now has the evidence it was made conditional on — "a trim is
-  ratified only if the untrimmed MC shows a trimmable offset" — and §6 records
-  what that evidence says. Acting on it (a trim network, its range and
-  resolution) is a separate issue and a separate record; this one does not edit
-  the Trim or trimmed-line rows.
+- The **Trim** row is **not** edited, and its condition — "a trim is ratified only
+  if the untrimmed MC shows a trimmable offset" — is **not** declared met. §6
+  records what this campaign does and does not show: a trimmable offset is
+  *indicated* (a large, resistor-drawn per-die spread) but *not demonstrated*
+  (per-point σ scales with temperature, and per-die `vref(T)` was never sampled).
+  Acting on it (a trim network, its range and resolution), or measuring per-die
+  `vref(T)` with a temperature-shared seed, is a separate issue and a separate
+  record.
 - Closing the two mechanism gaps — bipolar mismatch, and the `mm_ok` gate — is
   tracked outside this record: the tool half at
   [`klayout-tools#5486`](https://github.com/2AMLogic/klayout-tools/issues/5486),
@@ -266,14 +269,42 @@ settled at every unit; 0 errored, 0 inconclusive across 4180 units). Seed
   (required 1735, drawn 2700, observed half-width ±1.62 pp against the ±2 pp
   declared); status `reported`, because no `target_yield` is declared.
 
-### The Trim row's condition is met
+### The Trim row's condition: indicated, not demonstrated
 
 `target-spec.md` makes the Trim row conditional on "the untrimmed MC showing a
-trimmable offset". It does: the spread is a **static per-die offset** drawn once from
-a resistor ratio, not drift, so a 1-point trim at 27 °C removes it, and the range such
-a trim must cover is the untrimmed line — **about ±67 mV (±5.6 %) at 3σ pooled**,
-±87 mV if sized on the worst point. This record does **not** edit the Trim or
-trimmed-line rows; sizing and ratifying a trim network is separate work.
+trimmable offset". This campaign **indicates** one without demonstrating it, and this
+record does **not** edit the Trim or trimmed-line rows — their status, Target and
+Fallback stay exactly as ratified.
+
+Measured, and pointing toward a trimmable offset: the spread is device-drawn and
+large — **about ±67 mV (±5.6 %) at 3σ pooled**, ±87 mV if sized on the worst point —
+and the attribution puts it on a **resistor ratio** (σ = 18.76 mV from `res_stat`
+alone), i.e. a quantity drawn once per die rather than drift.
+
+Measured, and arguing against the simple reading: per-point σ is not constant over
+temperature. From the `line` envelope (σ of `vref_v`, N = 300 per point):
+
+| Supply | −40 °C | 27 °C | 125 °C |
+|---|---|---|---|
+| 2.97 V | 15.72 mV | 20.24 mV | 27.34 mV |
+| 3.30 V | 16.34 mV | 19.80 mV | 28.16 mV |
+| 3.63 V | 14.99 mV | 21.49 mV | 28.96 mV |
+
+σ grows about 1.8× from −40 °C to 125 °C, roughly in proportion to absolute
+temperature — the signature of a gain error on the PTAT term, not of a
+temperature-independent offset.
+
+Not measured at all: per-die `vref(T)`. `monte_carlo.seed_scope` is `point`, so the
+nine points draw nine independent sets of 300 dice and no sample index tracks one die
+across temperature. "Drawn once per die, therefore removed by a 1-point trim at
+27 °C" is consequently an **inference**, not a result of this campaign — and it rests
+on a campaign that, as §2 records, cannot sample the Q1/Q2/Q3 matching term at all.
+Whether an additive correction set at 27 °C removes the spread over −40…125 °C also
+depends on what the trim network adjusts, and no trim network exists.
+
+A campaign sharing one seed across the temperature axis would measure per-die
+`vref(T)` directly and settle the question. That is optional follow-up work, not a
+condition of this record.
 
 ### One grading outcome is the tool's, not the evidence's
 
