@@ -4,7 +4,8 @@
 * value come from the `klt sim` request (request-grid.json).
 *
 * Same fixture as sim/closed-loop-vref-pvt/vref.cir.tmpl -- a DC supply, vss at 0, and the
-* substrate net `sub!` tied to vss through a 0 V source -- with ONE difference: there is no
+* substrate net `sub!` declared global (`.global sub!`, issue #83 / decision record 0014)
+* and tied to vss through a 0 V source -- with ONE difference: there is no
 * 2 ms transient here. The analysis is a DC sweep of TEMP (`dc temp -40 125 1`, 166 points),
 * so the whole -40...125 C characteristic is solved INSIDE one corner unit and the
 * temperature-coefficient reduction over it is a `klt sim` measurement rather than a
@@ -40,11 +41,22 @@
 * v(xdut.xx3.det).
 
 * rshunt/gmin: convergence aids only, far below any current read here (same values the
-* source closed-loop bench and sim/closed-loop-vref-pvt use).
+* source closed-loop bench and sim/closed-loop-vref-pvt use). They are no longer what
+* resolves the resistor bulk nodes -- the `.global sub!` card below ties those to vss
+* deliberately (decision record 0014); before it, `rshunt` was the only thing holding them.
 .options rshunt=1e9 gmin=1e-9
 
 Vvdd vdd 0 dc @@VDD@@
 Vvss vss 0 dc 0
+* `.global sub!` is what makes the `Vsub` tie below actually reach the DUT (issue #83,
+* decision record 0014). `!` is an xschem global-net marker, not an ngspice one, and the
+* migrated netlist carries no `.global` card of its own, so without this the rppd/rhigh
+* bulk terminals inside `bandgap_core` and `bandgap_startup` are per-instance LOCAL nodes
+* (`xdut.xx1.sub!`, `xdut.xx3.sub!`) -- different nodes from the one `Vsub` drives, with no
+* deliberate DC path and nothing but `.options rshunt` resolving them. With the card there
+* is one `sub!` net at every hierarchy level, so the 0 V source below holds the resistor
+* bulks at vss as this comment and the schematics' `body=sub!` both say it does.
+.global sub!
 Vsub sub! vss dc 0
 
 .include "@@WORK@@/bandgap_top.spice"
