@@ -2,8 +2,8 @@
 
 Simulation environment for the SG13CMOS5L bandgap: the PDK pin, a bring-up smoke bench
 (issue #4, T1 item 9), the five PVT-grid benches that carry T1 item 5's corner
-verification (issue #30), and the statistical Monte Carlo bench behind T1 item 6
-(issue #31).
+verification (issue #30), the statistical Monte Carlo bench behind T1 item 6
+(issue #31), and the post-layout extraction that carries T1 item 7 (issue #32).
 
 | File | Role |
 |---|---|
@@ -18,6 +18,8 @@ verification (issue #30), and the statistical Monte Carlo bench behind T1 item 6
 | `closed-loop-vref-mc/` | The statistical Monte Carlo bench: the untrimmed-line (3σ) row and T1 item 6. Four campaigns — the population, a deterministic zero-spread control, a known-bad 3× control, and a per-family attribution sweep — plus the committed `klt yield` report |
 | `grid-run.sh` | The one runner for all five grids: stages the migrated DUT, renders the deck, submits the committed request to the batch fleet, writes the envelope and the record |
 | `mc-run.sh`, `mc-yield.sh` | The Monte Carlo pair: one campaign to the fleet, then `klt yield-samples` + `klt yield` over two committed envelopes |
+| `pex-bandgap-top/` | T1 item 7 (post-layout verification): the committed `klt pex --extract-only` envelope, the extracted netlist, and the schematic-vs-extracted device inventory. **No delta** — see below |
+| `pex-run.sh`, `tools/pex_device_inventory.py` | The item-7 runner and the offline device-inventory comparator it embeds in each record |
 | `runner-lib.sh`, `tools/cm5_record.py` | Shared by the bench runners: tool/ngspice gates, append-only record path and write, klt-envelope value extraction and grid reduction (record 0008, extended by 0011) |
 | `tools/stat_locality.py` | Measures whether a model section varies a device per instance or globally, by instantiating the same device twice and comparing — the question `klt sim`'s own `family_mismatch` report cannot answer for this PDK |
 | `ENV-DECISION.md` | Why `env.sh` is this repo's own and the OSDI builder is adopted by pin |
@@ -135,7 +137,7 @@ source sim/env.sh && python3 -I sim/tools/stat_locality.py
 
 The consequence — the bipolar matching term cannot be sampled at all, and statistics
 exist only at typ so the process-corner axis collapses — is recorded in
-[`0012`](../spec/decision-records/0012-statistical-mc-sections-and-window.md), and
+[`0013`](../spec/decision-records/0013-statistical-mc-sections-and-window.md), and
 is why the row is declared `ratified: false` under `spec_rows."6"` rather than
 covered. The tool half is filed generically as
 [`klayout-tools#5486`](https://github.com/2AMLogic/klayout-tools/issues/5486).
@@ -227,6 +229,13 @@ is missing (or a symlink dangles), 2 = no models directory. `--models-dir` overr
 
 Offline exit-code test (fake models tree, no PDK needed): `bash sim/tests/test-model-sections.sh`.
 
+`REQUIRED` is the checker's own hand-written list, so `bash sim/tests/test-grid-benches.sh`
+check 8 ties it to the benches: it imports `REQUIRED` from this file and fails unless the
+five grid requests' `corners.process` tables are identical and select exactly those
+(corner file, section) pairs, less the non-corner `cornerPNP.lib` `stat` entry. Editing a
+request's `section` or a `REQUIRED` entry alone is then a test failure, not a silent
+"12/12 required sections found" for sections no bench selects (issue #61).
+
 Finding (**at the pin**, 2026-11-13, issue #15): run against `PDK_ROOT=~/share/pdk`
 delivered by the fleet PDK store, whose `ihp-sg13cmos5l/.pdk-store.json` reports version
 `f7bca32694fe3d58be0cc7d9df4b9f5db7161a14` so `sim/env.sh` accepts it (#21), the tool exits 0
@@ -260,6 +269,43 @@ symlinks (`real_file: false`) into whatever revision its own `ihp-sg13g2` holds,
 `spec/target-spec.md` §PVT still carries its pre-verification caveat ("not verified at the
 `dev` pin") and its unqualified symlink statement; retiring both needs a decision record, so
 it is tracked in #62 rather than edited here.
+
+## Post-layout extraction (T1 item 7): what is committed, and what is not producible
+
+```bash
+source sim/env.sh && sim/pex-run.sh
+```
+
+One `klt pex --extract-only` run of `layout/sg13cmos5l-bandgap_top/sg13cmos5l-bandgap_top.gds`
+at the `klt` 0.8.0 pin, writing three append-only artifacts under `pex-bandgap-top/`
+(`envelopes/`, `extracted/`, `records/`) on the same terms as the grid benches. Item 7 cites
+the envelope; the record quotes `extraction.model` and `body_bias` verbatim and embeds the
+device inventory.
+
+**The schematic-vs-extracted delta item 7 actually wants is not producible**, and the runner
+exits 5 saying so. The curated `sg13cmos5l` extraction deck declares no bipolar device class
+(`klt deck devices --deck sg13cmos5l`: `nfet`, `pfet`, `cap_cmomi`, `cap_cmomf`, `rsil`,
+`rppd`, `rhigh`), so the bandgap core's three `pnpMPA` devices are not recognised and are
+**absent** from the extracted netlist: 17 devices against the design's 20 cards / 27 units,
+every MOS and both poly-resistor flavours matching card-for-card and the entire difference
+being the bipolar. `tools/pex_device_inventory.py` measures that from the two committed
+netlists (no PDK, no klt, no network) and `tests/test-pex-device-inventory.sh` re-derives it
+on every CI run. An extracted leg simulated on that netlist would converge and report
+numbers, so the 45-point grids are deliberately **not** re-run against it.
+
+The device-recognition gap is upstream and already ruled out of scope there
+(klayout-tools#4927: the PDK's own runset recognises `pnpMPA` and `klt lvs` with `"engine":
+"klayout-runset"` in its request is the supported path, but `klt extract`/`klt pex` have no
+engine selector at all). Filed
+as generic friction: [`klayout-tools#5477`](https://github.com/2AMLogic/klayout-tools/issues/5477)
+(no coverage disclosure for a deck's missing device class, and no runset route for
+extraction) and [`#5479`](https://github.com/2AMLogic/klayout-tools/issues/5479) (an
+extraction-only citation renders item 7 `check_failed` with `citation: null`). Full account:
+[`pex-bandgap-top/README.md`](pex-bandgap-top/README.md) and decision record
+[`0012`](../spec/decision-records/0012-post-layout-pex-extraction-gap.md).
+
+Nothing in `pex-bandgap-top/` is simulated: it is **layout-derived** — geometry out of the
+committed GDS, R/C out of the deck's own coefficients.
 
 ## Item 9 attestation
 

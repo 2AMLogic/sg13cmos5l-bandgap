@@ -4,7 +4,8 @@
 against the T1 checklist. Its `evidence` map gains one
 citation per checklist item as artifacts land (item 2: `evidence/item2.json`,
 written by `attest/make-item2-envelope.py`, see `layout/README.md`; item 5: a
-**list** of five `klt sim` envelopes, see below; item 9:
+**list** of five `klt sim` envelopes, see below; item 7: one `klt pex`
+envelope, see below; item 9:
 `evidence/item9.json`, see `attest/README.md`; item 10: `evidence/item10.json`,
 produced from `attest/item10.json`).
 
@@ -43,6 +44,36 @@ manifest to a path no reviewer and no CI run has. What pins these envelopes
 instead is the record beside each one: the deck, template and request sha256s,
 plus the `models_staged` hashes the fleet worker reported back.
 
+## Item 7: one `klt pex` envelope, cited and failing on purpose
+
+Item 7 (post-layout verification) accepts **only** a `klt pex` report. The citation is
+`sim/pex-bandgap-top/envelopes/20261113T123950Z-8422e4d.json`, a
+`klt pex --extract-only` run (klayout-tools#3739, closed in the 0.8.0 pin this record is
+graded at) of the committed top GDS. It grades **`unmet` / `check_failed`**, and that is the
+intended outcome, not an oversight: `--extract-only` has no measurement leg, so `delta` is
+`[]` and `status` is `not_checked`.
+
+The reason there is no delta is measured, not asserted. The curated `sg13cmos5l` extraction
+deck declares no bipolar device class, so the extracted `bandgap_top` netlist holds 17 devices
+against the design's 20 cards / 27 units — the whole difference being the core's three
+`pnpMPA` devices. A delta computed against it would compare two different circuits. Every spec
+row the item-5 benches grade is therefore `insufficient-evidence` **for item 7**; no item-5 row
+and no ratified bound changes. See `sim/pex-bandgap-top/README.md` and decision record
+[`0012`](../spec/decision-records/0012-post-layout-pex-extraction-gap.md).
+
+Citing it rather than leaving item 7 `no_evidence` is deliberate, the same rule `psrr_dc`
+follows under item 5: evidence that exists and does not establish the item is cited and
+reported, never withheld to keep a verdict clean. `klt signoff` reports `citation: null` on
+this verdict and gives it the same `check_failed` reason a delta run that ran and failed would
+get — a reporting gap filed as
+[`klayout-tools#5479`](https://github.com/2AMLogic/klayout-tools/issues/5479).
+
+No `content_hash` is pinned on the item-7 citation, for the same reason item 5's are not. What
+pins it is the record beside it (`sim/pex-bandgap-top/records/`), which carries the layout,
+extracted-netlist and schematic-DUT sha256s plus the device inventory, and
+`sim/tests/test-pex-device-inventory.sh` re-derives that inventory from the committed netlists
+on every CI run (it is inventoried under item 10).
+
 - `design-evidence-tiers.md` is the checklist, vendored byte-identical from
   `2AMLogic/klayout-tools` `docs/design-evidence-tiers.md` at commit
   `44cc42323184` (git blob `2f7f69825f8c`).
@@ -55,7 +86,7 @@ Item 6 (statistical claims carry Monte Carlo evidence) cites the `klt yield` rep
 of `sim/closed-loop-vref-mc` and declares the full statistical row set under
 `spec_rows.6`. Which rows are statistical, and why the others are not, is accounted
 for row by row in
-[`0012`](../spec/decision-records/0012-statistical-mc-sections-and-window.md) §4.
+[`0013`](../spec/decision-records/0013-statistical-mc-sections-and-window.md) §4.
 
 | Row | Declared |
 |---|---|

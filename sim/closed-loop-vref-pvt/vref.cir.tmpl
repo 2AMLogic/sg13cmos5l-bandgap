@@ -4,12 +4,12 @@
 * sim/build/closed-loop-vref-pvt/deck.cir. Model `.lib` cards, temperature and
 * (for the 45-point request) the supply value come from the `klt sim` request.
 *
-* The DUT is NOT in this repo. run.sh fetches design/sg13cmos5l/netlist/bandgap_top.spice
-* from the commit pinned in reuse.lock.json and appends it below as
-* sim/build/closed-loop-vref-pvt/bandgap_top.spice with only its final `.end`
-* card removed (so this deck's own end card is the only one). The fetched file is a
-* flattened xschem export: bare instance lines Xx1 (core), Xx2 (amp), Xx3 (startup)
-* on nets vdd vss vref fb sns1 sns2, then the three .subckt definitions.
+* The DUT is the in-repo netlist design/sg13cmos5l/netlist/bandgap_top.spice, migrated
+* byte-for-byte from the commit pinned in reuse.lock.json (decision record 0006). run.sh
+* stages it below as sim/build/closed-loop-vref-pvt/bandgap_top.spice with only its final
+* `.end` card removed (so this deck's own end card is the only one); nothing else is edited.
+* The netlist is a flattened xschem export: bare instance lines Xx1 (core), Xx2 (amp),
+* Xx3 (startup) on nets vdd vss vref fb sns1 sns2, then the three .subckt definitions.
 *
 * Fixture: a DC supply, vss at 0, and the substrate net `sub!` (the rppd/rhigh bulk
 * net in the source) tied to vss through a 0 V source. The loop starts from the

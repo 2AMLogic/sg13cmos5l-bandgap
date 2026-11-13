@@ -39,6 +39,13 @@
       ]
     },
     {
+      "name": "pex-device-inventory-test",
+      "argv": [
+        "bash",
+        "sim/tests/test-pex-device-inventory.sh"
+      ]
+    },
+    {
       "name": "mc-bench-consistency-test",
       "argv": [
         "bash",

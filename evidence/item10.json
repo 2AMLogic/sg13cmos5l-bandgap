@@ -3,14 +3,14 @@
   "kind": "generic",
   "status": "pass",
   "t1_item": 10,
-  "summary": "T1 item 10 (Repo hygiene): 10/10 attestation checks passed (klt signoff --attest)",
+  "summary": "T1 item 10 (Repo hygiene): 11/11 attestation checks passed (klt signoff --attest)",
   "source": "attest/item10.json",
   "attestation": {
     "producer": "klt signoff --attest",
     "inventory_schema_version": 1,
     "hash_algorithm": "sha256-raw-bytes",
-    "check_count": 10,
-    "passed_count": 10,
+    "check_count": 11,
+    "passed_count": 11,
     "checks": [
       {
         "check": "present",
@@ -31,21 +31,21 @@
         "role": "hygiene",
         "path": "README.md",
         "passed": true,
-        "content_hash": "sha256:5ae0e391b62de8593a8d49840374989659e0db0ac5f521e2235e2ade924a4408"
+        "content_hash": "sha256:7d3501f63fb73cbb3692f4ae2828a50838fe814511c0367b3da2ec4aa430adf4"
       },
       {
         "check": "present",
         "role": "hygiene",
         "path": "manifests/README.md",
         "passed": true,
-        "content_hash": "sha256:fdd99c81585c934001ecd768fc86aa1c692d194d6e620e8826b70f7f3b65501c"
+        "content_hash": "sha256:0dbda2ea90bf7baa3e2c3010dad38000b978da48d59b70633c8a9a9778800141"
       },
       {
         "check": "present",
         "role": "hygiene",
         "path": "spec/target-spec.md",
         "passed": true,
-        "content_hash": "sha256:1af11d2ab9bade318cafcf68d2c392c972e4ce0bfb82c616805d661444fe2138"
+        "content_hash": "sha256:7df9370d5df1f12d74c6487f319001b6b6d2a3f8f828762021e7d27899f8ab87"
       },
       {
         "check": "command",
@@ -98,6 +98,18 @@
       {
         "check": "command",
         "role": "audit",
+        "name": "pex-device-inventory-test",
+        "argv": [
+          "bash",
+          "sim/tests/test-pex-device-inventory.sh"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true
+      },
+      {
+        "check": "command",
+        "role": "audit",
         "name": "mc-bench-consistency-test",
         "argv": [
           "bash",
@@ -119,7 +131,7 @@
         "path": "attest/item10.json",
         "scope": "repo"
       },
-      "content_hash": "sha256:4733f661b48bb92dab75e332efe310aae37d3bb3d32c987dee715c4e7b8a9303"
+      "content_hash": "sha256:25116abcff52c27d41762cc364d8372508a0f055516a5409544d8f41622127da"
     }
   }
 }

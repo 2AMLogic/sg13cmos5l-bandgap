@@ -48,7 +48,7 @@ binding conditions, and its envelope grades the row at each point; added by
 controls, and measures the row's quantity — but by a mechanism the PDK only
 partly provides, so the figure is evidence and not coverage of the row as
 ratified; added by
-[`0012`](decision-records/0012-statistical-mc-sections-and-window.md));
+[`0013`](decision-records/0013-statistical-mc-sections-and-window.md));
 `insufficient-evidence` (the row depends on capacitor corner or mismatch
 spread, which the MoM models do not carry).
 
@@ -63,9 +63,9 @@ decks, which T1 items 2, 3 and 4 grade, not corner verification.
 | Row | Row id | Binding conditions | Planned testbench | Monte Carlo | Status |
 |---|---|---|---|---|---|
 | Output reference, nominal | `vref_nominal` | typ pnpMPA/MOS/res sections, 27 °C, 3.30 V; closed loop with the real amplifier | closed-loop `vref` PVT (`sim/closed-loop-vref-pvt`) | no | `measured, PVT grid` ([`0011`](decision-records/0011-corner-verification-pvt-grids.md)), on top of `measured, single corner` ([`0009`](decision-records/0009-output-reference-nominal-first-measured.md)). The row's binding condition is the single typ/27 °C/3.30 V point, where **SIMULATED** `vref` = **1.19696 V** (testbench `sim/closed-loop-vref-pvt/vref.cir.tmpl`, record `sim/closed-loop-vref-pvt/records/20261113T100202Z-4bfcd8b.json`, ngspice-47, PDK `f7bca32`, `psp103`+`r3_cmc` OSDI; closed loop with the real amplifier, settled: \|vref(2.0 ms) − vref(1.5 ms)\| = 0 V < 1 mV). The whole 45-point grid has now run as well (envelope `sim/closed-loop-vref-pvt/envelopes/20261113T111044Z-3830083.json`, 45/45 pass): `vref` spans **1.18874 V** (`wcs`/2.97 V/125 °C) **… 1.20039 V** (`bcs`/3.63 V/−40 °C), and the bound graded at every point is this bench's own settle criterion (worst 1.03e-8 V < 1 mV), ratified for this bench by [`0009`](decision-records/0009-output-reference-nominal-first-measured.md), because the row's ratified target is the TC-null point — a method, not a number. So this row has **no numeric accuracy target to be graded against**; what the grid establishes is the row's own measured quantity at every point, settled. That is why it stays a covered row rather than a declared gap like `supply`, whose measurement would be the supply value the request itself sets ([`0011`](decision-records/0011-corner-verification-pvt-grids.md) §2). **Not** the TC-null nominal: that needs the temperature sweep of the Temp-coefficient row's bench. The grid span is **not** the ratified untrimmed line, which is a 3σ mismatch figure (next row). Supersedes the source open-loop `vref` 1.2049 V as this row's reference point. |
-| Output reference, untrimmed line (3σ) | `vref_untrimmed_line_3sigma` | All 5 process corners × −40/27/125 °C × 2.97/3.30/3.63 V; mismatch MC at each corner point | closed-loop `vref` statistical MC (`sim/closed-loop-vref-mc`) | yes, N ≥ 300/point, seeded, with a zero-spread negative control | **`measured, partial mechanism`** ([`0012`](decision-records/0012-statistical-mc-sections-and-window.md)), superseding `target-only`. 9 points × 300 draws = 2700 samples, seed 20261113, settled at every unit (envelope `sim/closed-loop-vref-mc/envelopes/20261113T130628Z-e882c25.line.json`; `klt yield` report `sim/closed-loop-vref-mc/yield/20261113T130628Z-e882c25.line.yield.json`). **SIMULATED**: mean `vref` = **1.19485 V**, σ = **22.272 mV**, so the untrimmed line is **mean ± 3σ = [1.12803 V, 1.26166 V]**, i.e. **±5.59 %** — about **11×** the 11.65 mV deterministic §PVT corner envelope of the row above. Normality is *rejected* (Anderson–Darling A² = 3.05 vs 0.787), so the empirical 0.135/99.865 percentiles 1.12260 V / 1.27082 V are quoted beside the parametric window. Spread is **resistor-mismatch dominated**: σ = 18.76 mV from `cornerRES.lib res_stat` alone against 1.443 mV (`pnpMPA`, global) and 0.031 mV (HV MOS, global). Controls: the deterministic zero-spread run reports σ exactly 0.0 at all nine points and reproduces the item-5 grid value at each, including 1.19696 V at typ/3.300 V/27 °C; the known-bad 3×-sigma run grades `detected`. **This is NOT the full device-mismatch MC the Target names, and the figure is NOT a ratified number.** `pnpMPA` has no per-instance mismatch model in this PDK, so the Q1/Q2/Q3 matching term — the dominant untrimmed-offset term of any bandgap — is not sampled; the MOS `*_mismatch` sections are gated on an instance parameter no `klt sim` request can set; and statistical sections exist only at typ, so the process-corner axis collapses. The row is declared `ratified: false` under `spec_rows."6"` and item 6 grades `partial_coverage`, never `met`. No Target, Fallback or Stretch value is edited by this measurement. |
+| Output reference, untrimmed line (3σ) | `vref_untrimmed_line_3sigma` | All 5 process corners × −40/27/125 °C × 2.97/3.30/3.63 V; mismatch MC at each corner point | closed-loop `vref` statistical MC (`sim/closed-loop-vref-mc`) | yes, N ≥ 300/point, seeded, with a zero-spread negative control | **`measured, partial mechanism`** ([`0013`](decision-records/0013-statistical-mc-sections-and-window.md)), superseding `target-only`. 9 points × 300 draws = 2700 samples, seed 20261113, settled at every unit (envelope `sim/closed-loop-vref-mc/envelopes/20261113T130628Z-e882c25.line.json`; `klt yield` report `sim/closed-loop-vref-mc/yield/20261113T130628Z-e882c25.line.yield.json`). **SIMULATED**: mean `vref` = **1.19485 V**, σ = **22.272 mV**, so the untrimmed line is **mean ± 3σ = [1.12803 V, 1.26166 V]**, i.e. **±5.59 %** — about **11×** the 11.65 mV deterministic §PVT corner envelope of the row above. Normality is *rejected* (Anderson–Darling A² = 3.05 vs 0.787), so the empirical 0.135/99.865 percentiles 1.12260 V / 1.27082 V are quoted beside the parametric window. Spread is **resistor-mismatch dominated**: σ = 18.76 mV from `cornerRES.lib res_stat` alone against 1.443 mV (`pnpMPA`, global) and 0.031 mV (HV MOS, global). Controls: the deterministic zero-spread run reports σ exactly 0.0 at all nine points and reproduces the item-5 grid value at each, including 1.19696 V at typ/3.300 V/27 °C; the known-bad 3×-sigma run grades `detected`. **This is NOT the full device-mismatch MC the Target names, and the figure is NOT a ratified number.** `pnpMPA` has no per-instance mismatch model in this PDK, so the Q1/Q2/Q3 matching term — the dominant untrimmed-offset term of any bandgap — is not sampled; the MOS `*_mismatch` sections are gated on an instance parameter no `klt sim` request can set; and statistical sections exist only at typ, so the process-corner axis collapses. The row is declared `ratified: false` under `spec_rows."6"` and item 6 grades `partial_coverage`, never `met`. No Target, Fallback or Stretch value is edited by this measurement. |
 | Output reference, trimmed line | `vref_trimmed_line` | As above, after a modelled 1-point trim at 27 °C; spread measured over −40…125 °C | trim-domain MC (new, after the trim network exists) | yes | `target-only`. Not stated as a number until measured. |
-| Trim | `trim` | 27 °C, all corners and supplies; monotonic; range covers the worst per-die offset from the untrimmed MC | trim-coverage sweep (new, after the trim network exists) | no | `target-only`. A trim is ratified only if the untrimmed MC shows a trimmable offset; if it does not, the Trim row falls back to "none". That condition is now **answered** by [`0012`](decision-records/0012-statistical-mc-sections-and-window.md) §6 — the untrimmed spread is a static per-die offset, so trimmable, needing roughly ±67 mV of range at 3σ — but nothing here is ratified and no trim network exists to sweep, so the row's status, Target and Fallback are unchanged. |
+| Trim | `trim` | 27 °C, all corners and supplies; monotonic; range covers the worst per-die offset from the untrimmed MC | trim-coverage sweep (new, after the trim network exists) | no | `target-only`. A trim is ratified only if the untrimmed MC shows a trimmable offset; if it does not, the Trim row falls back to "none". That condition is now **answered** by [`0013`](decision-records/0013-statistical-mc-sections-and-window.md) §6 — the untrimmed spread is a static per-die offset, so trimmable, needing roughly ±67 mV of range at 3σ — but nothing here is ratified and no trim network exists to sweep, so the row's status, Target and Fallback are unchanged. |
 | Temp coefficient | `tc_endpoint`, `tc_box` | −40…125 °C; endpoint method **and** box method both reported; all 5 corners × 3 supplies; closed loop | closed-loop `vref` PVT with 166 temperature points (`sim/closed-loop-vref-pvt-boxtc`) | no | `measured, PVT grid` ([`0011`](decision-records/0011-corner-verification-pvt-grids.md)). 15 units (5 corners × 3 supplies), each a 166-point DC sweep of `TEMP` over −40…125 °C, so both methods reduce inside the unit; envelope `sim/closed-loop-vref-pvt-boxtc/envelopes/20261113T115709Z-0be5a53.json`, 15/15 pass **against the ratified Target bound** (< 50 ppm/°C). **SIMULATED** worst case: box **39.186 ppm/°C**, endpoint **38.758 ppm/°C**, both at `bcs`/3.63 V. Target (< 50) **met**, and so the Fallback (< 100) too; Stretch (< 20) not met. Base-current error term of `pnpMPA` (`bf ≈ 1.10`) is a named line item and is inside both figures. |
 | PSRR @ DC | `psrr_dc` | DC, all 5 corners × −40/27/125 °C × 3 supplies; closed loop | closed-loop PSRR (`sim/closed-loop-psrr`) | no | `measured, PVT grid` ([`0011`](decision-records/0011-corner-verification-pvt-grids.md)). 45 points, two DC operating points per point and a 0.1 V supply secant; envelope `sim/closed-loop-psrr/envelopes/20261113T115930Z-0be5a53.json`, graded **against the ratified Target bound** (> 60 dB): **21/45 pass, 24/45 FAIL**. The failing points are every one of the 15 at 2.97 V and 9 of the 15 at 3.30 V; none of the 15 at 3.63 V fails. **SIMULATED** worst case **55.249 dB** at `wcs`/2.97 V/125 °C, best 68.330 dB at `bcs`/3.63 V/27 °C. **Target (> 60 dB) NOT met at more than half the grid**; Fallback (> 50 dB) met at all 45, reported but not graded; Stretch (> 70 dB) not met. This row is therefore a **failed row** of T1 item 5 (`failed_rows: ["psrr_dc"]`), which is what the evidence says: the miss is recorded, not accommodated, and no bound is edited. DC only: no frequency point is specified, and none is simulated. Any future frequency point would depend on MoM/MOS capacitor values and be `insufficient-evidence` until a sensitivity sweep exists. |
 | Supply | `supply` | 2.97 / 3.30 / 3.63 V on HV devices; the 1.2 V LV stretch needs an LV-flavour re-derivation of the core and amplifier | every bench above, run on the same supply grid | no | Target met **by construction** (HV device rating, inherited), not by a result. Stretch: `target-only`. Every one of the five item-5 envelopes did run this exact supply axis, so the grid exercised the ratified window; the row is nonetheless declared a **gap** under `spec_rows.5` in `manifests/sg13cmos5l-bandgap.json`, because asserting coverage from a supply value the request itself set would be circular. |
@@ -127,7 +127,7 @@ content between the two trees, so live symlinks on a store-provisioned host
 would silently resolve the SG13CMOS5L models to v0.3.0 content.
 
 The Monte Carlo mismatch-section choice is **settled** by
-[`0012`](decision-records/0012-statistical-mc-sections-and-window.md) (issue
+[`0013`](decision-records/0013-statistical-mc-sections-and-window.md) (issue
 #31), which this paragraph's earlier deferral left to the bench. The candidates
 all exist at the pin — `cornerMOShv.lib` `mos_tt_stat` and `mos_*_mismatch`,
 `cornerRES.lib` `res_stat`, `res_stat_mismatch` and `res_*_mismatch` — and
@@ -157,7 +157,7 @@ selecting statistics *replaces* the process label rather than qualifying it and
 the five process labels collapse to one statistical point. The Monte Carlo grid
 is therefore the ratified supply and temperature axes in full and no process
 axis — a declared shortfall against T1 item 6's "combined with (not instead of)
-process corners", recorded as such in `0012` §2 rather than worked around.
+process corners", recorded as such in `0013` §2 rather than worked around.
 
 **Capacitor rows that cannot be cornered:** MoM (`cap_cmomf`, `cap_cmomi`)
 carries no corner or mismatch spread. Rows whose evidence depends on a MoM
@@ -192,9 +192,13 @@ on 2026-10-17 and re-read on 2026-11-13:
 - #3134: no published CMOS5L batch image (same gate) — **closed, not
   planned**: `remote` has no CMOS5L image, so `batch` is the only off-host route
 - #3094: poly resistors in the CMOS5L deck assume coincident GatPoly/PolyRes
-  (gates LVS of every `rppd` cell)
+  (gated LVS of every `rppd` cell) — **closed, completed**; `rppd` and `rhigh`
+  now extract, confirmed by the item-7 extraction run below (both flavours
+  card-for-card against the schematic)
 - #3739: `klt pex` needs a testbench or measure command to produce an
-  extraction-only report (gates post-layout re-verification)
+  extraction-only report (gated post-layout re-verification) — **closed,
+  completed** in `klt` 0.8.0, the pin this repo grades at; it is what
+  `sim/pex-bandgap-top/` is produced with
 - #5457: a `klt sim` request that selects corners with per-section corner
   libraries has no `models.lib`, so nothing in a batch report can attest the
   models the runner executed (filed while running the item-5 grids). Compounded
@@ -202,11 +206,42 @@ on 2026-10-17 and re-read on 2026-11-13:
   (#5321, #5318). Worked around in this repo with
   `options.stage_model_inputs` (`sim/README.md` → "What the fleet runner cannot
   prove"), which leaves the OSDI binaries unbound.
+- #4927: the curated `sg13cmos5l` deck recognises no `pnpMPA`, so it extracts
+  zero devices from the PDK's own `pnpMPA` testcase — **closed, completed**: the
+  supported path for an LVS *match* is `klt lvs` with `"engine":
+  "klayout-runset"` in its request, against the install's own `sg13cmos5l.lvs`;
+  porting the PDK's Ruby `CustomBJTExtractor` into the curated deck was ruled
+  out of scope (as for the sibling family's HBTs, #1232). This discharges the
+  standing note this section used to carry — that bipolar recognition was a gap
+  with no matching upstream issue found, to be filed or confirmed when the first
+  layout issue ran it.
+- #5477: `klt extract`/`klt pex` have no engine selector at all, so the runset
+  route #4927 documents cannot produce an extracted **netlist**, and an
+  extraction whose deck has no class for a drawn device family omits it with no
+  coverage disclosure (`klt drc` publishes `coverage.rules_skipped`; extraction
+  publishes no counterpart). Filed while running item 7. **This is what gates
+  item 7**: the extracted `bandgap_top` netlist is missing all three `pnpMPA`
+  devices, so no schematic-vs-extracted delta can be computed —
+  [`0012`](decision-records/0012-post-layout-pex-extraction-gap.md),
+  `sim/pex-bandgap-top/`.
+- #5479: an `--extract-only` `klt pex` citation renders T1 item 7 `unmet` /
+  `check_failed` with `citation: null`, indistinguishable from a delta run that
+  ran and failed. Filed while citing item 7.
 
-Not claimed: that this list is complete. Bipolar (`pnpMPA`) recognition in the
-CMOS5L LVS deck is a gap the source documents but this plan did not find a
-matching open klayout-tools issue for; it is filed or confirmed when the first
-layout issue runs LVS.
+Not claimed: that this list is complete.
+
+**Post-layout verification (T1 item 7), as of 2026-11-13.** The extraction half
+is committed and reproducible — `sim/pex-bandgap-top/` carries a `klt pex
+--extract-only` envelope for the committed top stream at the `klt` 0.8.0 pin,
+with `extraction.model` and `body_bias` (`"biased"`, 0 unbiased device bodies)
+quoted into its record. The **per-row delta is not producible**: the extracted
+netlist holds 17 devices against the design's 20 cards / 27 units, the whole
+difference being the core's three `pnpMPA` devices (#5477 above), measured by
+`sim/tools/pex_device_inventory.py` rather than asserted. Every row the item-5
+grids grade is therefore `insufficient-evidence` **for item 7**; their item-5
+evidence and every ratified bound in the table above are unaffected, and no row
+is relaxed. See
+[`0012`](decision-records/0012-post-layout-pex-extraction-gap.md).
 
 ## Open questions, status after this spec
 

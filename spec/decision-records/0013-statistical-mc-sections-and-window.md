@@ -1,8 +1,27 @@
-# 0012: The statistical Monte Carlo bench — which model sections, which window, and what the untrimmed-line row may be read as
+# 0013: The statistical Monte Carlo bench — which model sections, which window, and what the untrimmed-line row may be read as
 
 - **Status**: ratified, effective when the PR for issue #31 merges
 - **Date**: 2026-11-13
 - **Decided by**: Loom Builder agent, issue #31
+
+> **Numbering note.** This record was written as `0012` on the issue #31 branch,
+> before [`0012`](0012-post-layout-pex-extraction-gap.md) (issue #32, post-layout
+> PEX extraction gap) merged to `main` and took that number. It was renumbered to
+> `0013` when the two branches merged.
+>
+> The renumber was applied to this record and to the **living documents** that
+> cite it (`README.md`, `manifests/README.md`, `manifests/sg13cmos5l-bandgap.json`,
+> `sim/README.md`, `sim/closed-loop-vref-mc/README.md`, `spec/target-spec.md`).
+>
+> It was deliberately **not** applied inside `sim/closed-loop-vref-mc/`'s campaign
+> artifacts — `bench.json`, `request-mc-line.json`, `request-mc-families.json`,
+> `yield-limits.json`, `records/*.json` — which still read "decision record 0012"
+> and mean *this* record. Those bytes are either append-only evidence or inputs
+> whose sha256 is recorded inside that evidence (`request_sha256` in each
+> `records/*.json`, the `limits` hash in the yield record), so editing them would
+> make a committed record describe bytes that were never simulated. `CLAUDE.md`'s
+> rule that `sim/` results are append-only evidence is the reason the prose there
+> is frozen at the number the campaign ran under.
 
 ## Context
 
