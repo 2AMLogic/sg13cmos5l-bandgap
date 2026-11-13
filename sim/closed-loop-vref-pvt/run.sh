@@ -23,35 +23,16 @@ source "${SIM_DIR}/env.sh" || { echo "${TAG}: sim/env.sh refused; see the error 
 
 # shellcheck source=../runner-lib.sh
 source "${SIM_DIR}/runner-lib.sh"
-cm5_gate "${TAG}" ngspice klt python3 sha256sum gh git
+cm5_gate "${TAG}" ngspice klt python3 sha256sum git
 # psp103 for the MOS devices; r3_cmc for rppd/rhigh (sim/pdk.json lists it as built by the OSDI step).
 cm5_osdi_gate "${TAG}" psp103 r3_cmc
 
-# ---- pinned source: repo and commit from reuse.lock.json (first non-block `pin` source) ----
-read -r SRC_REPO SRC_COMMIT < <(python3 -I - "${REPO_DIR}/reuse.lock.json" <<'PY'
-import json, re, sys
-for s in json.load(open(sys.argv[1]))["sources"]:
-    if s.get("mode") == "pin" and "block" not in s:
-        if not re.fullmatch(r"[0-9a-f]{40}", s["commit"]):
-            sys.exit("reuse.lock.json commit is not a 40-hex sha: %r" % s["commit"])
-        print(s["repo"], s["commit"]); break
-else:
-    sys.exit("reuse.lock.json has no pinned design source")
-PY
-) || { echo "${TAG}: cannot read the pinned source from reuse.lock.json." >&2; exit 6; }
+cm5_pinned_source "${TAG}" "${REPO_DIR}"
 
 WORK="${SIM_DIR}/build/closed-loop-vref-pvt"
 rm -rf "${WORK}"; mkdir -p "${WORK}"
 
-SRC_PATH="design/sg13cmos5l/netlist/bandgap_top.spice"
-# Migrated byte-for-byte from ${SRC_REPO}@${SRC_COMMIT} (decision record 0006): read the in-repo copy.
-[[ -f "${REPO_DIR}/${SRC_PATH}" ]] \
-  || { echo "${TAG}: SOURCE_MISSING ${SRC_PATH} is not in this tree (decision record 0006)." >&2; exit 6; }
-cp "${REPO_DIR}/${SRC_PATH}" "${WORK}/bandgap_top.fetched.spice"
-grep -q '^\.subckt bandgap_core ' "${WORK}/bandgap_top.fetched.spice" \
-  || { echo "${TAG}: fetched ${SRC_PATH} has no 'bandgap_core' subckt; not the expected netlist." >&2; exit 6; }
-# Only transformation of the DUT: drop the final `.end` card. Nothing else is edited.
-grep -v -x '\.end' "${WORK}/bandgap_top.fetched.spice" > "${WORK}/bandgap_top.spice"
+cm5_stage_dut "${TAG}" "${REPO_DIR}" "${WORK}"
 
 DECK="${WORK}/deck.cir"
 # Line 1 is a generated `*` comment on purpose (issue #19): `klt sim` `.include`s this deck
@@ -89,11 +70,11 @@ KLT_RC=0
 klt sim --backend local --format json -o "${WORK}/out" "${WORK}/request.json" > "${WORK}/envelope.json" 2>"${WORK}/klt.err" || KLT_RC=$?
 
 set +e
-python3 -I - "${WORK}/envelope.json" "${REC}" "${DECK}" "${BENCH_DIR}/vref.cir.tmpl" "${WORK}/bandgap_top.fetched.spice" \
+python3 -I - "${WORK}/envelope.json" "${REC}" "${DECK}" "${BENCH_DIR}/vref.cir.tmpl" "${CM5_DUT_FETCHED}" \
   "${NGSPICE_VERSION}" "${CM5_PDK_REVISION}" "${SHA}" "${STAMP}" "${SIM_DIR}/pdk.json" \
   "${SRC_REPO}" "${SRC_COMMIT}" "${KLT_RC}" "${WORK}/klt.err" "${SIM_DIR}/tools" <<'PY'
 import json, sys
-(env_p, rec_p, deck_p, tmpl_p, fetched_p, ngspice, pdk_rev, sha, stamp, pin_p,
+(env_p, rec_p, deck_p, tmpl_p, dut_p, ngspice, pdk_rev, sha, stamp, pin_p,
  src_repo, src_commit, klt_rc, klt_err_p, tools_dir) = sys.argv[1:]
 sys.path.insert(0, tools_dir)
 from cm5_record import collect, klt_version as get_klt_version, sha256, write_record
@@ -130,7 +111,7 @@ record = {
     "source_repo": src_repo,
     "source_commit": src_commit,
     "source_path": "design/sg13cmos5l/netlist/bandgap_top.spice",
-    "source_file_sha256": sha256(fetched_p),
+    "source_file_sha256": sha256(dut_p),
     "simulator": {"ngspice": ngspice, "klt": klt_version, "backend": "local"},
     "deck_sha256": sha256(deck_p),
     "template_sha256": sha256(tmpl_p),
