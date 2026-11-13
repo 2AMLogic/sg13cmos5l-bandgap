@@ -57,7 +57,31 @@ forbid a local grid and the batch backends refuse `ihp-sg13cmos5l` until klayout
 `options.osdi_preload` paths (written by `run.sh` from `CM5_OSDI_DIR`, as the smoke bench does; no
 `.control` block in the deck) are host-local, so a batch run needs both addressed first.
 
-## Not verified here
+## First run (issue #19)
 
-This bench was written on a host without the pinned PDK or OSDI objects, so `run.sh` has not been
-executed; only the request file and shell syntax were checked. The first record is still owed.
+Run on a fleet host whose `~/share/pdk` carries the pinned PDK through the fleet PDK store
+(`.pdk-store.json` version `f7bca32…`), ngspice-47, all six OSDI objects built:
+
+**`vref` = 1.19696 V, SIMULATED, typ / 27 °C / 3.30 V, closed loop**, settled
+(`|vref(2.0 ms) − vref(1.5 ms)|` = 0 V < 1 mV). Record
+`records/20261113T100202Z-4bfcd8b.json`; the figure moved the "Output reference, nominal" row of
+`spec/target-spec.md` off `target-only` (decision record 0009). It is the 27 °C/3.30 V typ point,
+**not** the TC-null nominal.
+
+`records/` is append-only and holds three records from that session:
+
+| Record | Status | What it shows |
+|---|---|---|
+| `20261113T095937Z-4bfcd8b.json` | `failed` | The pre-fix run. `klt sim` `.include`s this bench's deck into a top deck of its own, so the deck's former SPICE title line was parsed as an `S`-prefix switch instance with no model: `ngspice_fatal` "Unable to find definition of model", `analysis_started: false`. Its `template_sha256` is the pre-fix template. Fixed in the same change (0009) by removing the title line. |
+| `20261113T100202Z-4bfcd8b.json` | `ok` | First measured `vref`, the figure cited in the spec row. |
+| `20261113T100302Z-4bfcd8b.json` | `ok` | A re-run, same `vref` to all recorded digits: the measurement is reproducible, and the prior records were byte-identical afterwards. |
+
+**A second run appends, it does not exit 4.** `cm5_record_path`'s append-only guard keys on
+`<UTC second>-<short sha>.json`, so exit 4 only fires on a same-second, same-commit collision;
+any later run writes a new record and exits 0 (or 5). Existing records are never overwritten.
+
+Still un-run: the 45-point grid and the mismatch MC (see above). Observed but not acted on here:
+ngspice warns `Unknown model type pspnqs103va - ignored` for the `*_psp_rf` model variants the
+PDK's `sg13g2_moshv_mod.lib` defines, because this bench preloads `psp103.osdi` and `r3_cmc.osdi`
+but not `psp103_nqs.osdi`. No device in the DUT instantiates an RF variant, so the warnings are
+inert; a bench that needs one must add that preload.

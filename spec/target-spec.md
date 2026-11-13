@@ -1,9 +1,13 @@
 # Target specification
 
 Ratified by [`0001`](decision-records/0001-target-spec-ratification.md).
-Every row is a **target**, not a result. No SG13CMOS5L accuracy bench exists
-yet in this repo, so every row below is `target-only` or inherits its status
-from a bench named in the last column.
+Every row is a **target**, not a result. One SG13CMOS5L accuracy bench has now
+run (`sim/closed-loop-vref-pvt`, one corner — see the "Output reference,
+nominal" row and
+[`0009`](decision-records/0009-output-reference-nominal-first-measured.md));
+every other row below is `target-only` or inherits its status from a bench
+named in the last column. A measured figure recorded against a row is
+evidence, never a newly ratified target number.
 
 ## Table (same as `README.md`)
 
@@ -28,13 +32,16 @@ transfer to `pnpMPA`).
 ## Rows in detail
 
 Status values: `target-only` (no bench exists); `partial` (a bench exists but
-does not cover the row's binding conditions); `insufficient-evidence` (the row
-depends on capacitor corner or mismatch spread, which the MoM models do not
-carry).
+does not cover the row's binding conditions); `measured, single corner` (a
+bench exists, has run, and covers the row's binding conditions, at one corner
+only — not a claim about the PVT grid; added by
+[`0009`](decision-records/0009-output-reference-nominal-first-measured.md));
+`insufficient-evidence` (the row depends on capacitor corner or mismatch
+spread, which the MoM models do not carry).
 
 | Row | Binding conditions | Planned testbench | Monte Carlo | Status |
 |---|---|---|---|---|
-| Output reference, nominal | typ pnpMPA/MOS/res sections, 27 °C, 3.30 V; closed loop with the real amplifier | closed-loop `vref` PVT (new: `sim/closed-loop-vref-pvt`) | no | `target-only`. Source has open-loop `vref` 1.2049 V (typ/27 °C/3.30 V) and one closed-loop startup point; neither is the TC-null nominal. |
+| Output reference, nominal | typ pnpMPA/MOS/res sections, 27 °C, 3.30 V; closed loop with the real amplifier | closed-loop `vref` PVT (`sim/closed-loop-vref-pvt`) | no | `measured, single corner` ([`0009`](decision-records/0009-output-reference-nominal-first-measured.md)). **SIMULATED** `vref` = **1.19696 V**, typ/27 °C/3.30 V, closed loop with the real amplifier; testbench `sim/closed-loop-vref-pvt/vref.cir.tmpl`, record `sim/closed-loop-vref-pvt/records/20261113T100202Z-4bfcd8b.json` (ngspice-47, PDK `f7bca32`, `psp103`+`r3_cmc` OSDI), settled: \|vref(2.0 ms) − vref(1.5 ms)\| = 0 V < 1 mV. **Not** the TC-null nominal — that needs the temperature sweep of the Temp-coefficient row's bench, still `target-only`. Supersedes the source open-loop `vref` 1.2049 V as this row's reference point. |
 | Output reference, untrimmed line (3σ) | All 5 process corners × −40/27/125 °C × 2.97/3.30/3.63 V; mismatch MC at each corner point | closed-loop `vref` mismatch MC (new: `sim/closed-loop-vref-mc`) | yes, N ≥ 300/point, seeded, with a zero-spread negative control | `target-only`. |
 | Output reference, trimmed line | As above, after a modelled 1-point trim at 27 °C; spread measured over −40…125 °C | trim-domain MC (new, after the trim network exists) | yes | `target-only`. Not stated as a number until measured. |
 | Trim | 27 °C, all corners and supplies; monotonic; range covers the worst per-die offset from the untrimmed MC | trim-coverage sweep (new, after the trim network exists) | no | `target-only`. A trim is ratified only if the untrimmed MC shows a trimmable offset; if it does not, the Trim row falls back to "none". |

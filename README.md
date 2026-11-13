@@ -103,6 +103,10 @@ not repeated here.
 - **Closed-loop `vref` bench** (typ / 27 °C / 3.30 V; the 45-point PVT request
   is committed un-run): `source sim/env.sh && sim/closed-loop-vref-pvt/run.sh`.
   Prerequisites: [`sim/closed-loop-vref-pvt/README.md`](sim/closed-loop-vref-pvt/README.md).
+  First measured figure: `vref` = **1.19696 V** (simulated, typ / 27 °C /
+  3.30 V, closed loop, settled), record
+  `sim/closed-loop-vref-pvt/records/20261113T100202Z-4bfcd8b.json`; it is the
+  27 °C point, not the TC-null nominal ([`0009`](spec/decision-records/0009-output-reference-nominal-first-measured.md)).
 - **Signoff record** (T1 grading): regenerate it as described in
   [`manifests/README.md`](manifests/README.md).
 - **Offline format check** (no PDK, no network): `bash sim/tests/test-env-pdk-store.sh`.

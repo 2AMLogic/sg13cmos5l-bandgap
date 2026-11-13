@@ -1,0 +1,332 @@
+{
+  "corner": {
+    "process": "typ",
+    "temperature_c": 27,
+    "vdd_v": 3.3
+  },
+  "deck_sha256": "7bd11b80e5a11975d8e52b9e6c9fd89adc07e127373f2bf144d89f2dd1d26a1b",
+  "kind": "closed-loop-vref",
+  "klt_envelope": {
+    "corner_count": 1,
+    "corners": [
+      {
+        "artifacts": {
+          "deck": "/home/ubuntu/GitHub/sg13cmos5l-bandgap/.loom/worktrees/issue-19/sim/build/closed-loop-vref-pvt/out/typ_3p300V_27C/corner.cir",
+          "log": "/home/ubuntu/GitHub/sg13cmos5l-bandgap/.loom/worktrees/issue-19/sim/build/closed-loop-vref-pvt/out/typ_3p300V_27C/ngspice.log",
+          "raw": null,
+          "waveform": null
+        },
+        "corner_id": "typ/3.300V/27C",
+        "diagnostics": [],
+        "engine_exit_code": 0,
+        "engine_killed_by_signal": null,
+        "measurements": [
+          {
+            "margin": null,
+            "name": "vref_v",
+            "status": "pass",
+            "unit": null,
+            "value": 1.19696
+          },
+          {
+            "margin": null,
+            "name": "vref_prev_v",
+            "status": "pass",
+            "unit": null,
+            "value": 1.19696
+          },
+          {
+            "margin": null,
+            "name": "fb_v",
+            "status": "pass",
+            "unit": null,
+            "value": 2.49741
+          },
+          {
+            "margin": null,
+            "name": "sns1_v",
+            "status": "pass",
+            "unit": null,
+            "value": 0.780446
+          },
+          {
+            "margin": null,
+            "name": "sns2_v",
+            "status": "pass",
+            "unit": null,
+            "value": 0.780213
+          }
+        ],
+        "monte_carlo": null,
+        "process": "typ",
+        "runtime_s": 0.27,
+        "status": "pass",
+        "supply_v": {
+          "Vvdd": 3.3
+        },
+        "temperature_c": 27
+      }
+    ],
+    "coverage": {
+      "checked": [
+        "measurement:[0,\"typ/3.300V/27C\",\"fb_v\"]/observation",
+        "measurement:[0,\"typ/3.300V/27C\",\"sns1_v\"]/observation",
+        "measurement:[0,\"typ/3.300V/27C\",\"sns2_v\"]/observation",
+        "measurement:[0,\"typ/3.300V/27C\",\"vref_prev_v\"]/observation",
+        "measurement:[0,\"typ/3.300V/27C\",\"vref_v\"]/observation"
+      ],
+      "corners_simulated": 1,
+      "inapplicable": [
+        {
+          "id": "measurement:[0,\"typ/3.300V/27C\",\"fb_v\"]/limits",
+          "reason": "characterization_without_limits"
+        },
+        {
+          "id": "measurement:[0,\"typ/3.300V/27C\",\"sns1_v\"]/limits",
+          "reason": "characterization_without_limits"
+        },
+        {
+          "id": "measurement:[0,\"typ/3.300V/27C\",\"sns2_v\"]/limits",
+          "reason": "characterization_without_limits"
+        },
+        {
+          "id": "measurement:[0,\"typ/3.300V/27C\",\"vref_prev_v\"]/limits",
+          "reason": "characterization_without_limits"
+        },
+        {
+          "id": "measurement:[0,\"typ/3.300V/27C\",\"vref_v\"]/limits",
+          "reason": "characterization_without_limits"
+        }
+      ],
+      "known": true,
+      "measurements_declared": 5,
+      "measurements_with_limits": 0,
+      "nothing_checked": false,
+      "nothing_checked_reasons": [],
+      "schema_version": 1,
+      "skipped": [],
+      "unknown": [],
+      "unrecognized_limit_keys": []
+    },
+    "diagnostic_counts": {
+      "by_code": {},
+      "by_severity": {},
+      "corners_with_diagnostics": 0
+    },
+    "environment": {
+      "backend": {
+        "requested": "local",
+        "resolved": "local",
+        "source": "flag"
+      },
+      "engine": "ngspice",
+      "engine_build": {
+        "binary_sha256": "20b24e16d6550f40d31c0690adbac8c64f3078205bd9aaa60b50274d3eebcf62",
+        "probe": "ok",
+        "reason": null,
+        "version_banner": "******\n** ngspice-47 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2026, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at http://ngspice.sourceforge.net/bugrep.html\n** Creation Date: Thu Nov 12 22:47:40 UTC 2026\n******"
+      },
+      "engine_host": "local",
+      "engine_version": "47",
+      "models_lib": {
+        "path": "sim/build/closed-loop-vref-pvt/corners.lib",
+        "scope": "repo"
+      },
+      "models_lib_sha256": "71d0b678c2ec277ec1a2150522b4d8c1902f18ae567e777a8ebff9f96b0b27ea",
+      "models_lib_sha256_scope": "local",
+      "netlist_closure": [
+        {
+          "path": "sim/build/closed-loop-vref-pvt/deck.cir",
+          "scope": "repo",
+          "sha256": "7bd11b80e5a11975d8e52b9e6c9fd89adc07e127373f2bf144d89f2dd1d26a1b"
+        },
+        {
+          "path": "sim/build/closed-loop-vref-pvt/bandgap_top.spice",
+          "scope": "repo",
+          "sha256": "ec135da68c89bb14b7eb819eda17f941ea36894fd30a770e4a8fd605342668a9"
+        }
+      ],
+      "netlist_identity": "sha256:05d2b5b71e93b4a088e691cb726cd07eff5d377e7ee1b71fcb23ab217b48e650",
+      "netlist_sha256": "7bd11b80e5a11975d8e52b9e6c9fd89adc07e127373f2bf144d89f2dd1d26a1b",
+      "netlist_source": "extracted",
+      "ngspice_binary": "/home/ubuntu/.local/bin/ngspice",
+      "osdi_preload": [
+        {
+          "name": "psp103.osdi",
+          "path": null,
+          "scope": "external",
+          "sha256": "dba873bcef3f1978b30d66a4dcb661f79c6f6386c29da8841712d84399e13f1a"
+        },
+        {
+          "name": "r3_cmc.osdi",
+          "path": null,
+          "scope": "external",
+          "sha256": "746f86fd1b89c309cbec7b23e661a66ee80b2d897ea229bc8e3fcc3757a673c3"
+        }
+      ]
+    },
+    "errored": 0,
+    "failed": 0,
+    "inconclusive": 0,
+    "measurements": [
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.300V/27C",
+          "value": 1.19696
+        },
+        "min": {
+          "corner_id": "typ/3.300V/27C",
+          "value": 1.19696
+        },
+        "name": "vref_v",
+        "status": "pass",
+        "unit": null,
+        "worst_case": {
+          "corner_id": "typ/3.300V/27C",
+          "margin": null,
+          "value": 1.19696
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.300V/27C",
+          "value": 1.19696
+        },
+        "min": {
+          "corner_id": "typ/3.300V/27C",
+          "value": 1.19696
+        },
+        "name": "vref_prev_v",
+        "status": "pass",
+        "unit": null,
+        "worst_case": {
+          "corner_id": "typ/3.300V/27C",
+          "margin": null,
+          "value": 1.19696
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.300V/27C",
+          "value": 2.49741
+        },
+        "min": {
+          "corner_id": "typ/3.300V/27C",
+          "value": 2.49741
+        },
+        "name": "fb_v",
+        "status": "pass",
+        "unit": null,
+        "worst_case": {
+          "corner_id": "typ/3.300V/27C",
+          "margin": null,
+          "value": 2.49741
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.300V/27C",
+          "value": 0.780446
+        },
+        "min": {
+          "corner_id": "typ/3.300V/27C",
+          "value": 0.780446
+        },
+        "name": "sns1_v",
+        "status": "pass",
+        "unit": null,
+        "worst_case": {
+          "corner_id": "typ/3.300V/27C",
+          "margin": null,
+          "value": 0.780446
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.300V/27C",
+          "value": 0.780213
+        },
+        "min": {
+          "corner_id": "typ/3.300V/27C",
+          "value": 0.780213
+        },
+        "name": "sns2_v",
+        "status": "pass",
+        "unit": null,
+        "worst_case": {
+          "corner_id": "typ/3.300V/27C",
+          "margin": null,
+          "value": 0.780213
+        }
+      }
+    ],
+    "metrics": {
+      "sim__corner__count": 1,
+      "sim__corner__errored_count": 0,
+      "sim__corner__failed_count": 0,
+      "sim__corner__inconclusive_count": 0,
+      "sim__corner__passed_count": 1
+    },
+    "netlist": {
+      "path": "sim/build/closed-loop-vref-pvt/deck.cir",
+      "scope": "repo"
+    },
+    "passed": 1,
+    "provenance": {
+      "deck": {
+        "content_hash": "sha256:71d0b678c2ec277ec1a2150522b4d8c1902f18ae567e777a8ebff9f96b0b27ea",
+        "name": "corners.lib",
+        "released": false
+      },
+      "input": {
+        "content_hash": "sha256:7bd11b80e5a11975d8e52b9e6c9fd89adc07e127373f2bf144d89f2dd1d26a1b",
+        "role": "netlist"
+      },
+      "klayout_version": "0.30.13",
+      "klt_git_commit": "e4c446bd91f24c2716be42529ceb299512298464",
+      "klt_reinstall_spec": "klayout-tools @ git+https://github.com/2AMLogic/klayout-tools@e4c446bd91f24c2716be42529ceb299512298464",
+      "klt_version": "0.9.2.dev885+ge4c446bd91f2",
+      "pdk": null
+    },
+    "schema_version": 3,
+    "status": "pass"
+  },
+  "label": "SIMULATED",
+  "measurements": {
+    "fb_v": 2.49741,
+    "sns1_v": 0.780446,
+    "sns2_v": 0.780213,
+    "vref_prev_v": 1.19696,
+    "vref_v": 1.19696
+  },
+  "osdi_preload": [
+    "psp103.osdi",
+    "r3_cmc.osdi"
+  ],
+  "pdk": {
+    "name": "ihp-sg13cmos5l",
+    "pin_file": "sim/pdk.json"
+  },
+  "pdk_revision": "f7bca32694fe3d58be0cc7d9df4b9f5db7161a14",
+  "repo_git_sha": "4bfcd8b",
+  "settle_criterion": "abs(vref at 2.0 ms - vref at 1.5 ms) < 1 mV; vref_v read at 2.0 ms of a 2 ms transient",
+  "simulator": {
+    "backend": "local",
+    "klt": "klt 0.9.2.dev885+ge4c446bd91f2",
+    "ngspice": "ngspice-47"
+  },
+  "source_commit": "52535387e6ccf0a89f6490901a9abb2b78144176",
+  "source_file_sha256": "a29624d3bbcc89e2f7132ecfb278dd793b248c84b9f74ab51685f8ecde929ad5",
+  "source_path": "design/sg13cmos5l/netlist/bandgap_top.spice",
+  "source_repo": "2AMLogic/sg13g2-bandgap",
+  "status": "ok",
+  "template_sha256": "9ab931bcc038ce56f02b283e80059886ace2aa5f86dc3c15be432ea0537a4443",
+  "testbench": "sim/closed-loop-vref-pvt/vref.cir.tmpl",
+  "timestamp_utc": "20261113T100202Z",
+  "vref_v": 1.19696
+}
