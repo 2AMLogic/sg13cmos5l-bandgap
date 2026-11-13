@@ -5,15 +5,23 @@ First closed-loop `vref` bench (issue #14, part of #5). It is the planned bench 
 
 | File | Role |
 |---|---|
-| `run.sh` | Runner: one `klt sim --backend local` unit at typ / 27 °C / 3.30 V, writes one record |
-| `vref.cir.tmpl` | Deck template: supply, substrate tie, OSDI preload, include of the in-repo DUT netlist |
-| `request-45pt.json` | The full §PVT grid (5 process × 3 temperature × 3 supply = 45). **Committed, never run here** |
-| `records/` | Append-only JSON records (`<UTC>-<short sha>.json`) |
+| `run.sh` | Single-corner probe: one `klt sim --backend local` unit at typ / 27 °C / 3.30 V, writes one record |
+| `vref.cir.tmpl` | Deck template: supply, substrate tie, include of the in-repo DUT netlist |
+| `request-45pt.json` | The full §PVT grid (5 process × 3 temperature × 3 supply = 45), **run** — see "The 45-point grid" below |
+| `bench.json` | Grid metadata `sim/grid-run.sh` reads: the graded criteria, the spec row id, the OSDI objects |
+| `records/` | Append-only JSON records (`<UTC>-<short sha>.json`), from both runners |
+| `envelopes/` | Append-only raw `klt sim` envelopes from the grid runner; **what `manifests/` cites for T1 item 5** |
+
+Two runners share this directory on purpose: `run.sh` is the local single-corner probe decision
+record 0009 cites, and `sim/grid-run.sh closed-loop-vref-pvt` is the 45-point grid (issue #30).
+Both read the same `request-45pt.json` and the same `vref.cir.tmpl`, so the probe cannot drift
+from the grid's models, analysis or measurements.
 
 ## Run
 
 ```bash
-source sim/env.sh && sim/closed-loop-vref-pvt/run.sh
+source sim/env.sh && sim/closed-loop-vref-pvt/run.sh                 # one local corner
+source sim/env.sh && sim/grid-run.sh closed-loop-vref-pvt            # the 45-point grid, batch fleet
 ```
 
 Prerequisites are those of the smoke bench (`sim/README.md` 'Cold start'), plus both `psp103.osdi` and `r3_cmc.osdi` built (`rppd`/`rhigh`
@@ -48,14 +56,71 @@ not resolve at this pin the failure is recorded here and cross-referenced to #15
 
 `run.sh` narrows the request to one corner (typ/27 C/3.30 V) and also lowers `timeout_s` from 600 to 300.
 
-## The 45-point grid is un-run
+## The 45-point grid
 
-`request-45pt.json` is committed so the grid is reviewable, and it is **not executed**. Host rules
-forbid a local grid and the batch backends refuse `ihp-sg13cmos5l` until klayout-tools#2727 and
-#3134 land. The request uses a DC `Vvdd` so `klt` can alter it for the supply axis; its absolute
-`netlist`/`models.lib` paths point at the runner's generated files under `sim/build/`, and the
-`options.osdi_preload` paths (written by `run.sh` from `CM5_OSDI_DIR`, as the smoke bench does; no
-`.control` block in the deck) are host-local, so a batch run needs both addressed first.
+It has run (issue #30). `klayout-tools#2727` landed — the batch fleet's image publishes
+`sg13cmos5l`, so `--backend batch` accepts `ihp-sg13cmos5l`; `#3134` was closed as not planned,
+so the `remote` backend still has no image and **batch is the only off-host route**. Host rules
+forbid a local grid either way (`sim/README.md` §PVT grids).
+
+Three things in the request had to change before it could leave this host, all of them in the
+direction of portability rather than of a different measurement:
+
+- The absolute `netlist`/`models.lib` paths and the generated `corners.lib` bundle are gone.
+  The request now names `models.pdk: "ihp-sg13cmos5l"` plus **PDK-relative per-section corner
+  libraries**, one `{lib, section}` per device family per corner — the §PVT table's mapping,
+  written out. `batch` refuses an absolute host path in `models.lib` (`models_lib_host_path`),
+  and a bundle file generated under `sim/build/` is not a file the runner has.
+- `options.osdi_preload` entries are written as literal
+  `$PDK_ROOT/ihp-sg13cmos5l/libs.tech/ngspice/osdi/...`, which `klt sim` forwards unexpanded for
+  the runner to resolve, and expands from the environment on a local run. One request therefore
+  serves both.
+- `options.stage_model_inputs: true` ships this host's pinned model libraries with the job. See
+  `sim/README.md` → "What the fleet runner cannot prove (and what staging fixes)" for why that
+  is load-bearing and what residual gap it leaves.
+
+`run.sh` narrows the same file to the `typ` bundle at 27 °C / 3.30 V and lowers `timeout_s`;
+it no longer overrides the models or the OSDI entries at all.
+
+### The `netlist_source` correction
+
+`request-45pt.json` declared `netlist_source: "extracted"` before issue #30. That was a
+provenance mislabel: the DUT is the xschem-exported netlist migrated by decision record 0006,
+not a netlist extracted from layout, and `klt sim` takes the field as the caller's word (it
+never infers provenance from the file). Left alone, every item-5 envelope cited from here would
+have claimed post-layout provenance for a pre-layout result — the exact distinction the field
+exists to carry. It now reads `"schematic"`. The already-committed records are not edited;
+they are append-only, and each carries the `template_sha256`/`deck_sha256` of what it ran.
+
+### Result (SIMULATED, batch fleet, 2026-11-13)
+
+**45/45 points pass**, graded on the settle criterion decision record 0009 ratified for this
+bench, now applied to every point: `vref_settle_v`, the largest `|vref(t) − vref(2 ms)|` over
+t ∈ (1.5 ms, 2 ms], **< 1 mV**. Worst case **1.03e-8 V** at `wcs/3.630V/-40C`.
+
+`vref` over the grid spans **1.18874 V** (`wcs/2.970V/125C`) **… 1.20039 V**
+(`bcs/3.630V/-40C`), a ±0.49 % band about its midpoint. That span is **evidence, not a ratified
+line**: the ratified untrimmed line is a 3σ mismatch figure, which needs the Monte
+Carlo of issue #31 and is T1 item 6's claim, not this grid's.
+
+No numeric accuracy bound is graded here, because the row's ratified target is "nominal at the
+TC-null point" — a method, not a number — and inventing one would be ratifying a number
+(CLAUDE.md). What guards the figures instead is a `plausible_range` of [0.5 V, 2.0 V] on
+`vref_v`, which fails a converged-but-degenerate solution rather than recording it as a
+reference.
+
+Two envelopes from that session are committed, and the pair is itself the measurement that
+bounds the fleet-image provenance gap:
+
+| Envelope | Models | Job | Result |
+|---|---|---|---|
+| `envelopes/20261113T112115Z-3830083.image-models.json` | resolved on the runner from the fleet image | `klt-sim-eb3c80bdefd3` | 45/45 pass |
+| `envelopes/20261113T111044Z-3830083.json` | **staged from this host's pin** (15 files, hashes matched by the worker) | `klt-sim-fbbab809f5c5` | 45/45 pass |
+
+All **315** measurements (45 points × 7) agree exactly between the two. `manifests/` cites the
+staged one, because only that envelope binds the models to `sim/pdk.json`'s revision by hash.
+The cross-check is reproducible: `CM5_GRID_NO_STAGE=1 sim/grid-run.sh closed-loop-vref-pvt`
+turns staging off and suffixes its artifacts `.image-models`.
 
 ## First run (issue #19)
 
@@ -68,7 +133,7 @@ Run on a fleet host whose `~/share/pdk` carries the pinned PDK through the fleet
 `spec/target-spec.md` off `target-only` (decision record 0009). It is the 27 °C/3.30 V typ point,
 **not** the TC-null nominal.
 
-`records/` is append-only and holds three records from that session:
+`records/` is append-only and holds three records from that session (issue #19):
 
 | Record | Status | What it shows |
 |---|---|---|
@@ -80,7 +145,11 @@ Run on a fleet host whose `~/share/pdk` carries the pinned PDK through the fleet
 `<UTC second>-<short sha>.json`, so exit 4 only fires on a same-second, same-commit collision;
 any later run writes a new record and exits 0 (or 5). Existing records are never overwritten.
 
-Still un-run: the 45-point grid and the mismatch MC (see above). Observed but not acted on here:
+Still un-run: the mismatch Monte Carlo (issue #31). The 45-point grid has since run — see
+"The 45-point grid" above; `records/` also holds the single-corner probe
+`20261113T104408Z-3830083.json`, the first run of the re-shaped request, which reproduces
+`vref` = 1.19696 V to all recorded digits and so shows the portability changes did not move the
+measurement. Observed but not acted on here:
 ngspice warns `Unknown model type pspnqs103va - ignored` for the `*_psp_rf` model variants the
 PDK's `sg13g2_moshv_mod.lib` defines, because this bench preloads `psp103.osdi` and `r3_cmc.osdi`
 but not `psp103_nqs.osdi`. No device in the DUT instantiates an RF variant, so the warnings are

@@ -44,6 +44,13 @@ its committed outcome carried through) and still re-hashes every inventoried fil
 
 ## Extending
 
-When the item-5/6 benches land, add their bench files to `testbenches` (repo-relative, unique, no
-symlinks), re-run the regeneration above on a provisioned host, and commit the inventory, envelope,
+When a bench lands, add its bench files to `testbenches` (repo-relative, unique, no symlinks),
+re-run the regeneration above on a provisioned host, and commit the inventory, envelope,
 manifest hash, signoff record and any new smoke record together.
+
+Done once already, for the five item-5 PVT-grid benches (issue #30, decision record 0010): the
+inventory now carries 11 entries, each bench contributing its **deck template** and its
+committed **`klt sim` request** — what the bench is. `bench.json` and `sim/grid-run.sh` are
+runner plumbing and are deliberately not inventoried, the same convention that already left each
+bench's `run.sh` out. The grids themselves are not cold-started here either: they go to the
+Spot batch fleet, which a GitHub runner cannot reach any more than it can reach the PDK.

@@ -1,0 +1,191 @@
+{
+  "bench": "closed-loop-vref-pvt",
+  "criteria": "Graded at every point: vref_settle_v = max |vref(t) - vref(2 ms)| over t in (1.5 ms, 2 ms] < 1 mV -- the settle criterion decision record 0009 ratified for this bench, now applied to all 45 points. vref_v is recorded as evidence at every point with a plausible_range of [0.5 V, 2.0 V], which fails a converged-but-degenerate solution rather than recording it as a reference. The 'Output reference, nominal' row's ratified target is the TC-null point (a method, not a number), so no numeric accuracy bound exists to grade against; the untrimmed-line spread is the Monte Carlo row's (issue #31), not this one's.",
+  "deck_sha256": "675899b4bae8961b43ba600a1a42c2a73fa570aa73abccf556ebda56a22542d4",
+  "envelope": "sim/closed-loop-vref-pvt/envelopes/20261113T112115Z-3830083.image-models.json",
+  "grid": {
+    "envelope_status": "pass",
+    "failing_points": [],
+    "failing_points_truncated": false,
+    "measurements_declared": 7,
+    "measurements_with_limits": 1,
+    "points_errored": 0,
+    "points_failed": 0,
+    "points_inconclusive": 0,
+    "points_passed": 45,
+    "points_total": 45,
+    "rows": [
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "bcs/3.630V/-40C",
+          "value": 1.20039
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/125C",
+          "value": 1.18874
+        },
+        "name": "vref_v",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/-40C",
+          "margin": null,
+          "value": 1.19718
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "bcs/3.630V/-40C",
+          "value": 1.20039
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/125C",
+          "value": 1.18874
+        },
+        "name": "vref_prev_v",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/-40C",
+          "margin": null,
+          "value": 1.19718
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "bcs/3.630V/125C",
+          "value": 2.92905
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/-40C",
+          "value": 2.08883
+        },
+        "name": "fb_v",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/-40C",
+          "margin": null,
+          "value": 2.13592
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "bcs/3.630V/-40C",
+          "value": 0.87531
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/125C",
+          "value": 0.638529
+        },
+        "name": "sns1_v",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/-40C",
+          "margin": null,
+          "value": 0.872656
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "bcs/3.630V/-40C",
+          "value": 0.875214
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/125C",
+          "value": 0.638091
+        },
+        "name": "sns2_v",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/-40C",
+          "margin": null,
+          "value": 0.872496
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "bcs/3.630V/-40C",
+          "value": 1.200392
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/125C",
+          "value": 1.188738
+        },
+        "name": "vref_final_v",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/-40C",
+          "margin": null,
+          "value": 1.197177
+        }
+      },
+      {
+        "limits": {
+          "max": 0.001
+        },
+        "max": {
+          "corner_id": "wcs/3.630V/-40C",
+          "value": 1.029452e-08
+        },
+        "min": {
+          "corner_id": "typ/3.630V/27C",
+          "value": 3.364709e-11
+        },
+        "name": "vref_settle_v",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "wcs/3.630V/-40C",
+          "margin": 0.0009999897054800001,
+          "value": 1.029452e-08
+        }
+      }
+    ]
+  },
+  "kind": "closed-loop-vref-grid",
+  "label": "SIMULATED",
+  "models_staged": {
+    "count": 0,
+    "files": [],
+    "hashes_match": null,
+    "runner_reported_count": null
+  },
+  "osdi_preload": [
+    "psp103",
+    "r3_cmc"
+  ],
+  "pdk": {
+    "name": "ihp-sg13cmos5l",
+    "pin_file": "sim/pdk.json"
+  },
+  "pdk_revision": "f7bca32694fe3d58be0cc7d9df4b9f5db7161a14",
+  "repo_git_sha": "3830083",
+  "request_sha256": "f157eb9474aa955abf097b73b72668b78bf8bd45902192be8b8087a7018e544b",
+  "schema_version": 1,
+  "simulator": {
+    "backend": "batch",
+    "klt": "klt 0.9.2.dev887+gec7400b7d8e5",
+    "ngspice": "ngspice-47"
+  },
+  "source_commit": "52535387e6ccf0a89f6490901a9abb2b78144176",
+  "source_file_sha256": "a29624d3bbcc89e2f7132ecfb278dd793b248c84b9f74ab51685f8ecde929ad5",
+  "source_path": "design/sg13cmos5l/netlist/bandgap_top.spice",
+  "source_repo": "2AMLogic/sg13g2-bandgap",
+  "spec_rows": [
+    "vref_nominal"
+  ],
+  "status": "ok",
+  "template_sha256": "9ab931bcc038ce56f02b283e80059886ace2aa5f86dc3c15be432ea0537a4443",
+  "testbench": "sim/closed-loop-vref-pvt/vref.cir.tmpl",
+  "timestamp_utc": "20261113T112115Z"
+}

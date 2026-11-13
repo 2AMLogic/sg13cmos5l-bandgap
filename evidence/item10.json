@@ -3,14 +3,14 @@
   "kind": "generic",
   "status": "pass",
   "t1_item": 10,
-  "summary": "T1 item 10 (Repo hygiene): 8/8 attestation checks passed (klt signoff --attest)",
+  "summary": "T1 item 10 (Repo hygiene): 9/9 attestation checks passed (klt signoff --attest)",
   "source": "attest/item10.json",
   "attestation": {
     "producer": "klt signoff --attest",
     "inventory_schema_version": 1,
     "hash_algorithm": "sha256-raw-bytes",
-    "check_count": 8,
-    "passed_count": 8,
+    "check_count": 9,
+    "passed_count": 9,
     "checks": [
       {
         "check": "present",
@@ -31,21 +31,21 @@
         "role": "hygiene",
         "path": "README.md",
         "passed": true,
-        "content_hash": "sha256:62039b1b19604b9de82935f69f45edb6e891ba58c87382544647179736617fb0"
+        "content_hash": "sha256:db3267d709922620f2ec6f7dcd86b93a4b35bf1f511ef50f373b3807d0bb4c3c"
       },
       {
         "check": "present",
         "role": "hygiene",
         "path": "manifests/README.md",
         "passed": true,
-        "content_hash": "sha256:ff2f4abcb2f3accfcfcc8fdf32c98d4c3db2af8559d0f139f4d885d1bce958e2"
+        "content_hash": "sha256:7c4b480d19b6982410368e5c53f0dbb9df0466dfcff999e337dcb75ab7815d86"
       },
       {
         "check": "present",
         "role": "hygiene",
         "path": "spec/target-spec.md",
         "passed": true,
-        "content_hash": "sha256:b3aa4c9e8fc50fcc41a14b719d13f2433a70fc2307da92c8174db21e1762dc80"
+        "content_hash": "sha256:5e9516cf7324164c41f720808f5a2e0af1fef232db2896d2b1717daa4c114aad"
       },
       {
         "check": "command",
@@ -82,6 +82,18 @@
         "cwd": ".",
         "exit_status": 0,
         "passed": true
+      },
+      {
+        "check": "command",
+        "role": "audit",
+        "name": "grid-bench-consistency-test",
+        "argv": [
+          "bash",
+          "sim/tests/test-grid-benches.sh"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true
       }
     ]
   },
@@ -95,7 +107,7 @@
         "path": "attest/item10.json",
         "scope": "repo"
       },
-      "content_hash": "sha256:8797ff0c813632fb5ef203c98868bd87402008b42f5edbac8c8f2c823ac34448"
+      "content_hash": "sha256:47aabf1e082e639e7dffafb7b48bdd70ba54579e58445ca50bee4f741b6da8a7"
     }
   }
 }

@@ -1,22 +1,108 @@
 {
   "_comment": [
-    "Committed, NEVER EXECUTED in this repo: the full spec/target-spec.md \u00a7PVT grid, 5 process labels x 3 temperatures x 3 supplies = 45 points, for the closed-loop vref bench.",
-    "Un-run until klayout-tools#2727 and #3134 give ihp-sg13cmos5l a batch path; see README.md. sim/closed-loop-vref-pvt/run.sh narrows this file to typ/27 C/3.30 V and substitutes `netlist` and `models.lib` with generated absolute paths (sim/build/closed-loop-vref-pvt/).",
-    "Process labels select the corner bundle's sections per the \u00a7PVT table. The supply axis alters the DC source Vvdd in the deck (a DC, not PWL, source so klt can alter it)."
+    "The full spec/target-spec.md \u00a7PVT grid for the closed-loop vref bench: 5 process labels x 3 supplies x 3 temperatures = 45 points. Run by run-grid.sh on the Spot batch fleet (issue #30); narrowed to typ/27 C/3.30 V by run.sh for a single-corner local probe.",
+    "PORTABLE BY CONSTRUCTION (issue #30). Nothing in this file is a path that exists only on the submitting host, so the same request serves `--backend local` and `--backend batch`:",
+    "  - `models.pdk` selects the variant and the fleet's batch image (klayout-tools#2727 publishes sg13cmos5l); each corner's sections name their own PDK-relative library, so no `models.lib` and no generated corner bundle is needed. An absolute host path here is refused on batch (`models_lib_host_path`).",
+    "  - `options.stage_model_inputs` ships THIS host's pinned model libraries and their whole `.include`/`.lib` closure with the job, so the models that ran are bound by sha256 to sim/pdk.json's pinned revision (`environment.staged_model_inputs` and `remote.runner_model_inputs` both list them) rather than being whatever the fleet image carries. The image's own SG13CMOS5L tree publishes no readable revision stamp (`worker_environment.pdk.stamp_text` is null), so without staging the grid could not be bound to the pin at all -- see README.md 'What the fleet runner cannot prove'. On `--backend local` the option is accepted and does nothing.",
+    "  - `options.osdi_preload` entries are written as literal `$PDK_ROOT/...`, so they are runner-resolved off-host and expanded from the environment locally. They are NOT staged, so the OSDI objects that load are the executing host's own.",
+    "  - `netlist` is the deck run-grid.sh/run.sh generate under sim/build/ (gitignored); its `.include` of the migrated DUT is staged with the job by klt's include-closure staging. The runner substitutes an absolute path; the relative default below is what the generated deck's location is, so `klt sim --dry-run` works straight from the repo root after a runner has written it.",
+    "Process labels map to model sections exactly as the \u00a7PVT table does: pnpMPA has no skew section, so sf and fs read cornerPNP/cornerRES `typ`.",
+    "`netlist_source` is `schematic`: the DUT is the xschem-exported netlist migrated by decision record 0006, NOT an extracted one. (It read `extracted` before issue #30 -- a provenance mislabel; see README.md 'The netlist_source correction'.)",
+    "LIMITS. Only the settle criterion is graded. The 'Output reference, nominal' row's ratified target is 'nominal at the TC-null point' -- a method, not a number -- so no numeric accuracy bound exists to copy here, and inventing one would be ratifying a number (CLAUDE.md). What IS graded at all 45 points is the criterion decision record 0009 already ratified for this bench: the closed loop settles. vref_v itself is recorded as evidence at every point, with a plausible_range that catches a converged-but-degenerate solution instead of letting it be recorded as a reference."
   ],
   "engine": "ngspice",
-  "netlist": "sim/build/closed-loop-vref-pvt/deck.cir",
-  "netlist_source": "extracted",
+  "netlist": "../build/closed-loop-vref-pvt/deck.cir",
+  "netlist_source": "schematic",
   "models": {
-    "lib": "sim/build/closed-loop-vref-pvt/corners.lib"
+    "pdk": "ihp-sg13cmos5l"
   },
   "corners": {
     "process": [
-      "typ",
-      "bcs",
-      "wcs",
-      "sf",
-      "fs"
+      {
+        "name": "typ",
+        "sections": [
+          {
+            "lib": "libs.tech/ngspice/models/cornerPNP.lib",
+            "section": "typ"
+          },
+          {
+            "lib": "libs.tech/ngspice/models/cornerMOShv.lib",
+            "section": "mos_tt"
+          },
+          {
+            "lib": "libs.tech/ngspice/models/cornerRES.lib",
+            "section": "res_typ"
+          }
+        ]
+      },
+      {
+        "name": "bcs",
+        "sections": [
+          {
+            "lib": "libs.tech/ngspice/models/cornerPNP.lib",
+            "section": "bcs"
+          },
+          {
+            "lib": "libs.tech/ngspice/models/cornerMOShv.lib",
+            "section": "mos_ff"
+          },
+          {
+            "lib": "libs.tech/ngspice/models/cornerRES.lib",
+            "section": "res_bcs"
+          }
+        ]
+      },
+      {
+        "name": "wcs",
+        "sections": [
+          {
+            "lib": "libs.tech/ngspice/models/cornerPNP.lib",
+            "section": "wcs"
+          },
+          {
+            "lib": "libs.tech/ngspice/models/cornerMOShv.lib",
+            "section": "mos_ss"
+          },
+          {
+            "lib": "libs.tech/ngspice/models/cornerRES.lib",
+            "section": "res_wcs"
+          }
+        ]
+      },
+      {
+        "name": "sf",
+        "sections": [
+          {
+            "lib": "libs.tech/ngspice/models/cornerPNP.lib",
+            "section": "typ"
+          },
+          {
+            "lib": "libs.tech/ngspice/models/cornerMOShv.lib",
+            "section": "mos_sf"
+          },
+          {
+            "lib": "libs.tech/ngspice/models/cornerRES.lib",
+            "section": "res_typ"
+          }
+        ]
+      },
+      {
+        "name": "fs",
+        "sections": [
+          {
+            "lib": "libs.tech/ngspice/models/cornerPNP.lib",
+            "section": "typ"
+          },
+          {
+            "lib": "libs.tech/ngspice/models/cornerMOShv.lib",
+            "section": "mos_fs"
+          },
+          {
+            "lib": "libs.tech/ngspice/models/cornerRES.lib",
+            "section": "res_typ"
+          }
+        ]
+      }
     ],
     "supply_v": {
       "Vvdd": [
@@ -38,27 +124,58 @@
   "measurements": [
     {
       "name": "vref_v",
-      "spice": ".meas tran vref_v find v(vref) at=2m"
+      "spice": ".meas tran vref_v find v(vref) at=2m",
+      "unit": "V",
+      "plausible_range": {
+        "min": 0.5,
+        "max": 2.0
+      }
     },
     {
       "name": "vref_prev_v",
-      "spice": ".meas tran vref_prev_v find v(vref) at=1.5m"
+      "spice": ".meas tran vref_prev_v find v(vref) at=1.5m",
+      "unit": "V"
     },
     {
       "name": "fb_v",
-      "spice": ".meas tran fb_v find v(fb) at=2m"
+      "spice": ".meas tran fb_v find v(fb) at=2m",
+      "unit": "V"
     },
     {
       "name": "sns1_v",
-      "spice": ".meas tran sns1_v find v(sns1) at=2m"
+      "spice": ".meas tran sns1_v find v(sns1) at=2m",
+      "unit": "V"
     },
     {
       "name": "sns2_v",
-      "spice": ".meas tran sns2_v find v(sns2) at=2m"
+      "spice": ".meas tran sns2_v find v(sns2) at=2m",
+      "unit": "V"
+    },
+    {
+      "name": "vref_final_v",
+      "expr": "v(vref)[length(v(vref))-1]",
+      "unit": "V"
+    },
+    {
+      "name": "vref_settle_v",
+      "expr": "vecmax(abs(v(vref) - vref_final_v)*(time gt 1.5e-3))",
+      "unit": "V",
+      "limits": {
+        "max": 0.001
+      },
+      "spec_row": "vref_nominal"
     }
   ],
   "options": {
-    "timeout_s": 600,
-    "keep_artifacts": true
+    "timeout_s": 60,
+    "keep_artifacts": true,
+    "stage_model_inputs": true,
+    "osdi_preload": [
+      "$PDK_ROOT/ihp-sg13cmos5l/libs.tech/ngspice/osdi/psp103.osdi",
+      "$PDK_ROOT/ihp-sg13cmos5l/libs.tech/ngspice/osdi/r3_cmc.osdi"
+    ]
+  },
+  "batch": {
+    "job_ceiling_check": "enforce"
   }
 }

@@ -6,7 +6,13 @@ reduced-metal-stack sibling of IHP's SG13G2 130 nm open PDK — designed by AI
 agents driving [klayout-tools](https://github.com/2AMLogic/klayout-tools) and
 the open-source xschem + ngspice flow.
 
-**Status: specification ratified (issue #2), nothing designed or simulated here yet.** The work starts from the SG13CMOS5L branch already carried in
+**Status: specification ratified (issue #2); the schematic is now simulated
+across the full PVT corner grid (issue #30,
+[`0010`](spec/decision-records/0010-corner-verification-pvt-grids.md)) — seven
+of the eleven spec rows carry measured corner evidence, one ratified Target
+(PSRR @ DC) is missed on that evidence, and the statistical and trim rows have
+none. Nothing is laid out, extracted or measured in silicon here.** The work
+starts from the SG13CMOS5L branch already carried in
 [sg13g2-bandgap](https://github.com/2AMLogic/sg13g2-bandgap), not from a
 blank page.
 
@@ -65,8 +71,10 @@ binding conditions, planned testbenches, the PVT box, model files and
 per-row evidence status are in [`spec/target-spec.md`](spec/target-spec.md).
 Port parity: the row shapes mirror `sg13g2-bandgap`'s ratified table; the
 values that depend on the bipolar device are derived here, not copied. Every
-row is a *target*, not a result, and no row has SG13CMOS5L evidence in this
-repo yet.
+row below is a *target*, not a result; `spec/target-spec.md`'s Status column
+says which rows now have SG13CMOS5L evidence and what it measured. **Nothing
+in the table below is edited by a measured result** — a measurement is
+evidence against a row, never a new ratified number.
 
 | Parameter | Fallback | Target | Stretch |
 |---|---|---|---|
@@ -80,9 +88,27 @@ repo yet.
 | Area | budget set after the first assembled floorplan | budget set after the first assembled floorplan | — |
 | Signoff | DRC clean, every LVS gap attributed to a filed klayout-tools issue | DRC + LVS clean | — |
 
+Measured against those targets (all **simulated**, batch fleet, worst case
+over the corner grid — see `spec/target-spec.md` for the binding corner and
+the cited envelope of each):
+
+| Row | Fallback | Target | Worst measured | Target verdict |
+|---|---|---|---|---|
+| Temp coefficient, box | < 100 ppm/°C | < 50 ppm/°C | 39.186 ppm/°C | met |
+| Temp coefficient, endpoint | < 100 ppm/°C | < 50 ppm/°C | 38.758 ppm/°C | met |
+| PSRR @ DC | > 50 dB | > 60 dB | 55.249 dB | **not met** (fallback met) |
+| Iq | < 100 µA | < 50 µA | 41.085 µA | met |
+| Startup | self-starting | self-starting, < 1 ms | 100 µs, 45/45 self-starting | met |
+
+Still unevidenced: the untrimmed-line (3σ) and trimmed-line accuracy rows and
+the Trim row. The first needs the device-mismatch Monte Carlo (issue #31); the
+other two need a trim network this design does not have. They are declared
+gaps in the T1 item-5 report rather than left out of it.
+
 Maturity ladder: tooling resolved → spec ratified → schematic simulated
 across PVT → layout DRC/LVS-clean → post-layout re-verification → shuttle
-seat → measured silicon. **Current position: spec ratified.**
+seat → measured silicon. **Current position: schematic simulated across PVT**
+(corner grids only; the statistical rows are not simulated yet).
 
 ## Tool flow
 
@@ -100,13 +126,20 @@ not repeated here.
 
 - **Smoke bench** (models load and converge, typ / 27 °C / 3.3 V): after the
   cold start, `source sim/env.sh && sim/smoke/run_smoke.sh`.
-- **Closed-loop `vref` bench** (typ / 27 °C / 3.30 V; the 45-point PVT request
-  is committed un-run): `source sim/env.sh && sim/closed-loop-vref-pvt/run.sh`.
+- **Closed-loop `vref` bench, single corner** (typ / 27 °C / 3.30 V, local):
+  `source sim/env.sh && sim/closed-loop-vref-pvt/run.sh`.
   Prerequisites: [`sim/closed-loop-vref-pvt/README.md`](sim/closed-loop-vref-pvt/README.md).
   First measured figure: `vref` = **1.19696 V** (simulated, typ / 27 °C /
   3.30 V, closed loop, settled), record
   `sim/closed-loop-vref-pvt/records/20261113T100202Z-4bfcd8b.json`; it is the
   27 °C point, not the TC-null nominal ([`0009`](spec/decision-records/0009-output-reference-nominal-first-measured.md)).
+- **The five PVT grids** (T1 item 5): `source sim/env.sh && sim/grid-run.sh <bench>`
+  for each of `closed-loop-vref-pvt`, `closed-loop-vref-pvt-boxtc`,
+  `closed-loop-psrr`, `closed-loop-iq`, `closed-loop-startup`. Each submits its
+  committed request to the Spot batch fleet and appends a raw `klt sim` envelope
+  plus a record. Grids never run as a local `ngspice` loop. What each bench
+  grades, and why: [`sim/README.md`](sim/README.md) §PVT grids and each bench's
+  own README.
 - **Signoff record** (T1 grading): regenerate it as described in
   [`manifests/README.md`](manifests/README.md).
 - **Offline format check** (no PDK, no network): `bash sim/tests/test-env-pdk-store.sh`.
@@ -117,6 +150,12 @@ The T1 evidence tier is graded by `klt signoff`, not restated here. The
 verdict of record is
 [manifests/sg13cmos5l-bandgap.signoff.json](manifests/sg13cmos5l-bandgap.signoff.json);
 see [manifests/README.md](manifests/README.md) for how it is regenerated.
+
+Item 5 (full corner verification) is `unmet` / `partial_coverage`, and that is
+the honest reading rather than a failure of the grids: all five cited envelopes
+pass and every covered row is **derived** from the envelopes' own `spec_row`
+tags, but four of the nine declared spec rows are named gaps. See
+[`0010`](spec/decision-records/0010-corner-verification-pvt-grids.md) §5.
 
 ## Repo layout
 

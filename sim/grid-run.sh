@@ -1,0 +1,239 @@
+#!/usr/bin/env bash
+# sg13cmos5l-bandgap -- shared PVT-grid runner for the T1-item-5 corner-verification
+# benches (issue #30, Part of #5). Cold start:
+#
+#   source sim/env.sh && sim/grid-run.sh closed-loop-vref-pvt
+#
+# One invocation runs ONE bench's committed `klt sim` request over the whole
+# spec/target-spec.md §PVT grid on the Spot batch fleet, then writes two artifacts:
+#
+#   <bench>/envelopes/<UTC>-<short sha>.json   the raw `klt sim --format json` envelope.
+#                                              THIS is what manifests/ cites for T1 item 5;
+#                                              `klt signoff` reads it, not the record below.
+#   <bench>/records/<UTC>-<short sha>.json     the repo's own append-only record: the pin,
+#                                              the DUT and deck hashes, the per-row verdict
+#                                              and binding corner, and the envelope's name.
+#
+# Why one runner and not one per bench (issue #37's sequencing advice, decision record 0008):
+# the five benches differ only in their deck fixture, their request and their criteria text.
+# Those three live in the bench directory; everything else -- reading the pin, staging the
+# migrated DUT, reaching the fleet, and the record shape -- is identical and lives here.
+#
+# A bench directory must contain:
+#   bench.json          {bench, kind, testbench, spec_rows[], criteria, osdi[],
+#                        deck_substitutions{}, deck_template, request}
+#   <deck_template>     the deck body; @@WORK@@ is the scratch dir, plus bench.json's own keys
+#   <request>           the committed, host-portable `klt sim` request (see any bench README)
+#
+# `deck_template` and `request` are named by bench.json rather than fixed, so a bench whose
+# files a ratified decision record already cites by name keeps those names.
+#
+# Figures are SIMULATED. Grids go to the batch fleet, never to a local ngspice loop; a failed
+# submit is recorded and reported, never replaced by a local grid (sim/README.md, CLAUDE.md).
+#
+# Exit: 0 grid ran and every point passed; 2 bad usage / malformed bench directory;
+# 3 missing prerequisite; 4 record exists; 5 the grid ran but did not pass, or the submit
+# failed (an envelope and a record stating it are written either way); 6 DUT or pin missing.
+set -euo pipefail
+
+SIM_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_DIR="$(cd "${SIM_DIR}/.." && pwd)"
+
+if [[ $# -ne 1 || "$1" == -* ]]; then
+  echo "usage: source sim/env.sh && sim/grid-run.sh <bench-directory-name>" >&2
+  echo "  e.g. sim/grid-run.sh closed-loop-vref-pvt" >&2
+  exit 2
+fi
+BENCH="$1"
+BENCH_DIR="${SIM_DIR}/${BENCH}"
+TAG="grid-run.sh[${BENCH}]"
+
+[[ -f "${BENCH_DIR}/bench.json" ]] \
+  || { echo "${TAG}: ${BENCH_DIR}/bench.json is missing; not a grid bench directory." >&2; exit 2; }
+read -r TMPL_NAME REQUEST_NAME < <(python3 -I -c '
+import json, sys
+b = json.load(open(sys.argv[1]))
+print(b.get("deck_template", "deck.cir.tmpl"), b.get("request", "request-grid.json"))
+' "${BENCH_DIR}/bench.json") \
+  || { echo "${TAG}: ${BENCH_DIR}/bench.json is not readable JSON." >&2; exit 2; }
+for f in "${TMPL_NAME}" "${REQUEST_NAME}"; do
+  [[ -f "${BENCH_DIR}/${f}" ]] \
+    || { echo "${TAG}: ${BENCH_DIR}/${f} (named by bench.json) is missing." >&2; exit 2; }
+done
+TMPL="${BENCH_DIR}/${TMPL_NAME}"
+REQUEST_SRC="${BENCH_DIR}/${REQUEST_NAME}"
+
+# shellcheck source=env.sh
+source "${SIM_DIR}/env.sh" || { echo "${TAG}: sim/env.sh refused; see the error above." >&2; exit 3; }
+# shellcheck source=runner-lib.sh
+source "${SIM_DIR}/runner-lib.sh"
+
+cm5_gate "${TAG}" ngspice klt python3 sha256sum git
+read -r -a BENCH_OSDI < <(python3 -I -c '
+import json, sys
+print(" ".join(json.load(open(sys.argv[1]))["osdi"]))' "${BENCH_DIR}/bench.json") \
+  || { echo "${TAG}: bench.json has no readable 'osdi' list." >&2; exit 2; }
+cm5_osdi_gate "${TAG}" "${BENCH_OSDI[@]}"
+
+cm5_pinned_source "${TAG}" "${REPO_DIR}"
+
+WORK="${SIM_DIR}/build/${BENCH}"
+rm -rf "${WORK}"; mkdir -p "${WORK}/out"
+cm5_stage_dut "${TAG}" "${REPO_DIR}" "${WORK}"
+
+# ---- deck: the bench's own fixture, with @@WORK@@ and bench.json's substitutions ----
+# Line 1 is a generated `*` comment on purpose (issue #19): `klt sim` `.include`s this deck
+# into a top deck of its own, so a SPICE title line here would be parsed as a netlist element.
+DECK="${WORK}/deck.cir"
+python3 -I - "${TMPL}" "${BENCH_DIR}/bench.json" "${WORK}" "${DECK}" <<'PY'
+import json, sys
+tmpl_p, bench_p, work, out = sys.argv[1:]
+subs = dict(json.load(open(bench_p)).get("deck_substitutions") or {})
+subs["WORK"] = work
+text = open(tmpl_p).read()
+for key, value in subs.items():
+    text = text.replace("@@%s@@" % key, str(value))
+left = [l for l in text.splitlines() if "@@" in l]
+if left:
+    sys.exit("deck template still has an unsubstituted placeholder: %s" % left[0].strip())
+body = "\n".join(l for l in text.splitlines() if not l.startswith("*"))
+with open(out, "w") as f:
+    f.write("* sg13cmos5l %s deck -- generated by sim/grid-run.sh from deck.cir.tmpl; do not edit.\n"
+            "* klt sim .include's this file, so this deck carries no SPICE title line.\n" % work.rsplit("/", 1)[-1])
+    f.write(body.rstrip() + "\n")
+PY
+
+# ---- request: the committed grid request, with `netlist` pointed at the generated deck ----
+# Nothing else is rewritten. The model sections stay PDK-relative and the osdi_preload entries
+# stay `$PDK_ROOT/...`, so the fleet runner resolves both on its own box (klt sim docs,
+# "Model library resolution" and "OSDI (Verilog-A) model preload").
+#
+# $CM5_GRID_NO_STAGE=1 turns options.stage_model_inputs off and suffixes both artifacts
+# `.image-models`. That is the provenance cross-check decision record 0010 §7 relies on, kept
+# reproducible rather than merely described: the same grid run against the fleet image's own PDK
+# tree instead of this host's pinned one, so the two envelopes can be compared value for value.
+# Never the default: only a staged run binds the models to sim/pdk.json by hash.
+REQUEST="${WORK}/request.json"
+SUFFIX=""
+if [[ "${CM5_GRID_NO_STAGE:-0}" == "1" ]]; then
+  SUFFIX=".image-models"
+  echo "${TAG}: CM5_GRID_NO_STAGE=1 -- models resolved on the runner, NOT staged from the pin." >&2
+fi
+python3 -I - "${REQUEST_SRC}" "${REQUEST}" "${DECK}" "${CM5_GRID_NO_STAGE:-0}" <<'PY'
+import json, sys
+src, dst, deck, no_stage = sys.argv[1:]
+r = json.load(open(src))
+r["netlist"] = deck
+if no_stage == "1":
+    r.setdefault("options", {})["stage_model_inputs"] = False
+json.dump(r, open(dst, "w"), indent=2)
+PY
+
+mkdir -p "${BENCH_DIR}/records" "${BENCH_DIR}/envelopes"
+cm5_record_path "${TAG}" "${REPO_DIR}" "${BENCH_DIR}/records"
+REC="${BENCH_DIR}/records/${STAMP}-${SHA}${SUFFIX}.json"
+[[ ! -e "${REC}" ]] \
+  || { echo "${TAG}: ${REC} exists; records are append-only." >&2; exit 4; }
+ENVELOPE_NAME="${STAMP}-${SHA}${SUFFIX}.json"
+ENVELOPE="${BENCH_DIR}/envelopes/${ENVELOPE_NAME}"
+[[ ! -e "${ENVELOPE}" ]] \
+  || { echo "${TAG}: ${ENVELOPE} exists; envelopes are append-only." >&2; exit 4; }
+
+cm5_grid_submit "${TAG}" "${REQUEST}" "${WORK}/out" "${WORK}/envelope.json" "${WORK}/klt.err"
+
+set +e
+python3 -I - "${WORK}/envelope.json" "${ENVELOPE}" "${REC}" "${ENVELOPE_NAME}" "${BENCH_DIR}/bench.json" \
+  "${DECK}" "${TMPL}" "${REQUEST_SRC}" "${CM5_DUT_FETCHED}" \
+  "${CM5_DUT_SOURCE_PATH}" "${NGSPICE_VERSION}" "${CM5_PDK_REVISION}" "${SHA}" "${STAMP}" \
+  "${SIM_DIR}/pdk.json" "${SRC_REPO}" "${SRC_COMMIT}" "${CM5_KLT_RC}" "${CM5_BACKEND}" \
+  "${WORK}/klt.err" "${BENCH}" "${SIM_DIR}/tools" <<'PY'
+import json, sys
+(env_p, envelope_out, rec_p, envelope_name, bench_p, deck_p, tmpl_p, request_p, dut_p,
+ dut_rel, ngspice, pdk_rev, sha, stamp, pin_p, src_repo, src_commit, klt_rc, backend,
+ klt_err_p, bench, tools_dir) = sys.argv[1:]
+sys.path.insert(0, tools_dir)
+from cm5_record import grid_summary, klt_version as get_klt_version, sha256, write_record
+
+bench_meta = json.load(open(bench_p))
+pin = json.load(open(pin_p))
+try:
+    envelope = json.load(open(env_p))
+except Exception:
+    envelope = None
+
+# The envelope is committed verbatim whatever it says -- it is the cited artifact, and a
+# failing grid is evidence of a failing grid. Only an unparseable submit has nothing to commit.
+if envelope is not None:
+    write_record(envelope_out, envelope)
+
+summary = grid_summary(envelope)
+reason = None
+if int(klt_rc) != 0:
+    reason = "klt sim exited %s: %s" % (klt_rc, open(klt_err_p).read()[-600:].strip())
+elif summary is None:
+    reason = "klt sim wrote no parseable JSON envelope"
+elif summary["envelope_status"] != "pass":
+    reason = "grid status %r: %s/%s points passed" % (
+        summary["envelope_status"], summary["points_passed"], summary["points_total"])
+
+# schema_version 1 is the common grid-record shape decision record 0008 deferred to the
+# first #30 bench and 0010 defines. A record with no schema_version is one of the two
+# legacy single-corner shapes (sim/smoke, closed-loop-vref-pvt/run.sh).
+staged = (envelope or {}).get("environment", {}).get("staged_model_inputs") or []
+remote = (envelope or {}).get("environment", {}).get("remote") or {}
+runner_inputs = remote.get("runner_model_inputs")
+record = {
+    "schema_version": 1,
+    "kind": bench_meta["kind"],
+    "label": "SIMULATED",
+    "status": "failed" if reason else "ok",
+    "bench": bench,
+    "testbench": bench_meta["testbench"],
+    "spec_rows": bench_meta["spec_rows"],
+    "criteria": bench_meta["criteria"],
+    "timestamp_utc": stamp,
+    "repo_git_sha": sha,
+    "pdk_revision": pdk_rev,
+    "pdk": {"name": pin["pdk"], "pin_file": "sim/pdk.json"},
+    "source_repo": src_repo,
+    "source_commit": src_commit,
+    "source_path": dut_rel,
+    "source_file_sha256": sha256(dut_p),
+    "simulator": {"ngspice": ngspice, "klt": get_klt_version(), "backend": backend},
+    "deck_sha256": sha256(deck_p),
+    "template_sha256": sha256(tmpl_p),
+    "request_sha256": sha256(request_p),
+    "osdi_preload": bench_meta["osdi"],
+    "envelope": "sim/%s/envelopes/%s" % (bench, envelope_name) if envelope is not None else None,
+    # What binds the models that RAN to sim/pdk.json's pin: options.stage_model_inputs uploads
+    # this host's pinned corner libraries and their closure, and the worker reports back the
+    # hashes it received. The batch image's own PDK tree publishes no revision stamp, so without
+    # this the pdk_revision above would only describe the submitting host (sim/README.md).
+    "models_staged": {
+        "count": len(staged),
+        "runner_reported_count": None if runner_inputs is None else len(runner_inputs),
+        "hashes_match": None if (not staged or runner_inputs is None) else (
+            {s["name"]: s["sha256"] for s in staged}
+            == {s["name"]: s["sha256"] for s in runner_inputs}),
+        "files": [{"name": s["name"], "kind": s["kind"], "sha256": s["sha256"]} for s in staged],
+    },
+    "grid": summary,
+}
+if reason:
+    record["failure_reason"] = reason
+write_record(rec_p, record)
+print("%s: wrote %s" % (bench, rec_p))
+if envelope is not None:
+    print("%s: wrote %s" % (bench, envelope_out))
+if reason:
+    print("%s: NOT PASSED: %s" % (bench, reason), file=sys.stderr)
+    sys.exit(5)
+print("  %s/%s points passed (simulated, %s backend)" % (
+    summary["points_passed"], summary["points_total"], backend))
+for row in summary["rows"]:
+    if row.get("limits"):
+        wc = row.get("worst_case") or {}
+        print("  %-22s %-8s worst %-14s at %s" % (
+            row["name"], row["status"], wc.get("value"), wc.get("corner_id")))
+PY
+exit $?

@@ -1,0 +1,15 @@
+{
+  "_comment": [
+    "Grid metadata read by sim/grid-run.sh (issue #30). `deck_template` and `request` keep the names decision record 0009 and the existing records already cite, so nothing this bench is cited by was renamed.",
+    "`spec_rows` are the spec/target-spec.md row ids this bench's envelope is cited for in manifests/sg13cmos5l-bandgap.json; they must match the `spec_row` tags on the request's graded measurements."
+  ],
+  "bench": "closed-loop-vref-pvt",
+  "kind": "closed-loop-vref-grid",
+  "testbench": "sim/closed-loop-vref-pvt/vref.cir.tmpl",
+  "deck_template": "vref.cir.tmpl",
+  "request": "request-45pt.json",
+  "spec_rows": ["vref_nominal"],
+  "criteria": "Graded at every point: vref_settle_v = max |vref(t) - vref(2 ms)| over t in (1.5 ms, 2 ms] < 1 mV -- the settle criterion decision record 0009 ratified for this bench, now applied to all 45 points. vref_v is recorded as evidence at every point with a plausible_range of [0.5 V, 2.0 V], which fails a converged-but-degenerate solution rather than recording it as a reference. The 'Output reference, nominal' row's ratified target is the TC-null point (a method, not a number), so no numeric accuracy bound exists to grade against; the untrimmed-line spread is the Monte Carlo row's (issue #31), not this one's.",
+  "osdi": ["psp103", "r3_cmc"],
+  "deck_substitutions": { "VDD": "3.3" }
+}

@@ -2,18 +2,33 @@
   "schema_version": 1,
   "kind": "t1-attestation-inventory",
   "t1_item": 9,
-  "description": "T1 item 9 (Testbenches shipped). cold_start is local_only: it needs the pinned combined IHP-Open-PDK checkout, ngspice >= 43 and a built psp103.osdi (sim/README.md), none of which a GitHub runner has. It runs sim/smoke/run_smoke.sh, which appends one sim/smoke/records/*.json per run. The 45-point closed-loop grid is inventoried but not cold-started here: it goes to the batch fleet through klt sim. See attest/README.md.",
+  "description": "T1 item 9 (Testbenches shipped). cold_start is local_only: it needs the pinned combined IHP-Open-PDK checkout, ngspice >= 43 and a built psp103.osdi (sim/README.md), none of which a GitHub runner has. It runs sim/smoke/run_smoke.sh, which appends one sim/smoke/records/*.json per run. The five PVT-grid benches (issue #30, decision record 0010) are inventoried but not cold-started here: their grids go to the batch fleet through klt sim, which a GitHub runner cannot reach either. Each bench contributes its deck template and its committed klt sim request -- what the bench IS; bench.json and sim/grid-run.sh are runner plumbing and are not inventoried, the same convention that leaves the per-bench run.sh out. See attest/README.md.",
   "testbenches": [
     "sim/smoke/smoke.cir",
     "sim/closed-loop-vref-pvt/vref.cir.tmpl",
-    "sim/closed-loop-vref-pvt/request-45pt.json"
+    "sim/closed-loop-vref-pvt/request-45pt.json",
+    "sim/closed-loop-vref-pvt-boxtc/deck.cir.tmpl",
+    "sim/closed-loop-vref-pvt-boxtc/request-grid.json",
+    "sim/closed-loop-psrr/deck.cir.tmpl",
+    "sim/closed-loop-psrr/request-grid.json",
+    "sim/closed-loop-iq/deck.cir.tmpl",
+    "sim/closed-loop-iq/request-grid.json",
+    "sim/closed-loop-startup/deck.cir.tmpl",
+    "sim/closed-loop-startup/request-grid.json"
   ],
   "cold_start": {
-    "argv": ["bash", "-c", "source sim/env.sh && sim/smoke/run_smoke.sh"],
+    "argv": [
+      "bash",
+      "-c",
+      "source sim/env.sh && sim/smoke/run_smoke.sh"
+    ],
     "local_only": true
   },
   "pins": {
-    "pdk": {"name": "ihp-sg13cmos5l", "revision": "f7bca32694fe3d58be0cc7d9df4b9f5db7161a14"},
+    "pdk": {
+      "name": "ihp-sg13cmos5l",
+      "revision": "f7bca32694fe3d58be0cc7d9df4b9f5db7161a14"
+    },
     "tools": {
       "klt": "0.8.0",
       "ngspice": "46",

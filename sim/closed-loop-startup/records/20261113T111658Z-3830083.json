@@ -1,0 +1,371 @@
+{
+  "bench": "closed-loop-startup",
+  "criteria": "Graded at every one of the 45 points. Self-starting (the ratified Fallback), carried over verbatim from the inherited source bench's own criteria: det_release_ratio = v(xx3.det)/v(vdd) <= 0.2 (the startup cell releases), dvsns_v = |sns1 - sns2| <= 20 mV (the real amplifier closes the loop), fb_headroom_v = min(fb, vdd - fb) >= 0.05 V (fb settles to an interior equilibrium, not a rail). Settling time (the ratified Target): t_settle_s < 1 ms, the last instant |vref(t) - vref(2 ms)| exceeded 1% of vref(2 ms), measured from t = 0 so it includes the 200 us supply ramp. The source bench never extracted this time; decision record 0010 supersedes the planned bench for that reason.",
+  "deck_sha256": "a5be24497f97acb913bcca22f7fbc589b64513966719934c91652757d18f4faa",
+  "envelope": "sim/closed-loop-startup/envelopes/20261113T111658Z-3830083.json",
+  "grid": {
+    "envelope_status": "pass",
+    "failing_points": [],
+    "failing_points_truncated": false,
+    "measurements_declared": 12,
+    "measurements_with_limits": 5,
+    "points_errored": 0,
+    "points_failed": 0,
+    "points_inconclusive": 0,
+    "points_passed": 45,
+    "points_total": 45,
+    "rows": [
+      {
+        "limits": {
+          "min": 8
+        },
+        "max": {
+          "corner_id": "typ/2.970V/-40C",
+          "value": 1001.0
+        },
+        "min": {
+          "corner_id": "typ/2.970V/-40C",
+          "value": 1001.0
+        },
+        "name": "time_points",
+        "status": "pass",
+        "unit": null,
+        "worst_case": {
+          "corner_id": "typ/2.970V/-40C",
+          "margin": 993.0,
+          "value": 1001.0
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "sf/2.970V/125C",
+          "value": 5.43439725743e-19
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/125C",
+          "value": -1.35012177375e-19
+        },
+        "name": "vref_start_v",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/-40C",
+          "margin": null,
+          "value": -2.48654469803e-32
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "bcs/3.630V/-40C",
+          "value": 1.200391694085
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/125C",
+          "value": 1.188738403419
+        },
+        "name": "vref_final_v",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/-40C",
+          "margin": null,
+          "value": 1.197177424932
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/-40C",
+          "value": 3.63
+        },
+        "min": {
+          "corner_id": "typ/2.970V/-40C",
+          "value": 2.97
+        },
+        "name": "vdd_final_v",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/-40C",
+          "margin": null,
+          "value": 2.97
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "bcs/3.630V/-40C",
+          "value": 0.8753097321961
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/125C",
+          "value": 0.6385285724265
+        },
+        "name": "sns1_final_v",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/-40C",
+          "margin": null,
+          "value": 0.872655827033
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "bcs/3.630V/-40C",
+          "value": 0.8752140849691
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/125C",
+          "value": 0.6380914698081
+        },
+        "name": "sns2_final_v",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/-40C",
+          "margin": null,
+          "value": 0.8724959666832
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "bcs/3.630V/125C",
+          "value": 2.929054678364
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/-40C",
+          "value": 2.088832245774
+        },
+        "name": "fb_final_v",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/-40C",
+          "margin": null,
+          "value": 2.135920276283
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "wcs/3.630V/125C",
+          "value": 0.03229696363931
+        },
+        "min": {
+          "corner_id": "bcs/2.970V/-40C",
+          "value": 0.001470847628029
+        },
+        "name": "det_final_v",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/-40C",
+          "margin": null,
+          "value": 0.001818032887548
+        }
+      },
+      {
+        "limits": {
+          "max": 0.02
+        },
+        "max": {
+          "corner_id": "bcs/2.970V/125C",
+          "value": 0.0004938119053719
+        },
+        "min": {
+          "corner_id": "wcs/3.630V/-40C",
+          "value": 6.168698440345e-05
+        },
+        "name": "dvsns_v",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "bcs/2.970V/125C",
+          "margin": 0.0195061880946281,
+          "value": 0.0004938119053719
+        }
+      },
+      {
+        "limits": {
+          "max": 0.2
+        },
+        "max": {
+          "corner_id": "wcs/3.630V/125C",
+          "value": 0.008897235162343
+        },
+        "min": {
+          "corner_id": "bcs/2.970V/-40C",
+          "value": 0.0004952348915922
+        },
+        "name": "det_release_ratio",
+        "status": "pass",
+        "unit": null,
+        "worst_case": {
+          "corner_id": "wcs/3.630V/125C",
+          "margin": 0.191102764837657,
+          "value": 0.008897235162343
+        }
+      },
+      {
+        "limits": {
+          "min": 0.05
+        },
+        "max": {
+          "corner_id": "wcs/2.970V/-40C",
+          "value": 0.8811677542261
+        },
+        "min": {
+          "corner_id": "bcs/3.630V/125C",
+          "value": 0.7009453216364
+        },
+        "name": "fb_headroom_v",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "bcs/3.630V/125C",
+          "margin": 0.6509453216364,
+          "value": 0.7009453216364
+        }
+      },
+      {
+        "limits": {
+          "max": 0.001
+        },
+        "max": {
+          "corner_id": "wcs/2.970V/-40C",
+          "value": 0.0001
+        },
+        "min": {
+          "corner_id": "bcs/3.630V/-40C",
+          "value": 7.4e-05
+        },
+        "name": "t_settle_s",
+        "status": "pass",
+        "unit": "s",
+        "worst_case": {
+          "corner_id": "wcs/2.970V/-40C",
+          "margin": 0.0009,
+          "value": 0.0001
+        }
+      }
+    ]
+  },
+  "kind": "closed-loop-startup-grid",
+  "label": "SIMULATED",
+  "models_staged": {
+    "count": 15,
+    "files": [
+      {
+        "kind": "library",
+        "name": "cornerPNP.lib",
+        "sha256": "65986abd36f61498fd859b66ab1e199e897fd58174c5b6ff789498350d8a0a64"
+      },
+      {
+        "kind": "library",
+        "name": "cornerMOShv.lib",
+        "sha256": "40c4140415a2a2e92d2f42fd64e026d1c04d800708b7a5b663ef083206ddfd62"
+      },
+      {
+        "kind": "library",
+        "name": "cornerRES.lib",
+        "sha256": "bd2fdd7cf19ec817c23c1539c7ab013612e959b8b0698e0a482a7af5ca91d0f9"
+      },
+      {
+        "kind": "dependency",
+        "name": "sg13cmos5l_pnpMPA_mod.lib",
+        "sha256": "0283ad85c094dd1e1be635c5b405c4d4c96ac053423781f25e702bdfbcadaeaa"
+      },
+      {
+        "kind": "dependency",
+        "name": "sg13cmos5l_pnpMPA_stat.lib",
+        "sha256": "f8ec3f58c793d065028823248f2fee95cec2d69aceca1fb7dae0203bdc0680ad"
+      },
+      {
+        "kind": "dependency",
+        "name": "sg13g2_moshv_mod.lib",
+        "sha256": "bf75d51ba73ab6c40bdb76306c9df74f80229db42ee63e3f4cc30a1911645af2"
+      },
+      {
+        "kind": "dependency",
+        "name": "sg13g2_svaricaphv_mod.lib",
+        "sha256": "b6ae39c7334c75c222ecdee9d6b04c9be48657e91351429aebac47d1192a9abb"
+      },
+      {
+        "kind": "dependency",
+        "name": "sg13g2_moshv_mismatch.lib",
+        "sha256": "2e9612bdb8252c281f422511039dc9b3ea983892aec89f8ef3361592e68fed09"
+      },
+      {
+        "kind": "dependency",
+        "name": "sg13g2_moshv_mod_mismatch.lib",
+        "sha256": "97eba3d2d47596488e0e128f950dc30742d1da80cdeec1f7385a9e13cb460936"
+      },
+      {
+        "kind": "dependency",
+        "name": "sg13g2_svaricaphv_mod_mismatch.lib",
+        "sha256": "064e1c751508149f2674914c1791c418195c55fff7d82236d20c2c79f49030fe"
+      },
+      {
+        "kind": "dependency",
+        "name": "sg13g2_moshv_stat.lib",
+        "sha256": "cd30f22637e41fdbbaba506ebe0f17746b8438027e4651a7a87b241a39d68903"
+      },
+      {
+        "kind": "dependency",
+        "name": "resistors_mod.lib",
+        "sha256": "7c77da0c0419c8a332550da3f934f530262bd452734090db827b68ff88d09c43"
+      },
+      {
+        "kind": "dependency",
+        "name": "resistors_mod_mismatch.lib",
+        "sha256": "ce5ea8559df174fbdad8192e45e5d65772ae3af90af61ba295419b2cb5154b29"
+      },
+      {
+        "kind": "dependency",
+        "name": "resistors_stat.lib",
+        "sha256": "9e34411ed09a569323adec8181e4bdd6832af279c9e05b181f00cb2e5d696db6"
+      },
+      {
+        "kind": "dependency",
+        "name": "sg13g2_moshv_parm.lib",
+        "sha256": "eea5bbed39184cb1e2654ae29425a9ed6ee2f2341d6cb76c472591c75237bd35"
+      }
+    ],
+    "hashes_match": true,
+    "runner_reported_count": 15
+  },
+  "osdi_preload": [
+    "psp103",
+    "r3_cmc"
+  ],
+  "pdk": {
+    "name": "ihp-sg13cmos5l",
+    "pin_file": "sim/pdk.json"
+  },
+  "pdk_revision": "f7bca32694fe3d58be0cc7d9df4b9f5db7161a14",
+  "repo_git_sha": "3830083",
+  "request_sha256": "7f9c296bdcb29726e2185131a463242d19a4b6b79307b89e0ad8e7b3a6a1d3bd",
+  "schema_version": 1,
+  "simulator": {
+    "backend": "batch",
+    "klt": "klt 0.9.2.dev887+gec7400b7d8e5",
+    "ngspice": "ngspice-47"
+  },
+  "source_commit": "52535387e6ccf0a89f6490901a9abb2b78144176",
+  "source_file_sha256": "a29624d3bbcc89e2f7132ecfb278dd793b248c84b9f74ab51685f8ecde929ad5",
+  "source_path": "design/sg13cmos5l/netlist/bandgap_top.spice",
+  "source_repo": "2AMLogic/sg13g2-bandgap",
+  "spec_rows": [
+    "startup_self_starting",
+    "startup_time"
+  ],
+  "status": "ok",
+  "template_sha256": "19ad249c363ba53553de9f2dc43823da42f37e39a92e099ef8d3437a441649f1",
+  "testbench": "sim/closed-loop-startup/deck.cir.tmpl",
+  "timestamp_utc": "20261113T111658Z"
+}

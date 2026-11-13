@@ -1,0 +1,49 @@
+* sg13cmos5l-bandgap -- closed-loop startup bench body (issue #30, Part of #5).
+* Template: sim/grid-run.sh substitutes @@VDD@@ (the ramp target) and @@WORK@@ and writes the
+* deck to sim/build/closed-loop-startup/deck.cir. The model `.lib` cards and the temperature
+* come from the `klt sim` request (request-grid.json).
+*
+* FIXTURE -- the rail itself ramps 0 -> @@VDD@@ over 200 us and holds to 2 ms, so what the
+* simulator solves for is the assembled block's own cold-start -> closed-loop-settled
+* transition. The 200 us ramp and the 2 ms window are carried over unchanged from the
+* inherited source bench sim/sg13cmos5l-closed-loop-startup at the commit in
+* reuse.lock.json (its testbench/sg13cmos5l_closed_loop_startup.body.spice.tmpl), so this
+* bench's startup trajectory is the one the source recorded 45/45 points passing on.
+*
+* The source baked the ramp target per supply and dispatched one request per supply,
+* because `alter` cannot sweep a PWL source. This bench keeps ONE request with the full
+* supply axis instead: `corners.supply_waveforms: ["Vvdd"]` rescales the PWL levels per
+* corner (peak -> the corner's supply), which klt reports per point under
+* `corners[].supply_waveforms`. That is why the ramp target below is the nominal 3.30 V and
+* not a placeholder: it is the PWL peak the rescaling is relative to.
+*
+* vss at 0 and the substrate net `sub!` tied to vss through a 0 V source, as in
+* sim/closed-loop-vref-pvt/vref.cir.tmpl and in the source body.
+*
+* NOT carried over from the source body: its `Vmkfb` ammeter in series with XMKFB's drain.
+* The source body inlined every DUT device, so it could split that net; this bench
+* `.include`s the migrated hierarchical netlist, and inserting the ammeter would mean
+* editing the DUT, which decision record 0006 forbids. The startup cell's release is
+* instead graded on its own detect node through the hierarchical name `v(xx3.det)`, which
+* is the gate drive of XMKFB and the source's own release criterion
+* (`v(det) <= 0.2*vdd`); see README.md 'What the Vmkfb ammeter measured'.
+*
+* OSDI objects load through the request's options.osdi_preload, not a .control block: a
+* .control block here would land inside the deck `klt sim` `.include`s, not in the top deck
+* it generates, so its commands would never run.
+*
+* NO SPICE TITLE LINE (issue #19): `klt sim` `.include`s this deck into a top deck of its
+* own, so line 1 here is not in title position and a title line would be parsed as a
+* netlist element.
+
+* rshunt/gmin: convergence aids only, far below any current read here. Carried over from
+* the source body, whose comment explains why they are needed on this bench in particular:
+* the real, not-yet-loop-gain-tuned amplifier can fail to converge at an early,
+* near-singular instant on the vdd ramp at a marginal corner.
+.options rshunt=1e9 gmin=1e-9
+
+Vvdd vdd 0 PWL(0 0 200u @@VDD@@ 2m @@VDD@@)
+Vvss vss 0 dc 0
+Vsub sub! vss dc 0
+
+.include "@@WORK@@/bandgap_top.spice"

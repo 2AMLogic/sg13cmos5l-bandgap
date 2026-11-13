@@ -1,0 +1,15 @@
+{
+  "_comment": [
+    "Grid metadata read by sim/grid-run.sh (issue #30).",
+    "`spec_rows` are the spec/target-spec.md row ids this bench's envelope is cited for in manifests/sg13cmos5l-bandgap.json; they must match the `spec_row` tags on the request's graded measurements."
+  ],
+  "bench": "closed-loop-iq",
+  "kind": "closed-loop-iq-grid",
+  "testbench": "sim/closed-loop-iq/deck.cir.tmpl",
+  "deck_template": "deck.cir.tmpl",
+  "request": "request-grid.json",
+  "spec_rows": ["iq"],
+  "criteria": "Graded at every one of the 45 points: iq_a < 100 uA, the ratified FALLBACK bound of the 'Iq' row (decision record 0001 §5 names the fallback as the threshold a miss is judged against). The row's Target is < 50 uA and its Stretch < 20 uA; both are reported in README.md against the measured worst case, not graded here. The row's 'settled' qualifier is graded as well: iq_settle_a, the largest deviation of |i(Vvdd)| from its 2 ms value over the last 0.5 ms, must be under 1 uA (1% of the fallback bound).",
+  "osdi": ["psp103", "r3_cmc"],
+  "deck_substitutions": { "VDD": "3.3" }
+}

@@ -38,3 +38,71 @@ cm5_record_path() {
   REC="$3/${STAMP}-${SHA}.json"
   [[ ! -e "${REC}" ]] || { echo "$1: ${REC} exists; records are append-only." >&2; exit 4; }
 }
+
+# ---- corner-verification grid helpers (issue #30) ----------------------------
+# Shared by the five T1-item-5 benches (closed-loop-vref-pvt, -pvt-boxtc,
+# closed-loop-psrr, closed-loop-iq, closed-loop-startup). Each bench keeps its own
+# deck template, request file and record shape (decision record 0008); what is shared
+# is reading the pin, staging the DUT, and the one way a grid reaches the batch fleet.
+
+# cm5_pinned_source <tag> <repo_dir>: sets SRC_REPO and SRC_COMMIT from the first
+# non-block `pin` source of reuse.lock.json. Exit 6 if the pin is unreadable or the
+# commit is not a 40-hex sha.
+cm5_pinned_source() {
+  local tag="$1" repo_dir="$2"
+  # shellcheck disable=SC2034  # set for the caller, like cm5_gate's NGSPICE_VERSION
+  read -r SRC_REPO SRC_COMMIT < <(python3 -I - "${repo_dir}/reuse.lock.json" <<'PY'
+import json, re, sys
+for s in json.load(open(sys.argv[1]))["sources"]:
+    if s.get("mode") == "pin" and "block" not in s:
+        if not re.fullmatch(r"[0-9a-f]{40}", s["commit"]):
+            sys.exit("reuse.lock.json commit is not a 40-hex sha: %r" % s["commit"])
+        print(s["repo"], s["commit"]); break
+else:
+    sys.exit("reuse.lock.json has no pinned design source")
+PY
+  ) || { echo "${tag}: cannot read the pinned source from reuse.lock.json." >&2; exit 6; }
+}
+
+# cm5_stage_dut <tag> <repo_dir> <work_dir>: stage the in-repo migrated DUT netlist
+# (decision record 0006) for a bench deck to `.include`. Sets CM5_DUT_FETCHED (the file
+# as read, whose sha256 equals the pinned source blob) and CM5_DUT (the same text with
+# only its final `.end` card dropped, so the including deck's end card is the only one).
+# Exit 6 if the netlist is absent or is not the expected flattened export.
+cm5_stage_dut() {
+  local tag="$1" repo_dir="$2" work="$3"
+  local rel="design/sg13cmos5l/netlist/bandgap_top.spice"
+  # shellcheck disable=SC2034  # set for the caller (grid-run.sh passes it into the record)
+  CM5_DUT_SOURCE_PATH="${rel}"
+  CM5_DUT_FETCHED="${work}/bandgap_top.fetched.spice"
+  CM5_DUT="${work}/bandgap_top.spice"
+  [[ -f "${repo_dir}/${rel}" ]] \
+    || { echo "${tag}: SOURCE_MISSING ${rel} is not in this tree (decision record 0006)." >&2; exit 6; }
+  cp "${repo_dir}/${rel}" "${CM5_DUT_FETCHED}"
+  grep -q '^\.subckt bandgap_core ' "${CM5_DUT_FETCHED}" \
+    || { echo "${tag}: ${rel} has no 'bandgap_core' subckt; not the expected netlist." >&2; exit 6; }
+  grep -v -x '\.end' "${CM5_DUT_FETCHED}" > "${CM5_DUT}"
+}
+
+# cm5_grid_submit <tag> <request> <outdir> <envelope_out> <err_out>: run one multi-corner
+# `klt sim` grid. Sets CM5_KLT_RC (never fails the shell, so the caller can record a failed
+# envelope) and CM5_BACKEND.
+#
+# The grid goes to the Spot batch fleet, never to a local ngspice loop: this is the host
+# rule for every multi-corner request, and sim/README.md records it. `--wait-for-capacity
+# 600` makes a vCPU-budget refusal (batch_no_capacity / batch_concurrency_cap) wait with
+# backoff instead of failing the step. $CM5_GRID_BACKEND overrides the backend for a
+# non-dispatch host the operator names; a failed submit is reported, never replaced by a
+# local grid.
+cm5_grid_submit() {
+  local tag="$1" request="$2" outdir="$3" envelope="$4" errlog="$5"
+  CM5_BACKEND="${CM5_GRID_BACKEND:-batch}"
+  CM5_KLT_RC=0
+  echo "${tag}: klt sim --backend ${CM5_BACKEND} (grid; --wait-for-capacity 600)" >&2
+  klt sim --backend "${CM5_BACKEND}" --wait-for-capacity 600 --format json \
+      -o "${outdir}" "${request}" > "${envelope}" 2>"${errlog}" || CM5_KLT_RC=$?
+  if (( CM5_KLT_RC != 0 )); then
+    echo "${tag}: klt sim exited ${CM5_KLT_RC}; tail of stderr:" >&2
+    tail -20 "${errlog}" >&2 || true
+  fi
+}

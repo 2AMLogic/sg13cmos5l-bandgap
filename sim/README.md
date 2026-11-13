@@ -1,16 +1,101 @@
 # sim
 
-Simulation environment for the SG13CMOS5L bandgap. Today this holds only the
-PDK pin, a bring-up smoke bench (issue #4, T1 item 9) and the first design bench, closed-loop `vref` (issue #14).
+Simulation environment for the SG13CMOS5L bandgap: the PDK pin, a bring-up smoke bench
+(issue #4, T1 item 9) and the five PVT-grid benches that carry T1 item 5's corner
+verification (issue #30).
 
 | File | Role |
 |---|---|
 | `pdk.json` | The pin: IHP-Open-PDK `dev` @ `f7bca326…`, model files, OSDI objects, minimum ngspice |
 | `env.sh` | Sourced; resolves `PDK_ROOT`/`PDK`, **refuses** unless the install is the pinned revision |
 | `smoke/` | `.op`-style smoke deck (one `sg13_hv_nmos`, one `pnpMPA`, typ/27 °C/3.3 V), runner, append-only `records/` |
-| `closed-loop-vref-pvt/` | Closed-loop `vref` bench (typ/27 °C/3.30 V run, 45-point request committed un-run), fetches the DUT at the `reuse.lock.json` pin |
-| `runner-lib.sh`, `tools/cm5_record.py` | Shared by the bench runners: tool/ngspice gates, append-only record path and write, klt-envelope value extraction (record 0008) |
+| `closed-loop-vref-pvt/` | Closed-loop `vref`: the Output-reference-nominal row. 45 points; also keeps `run.sh`, the single-corner local probe behind decision record 0009 |
+| `closed-loop-vref-pvt-boxtc/` | Closed-loop `vref` over temperature: the Temp-coefficient row, endpoint **and** box method. 15 units, each a 166-point DC sweep of `TEMP` |
+| `closed-loop-psrr/` | PSRR @ DC: two DC solves per point and a 0.1 V supply secant. 45 points |
+| `closed-loop-iq/` | Quiescent supply current, settled. 45 points |
+| `closed-loop-startup/` | Release from `vdd` = 0: self-starting **and** the settling time the inherited source bench never extracted. 45 points |
+| `grid-run.sh` | The one runner for all five grids: stages the migrated DUT, renders the deck, submits the committed request to the batch fleet, writes the envelope and the record |
+| `runner-lib.sh`, `tools/cm5_record.py` | Shared by the bench runners: tool/ngspice gates, append-only record path and write, klt-envelope value extraction and grid reduction (record 0008, extended by 0010) |
 | `ENV-DECISION.md` | Why `env.sh` is this repo's own and the OSDI builder is adopted by pin |
+
+## PVT grids: one runner, the batch fleet, and what it can and cannot prove
+
+Run one grid:
+
+```bash
+source sim/env.sh && sim/grid-run.sh closed-loop-psrr      # or any of the five bench directory names
+```
+
+Each bench directory carries `bench.json` (the graded criteria and which files to use), a
+deck template, and a committed `request-grid.json` (`request-45pt.json` in
+`closed-loop-vref-pvt`, whose name decision record 0009 already cites). `grid-run.sh` writes
+two artifacts per run, both append-only:
+
+- `envelopes/<UTC>-<short sha>.json` — the raw `klt sim --format json` envelope. **This is the
+  artifact `manifests/sg13cmos5l-bandgap.json` cites for T1 item 5**; `klt signoff` reads it.
+- `records/<UTC>-<short sha>.json` — this repo's own record: the PDK and source pins, the DUT,
+  deck, template and request hashes, the per-row verdict with its binding corner, and the name
+  of the envelope beside it.
+
+**Grids go to the Spot batch fleet, never to a local `ngspice` loop.** That is the host rule
+for any multi-corner request; `grid-run.sh` passes `--wait-for-capacity 600` so a vCPU-budget
+refusal waits with backoff instead of failing the step, and a failed submit is recorded and
+reported rather than worked around locally. A single corner may still run locally — that is
+what `closed-loop-vref-pvt/run.sh` is. `$CM5_GRID_BACKEND` overrides the backend for a
+non-dispatch host an operator names.
+
+Every committed request is **host-portable**: `models.pdk` plus PDK-relative per-section corner
+libraries (no generated corner bundle, no absolute host path, which `batch` refuses),
+`$PDK_ROOT/...` OSDI entries the runner resolves on its own box, and
+`options.stage_model_inputs: true`.
+
+### What the fleet runner cannot prove (and what staging fixes)
+
+The batch image bakes a SG13CMOS5L tree under `/opt/pdk`, but that tree publishes **no readable
+revision stamp**: a grid run with models resolved on the runner comes back with
+`worker_environment.pdk.stamp_text: null`, a `pdk stamp unreadable: FileNotFoundError`
+diagnostic, `pdk_stamp_comparison.status: "not_comparable"` and a null
+`remote.runner_models_lib_sha256`. Nothing in such an envelope ties the models that ran to
+`sim/pdk.json`'s pinned revision — the record's `pdk_revision` would only be a statement about
+the submitting host.
+
+`options.stage_model_inputs: true` closes most of that: it uploads this host's pinned corner
+libraries **and their whole `.include`/`.lib` closure** with the job (15 files for these
+benches) and reports their sha256 twice — `environment.staged_model_inputs` as the client sent
+them and `remote.runner_model_inputs` as the worker received them. Both lists match in every
+committed envelope here, so the model text behind each figure is bound to the pin by hash.
+
+**Residual gap, stated rather than closed**: the OSDI compact-model binaries are the image's,
+not the pin's. They are declared as literal `$PDK_ROOT/...`, so they are runner-resolved, not
+staged and not hashed. Staging them would need a host-absolute `osdi_preload` path, which would
+make every request unportable and uncommittable, so the gap is instead **bounded by
+measurement** — and that measurement is reproducible, not just described:
+
+```bash
+source sim/env.sh && CM5_GRID_NO_STAGE=1 sim/grid-run.sh closed-loop-vref-pvt
+```
+
+turns staging off and writes its artifacts with an `.image-models` suffix, so the same grid
+against the fleet image's own PDK tree can be compared value for value with the staged run.
+`closed-loop-vref-pvt/envelopes/` holds both:
+
+| Envelope | Models | Job |
+|---|---|---|
+| `20261113T112115Z-3830083.image-models.json` | resolved on the runner from the fleet image | `klt-sim-eb3c80bdefd3` |
+| `20261113T111044Z-3830083.json` | staged from this host's pin (15 files, hashes matched by the worker) | `klt-sim-fbbab809f5c5` |
+
+All **315** measurements (45 points × 7) agree exactly. The image's SG13CMOS5L models and this
+pin's are therefore behaviourally identical for these sections — measured, not assumed.
+`manifests/` cites the staged envelope, because only that one binds the models to the pin by
+hash.
+
+The tool-side half of the gap is filed as generic friction at
+[`2AMLogic/klayout-tools#5457`](https://github.com/2AMLogic/klayout-tools/issues/5457): a
+request that selects corners with per-section corner libraries has **no** `models.lib`, so
+`environment.models_lib_sha256` is null by construction and the runner-side comparison #5321
+added (`remote.models_lib_comparison`) can only ever report `runner_hash_unavailable` — the
+portable multi-family request shape is the one shape whose executed models cannot be attested.
+The unreadable image stamp itself is `klayout-tools#5321`/`#5318`, already filed.
 
 Every figure these produce is **simulated**. The smoke circuit is not part of the
 design and proves only that the models load and converge.
@@ -80,7 +165,10 @@ Search order for `PDK_ROOT`: `$PDK_ROOT`, `sim/build/IHP-Open-PDK`, `/usr/share/
 
 `sim/smoke/records/*.json` are append-only: `run_smoke.sh` creates a new file per run and
 refuses to overwrite one. Each states the simulator version, PDK revision, deck sha256,
-corner and testbench, and embeds the `klt sim` envelope.
+corner and testbench, and embeds the `klt sim` envelope. The grid benches' `records/` and
+`envelopes/` are append-only on the same terms (`cm5_record_path` refuses an existing path, and
+`write_record` opens with `"x"`); a second run in the same UTC second at the same commit is the
+only case that collides, and it exits 4 rather than overwriting.
 
 ## Model section check
 

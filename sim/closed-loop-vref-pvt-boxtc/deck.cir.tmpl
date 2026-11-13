@@ -1,0 +1,39 @@
+* sg13cmos5l-bandgap -- closed-loop vref temperature-sweep bench body (issue #30, Part of #5).
+* Template: sim/grid-run.sh substitutes @@VDD@@ and @@WORK@@ and writes the deck to
+* sim/build/closed-loop-vref-pvt-boxtc/deck.cir. The model `.lib` cards and the supply
+* value come from the `klt sim` request (request-grid.json).
+*
+* Same fixture as sim/closed-loop-vref-pvt/vref.cir.tmpl -- a DC supply, vss at 0, and the
+* substrate net `sub!` tied to vss through a 0 V source -- with ONE difference: there is no
+* 2 ms transient here. The analysis is a DC sweep of TEMP (`dc temp -40 125 1`, 166 points),
+* so the whole -40...125 C characteristic is solved INSIDE one corner unit and the
+* temperature-coefficient reduction over it is a `klt sim` measurement rather than a
+* post-hoc reduction across units. `klt sim` has no cross-corner reduction, so a
+* temperature AXIS could not express a ppm/C figure at all.
+*
+* The DC operating point is the correct, non-degenerate closed-loop solution for this
+* circuit, not the zero state: measured at this PDK pin, `dc temp` returns vref = 1.19746 V
+* at 7.14 C and 1.19093 V at 125 C on typ/3.30 V, continuous with the transient bench's
+* settled 1.19696 V at 27 C (sim/closed-loop-vref-pvt, decision record 0009). That
+* continuity is what licenses a DC analysis here; it is re-checked by this bench's own
+* vref_27_v measurement, whose plausible_range fails a degenerate solve rather than
+* recording it as a characteristic.
+*
+* OSDI objects load through the request's options.osdi_preload, not a .control block: a
+* .control block here would land inside the deck `klt sim` `.include`s, not in the top deck
+* it generates, so its commands would never run.
+*
+* NO SPICE TITLE LINE (issue #19): `klt sim` `.include`s this deck into a top deck of its
+* own, so line 1 here is not in title position and a title line would be parsed as a
+* netlist element. Every line of this template is a comment or a card, and grid-run.sh
+* writes its own leading `*` line as well.
+
+* rshunt/gmin: convergence aids only, far below any current read here (same values the
+* source closed-loop bench and sim/closed-loop-vref-pvt use).
+.options rshunt=1e9 gmin=1e-9
+
+Vvdd vdd 0 dc @@VDD@@
+Vvss vss 0 dc 0
+Vsub sub! vss dc 0
+
+.include "@@WORK@@/bandgap_top.spice"
