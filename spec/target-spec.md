@@ -80,14 +80,34 @@ and read from the source testbench template
 | Resistors (`rppd`, `rhigh`) | `cornerRES.lib` | `typ`→`res_typ`, `bcs`→`res_bcs`, `wcs`→`res_wcs`, `sf`→`res_typ`, `fs`→`res_typ` |
 | Mismatch (MC) | `sg13cmos5l_pnpMPA_stat.lib` and the MOS/resistor `*_stat` sections, via `cornerPNP.lib` section `stat` | device-mismatch only |
 
-The MOS and resistor model files are `sg13g2_*` files reached by symlink from
-the SG13CMOS5L tree, so a `ihp-sg13cmos5l`-only install cannot resolve them.
-OSDI models used: `psp103.osdi`, `psp103_nqs.osdi`, `mosvar.osdi`,
-`r3_cmc.osdi`. The names above are those the source used on its historical
-pin; they are **not verified at the `dev` pin** (issue #4 owns the pin and the
-smoke bench). The `stat` section and the MOS/resistor mismatch section names
-are the part most likely to change: confirm them in #4 before the first Monte
-Carlo.
+The section names in the table above are **verified at the `dev` pin**
+`f7bca32694fe3d58be0cc7d9df4b9f5db7161a14`: `sim/tools/check-model-sections.py`
+exits 0 with 12/12 required sections found and 0 problems, so every name
+resolves verbatim — no rename. The run (2026-11-13, issue #15), its negative
+control and the pin are recorded in `sim/README.md` § "Model section check" and
+in `sim/pdk.json` `model_files_verification`. OSDI models used:
+`psp103.osdi`, `psp103_nqs.osdi`, `mosvar.osdi`, `r3_cmc.osdi`; all four are
+built in the pinned tree, and the one bench that has run at the pin preloads
+`psp103.osdi` and `r3_cmc.osdi` (record
+[`0009`](decision-records/0009-output-reference-nominal-first-measured.md)).
+
+The MOS and resistor model files are `sg13g2_*` files shared with the SG13G2
+tree, and **how the PDK is installed matters**. In a raw combined IHP-Open-PDK
+git checkout they are relative symlinks into `../ihp-sg13g2`, so an
+`ihp-sg13cmos5l`-only install cannot resolve them; a fleet PDK store bundle
+instead materializes them as real files under `ihp-sg13cmos5l/`. That
+materialization is load-bearing, not cosmetic: the store's sibling
+`ihp-sg13g2` tree is pinned at **v0.3.0, not at this `dev` pin**, and
+`cornerRES.lib`, `sg13g2_moshv_mod.lib` and `resistors_mod.lib` differ in
+content between the two trees, so live symlinks on a store-provisioned host
+would silently resolve the SG13CMOS5L models to v0.3.0 content.
+
+The Monte Carlo mismatch-section choice is still **open**. The candidates all
+exist at the pin — `cornerMOShv.lib` `mos_tt_stat` and `mos_*_mismatch`,
+`cornerRES.lib` `res_stat`, `res_stat_mismatch` and `res_*_mismatch` — and
+`cornerPNP.lib` `stat` pulls in `sg13cmos5l_pnpMPA_stat.lib` as the table says;
+which of the MOS and resistor sections the mismatch benches use is a bench
+decision (#31), not settled here.
 
 **Capacitor rows that cannot be cornered:** MoM (`cap_cmomf`, `cap_cmomi`)
 carries no corner or mismatch spread. Rows whose evidence depends on a MoM
