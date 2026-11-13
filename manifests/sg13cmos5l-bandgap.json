@@ -1,4 +1,12 @@
 {
+  "_comment": [
+    "Block manifest graded by `klt signoff --manifest`. See README.md for the regeneration command and the pin.",
+    "ITEM 5 (full corner verification vs a ratified spec), added by issue #30. Five `klt sim` envelopes, one per row family, each naming the spec/target-spec.md row ids it covers; `spec_rows.5` declares the FULL row set, so a row no envelope covers is visible in the report instead of being silently absent.",
+    "The declared row set is spec/target-spec.md's ELECTRICAL rows -- the rows whose Binding-conditions column is the §PVT grid. The Area and Signoff rows of that table are deliberately NOT declared here: their binding conditions are a layout cell and the DRC/LVS/ERC decks, which T1 items 2, 3 and 4 grade. Declaring them under item 5 would make a layout artifact a corner-verification gap.",
+    "Item 5 is UNMET on purpose. Three declared rows are gaps: the untrimmed-line 3-sigma row, the trimmed-line row and the Trim row. The first needs a device-mismatch Monte Carlo reduction (issue #31), which a corner matrix cannot express and which T1 item 6 grades; the other two need a trim network that does not exist in this design yet. Naming a narrower row set would have rendered item 5 `met` by leaving the block's unevidenced accuracy rows out of the declaration, which is exactly the relaxation CLAUDE.md forbids.",
+    "The Supply row is declared as a gap rather than covered because spec/target-spec.md states it is met BY CONSTRUCTION (HV device rating, inherited) and not by a result: every cited envelope did run the ratified 2.97/3.30/3.63 V axis, but no measurement in them establishes the row, and asserting coverage from a supply value the request itself set would be circular.",
+    "Each cited envelope carries `spec_row` tags on its graded measurements, so `klt signoff` DERIVES this coverage from the envelopes (`row_coverage.row_sources` reads `derived`) instead of taking the manifest's word for it."
+  ],
   "block": "sg13cmos5l-bandgap",
   "kind": "analog",
   "evidence": {
@@ -10,13 +18,62 @@
       "file": "layout/sg13cmos5l-bandgap_top/drc.json",
       "content_hash": "sha256:4e4e4f85fa0875651c294c95a1f65792fa1913dd20d027fbe6905f2d001cb330"
     },
+    "5": [
+      {
+        "file": "sim/closed-loop-vref-pvt/envelopes/20261113T111044Z-3830083.json",
+        "rows": ["vref_nominal"]
+      },
+      {
+        "file": "sim/closed-loop-vref-pvt-boxtc/envelopes/20261113T115709Z-0be5a53.json",
+        "rows": ["tc_endpoint", "tc_box"]
+      },
+      {
+        "file": "sim/closed-loop-psrr/envelopes/20261113T115930Z-0be5a53.json",
+        "rows": ["psrr_dc"]
+      },
+      {
+        "file": "sim/closed-loop-iq/envelopes/20261113T115819Z-0be5a53.json",
+        "rows": ["iq"]
+      },
+      {
+        "file": "sim/closed-loop-startup/envelopes/20261113T111658Z-3830083.json",
+        "rows": ["startup_self_starting", "startup_time"]
+      }
+    ],
     "9": {
       "file": "evidence/item9.json",
-      "content_hash": "sha256:cb821cd7e429ee06672ef634f9229582ed1e9cb61399763736cae31834275e41"
+      "content_hash": "sha256:aeeb3a74259a5822fc56d90eb759031769fbfd2773b8cf87376e3023846d6220"
     },
     "10": {
       "file": "evidence/item10.json",
-      "content_hash": "sha256:8797ff0c813632fb5ef203c98868bd87402008b42f5edbac8c8f2c823ac34448"
+      "content_hash": "sha256:47aabf1e082e639e7dffafb7b48bdd70ba54579e58445ca50bee4f741b6da8a7"
     }
+  },
+  "spec_rows": {
+    "5": [
+      { "id": "vref_nominal" },
+      {
+        "id": "vref_untrimmed_line_3sigma",
+        "gap": "device-mismatch Monte Carlo reduction (3 sigma over N >= 300 samples per corner point) that a klt sim corner matrix cannot express; its bench does not exist yet (issue #31), and T1 item 6 is where the statistical claim is graded"
+      },
+      {
+        "id": "vref_trimmed_line",
+        "gap": "needs a trim network, which this design does not contain; spec/target-spec.md ratifies the method only, and the row is not stated as a number until measured"
+      },
+      {
+        "id": "trim",
+        "gap": "needs a trim network, which this design does not contain; spec/target-spec.md makes the Trim row conditional on the untrimmed Monte Carlo showing a trimmable offset"
+      },
+      { "id": "tc_endpoint" },
+      { "id": "tc_box" },
+      { "id": "psrr_dc" },
+      {
+        "id": "supply",
+        "gap": "spec/target-spec.md records this row as met by construction (HV device rating, inherited), not by a result; every cited envelope ran the ratified 2.97/3.30/3.63 V axis, but no measurement establishes the row and asserting it from a supply the request itself set would be circular"
+      },
+      { "id": "iq" },
+      { "id": "startup_self_starting" },
+      { "id": "startup_time" }
+    ]
   }
 }

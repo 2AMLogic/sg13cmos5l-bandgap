@@ -1,0 +1,21 @@
+{
+  "_comment": [
+    "Grid metadata read by sim/grid-run.sh (issue #30).",
+    "`spec_rows` are the spec/target-spec.md row ids this bench's envelope is cited for in manifests/sg13cmos5l-bandgap.json; they must match the `spec_row` tags on the request's graded measurements."
+  ],
+  "bench": "closed-loop-psrr",
+  "kind": "closed-loop-psrr-grid",
+  "testbench": "sim/closed-loop-psrr/deck.cir.tmpl",
+  "deck_template": "deck.cir.tmpl",
+  "request": "request-grid.json",
+  "spec_rows": ["psrr_dc"],
+  "criteria": "Graded at every one of the 45 points: psrr_db > 60 dB, the ratified TARGET bound of the 'PSRR @ DC' row (decision record 0011 §2 grades each row at its ratified Target wherever the row states a numeric one). The row's Fallback is > 50 dB and its Stretch > 70 dB; both are reported in README.md against the measured worst case, not graded here. This bound is MISSED: 24 of the 45 points are below 60 dB, so psrr_dc is a failing row in the envelope and in `klt signoff`'s failed_rows, which is the honest outcome and not a reason to move the bound. psrr_db also carries a plausible_range of [0 dB, 140 dB], which fails a numerically-zero secant masquerading as infinite rejection.",
+  "osdi": ["psp103", "r3_cmc"],
+  "expected_failure": {
+    "rows": ["psrr_dc"],
+    "failing_points": 24,
+    "of": 45,
+    "why": "The ratified Target of the 'PSRR @ DC' row (> 60 dB) is MISSED at 24 of the 45 points: every point at 2.97 V and 9 of the 15 at 3.30 V. Since decision record 0011 \u00a72 the grids are graded at the ratified Target, so this envelope's status is 'fail' and klt signoff reports failed_rows: ['psrr_dc']. That is the intended, honest outcome and not a broken bench -- but it is declared HERE, with the exact count, so that sim/tests/test-grid-benches.sh still fails if the number of failing points changes, if a bench that declares no failure starts failing, or if this failure silently stops happening. Closing it is an amplifier change (decision record 0011 Consequences), never a bound edit."
+  },
+  "deck_substitutions": { "VDD": "3.3" }
+}

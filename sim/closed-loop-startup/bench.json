@@ -1,0 +1,15 @@
+{
+  "_comment": [
+    "Grid metadata read by sim/grid-run.sh (issue #30).",
+    "`spec_rows` are the spec/target-spec.md row ids this bench's envelope is cited for in manifests/sg13cmos5l-bandgap.json; they must match the `spec_row` tags on the request's graded measurements."
+  ],
+  "bench": "closed-loop-startup",
+  "kind": "closed-loop-startup-grid",
+  "testbench": "sim/closed-loop-startup/deck.cir.tmpl",
+  "deck_template": "deck.cir.tmpl",
+  "request": "request-grid.json",
+  "spec_rows": ["startup_self_starting", "startup_time"],
+  "criteria": "Graded at every one of the 45 points. The 'Startup' row's Target is 'self-starting, < 1 ms' and its Fallback is 'self-starting' with no time, so the row's only numeric bound is the Target's and that is what is graded here -- the same rule the other four benches follow (decision record 0011 §2): t_settle_s < 1 ms, the last instant |vref(t) - vref(2 ms)| exceeded 1% of vref(2 ms), measured from t = 0 so it includes the 200 us supply ramp. The qualitative 'self-starting' both columns share is graded on the inherited source bench's own three criteria, carried over verbatim: det_release_ratio = v(xx3.det)/v(vdd) <= 0.2 (the startup cell releases), dvsns_v = |sns1 - sns2| <= 20 mV (the real amplifier closes the loop), fb_headroom_v = min(fb, vdd - fb) >= 0.05 V (fb settles to an interior equilibrium, not a rail). The source bench never extracted the settling time; decision record 0011 supersedes the planned bench for that reason.",
+  "osdi": ["psp103", "r3_cmc"],
+  "deck_substitutions": { "VDD": "3.3" }
+}

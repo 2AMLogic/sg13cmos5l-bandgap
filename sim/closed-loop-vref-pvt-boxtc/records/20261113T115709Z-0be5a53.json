@@ -1,0 +1,310 @@
+{
+  "bench": "closed-loop-vref-pvt-boxtc",
+  "criteria": "Graded at every one of the 15 process x supply units: tc_box_ppm_per_c and tc_endpoint_ppm_per_c < 50 ppm/C, the ratified TARGET bound of the 'Temp coefficient' row (decision record 0011 \u00a72 grades each row at its ratified Target wherever the row states a numeric one). The row's Fallback is < 100 ppm/C and its Stretch < 20 ppm/C; both are reported in README.md against the measured worst case, not graded here. temp_points >= 8 is graded too, because the row's own text requires 8 or more temperature points: this bench runs 166.",
+  "deck_sha256": "f0a4139cc64002af7e44512c3913c51bece19b719290ee5d6a7e48905f8bbd0e",
+  "envelope": "sim/closed-loop-vref-pvt-boxtc/envelopes/20261113T115709Z-0be5a53.json",
+  "grid": {
+    "envelope_status": "pass",
+    "failing_points": [],
+    "failing_points_truncated": false,
+    "measurements_declared": 9,
+    "measurements_with_limits": 3,
+    "points_errored": 0,
+    "points_failed": 0,
+    "points_inconclusive": 0,
+    "points_passed": 15,
+    "points_total": 15,
+    "rows": [
+      {
+        "limits": {
+          "min": 8
+        },
+        "max": {
+          "corner_id": "typ/2.970V/27C",
+          "value": 166.0
+        },
+        "min": {
+          "corner_id": "typ/2.970V/27C",
+          "value": 166.0
+        },
+        "name": "temp_points",
+        "status": "pass",
+        "unit": null,
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": 158.0,
+          "value": 166.0
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "bcs/3.630V/27C",
+          "value": 1.200393174159
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 1.194254048009
+        },
+        "name": "vref_m40_v",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 1.197178703966
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "bcs/3.630V/27C",
+          "value": 1.199422510452
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 1.193969235276
+        },
+        "name": "vref_27_v",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 1.196527567935
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "bcs/3.300V/27C",
+          "value": 1.192722730277
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 1.18873838464
+        },
+        "name": "vref_125_v",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 1.190535710561
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "bcs/3.300V/27C",
+          "value": 1.192722730277
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 1.18873838464
+        },
+        "name": "vref_min_v",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 1.190535710561
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "bcs/3.630V/27C",
+          "value": 1.200459437842
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 1.1944677214
+        },
+        "name": "vref_max_v",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 1.197300333633
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "bcs/3.630V/27C",
+          "value": 1.196591082088
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 1.19160305302
+        },
+        "name": "vref_box_mid_v",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 1.193918022097
+        }
+      },
+      {
+        "limits": {
+          "max": 50
+        },
+        "max": {
+          "corner_id": "bcs/3.630V/27C",
+          "value": 39.18561766952
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 29.13994975337
+        },
+        "name": "tc_box_ppm_per_c",
+        "status": "pass",
+        "unit": "ppm/C",
+        "worst_case": {
+          "corner_id": "bcs/3.630V/27C",
+          "margin": 10.81438233048,
+          "value": 39.18561766952
+        }
+      },
+      {
+        "limits": {
+          "max": 50
+        },
+        "max": {
+          "corner_id": "bcs/3.630V/27C",
+          "value": 38.75828756446
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 27.99759143959
+        },
+        "name": "tc_endpoint_ppm_per_c",
+        "status": "pass",
+        "unit": "ppm/C",
+        "worst_case": {
+          "corner_id": "bcs/3.630V/27C",
+          "margin": 11.241712435540002,
+          "value": 38.75828756446
+        }
+      }
+    ]
+  },
+  "kind": "closed-loop-vref-tempco-grid",
+  "label": "SIMULATED",
+  "models_staged": {
+    "count": 15,
+    "files": [
+      {
+        "kind": "library",
+        "name": "cornerPNP.lib",
+        "sha256": "65986abd36f61498fd859b66ab1e199e897fd58174c5b6ff789498350d8a0a64"
+      },
+      {
+        "kind": "library",
+        "name": "cornerMOShv.lib",
+        "sha256": "40c4140415a2a2e92d2f42fd64e026d1c04d800708b7a5b663ef083206ddfd62"
+      },
+      {
+        "kind": "library",
+        "name": "cornerRES.lib",
+        "sha256": "bd2fdd7cf19ec817c23c1539c7ab013612e959b8b0698e0a482a7af5ca91d0f9"
+      },
+      {
+        "kind": "dependency",
+        "name": "sg13cmos5l_pnpMPA_mod.lib",
+        "sha256": "0283ad85c094dd1e1be635c5b405c4d4c96ac053423781f25e702bdfbcadaeaa"
+      },
+      {
+        "kind": "dependency",
+        "name": "sg13cmos5l_pnpMPA_stat.lib",
+        "sha256": "f8ec3f58c793d065028823248f2fee95cec2d69aceca1fb7dae0203bdc0680ad"
+      },
+      {
+        "kind": "dependency",
+        "name": "sg13g2_moshv_mod.lib",
+        "sha256": "bf75d51ba73ab6c40bdb76306c9df74f80229db42ee63e3f4cc30a1911645af2"
+      },
+      {
+        "kind": "dependency",
+        "name": "sg13g2_svaricaphv_mod.lib",
+        "sha256": "b6ae39c7334c75c222ecdee9d6b04c9be48657e91351429aebac47d1192a9abb"
+      },
+      {
+        "kind": "dependency",
+        "name": "sg13g2_moshv_mismatch.lib",
+        "sha256": "2e9612bdb8252c281f422511039dc9b3ea983892aec89f8ef3361592e68fed09"
+      },
+      {
+        "kind": "dependency",
+        "name": "sg13g2_moshv_mod_mismatch.lib",
+        "sha256": "97eba3d2d47596488e0e128f950dc30742d1da80cdeec1f7385a9e13cb460936"
+      },
+      {
+        "kind": "dependency",
+        "name": "sg13g2_svaricaphv_mod_mismatch.lib",
+        "sha256": "064e1c751508149f2674914c1791c418195c55fff7d82236d20c2c79f49030fe"
+      },
+      {
+        "kind": "dependency",
+        "name": "sg13g2_moshv_stat.lib",
+        "sha256": "cd30f22637e41fdbbaba506ebe0f17746b8438027e4651a7a87b241a39d68903"
+      },
+      {
+        "kind": "dependency",
+        "name": "resistors_mod.lib",
+        "sha256": "7c77da0c0419c8a332550da3f934f530262bd452734090db827b68ff88d09c43"
+      },
+      {
+        "kind": "dependency",
+        "name": "resistors_mod_mismatch.lib",
+        "sha256": "ce5ea8559df174fbdad8192e45e5d65772ae3af90af61ba295419b2cb5154b29"
+      },
+      {
+        "kind": "dependency",
+        "name": "resistors_stat.lib",
+        "sha256": "9e34411ed09a569323adec8181e4bdd6832af279c9e05b181f00cb2e5d696db6"
+      },
+      {
+        "kind": "dependency",
+        "name": "sg13g2_moshv_parm.lib",
+        "sha256": "eea5bbed39184cb1e2654ae29425a9ed6ee2f2341d6cb76c472591c75237bd35"
+      }
+    ],
+    "hashes_match": true,
+    "runner_reported_count": 15
+  },
+  "osdi_preload": [
+    "psp103",
+    "r3_cmc"
+  ],
+  "pdk": {
+    "name": "ihp-sg13cmos5l",
+    "pin_file": "sim/pdk.json"
+  },
+  "pdk_revision": "f7bca32694fe3d58be0cc7d9df4b9f5db7161a14",
+  "repo_git_sha": "0be5a53",
+  "request_sha256": "118161198041141a740325c882e08c41dc59ac7a87838c4fdfa71519ff13d24d",
+  "schema_version": 1,
+  "simulator": {
+    "backend": "batch",
+    "klt": "klt 0.9.2.dev901+g7f78667063fb",
+    "ngspice": "ngspice-47"
+  },
+  "source_commit": "52535387e6ccf0a89f6490901a9abb2b78144176",
+  "source_file_sha256": "a29624d3bbcc89e2f7132ecfb278dd793b248c84b9f74ab51685f8ecde929ad5",
+  "source_path": "design/sg13cmos5l/netlist/bandgap_top.spice",
+  "source_repo": "2AMLogic/sg13g2-bandgap",
+  "spec_rows": [
+    "tc_box",
+    "tc_endpoint"
+  ],
+  "status": "ok",
+  "template_sha256": "d323429f60d82ed8d371f5e34fdff008802805330a579157af3975d1752bac05",
+  "testbench": "sim/closed-loop-vref-pvt-boxtc/deck.cir.tmpl",
+  "timestamp_utc": "20261113T115709Z"
+}

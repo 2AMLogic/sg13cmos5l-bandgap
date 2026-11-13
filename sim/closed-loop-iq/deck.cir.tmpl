@@ -1,0 +1,37 @@
+* sg13cmos5l-bandgap -- closed-loop quiescent-current bench body (issue #30, Part of #5).
+* Template: sim/grid-run.sh substitutes @@VDD@@ and @@WORK@@ and writes the deck to
+* sim/build/closed-loop-iq/deck.cir. The model `.lib` cards, the temperature and the supply
+* value come from the `klt sim` request (request-grid.json).
+*
+* Byte-for-byte the same fixture as sim/closed-loop-vref-pvt/vref.cir.tmpl's cards -- a DC
+* supply, vss at 0, and the substrate net `sub!` tied to vss through a 0 V source -- because
+* Iq must be the current of the SAME settled closed-loop operating point the reference is
+* read from. There is no load: the Iq row is the assembled, self-biased block's own supply
+* current, and `vref` drives nothing in this netlist.
+*
+* Iq is read from the rail source's branch current, |i(Vvdd)|, at the end of the 2 ms
+* transient. No separate ammeter is inserted: Vvdd is already the only path from the rail
+* into the DUT, so its branch current IS the block's supply current, and adding a series
+* element would change the deck the reference bench established.
+*
+* OSDI objects load through the request's options.osdi_preload, not a .control block: a
+* .control block here would land inside the deck `klt sim` `.include`s, not in the top deck
+* it generates, so its commands would never run.
+*
+* NO SPICE TITLE LINE (issue #19): `klt sim` `.include`s this deck into a top deck of its
+* own, so line 1 here is not in title position and a title line would be parsed as a
+* netlist element.
+
+* rshunt/gmin: convergence aids only. NOTE for this bench specifically: rshunt=1e9 puts a
+* 1 Gohm resistor from every node to ground, so at 3.63 V it adds at most ~3.6 nA to the
+* rail current -- four orders below the 100 uA fallback bound and below the last reported
+* digit of the measured Iq. Same values the source closed-loop bench and
+* sim/closed-loop-vref-pvt use; they are not retuned here, so this bench's current is the
+* same operating point's current.
+.options rshunt=1e9 gmin=1e-9
+
+Vvdd vdd 0 dc @@VDD@@
+Vvss vss 0 dc 0
+Vsub sub! vss dc 0
+
+.include "@@WORK@@/bandgap_top.spice"

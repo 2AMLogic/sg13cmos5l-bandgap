@@ -1,0 +1,179 @@
+{
+  "_comment": [
+    "spec/target-spec.md 'Iq' row: assembled, self-biased block, all 5 process corners x -40/27/125 C x 3 supplies, settled. 45 points.",
+    "Iq is the whole block's supply current: the current the rail source delivers at the end of a 2 ms transient from DC sources, i.e. |i(Vvdd)| at 2 ms. The same transient fixture as sim/closed-loop-vref-pvt, so 'settled' means the same thing here as it does there, and this bench grades it: iq_settle_a is the largest deviation of i(Vvdd) from its final value over the last 0.5 ms, bounded at 1 uA. That bound is the bench's own definition of 'settled', not a ratified number -- the 'Iq' row states the qualifier but no tolerance for it.",
+    "vref_v is recorded too, with a plausible_range, so an Iq number can never be read off a degenerate (zero-current) solution that happens to sit under the bound.",
+    "PORTABLE BY CONSTRUCTION: nothing here is a path that exists only on the submitting host, so this one request serves `--backend local` (a single-corner probe, narrowed by hand) and `--backend batch` (the grid sim/grid-run.sh submits).",
+    "  - `models.pdk` selects the variant and the fleet's batch image (klayout-tools#2727 publishes sg13cmos5l). Each corner names its own PDK-relative section libraries, so no `models.lib` and no generated corner bundle is needed; an absolute host path here would be refused on batch (`models_lib_host_path`).",
+    "  - `options.stage_model_inputs` ships THIS host's pinned model libraries and their whole `.include`/`.lib` closure with the job, so the models that ran are bound by sha256 to sim/pdk.json's pinned revision (`environment.staged_model_inputs` and `remote.runner_model_inputs` both list them) instead of being whatever the fleet image happens to carry. The image's own SG13CMOS5L tree publishes no readable revision stamp (`worker_environment.pdk.stamp_text` is null), so without staging the grid could not be bound to the pin at all -- see the bench README.",
+    "  - `options.osdi_preload` entries are written as literal `$PDK_ROOT/...`, so they are runner-resolved off-host and expanded from the environment locally. They are NOT staged: the compact-model BINARIES are the executing image's. That residual gap is stated in the bench README.",
+    "  - `netlist` is the deck sim/grid-run.sh generates under sim/build/ (gitignored); the runner substitutes an absolute path, and klt's include-closure staging uploads the migrated DUT the deck `.include`s. The relative default below is where the generated deck lands, so `klt sim --dry-run` works from the repo root once a runner has written it.",
+    "Process labels map to model sections exactly as the spec/target-spec.md \u00a7PVT table does: pnpMPA has no skew section, so sf and fs read cornerPNP/cornerRES `typ`.",
+    "`netlist_source` is `schematic`: the DUT is the xschem-exported netlist migrated by decision record 0006, not an extracted one.",
+    "LIMITS ARE THE RATIFIED TARGET COLUMN of spec/target-spec.md. Decision record 0011 \u00a72 grades each row at the ratified Target wherever the row states a numeric one, so a Target miss is reported by the grader and not only by the prose; the Fallback and Stretch columns are reported in each bench README against the measured worst case, not graded here. No bound in the ratified table is edited either way."
+  ],
+  "engine": "ngspice",
+  "netlist": "../build/closed-loop-iq/deck.cir",
+  "netlist_source": "schematic",
+  "models": {
+    "pdk": "ihp-sg13cmos5l"
+  },
+  "corners": {
+    "process": [
+      {
+        "name": "typ",
+        "sections": [
+          {
+            "lib": "libs.tech/ngspice/models/cornerPNP.lib",
+            "section": "typ"
+          },
+          {
+            "lib": "libs.tech/ngspice/models/cornerMOShv.lib",
+            "section": "mos_tt"
+          },
+          {
+            "lib": "libs.tech/ngspice/models/cornerRES.lib",
+            "section": "res_typ"
+          }
+        ]
+      },
+      {
+        "name": "bcs",
+        "sections": [
+          {
+            "lib": "libs.tech/ngspice/models/cornerPNP.lib",
+            "section": "bcs"
+          },
+          {
+            "lib": "libs.tech/ngspice/models/cornerMOShv.lib",
+            "section": "mos_ff"
+          },
+          {
+            "lib": "libs.tech/ngspice/models/cornerRES.lib",
+            "section": "res_bcs"
+          }
+        ]
+      },
+      {
+        "name": "wcs",
+        "sections": [
+          {
+            "lib": "libs.tech/ngspice/models/cornerPNP.lib",
+            "section": "wcs"
+          },
+          {
+            "lib": "libs.tech/ngspice/models/cornerMOShv.lib",
+            "section": "mos_ss"
+          },
+          {
+            "lib": "libs.tech/ngspice/models/cornerRES.lib",
+            "section": "res_wcs"
+          }
+        ]
+      },
+      {
+        "name": "sf",
+        "sections": [
+          {
+            "lib": "libs.tech/ngspice/models/cornerPNP.lib",
+            "section": "typ"
+          },
+          {
+            "lib": "libs.tech/ngspice/models/cornerMOShv.lib",
+            "section": "mos_sf"
+          },
+          {
+            "lib": "libs.tech/ngspice/models/cornerRES.lib",
+            "section": "res_typ"
+          }
+        ]
+      },
+      {
+        "name": "fs",
+        "sections": [
+          {
+            "lib": "libs.tech/ngspice/models/cornerPNP.lib",
+            "section": "typ"
+          },
+          {
+            "lib": "libs.tech/ngspice/models/cornerMOShv.lib",
+            "section": "mos_fs"
+          },
+          {
+            "lib": "libs.tech/ngspice/models/cornerRES.lib",
+            "section": "res_typ"
+          }
+        ]
+      }
+    ],
+    "supply_v": {
+      "Vvdd": [
+        2.97,
+        3.3,
+        3.63
+      ]
+    },
+    "temperature_c": [
+      -40,
+      27,
+      125
+    ]
+  },
+  "analysis": {
+    "kind": "tran",
+    "args": "2u 2m"
+  },
+  "measurements": [
+    {
+      "name": "vref_v",
+      "spice": ".meas tran vref_v find v(vref) at=2m",
+      "unit": "V",
+      "plausible_range": {
+        "min": 0.5,
+        "max": 2.0
+      }
+    },
+    {
+      "name": "iq_final_a",
+      "expr": "abs(i(Vvdd)[length(i(Vvdd))-1])",
+      "unit": "A"
+    },
+    {
+      "name": "iq_settle_a",
+      "expr": "vecmax(abs(abs(i(Vvdd)) - iq_final_a)*(time gt 1.5e-3))",
+      "unit": "A",
+      "limits": {
+        "max": 1e-06
+      }
+    },
+    {
+      "name": "iq_a",
+      "expr": "iq_final_a",
+      "unit": "A",
+      "limits": {
+        "max": 5e-05
+      },
+      "plausible_range": {
+        "min": 1e-07,
+        "max": 0.01
+      },
+      "spec_row": "iq"
+    }
+  ],
+  "options": {
+    "timeout_s": 60,
+    "keep_artifacts": true,
+    "stage_model_inputs": true,
+    "osdi_preload": [
+      "$PDK_ROOT/ihp-sg13cmos5l/libs.tech/ngspice/osdi/psp103.osdi",
+      "$PDK_ROOT/ihp-sg13cmos5l/libs.tech/ngspice/osdi/r3_cmc.osdi"
+    ],
+    "ngspice_init": [
+      "set numdgt=12",
+      "set measureprec=12"
+    ]
+  },
+  "batch": {
+    "job_ceiling_check": "enforce"
+  }
+}

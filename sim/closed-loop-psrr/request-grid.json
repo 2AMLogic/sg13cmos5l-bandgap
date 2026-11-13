@@ -1,0 +1,224 @@
+{
+  "_comment": [
+    "spec/target-spec.md 'PSRR @ DC' row: DC, all 5 process corners x -40/27/125 C x 3 supplies, closed loop. 45 points.",
+    "DC ONLY, by construction. PSRR is the derivative dVdd/dVref, so each unit runs TWO DC operating points and divides a secant: `Vpsrr`, a 0 V DC source in series with the rail, is altered to -0.05 V and +0.05 V, giving a 0.1 V secant about the grid's own supply point. No AC analysis and no frequency point is used -- the spec says DC only, and any frequency point would depend on capacitor values the MoM models carry no corner or mismatch spread for (`insufficient-evidence`).",
+    "The excursion is +/-0.05 V about each grid supply (3.68 V at the 3.63 V point, 2.92 V at the 2.97 V point), slightly outside the ratified +/-10% operating window. That is disclosed, not hidden: a derivative needs two points, and a secant inside the window would have to straddle two grid supplies and so could not be reported per point.",
+    "Resolution: at 60 dB a 0.1 V secant moves vref by 100 uV. The derived measurement reads ngspice's stored vectors at full double precision, not the printed text, and numdgt/measureprec are widened to 12 digits so the per-step values recorded beside it are not rounded either. Solver tolerances are tightened (reltol 1e-8, vntol 1e-10, abstol 1e-14) so the secant is not contaminated by Newton residual, and psrr_db carries a plausible_range that fails a numerically-zero difference masquerading as infinite rejection.",
+    "`Vpsrr` is not a `corners.supply_v` key, which is what makes the per-step `alter` legal: klt refuses a step `alter` of a swept supply source. The two steps are cumulative (no `reset`), so the second solve starts from the first one's solution.",
+    "PORTABLE BY CONSTRUCTION: nothing here is a path that exists only on the submitting host, so this one request serves `--backend local` (a single-corner probe, narrowed by hand) and `--backend batch` (the grid sim/grid-run.sh submits).",
+    "  - `models.pdk` selects the variant and the fleet's batch image (klayout-tools#2727 publishes sg13cmos5l). Each corner names its own PDK-relative section libraries, so no `models.lib` and no generated corner bundle is needed; an absolute host path here would be refused on batch (`models_lib_host_path`).",
+    "  - `options.stage_model_inputs` ships THIS host's pinned model libraries and their whole `.include`/`.lib` closure with the job, so the models that ran are bound by sha256 to sim/pdk.json's pinned revision (`environment.staged_model_inputs` and `remote.runner_model_inputs` both list them) instead of being whatever the fleet image happens to carry. The image's own SG13CMOS5L tree publishes no readable revision stamp (`worker_environment.pdk.stamp_text` is null), so without staging the grid could not be bound to the pin at all -- see the bench README.",
+    "  - `options.osdi_preload` entries are written as literal `$PDK_ROOT/...`, so they are runner-resolved off-host and expanded from the environment locally. They are NOT staged: the compact-model BINARIES are the executing image's. That residual gap is stated in the bench README.",
+    "  - `netlist` is the deck sim/grid-run.sh generates under sim/build/ (gitignored); the runner substitutes an absolute path, and klt's include-closure staging uploads the migrated DUT the deck `.include`s. The relative default below is where the generated deck lands, so `klt sim --dry-run` works from the repo root once a runner has written it.",
+    "Process labels map to model sections exactly as the spec/target-spec.md \u00a7PVT table does: pnpMPA has no skew section, so sf and fs read cornerPNP/cornerRES `typ`.",
+    "`netlist_source` is `schematic`: the DUT is the xschem-exported netlist migrated by decision record 0006, not an extracted one.",
+    "LIMITS ARE THE RATIFIED TARGET COLUMN of spec/target-spec.md. Decision record 0011 \u00a72 grades each row at the ratified Target wherever the row states a numeric one, so a Target miss is reported by the grader and not only by the prose; the Fallback and Stretch columns are reported in each bench README against the measured worst case, not graded here. No bound in the ratified table is edited either way."
+  ],
+  "engine": "ngspice",
+  "netlist": "../build/closed-loop-psrr/deck.cir",
+  "netlist_source": "schematic",
+  "models": {
+    "pdk": "ihp-sg13cmos5l"
+  },
+  "corners": {
+    "process": [
+      {
+        "name": "typ",
+        "sections": [
+          {
+            "lib": "libs.tech/ngspice/models/cornerPNP.lib",
+            "section": "typ"
+          },
+          {
+            "lib": "libs.tech/ngspice/models/cornerMOShv.lib",
+            "section": "mos_tt"
+          },
+          {
+            "lib": "libs.tech/ngspice/models/cornerRES.lib",
+            "section": "res_typ"
+          }
+        ]
+      },
+      {
+        "name": "bcs",
+        "sections": [
+          {
+            "lib": "libs.tech/ngspice/models/cornerPNP.lib",
+            "section": "bcs"
+          },
+          {
+            "lib": "libs.tech/ngspice/models/cornerMOShv.lib",
+            "section": "mos_ff"
+          },
+          {
+            "lib": "libs.tech/ngspice/models/cornerRES.lib",
+            "section": "res_bcs"
+          }
+        ]
+      },
+      {
+        "name": "wcs",
+        "sections": [
+          {
+            "lib": "libs.tech/ngspice/models/cornerPNP.lib",
+            "section": "wcs"
+          },
+          {
+            "lib": "libs.tech/ngspice/models/cornerMOShv.lib",
+            "section": "mos_ss"
+          },
+          {
+            "lib": "libs.tech/ngspice/models/cornerRES.lib",
+            "section": "res_wcs"
+          }
+        ]
+      },
+      {
+        "name": "sf",
+        "sections": [
+          {
+            "lib": "libs.tech/ngspice/models/cornerPNP.lib",
+            "section": "typ"
+          },
+          {
+            "lib": "libs.tech/ngspice/models/cornerMOShv.lib",
+            "section": "mos_sf"
+          },
+          {
+            "lib": "libs.tech/ngspice/models/cornerRES.lib",
+            "section": "res_typ"
+          }
+        ]
+      },
+      {
+        "name": "fs",
+        "sections": [
+          {
+            "lib": "libs.tech/ngspice/models/cornerPNP.lib",
+            "section": "typ"
+          },
+          {
+            "lib": "libs.tech/ngspice/models/cornerMOShv.lib",
+            "section": "mos_fs"
+          },
+          {
+            "lib": "libs.tech/ngspice/models/cornerRES.lib",
+            "section": "res_typ"
+          }
+        ]
+      }
+    ],
+    "supply_v": {
+      "Vvdd": [
+        2.97,
+        3.3,
+        3.63
+      ]
+    },
+    "temperature_c": [
+      -40,
+      27,
+      125
+    ]
+  },
+  "analysis_steps": [
+    {
+      "name": "lo",
+      "analysis": {
+        "kind": "op",
+        "args": ""
+      },
+      "alter": {
+        "Vpsrr": -0.05
+      },
+      "measurements": [
+        {
+          "name": "vref",
+          "expr": "v(vref)",
+          "unit": "V",
+          "plausible_range": {
+            "min": 0.5,
+            "max": 2.0
+          }
+        },
+        {
+          "name": "vdd",
+          "expr": "v(vdd)",
+          "unit": "V"
+        }
+      ]
+    },
+    {
+      "name": "hi",
+      "analysis": {
+        "kind": "op",
+        "args": ""
+      },
+      "alter": {
+        "Vpsrr": 0.05
+      },
+      "measurements": [
+        {
+          "name": "vref",
+          "expr": "v(vref)",
+          "unit": "V",
+          "plausible_range": {
+            "min": 0.5,
+            "max": 2.0
+          }
+        },
+        {
+          "name": "vdd",
+          "expr": "v(vdd)",
+          "unit": "V"
+        }
+      ]
+    }
+  ],
+  "measurements": [
+    {
+      "name": "dvdd_v",
+      "expr": "hi.vdd - lo.vdd",
+      "unit": "V"
+    },
+    {
+      "name": "dvref_v",
+      "expr": "hi.vref - lo.vref",
+      "unit": "V"
+    },
+    {
+      "name": "psrr_db",
+      "expr": "db(abs(hi.vdd - lo.vdd)/abs(hi.vref - lo.vref))",
+      "unit": "dB",
+      "limits": {
+        "min": 60
+      },
+      "plausible_range": {
+        "min": 0,
+        "max": 140
+      },
+      "spec_row": "psrr_dc"
+    }
+  ],
+  "options": {
+    "timeout_s": 60,
+    "keep_artifacts": true,
+    "stage_model_inputs": true,
+    "osdi_preload": [
+      "$PDK_ROOT/ihp-sg13cmos5l/libs.tech/ngspice/osdi/psp103.osdi",
+      "$PDK_ROOT/ihp-sg13cmos5l/libs.tech/ngspice/osdi/r3_cmc.osdi"
+    ],
+    "ngspice_init": [
+      "set numdgt=12",
+      "set measureprec=12"
+    ],
+    "ngspice_options": {
+      "reltol": 1e-08,
+      "vntol": 1e-10,
+      "abstol": 1e-14
+    }
+  },
+  "batch": {
+    "job_ceiling_check": "enforce"
+  }
+}

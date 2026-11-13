@@ -1,0 +1,47 @@
+* sg13cmos5l-bandgap -- closed-loop DC PSRR bench body (issue #30, Part of #5).
+* Template: sim/grid-run.sh substitutes @@VDD@@ and @@WORK@@ and writes the deck to
+* sim/build/closed-loop-psrr/deck.cir. The model `.lib` cards, the temperature and the
+* supply value come from the `klt sim` request (request-grid.json).
+*
+* Same fixture as sim/closed-loop-vref-pvt/vref.cir.tmpl -- a DC supply, vss at 0, and the
+* substrate net `sub!` tied to vss through a 0 V source -- plus ONE added element:
+*
+*   Vpsrr   a 0 V DC source in series between the rail source and the DUT's vdd net.
+*
+* It is the perturbation handle. `corners.supply_v` alters `Vvdd` (the grid's supply
+* point); the request's two analysis steps alter `Vpsrr` to -0.05 V and +0.05 V, so the
+* DUT's vdd moves by a 0.1 V secant about that point and PSRR @ DC is the ratio of the
+* two DC solves. `Vpsrr` must NOT be a `corners.supply_v` key: klt refuses a step `alter`
+* of a swept supply source, which is exactly why the handle is a separate element rather
+* than a second value of Vvdd.
+*
+* A 0 V source is a DC short, so at Vpsrr = 0 this deck is electrically the vref bench's
+* deck. Checked at this PDK pin: typ/27 C/3.30 V gives vref = 1.196960 V with the series
+* source present, the same value to all six reported digits as the transient bench's
+* settled figure in decision record 0009.
+*
+* Why `op` and not `tran`: the DC operating point is the correct, non-degenerate
+* closed-loop solution for this circuit (see sim/closed-loop-vref-pvt-boxtc/README.md),
+* and a secant between two settled transients would carry the transient's own residual
+* into a 100 uV difference. Each step's vref carries a plausible_range so a degenerate
+* solve is failed rather than differenced.
+*
+* OSDI objects load through the request's options.osdi_preload, not a .control block: a
+* .control block here would land inside the deck `klt sim` `.include`s, not in the top deck
+* it generates, so its commands would never run.
+*
+* NO SPICE TITLE LINE (issue #19): `klt sim` `.include`s this deck into a top deck of its
+* own, so line 1 here is not in title position and a title line would be parsed as a
+* netlist element.
+
+* rshunt/gmin: convergence aids only, far below any current read here (same values the
+* source closed-loop bench and sim/closed-loop-vref-pvt use). The request's
+* options.ngspice_options tightens reltol/vntol/abstol on top of these.
+.options rshunt=1e9 gmin=1e-9
+
+Vvdd vddsrc 0 dc @@VDD@@
+Vpsrr vdd vddsrc dc 0
+Vvss vss 0 dc 0
+Vsub sub! vss dc 0
+
+.include "@@WORK@@/bandgap_top.spice"

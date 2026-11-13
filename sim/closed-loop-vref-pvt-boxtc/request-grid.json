@@ -1,0 +1,215 @@
+{
+  "_comment": [
+    "spec/target-spec.md 'Temp coefficient' row: -40...125 C, endpoint method AND box method both reported, all 5 process corners x 3 supplies, closed loop. 5 x 3 = 15 corner units; each unit is a 166-point DC sweep of TEMP, so the row's 'with 8 or more temperature points' is 166 and the ppm/C reduction happens inside the unit (graded by temp_points below).",
+    "`corners.temperature_c` is absent on purpose: the temperature is the ANALYSIS sweep, not a corner axis. Each unit's corner_id therefore reads `<process>/<supply>/27C` (klt sim's default `.temp` card), which the `dc temp` sweep overrides -- the unit covers the whole range, not 27 C. temp_points records how many points actually ran.",
+    "Index arithmetic: `dc temp -40 125 1` yields 166 points, index i at temperature -40 + i, so index 0 is -40 C, index 67 is 27 C and index 165 is 125 C (verified at this pin: `length(v(vref))` = 166). The endpoint method normalises at 27 C; the box method normalises at the box midpoint. Both divide by the 165 C span.",
+    "Base-current error of pnpMPA (bf ~ 1.10) is a named line item of this row and is inside every number here: it is part of the DUT, not corrected for.",
+    "PORTABLE BY CONSTRUCTION: nothing here is a path that exists only on the submitting host, so this one request serves `--backend local` (a single-corner probe, narrowed by hand) and `--backend batch` (the grid sim/grid-run.sh submits).",
+    "  - `models.pdk` selects the variant and the fleet's batch image (klayout-tools#2727 publishes sg13cmos5l). Each corner names its own PDK-relative section libraries, so no `models.lib` and no generated corner bundle is needed; an absolute host path here would be refused on batch (`models_lib_host_path`).",
+    "  - `options.stage_model_inputs` ships THIS host's pinned model libraries and their whole `.include`/`.lib` closure with the job, so the models that ran are bound by sha256 to sim/pdk.json's pinned revision (`environment.staged_model_inputs` and `remote.runner_model_inputs` both list them) instead of being whatever the fleet image happens to carry. The image's own SG13CMOS5L tree publishes no readable revision stamp (`worker_environment.pdk.stamp_text` is null), so without staging the grid could not be bound to the pin at all -- see the bench README.",
+    "  - `options.osdi_preload` entries are written as literal `$PDK_ROOT/...`, so they are runner-resolved off-host and expanded from the environment locally. They are NOT staged: the compact-model BINARIES are the executing image's. That residual gap is stated in the bench README.",
+    "  - `netlist` is the deck sim/grid-run.sh generates under sim/build/ (gitignored); the runner substitutes an absolute path, and klt's include-closure staging uploads the migrated DUT the deck `.include`s. The relative default below is where the generated deck lands, so `klt sim --dry-run` works from the repo root once a runner has written it.",
+    "Process labels map to model sections exactly as the spec/target-spec.md \u00a7PVT table does: pnpMPA has no skew section, so sf and fs read cornerPNP/cornerRES `typ`.",
+    "`netlist_source` is `schematic`: the DUT is the xschem-exported netlist migrated by decision record 0006, not an extracted one.",
+    "LIMITS ARE THE RATIFIED TARGET COLUMN of spec/target-spec.md. Decision record 0011 \u00a72 grades each row at the ratified Target wherever the row states a numeric one, so a Target miss is reported by the grader and not only by the prose; the Fallback and Stretch columns are reported in each bench README against the measured worst case, not graded here. No bound in the ratified table is edited either way."
+  ],
+  "engine": "ngspice",
+  "netlist": "../build/closed-loop-vref-pvt-boxtc/deck.cir",
+  "netlist_source": "schematic",
+  "models": {
+    "pdk": "ihp-sg13cmos5l"
+  },
+  "corners": {
+    "process": [
+      {
+        "name": "typ",
+        "sections": [
+          {
+            "lib": "libs.tech/ngspice/models/cornerPNP.lib",
+            "section": "typ"
+          },
+          {
+            "lib": "libs.tech/ngspice/models/cornerMOShv.lib",
+            "section": "mos_tt"
+          },
+          {
+            "lib": "libs.tech/ngspice/models/cornerRES.lib",
+            "section": "res_typ"
+          }
+        ]
+      },
+      {
+        "name": "bcs",
+        "sections": [
+          {
+            "lib": "libs.tech/ngspice/models/cornerPNP.lib",
+            "section": "bcs"
+          },
+          {
+            "lib": "libs.tech/ngspice/models/cornerMOShv.lib",
+            "section": "mos_ff"
+          },
+          {
+            "lib": "libs.tech/ngspice/models/cornerRES.lib",
+            "section": "res_bcs"
+          }
+        ]
+      },
+      {
+        "name": "wcs",
+        "sections": [
+          {
+            "lib": "libs.tech/ngspice/models/cornerPNP.lib",
+            "section": "wcs"
+          },
+          {
+            "lib": "libs.tech/ngspice/models/cornerMOShv.lib",
+            "section": "mos_ss"
+          },
+          {
+            "lib": "libs.tech/ngspice/models/cornerRES.lib",
+            "section": "res_wcs"
+          }
+        ]
+      },
+      {
+        "name": "sf",
+        "sections": [
+          {
+            "lib": "libs.tech/ngspice/models/cornerPNP.lib",
+            "section": "typ"
+          },
+          {
+            "lib": "libs.tech/ngspice/models/cornerMOShv.lib",
+            "section": "mos_sf"
+          },
+          {
+            "lib": "libs.tech/ngspice/models/cornerRES.lib",
+            "section": "res_typ"
+          }
+        ]
+      },
+      {
+        "name": "fs",
+        "sections": [
+          {
+            "lib": "libs.tech/ngspice/models/cornerPNP.lib",
+            "section": "typ"
+          },
+          {
+            "lib": "libs.tech/ngspice/models/cornerMOShv.lib",
+            "section": "mos_fs"
+          },
+          {
+            "lib": "libs.tech/ngspice/models/cornerRES.lib",
+            "section": "res_typ"
+          }
+        ]
+      }
+    ],
+    "supply_v": {
+      "Vvdd": [
+        2.97,
+        3.3,
+        3.63
+      ]
+    }
+  },
+  "analysis": {
+    "kind": "dc",
+    "args": "temp -40 125 1"
+  },
+  "measurements": [
+    {
+      "name": "temp_points",
+      "expr": "length(v(vref))",
+      "limits": {
+        "min": 8
+      }
+    },
+    {
+      "name": "vref_m40_v",
+      "expr": "v(vref)[0]",
+      "unit": "V",
+      "plausible_range": {
+        "min": 0.5,
+        "max": 2.0
+      }
+    },
+    {
+      "name": "vref_27_v",
+      "expr": "v(vref)[67]",
+      "unit": "V",
+      "plausible_range": {
+        "min": 0.5,
+        "max": 2.0
+      }
+    },
+    {
+      "name": "vref_125_v",
+      "expr": "v(vref)[165]",
+      "unit": "V",
+      "plausible_range": {
+        "min": 0.5,
+        "max": 2.0
+      }
+    },
+    {
+      "name": "vref_min_v",
+      "expr": "vecmin(v(vref))",
+      "unit": "V",
+      "plausible_range": {
+        "min": 0.5,
+        "max": 2.0
+      }
+    },
+    {
+      "name": "vref_max_v",
+      "expr": "vecmax(v(vref))",
+      "unit": "V",
+      "plausible_range": {
+        "min": 0.5,
+        "max": 2.0
+      }
+    },
+    {
+      "name": "vref_box_mid_v",
+      "expr": "(vref_max_v + vref_min_v)/2",
+      "unit": "V"
+    },
+    {
+      "name": "tc_box_ppm_per_c",
+      "expr": "1e6*(vref_max_v - vref_min_v)/(165*vref_box_mid_v)",
+      "unit": "ppm/C",
+      "limits": {
+        "max": 50
+      },
+      "spec_row": "tc_box"
+    },
+    {
+      "name": "tc_endpoint_ppm_per_c",
+      "expr": "1e6*abs(vref_125_v - vref_m40_v)/(165*vref_27_v)",
+      "unit": "ppm/C",
+      "limits": {
+        "max": 50
+      },
+      "spec_row": "tc_endpoint"
+    }
+  ],
+  "options": {
+    "timeout_s": 120,
+    "keep_artifacts": true,
+    "stage_model_inputs": true,
+    "osdi_preload": [
+      "$PDK_ROOT/ihp-sg13cmos5l/libs.tech/ngspice/osdi/psp103.osdi",
+      "$PDK_ROOT/ihp-sg13cmos5l/libs.tech/ngspice/osdi/r3_cmc.osdi"
+    ],
+    "ngspice_init": [
+      "set numdgt=12",
+      "set measureprec=12"
+    ]
+  },
+  "batch": {
+    "job_ceiling_check": "enforce"
+  }
+}

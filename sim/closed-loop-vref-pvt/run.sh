@@ -53,25 +53,6 @@ grep -q '^\.subckt bandgap_core ' "${WORK}/bandgap_top.fetched.spice" \
 # Only transformation of the DUT: drop the final `.end` card. Nothing else is edited.
 grep -v -x '\.end' "${WORK}/bandgap_top.fetched.spice" > "${WORK}/bandgap_top.spice"
 
-# ---- corner bundle: section per spec/target-spec.md §PVT, selected by the request's process label ----
-BUNDLE="${WORK}/corners.lib"
-python3 -I - "${BUNDLE}" "${CM5_NGSPICE_MODELS}" <<'PY'
-import sys
-out, models = sys.argv[1:]
-table = {  # label: (cornerPNP, cornerMOShv, cornerRES)
-    "typ": ("typ", "mos_tt", "res_typ"), "bcs": ("bcs", "mos_ff", "res_bcs"),
-    "wcs": ("wcs", "mos_ss", "res_wcs"), "sf": ("typ", "mos_sf", "res_typ"),
-    "fs": ("typ", "mos_fs", "res_typ"),
-}
-with open(out, "w") as f:
-    for label, (pnp, mos, res) in table.items():
-        f.write(".lib %s\n" % label)
-        f.write('.lib "%s/cornerPNP.lib" %s\n' % (models, pnp))
-        f.write('.lib "%s/cornerMOShv.lib" %s\n' % (models, mos))
-        f.write('.lib "%s/cornerRES.lib" %s\n' % (models, res))
-        f.write(".endl %s\n" % label)
-PY
-
 DECK="${WORK}/deck.cir"
 # Line 1 is a generated `*` comment on purpose (issue #19): `klt sim` `.include`s this deck
 # into a top deck of its own, so a SPICE title line here would be parsed as a netlist
@@ -83,15 +64,22 @@ DECK="${WORK}/deck.cir"
   sed -e 's|@@VDD@@|3.3|' -e "s|@@WORK@@|${WORK}|" "${BENCH_DIR}/vref.cir.tmpl" | grep -v '^\*'
 } > "${DECK}"
 
-# One point of the committed 45-point request: same measurements and analysis, narrowed to typ/27/3.30.
-python3 -I - "${BENCH_DIR}/request-45pt.json" "${WORK}/request.json" "${DECK}" "${BUNDLE}" "${CM5_OSDI_DIR}" <<'PY'
+# One point of the committed 45-point request: same model sections, analysis and measurements,
+# narrowed to the request's own `typ` corner bundle at 27 C / 3.30 V. Only `netlist`, the three
+# corner axes and `timeout_s` change -- the PDK-relative section libraries and the
+# `$PDK_ROOT/...` osdi_preload entries are taken from the request file verbatim, so this probe
+# and the batch grid read the same models (issue #30).
+python3 -I - "${BENCH_DIR}/request-45pt.json" "${WORK}/request.json" "${DECK}" <<'PY'
 import json, sys
-src, dst, deck, bundle, osdi_dir = sys.argv[1:]
+src, dst, deck = sys.argv[1:]
 r = json.load(open(src))
-r["netlist"], r["models"] = deck, {"lib": bundle}
-r["corners"] = {"process": ["typ"], "supply_v": {"Vvdd": [3.3]}, "temperature_c": [27]}
-r["options"]["timeout_s"] = 300  # narrowed from the request file's 600 for the single unit
-r["options"]["osdi_preload"] = [osdi_dir + "/psp103.osdi", osdi_dir + "/r3_cmc.osdi"]
+r["netlist"] = deck
+typ = [p for p in r["corners"]["process"] if p["name"] == "typ"]
+if len(typ) != 1:
+    sys.exit("request-45pt.json has no single 'typ' process bundle to narrow to")
+r["corners"] = {"process": typ, "supply_v": {"Vvdd": [3.3]}, "temperature_c": [27]}
+r["options"]["timeout_s"] = 300  # one unit, run locally: generous where the grid's is per-unit
+r.pop("batch", None)             # the job-ceiling check is a batch-only concern
 json.dump(r, open(dst, "w"), indent=2)
 PY
 
@@ -116,7 +104,7 @@ try:
 except Exception:
     envelope = None
 
-NAMES = ("vref_v", "vref_prev_v", "fb_v", "sns1_v", "sns2_v")
+NAMES = ("vref_v", "vref_prev_v", "fb_v", "sns1_v", "sns2_v", "vref_settle_v")
 values = collect(envelope, NAMES)
 
 SETTLE_V = 1e-3  # settle criterion: |vref(2.0 ms) - vref(1.5 ms)| < 1 mV
