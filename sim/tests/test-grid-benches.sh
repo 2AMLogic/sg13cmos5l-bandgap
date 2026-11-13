@@ -57,6 +57,19 @@
 # not a Python traceback. Inventoried as a T1 item-10 hygiene check (attest/item10.json), so CI
 # re-runs it through `klt signoff --attest 10 --check`.
 #
+# Negative controls for the substrate-tie half of check 6 (issue #83), each run while writing
+# it and reverted before commit: (a) deleting the `.global sub!` card from
+# closed-loop-startup's template fails once -- "closed-loop-startup deck template declares
+# sub! global where it drives it: 0 .global cards naming sub! for 1 Vsub sub! cards", which
+# is the exact pre-#83 state of all five decks and the thing no simulated value reveals.
+# (b) widening closed-loop-iq's card to `.global sub! vdd` fails once -- "closed-loop-iq deck
+# template's .global cards name only sub!: [['.global', 'sub!', 'vdd']]" -- so the card
+# cannot quietly globalise a second net. (c) deleting closed-loop-psrr's `Vsub sub! vss dc 0`
+# card fails TWICE -- "closed-loop-psrr deck template drives sub! with a Vsub card: 0 Vsub
+# cards naming sub!" and "...declares sub! global where it drives it: 1 .global cards naming
+# sub! for 0 Vsub sub! cards" -- so dropping the tie is caught as well as dropping the card,
+# and a card left with nothing to make true is reported too. All exit 1.
+#
 # Negative controls for the DUT-wrapper half of check 6 (issue #80), each run while writing it
 # and reverted before commit: (a) flipping sim/runner-lib.sh's CM5_DUT_PINS to the schematic
 # export's own "vdd vss vref" order fails SIX times -- once per bench ("<bench> Xdut card is
@@ -230,6 +243,26 @@ for b in BENCHES:
           not any(l.lower().startswith(".control") for l in body))
     check("%s deck template has no .end card" % b,
           not any(l.strip().lower() == ".end" for l in body))
+    # The substrate tie (issue #83, decision record 0014): a deck that drives `sub!` with
+    # `Vsub` only ties the DUT's rppd/rhigh bulks if `sub!` is an ngspice GLOBAL net. `!` is
+    # an xschem marker and the migrated netlist carries no `.global` card, so without one
+    # here the bulk terminals stay per-instance local nodes (`xdut.xx1.sub!`) resolved by
+    # `.options rshunt` alone -- the deck's own comment would describe a tie it does not
+    # make, and no measured value would look wrong. Checked per deck, not centrally,
+    # because each template carries its own fixture cards.
+    globals_ = [l.split() for l in body if l.split()[:1] == [".global"]]
+    vsub_sub = [l for l in body
+                if l.split()[:1] and l.split()[0].lower().startswith("vsub")
+                and "sub!" in l.lower()]
+    sub_global = [g for g in globals_ if "sub!" in g[1:]]
+    check("%s deck template drives sub! with a Vsub card" % b, len(vsub_sub) == 1,
+          "%d Vsub cards naming sub!" % len(vsub_sub))
+    check("%s deck template declares sub! global where it drives it" % b,
+          len(sub_global) == 1 if vsub_sub else not sub_global,
+          "%d .global cards naming sub! for %d Vsub sub! cards"
+          % (len(sub_global), len(vsub_sub)))
+    check("%s deck template's .global cards name only sub!" % b,
+          all(g[1:] == ["sub!"] for g in globals_), str(globals_))
     placeholders = set(re.findall(r"@@([A-Z_]+)@@", tmpl))
     supplied = set(m["deck_substitutions"]) | {"WORK"}
     check("%s every deck placeholder is supplied" % b, placeholders <= supplied,

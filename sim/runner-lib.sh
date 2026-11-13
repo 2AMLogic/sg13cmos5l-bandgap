@@ -92,8 +92,11 @@ CM5_DUT_PINS="vdd vref vss"
 # digits (vref_v = 1.19696 V, decision record 0013 "What was measured"). The source's
 # `sub!` resistor-bulk nodes were ALREADY local to each leaf instance under ngspice
 # (`xx1.sub!`, `xx3.sub!` -- `!` is an xschem global marker, not an ngspice one), so the
-# wrapper only lengthens them to `xdut.xx1.sub!`; no `.global sub!` card is added, and
-# adding one would newly tie those bulks to vss and change the recorded item-5 results.
+# wrapper only lengthens them to `xdut.xx1.sub!`. Staging adds no `.global sub!` card: that
+# card lives in each of the five deck templates, beside the `Vsub sub! vss dc 0` line it
+# makes true, so the fixture choice stays visible in the fixture rather than hidden inside
+# this DUT derivation (issue #83, decision record 0014, which supersedes item 5 of 0013).
+# A global net ignores subcircuit depth, so the card reaches through this wrapper unchanged.
 #
 # Exit 6 if the netlist is absent, is not the expected flattened export, or does not carry
 # exactly one expected top block to rewrite.
