@@ -22,6 +22,7 @@ _None._
 
 - **#15**: Verify the spec's corner and mismatch model sections resolve at the pinned IHP dev revision
 - **#19**: Record the first closed-loop vref run (sim/closed-loop-vref-pvt/run.sh) on a host with the pinned PDK
+- **#26**: T1 item 1 (design sources): attest the pinned SG13CMOS5L core/amp/startup/top schematics and derived netlists (or migrate them under decision record 0002)
 
 ## Ready
 
@@ -33,7 +34,7 @@ _None._
 
 Issues currently being built (`loom:building`).
 
-_None._
+- **#15**: Verify the spec's corner and mismatch model sections resolve at the pinned IHP dev revision
 
 ## PRs Awaiting Review
 
@@ -70,9 +71,9 @@ _None._
 |------|-------|
 | Operator merge-risk holds | 0 |
 | Very important | 0 |
-| Important | 2 |
+| Important | 3 |
 | Ready (`loom:issue`) | 0 |
-| In Progress (`loom:building`) | 0 |
+| In Progress (`loom:building`) | 1 |
 | PRs awaiting review | 0 |
 | Approved PRs awaiting merge | 0 |
 | Curated | 4 |
