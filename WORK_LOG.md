@@ -5,8 +5,10 @@ triage agent. Newest first.
 
 ### 2026-11-13
 
+- **PR #68**: docs(spec): state §PVT section names as verified at the dev pin; record the install-shape hazard
 - **PR #65**: sim: drop the vref deck's SPICE title line and record the first closed-loop vref
 - **PR #63**: docs(sim): record the PVT corner and mismatch sections as resolved at the pinned PDK revision
+- **Issue #62** (closed): Retire the spec PVT caveat: section names are now verified at the dev pin
 - **Issue #19** (closed): Record the first closed-loop vref run (sim/closed-loop-vref-pvt/run.sh) on a host with the pinned PDK
 - **Issue #15** (closed): Verify the spec's corner and mismatch model sections resolve at the pinned IHP dev revision
 
