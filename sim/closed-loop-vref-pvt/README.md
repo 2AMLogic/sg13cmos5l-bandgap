@@ -33,12 +33,21 @@ netlist missing or pin unreadable (named `SOURCE_MISSING`, no record).
 
 `design/sg13cmos5l/netlist/bandgap_top.spice` is the in-repo copy migrated byte-for-byte from
 `2AMLogic/sg13g2-bandgap` at the commit in `reuse.lock.json` (decision record 0006, which amends
-0002 for these cells); the runner reads it, no forge access. The file is a flattened xschem export, not a
-`.subckt bandgap_top`: bare instances `Xx1`/`Xx2`/`Xx3` on nets `vdd vss vref fb sns1 sns2`, then
-`bandgap_core`, `bandgap_amp`, `bandgap_startup` subckts, no `.lib`/`.include`. The deck therefore
-drives `vdd`/`vss`, ties the `sub!` bulk net to `vss`, and supplies the model `.lib`s. The only
-change to the in-repo text is dropping its final `.end` card; `source_file_sha256` in each record
-is the hash of the file as read (equal to the pinned source blob).
+0002 for these cells); the runner reads it, no forge access. The file is a flattened xschem export
+whose top block is **commented out**: `**.subckt bandgap_top vdd vss vref`, the bare instances
+`Xx1`/`Xx2`/`Xx3` on nets `vdd vss vref fb sns1 sns2`, `**.ends`, then the `bandgap_core`,
+`bandgap_amp`, `bandgap_startup` subckts, no `.lib`/`.include`. The deck therefore drives
+`vdd`/`vss`, ties the `sub!` bulk net to `vss`, and supplies the model `.lib`s.
+
+Staging (`cm5_stage_dut`) makes exactly three derived changes and never edits the source:
+the commented top header becomes a live `.subckt sg13cmos5l_bandgap_top vdd vref vss`, its
+`**.ends` becomes `.ends sg13cmos5l_bandgap_top`, and the final `.end` card is dropped. The
+deck instantiates the result as `Xdut vdd vref vss sg13cmos5l_bandgap_top`, so internal nodes
+are addressed as `v(xdut.fb)` / `v(xdut.sns1)` / `v(xdut.sns2)`. That cell name and pin order
+are the layout-extracted netlist's, which is what lets one deck serve both legs of the T1
+item-7 delta; it is electrically a no-op, and decision record 0013 records the measurement
+showing it. `source_file_sha256` in each record is still the hash of the file **as read**
+(equal to the pinned source blob); `staged_dut_sha256` is the hash of the wrapped copy.
 
 ## Record
 

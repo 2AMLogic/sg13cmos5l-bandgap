@@ -138,17 +138,17 @@
     },
     {
       "name": "fb_v",
-      "spice": ".meas tran fb_v find v(fb) at=2m",
+      "spice": ".meas tran fb_v find v(xdut.fb) at=2m",
       "unit": "V"
     },
     {
       "name": "sns1_v",
-      "spice": ".meas tran sns1_v find v(sns1) at=2m",
+      "spice": ".meas tran sns1_v find v(xdut.sns1) at=2m",
       "unit": "V"
     },
     {
       "name": "sns2_v",
-      "spice": ".meas tran sns2_v find v(sns2) at=2m",
+      "spice": ".meas tran sns2_v find v(xdut.sns2) at=2m",
       "unit": "V"
     },
     {
