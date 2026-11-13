@@ -37,6 +37,13 @@
         "bash",
         "sim/tests/test-grid-benches.sh"
       ]
+    },
+    {
+      "name": "mc-bench-consistency-test",
+      "argv": [
+        "bash",
+        "sim/tests/test-mc-bench.sh"
+      ]
     }
   ]
 }

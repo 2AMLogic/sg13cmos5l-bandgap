@@ -121,12 +121,38 @@ materialization is load-bearing, not cosmetic: the store's sibling
 content between the two trees, so live symlinks on a store-provisioned host
 would silently resolve the SG13CMOS5L models to v0.3.0 content.
 
-The Monte Carlo mismatch-section choice is still **open**. The candidates all
-exist at the pin — `cornerMOShv.lib` `mos_tt_stat` and `mos_*_mismatch`,
+The Monte Carlo mismatch-section choice is **settled** by
+[`0012`](decision-records/0012-statistical-mc-sections-and-window.md) (issue
+#31), which this paragraph's earlier deferral left to the bench. The candidates
+all exist at the pin — `cornerMOShv.lib` `mos_tt_stat` and `mos_*_mismatch`,
 `cornerRES.lib` `res_stat`, `res_stat_mismatch` and `res_*_mismatch` — and
-`cornerPNP.lib` `stat` pulls in `sg13cmos5l_pnpMPA_stat.lib` as the table says;
-which of the MOS and resistor sections the mismatch benches use is a bench
-decision (#31), not settled here.
+`cornerPNP.lib` `stat` pulls in `sg13cmos5l_pnpMPA_stat.lib` as the table says.
+The campaign uses **`cornerPNP.lib` `stat` + `cornerMOShv.lib` `mos_tt_stat` +
+`cornerRES.lib` `res_stat`**, and the reason is measured rather than argued
+(`sim/tools/stat_locality.py`, one `.op` solve per probe, two identical
+instances compared):
+
+- `cornerPNP.lib` `stat` and `cornerMOShv.lib` `mos_tt_stat` vary top-level
+  `.param`s, so every instance of the device shares **one** draw: they are
+  **global** statistical variation, not mismatch. `pnpMPA` has no per-instance
+  mismatch model anywhere in this PDK, so the Q1/Q2/Q3 matching error — the
+  dominant untrimmed-offset term of any bandgap — **cannot be sampled**.
+- The `*_mismatch` sections *are* per-instance, but every `agauss` term in them
+  is gated on the subcircuit parameter `mm_ok`, whose default is `0` and which
+  the migrated DUT netlist does not set. Selected as they stand they sample
+  **exactly zero**, measured.
+- `cornerRES.lib` `res_stat` is **local, per instance** — the `r3_cmc` model
+  card's `nsig_*='agauss(0,1,1)'` is re-evaluated per instantiation — despite
+  the library's own comment calling it global. That is real device mismatch of
+  the resistors, and it is where this core's untrimmed spread comes from.
+
+**Statistical sections exist only at typ** (`cornerPNP.lib` has no `bcs_stat`,
+`cornerMOShv.lib` no `mos_ss_stat`, `cornerRES.lib` no `res_wcs_stat`), so
+selecting statistics *replaces* the process label rather than qualifying it and
+the five process labels collapse to one statistical point. The Monte Carlo grid
+is therefore the ratified supply and temperature axes in full and no process
+axis — a declared shortfall against T1 item 6's "combined with (not instead of)
+process corners", recorded as such in `0012` §2 rather than worked around.
 
 **Capacitor rows that cannot be cornered:** MoM (`cap_cmomf`, `cap_cmomi`)
 carries no corner or mismatch spread. Rows whose evidence depends on a MoM

@@ -2,10 +2,13 @@
   "_comment": [
     "Block manifest graded by `klt signoff --manifest`. See README.md for the regeneration command and the pin.",
     "ITEM 5 (full corner verification vs a ratified spec), added by issue #30. Five `klt sim` envelopes, one per row family, each naming the spec/target-spec.md row ids it covers; `spec_rows.5` declares the FULL row set, so a row no envelope covers is visible in the report instead of being silently absent.",
-    "The declared row set is spec/target-spec.md's ELECTRICAL rows -- the rows whose Binding-conditions column is the §PVT grid. The Area and Signoff rows of that table are deliberately NOT declared here: their binding conditions are a layout cell and the DRC/LVS/ERC decks, which T1 items 2, 3 and 4 grade. Declaring them under item 5 would make a layout artifact a corner-verification gap.",
+    "The declared row set is spec/target-spec.md's ELECTRICAL rows -- the rows whose Binding-conditions column is the \u00a7PVT grid. The Area and Signoff rows of that table are deliberately NOT declared here: their binding conditions are a layout cell and the DRC/LVS/ERC decks, which T1 items 2, 3 and 4 grade. Declaring them under item 5 would make a layout artifact a corner-verification gap.",
     "Item 5 is UNMET on purpose. Three declared rows are gaps: the untrimmed-line 3-sigma row, the trimmed-line row and the Trim row. The first needs a device-mismatch Monte Carlo reduction (issue #31), which a corner matrix cannot express and which T1 item 6 grades; the other two need a trim network that does not exist in this design yet. Naming a narrower row set would have rendered item 5 `met` by leaving the block's unevidenced accuracy rows out of the declaration, which is exactly the relaxation CLAUDE.md forbids.",
     "The Supply row is declared as a gap rather than covered because spec/target-spec.md states it is met BY CONSTRUCTION (HV device rating, inherited) and not by a result: every cited envelope did run the ratified 2.97/3.30/3.63 V axis, but no measurement in them establishes the row, and asserting coverage from a supply value the request itself set would be circular.",
-    "Each cited envelope carries `spec_row` tags on its graded measurements, so `klt signoff` DERIVES this coverage from the envelopes (`row_coverage.row_sources` reads `derived`) instead of taking the manifest's word for it."
+    "Each cited envelope carries `spec_row` tags on its graded measurements, so `klt signoff` DERIVES this coverage from the envelopes (`row_coverage.row_sources` reads `derived`) instead of taking the manifest's word for it.",
+    "ITEM 6 (statistical claims carry Monte Carlo evidence), added by issue #31. One `klt yield` report, and `spec_rows.6` declaring the FULL statistical row set. spec/decision-records/0012-statistical-mc-sections-and-window.md records which rows are statistical and why, which model sections the campaign uses, and the window the report is graded against.",
+    "Item 6 is UNMET on purpose, and for a reason the evidence states rather than hides. `vref_untrimmed_line_3sigma` IS covered -- the campaign measures the row's quantity, with its seed, its sample size, its deterministic zero-spread control and a known-bad control that the statistics do detect -- but it is declared `ratified: false`, so `klt signoff` reports `partial_coverage` and never `met`. Two things are unratified about it: the limit the yield is graded against is an evidence-reporting window read out of the item-5 envelope, not a bound spec/target-spec.md ratifies (it ratifies none for this row), and the mechanism the row names is only partly reachable in this PDK -- resistor mismatch is sampled per instance, bipolar and MOS mismatch are not sampled at all, because pnpMPA has no per-instance mismatch model and the MOS one is gated on an instance parameter no `klt sim` request can set. Declaring the row `ratified: true` would assert a bound nobody ratified; declaring it a gap would hide a campaign that did run.",
+    "`vref_trimmed_line` is the second statistical row and is a declared gap: it needs a trim network this design does not contain. `trim` is deliberately NOT declared under item 6 -- spec/target-spec.md's Monte Carlo column says `no` for it, and its own evidence is a deterministic monotonicity sweep; what it takes from the Monte Carlo is the range it has to cover, not its own statistics. Record 0012 section 4 accounts for every spec row this way."
   ],
   "block": "sg13cmos5l-bandgap",
   "kind": "analog",
@@ -21,23 +24,35 @@
     "5": [
       {
         "file": "sim/closed-loop-vref-pvt/envelopes/20261113T111044Z-3830083.json",
-        "rows": ["vref_nominal"]
+        "rows": [
+          "vref_nominal"
+        ]
       },
       {
         "file": "sim/closed-loop-vref-pvt-boxtc/envelopes/20261113T115709Z-0be5a53.json",
-        "rows": ["tc_endpoint", "tc_box"]
+        "rows": [
+          "tc_endpoint",
+          "tc_box"
+        ]
       },
       {
         "file": "sim/closed-loop-psrr/envelopes/20261113T115930Z-0be5a53.json",
-        "rows": ["psrr_dc"]
+        "rows": [
+          "psrr_dc"
+        ]
       },
       {
         "file": "sim/closed-loop-iq/envelopes/20261113T115819Z-0be5a53.json",
-        "rows": ["iq"]
+        "rows": [
+          "iq"
+        ]
       },
       {
         "file": "sim/closed-loop-startup/envelopes/20261113T111658Z-3830083.json",
-        "rows": ["startup_self_starting", "startup_time"]
+        "rows": [
+          "startup_self_starting",
+          "startup_time"
+        ]
       }
     ],
     "9": {
@@ -47,14 +62,17 @@
     "10": {
       "file": "evidence/item10.json",
       "content_hash": "sha256:47aabf1e082e639e7dffafb7b48bdd70ba54579e58445ca50bee4f741b6da8a7"
-    }
+    },
+    "6": []
   },
   "spec_rows": {
     "5": [
-      { "id": "vref_nominal" },
+      {
+        "id": "vref_nominal"
+      },
       {
         "id": "vref_untrimmed_line_3sigma",
-        "gap": "device-mismatch Monte Carlo reduction (3 sigma over N >= 300 samples per corner point) that a klt sim corner matrix cannot express; its bench does not exist yet (issue #31), and T1 item 6 is where the statistical claim is graded"
+        "gap": "device-mismatch Monte Carlo reduction (3 sigma over N >= 300 samples per corner point) that a klt sim corner matrix cannot express; it is T1 item 6's to grade, and item 6 now cites the campaign that measured it (sim/closed-loop-vref-mc, decision record 0012). Still a gap for item 5, which is corner verification"
       },
       {
         "id": "vref_trimmed_line",
@@ -64,16 +82,39 @@
         "id": "trim",
         "gap": "needs a trim network, which this design does not contain; spec/target-spec.md makes the Trim row conditional on the untrimmed Monte Carlo showing a trimmable offset"
       },
-      { "id": "tc_endpoint" },
-      { "id": "tc_box" },
-      { "id": "psrr_dc" },
+      {
+        "id": "tc_endpoint"
+      },
+      {
+        "id": "tc_box"
+      },
+      {
+        "id": "psrr_dc"
+      },
       {
         "id": "supply",
         "gap": "spec/target-spec.md records this row as met by construction (HV device rating, inherited), not by a result; every cited envelope ran the ratified 2.97/3.30/3.63 V axis, but no measurement establishes the row and asserting it from a supply the request itself set would be circular"
       },
-      { "id": "iq" },
-      { "id": "startup_self_starting" },
-      { "id": "startup_time" }
+      {
+        "id": "iq"
+      },
+      {
+        "id": "startup_self_starting"
+      },
+      {
+        "id": "startup_time"
+      }
+    ],
+    "6": [
+      {
+        "id": "vref_untrimmed_line_3sigma",
+        "ratified": false,
+        "note": "Covered by the klt yield report cited above. Declared unratified because spec/target-spec.md states no number for this row (its Target column is a method) -- so the min/max the yield is computed against is the deterministic PVT envelope the item-5 bench measured, used as an evidence-reporting window and labelled as one in sim/closed-loop-vref-mc/yield-limits.json -- and because the device-mismatch mechanism the row names is only partly reachable at the pin (spec/decision-records/0012-statistical-mc-sections-and-window.md)."
+      },
+      {
+        "id": "vref_trimmed_line",
+        "gap": "needs a modelled 1-point trim at 27 C, i.e. a trim network this design does not contain; spec/target-spec.md ratifies the method only and says the row is not stated as a number until measured"
+      }
     ]
   }
 }

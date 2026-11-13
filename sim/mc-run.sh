@@ -302,7 +302,46 @@ elif envelope.get("status") != "pass":
 
 staged = ((envelope or {}).get("environment") or {}).get("staged_model_inputs") or []
 remote = ((envelope or {}).get("environment") or {}).get("remote") or {}
-runner_inputs = remote.get("runner_model_inputs")
+
+# A campaign large enough to be split (batch.job_ceiling_check "split") comes back as
+# SEVERAL fleet jobs, and `klt sim` reports them as a list under `environment.remote.fleet`
+# rather than as the flat single-job block a 45-point grid gets. Read both shapes: the
+# per-job `runner_model_inputs` is the only thing that binds the models the workers
+# actually loaded to sim/pdk.json's pin, and a campaign that silently stopped reporting it
+# because it grew past one job would quietly lose that binding (sim/README.md "What the
+# fleet runner cannot prove").
+jobs = remote.get("fleet")
+if not isinstance(jobs, list):
+    jobs = [remote] if remote.get("job_id") else []
+
+
+def models_match(job):
+    got = job.get("runner_model_inputs")
+    if not staged or got is None:
+        return None
+    return ({s["name"]: s["sha256"] for s in staged}
+            == {s["name"]: s["sha256"] for s in got})
+
+
+per_job = [{"job_id": j.get("job_id"),
+            "state": j.get("state"),
+            "exit_code": j.get("exit_code"),
+            "instance_type": j.get("instance_type"),
+            "lifecycle": j.get("lifecycle"),
+            "elapsed_seconds": j.get("elapsed_seconds"),
+            "runner_klt_version": j.get("runner_klt_version"),
+            "runner_compatibility": j.get("runner_compatibility"),
+            "runner_model_input_count": (None if j.get("runner_model_inputs") is None
+                                         else len(j["runner_model_inputs"])),
+            "staged_models_hashes_match": models_match(j)}
+           for j in jobs]
+verdicts = [j["staged_models_hashes_match"] for j in per_job]
+# True only when EVERY job that ran reported back the hashes this host staged. One job
+# that did not report them leaves the whole campaign unbound, so the aggregate is null or
+# False rather than "mostly true".
+all_match = (True if (per_job and all(v is True for v in verdicts))
+             else False if any(v is False for v in verdicts)
+             else None)
 record = {
     "schema_version": 1,
     "kind": bench_meta["kind"],
@@ -351,12 +390,13 @@ record = {
     # sim/README.md "What the fleet runner cannot prove".
     "models_staged": {
         "count": len(staged),
-        "runner_reported_count": None if runner_inputs is None else len(runner_inputs),
-        "hashes_match": None if (not staged or runner_inputs is None) else (
-            {s["name"]: s["sha256"] for s in staged}
-            == {s["name"]: s["sha256"] for s in runner_inputs}),
+        "jobs_reporting": sum(1 for v in verdicts if v is not None),
+        "hashes_match": all_match,
         "files": [{"name": s["name"], "kind": s["kind"], "sha256": s["sha256"]} for s in staged],
     },
+    # The fleet jobs this campaign actually ran as, by id -- the out-of-band handle for
+    # anyone re-reading a run against the fleet's own logs. A split campaign has several.
+    "fleet_jobs": per_job,
 }
 if reason:
     record["failure_reason"] = reason
@@ -368,6 +408,9 @@ if reason:
     print("%s/%s: NOT PASSED: %s" % (bench, campaign, reason), file=sys.stderr)
     sys.exit(5)
 pooled = stats["pooled"]
+print("  %s fleet job(s): %s" % (
+    len(per_job), ", ".join(j["job_id"] or "?" for j in per_job) or "(none reported)"))
+print("  staged models bound to the pin by hash on every job: %s" % all_match)
 print("  %s units, %s points, seed %s, N %s per point (simulated, %s backend)" % (
     envelope.get("corner_count"), record["monte_carlo"]["points"],
     record["monte_carlo"]["seed"], record["monte_carlo"]["n"], backend))
