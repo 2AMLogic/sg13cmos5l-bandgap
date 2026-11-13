@@ -223,7 +223,7 @@
         "declared_gaps": [
           {
             "id": "vref_untrimmed_line_3sigma",
-            "gap": "device-mismatch Monte Carlo reduction (3 sigma over N >= 300 samples per corner point) that a klt sim corner matrix cannot express; it is T1 item 6's to grade, and item 6 now cites the campaign that measured it (sim/closed-loop-vref-mc, decision record 0013). Still a gap for item 5, which is corner verification"
+            "gap": "device-mismatch Monte Carlo reduction (3 sigma over N >= 300 samples per corner point) that a klt sim corner matrix cannot express; it is T1 item 6's to grade, and item 6 now cites the campaign that measured it (sim/closed-loop-vref-mc, decision record 0014). Still a gap for item 5, which is corner verification"
           },
           {
             "id": "vref_trimmed_line",
