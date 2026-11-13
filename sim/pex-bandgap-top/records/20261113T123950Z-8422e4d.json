@@ -1,0 +1,160 @@
+{
+  "bench": "pex-bandgap-top",
+  "body_bias": {
+    "status": "biased",
+    "unbiased_device_count": 0,
+    "unbiased_nets": [],
+    "unbiased_pmos_body_nets": []
+  },
+  "criteria": "T1 item 7 is graded on a `klt pex` schematic-vs-extracted delta per spec row. This run produces the extraction half only: `klt pex --extract-only` on the committed `bandgap_top` GDS, with `extraction.model` and `body_bias` quoted into the record, plus a schematic-vs-extracted device inventory. No spec row is graded met or missed from it, and no bound is relaxed: the per-row delta is NOT PRODUCED because the curated `sg13cmos5l` extraction deck recognises no bipolar device, so the extracted netlist is missing all three `pnpMPA` devices of the bandgap core and any delta computed against it would be a delta between two different circuits. Every one of the seven declared rows is therefore `insufficient-evidence` for item 7; their item-5 (schematic) evidence is unaffected.",
+  "delta": [],
+  "device_inventory": {
+    "difference": {
+      "count_only": {},
+      "detail": "the extracted netlist does not instantiate every device model the schematic DUT does (or instantiates one it does not): a `klt pex` delta computed from these two netlists would compare different circuits, not a parasitic effect.",
+      "extracted_only": {},
+      "kind": "model_set",
+      "schematic_only": {
+        "pnpmpa": {
+          "instances": 3,
+          "names": [
+            "pnpMPA"
+          ],
+          "units": 10
+        }
+      },
+      "status": "mismatch"
+    },
+    "extracted": {
+      "device_cards": 17,
+      "device_units": 17,
+      "devices": {
+        "rhigh": {
+          "instances": 1,
+          "units": 1
+        },
+        "rppd": {
+          "instances": 2,
+          "units": 2
+        },
+        "sg13_hv_nmos": {
+          "instances": 6,
+          "units": 6
+        },
+        "sg13_hv_pmos": {
+          "instances": 8,
+          "units": 8
+        }
+      },
+      "entry": "sg13cmos5l_bandgap_top",
+      "netlist": "sim/pex-bandgap-top/extracted/20261113T123950Z-8422e4d.spice",
+      "parasitic_and_primitive_cards": {
+        "capacitor_cards": 13,
+        "inductor_cards": 0,
+        "resistor_cards": 66
+      },
+      "sha256": "1d359847555d784e69525fd215161d7d9a66623131a1314c92b4eb77c66840ce",
+      "source_cards": 0,
+      "warnings": []
+    },
+    "kind": "pex-device-inventory",
+    "schema_version": 1,
+    "schematic": {
+      "device_cards": 20,
+      "device_units": 27,
+      "devices": {
+        "pnpMPA": {
+          "instances": 3,
+          "units": 10
+        },
+        "rhigh": {
+          "instances": 1,
+          "units": 1
+        },
+        "rppd": {
+          "instances": 2,
+          "units": 2
+        },
+        "sg13_hv_nmos": {
+          "instances": 6,
+          "units": 6
+        },
+        "sg13_hv_pmos": {
+          "instances": 8,
+          "units": 8
+        }
+      },
+      "entry": "<top level>",
+      "netlist": "design/sg13cmos5l/netlist/bandgap_top.spice",
+      "parasitic_and_primitive_cards": {
+        "capacitor_cards": 0,
+        "inductor_cards": 0,
+        "resistor_cards": 0
+      },
+      "sha256": "a29624d3bbcc89e2f7132ecfb278dd793b248c84b9f74ab51685f8ecde929ad5",
+      "source_cards": 0,
+      "warnings": []
+    }
+  },
+  "envelope": "sim/pex-bandgap-top/envelopes/20261113T123950Z-8422e4d.json",
+  "extracted_netlist": "sim/pex-bandgap-top/extracted/20261113T123950Z-8422e4d.spice",
+  "extraction": {
+    "device_count": 17,
+    "model": {
+      "capacitance": "net-to-ground for every net's own (non-coupled) area/perimeter, plus net-to-net for the vertical-overlap coupling `coupling` describes below -- a coupled net pair gets a direct capacitor between their two hub nodes, not just capacitors to the deck's ground/substrate net",
+      "coupling": "vertical overlap (crossover) unconditionally -- where one net's conductor on an adjacent metal level sits directly over another *distinct* net's conductor, that overlap area is charged between the two nets instead of to ground (issue #760) -- plus lateral (same-layer, sidewall) coupling, but only for a net pair naming one of the caller's declared `--critical-net` nets (issue #976): facing-edge length within that layer's own minimum-spacing lookback is charged between the two nets, *additively* (not deducted from either net's substrate fringe term, unlike the vertical case -- a known simplification). Any same-layer pair with neither side named `--critical-net`, and fringe shielding in general, are still not modelled",
+      "frequency": "quasi-static -- one frequency-independent R and C per net; no skin effect, no distributed transmission-line behavior",
+      "resistance": "single lumped series resistance per net, distributed as a star across that net's device terminals (issue #592) -- not a per-segment, distributed RC ladder, *unless* `--distributed-rc` names this net via `--critical-net` (issue #977, Epic #709 Phase 2b): then the net's terminals are ordered along their approximate physical spread and its total R/C is broken into a chain of per-segment resistors (segment length proportional to inter-terminal distance) with a ground capacitor at each terminal node (proportional to its adjacent segment length/2), instead of one star hub -- still an approximation (terminal position is a device-placement proxy, not true per-segment routing geometry), but a strictly finer-grained one than the single-hub star"
+    },
+    "net_count": 13,
+    "netlist_sha256": "1d359847555d784e69525fd215161d7d9a66623131a1314c92b4eb77c66840ce",
+    "pins": "vdd,vss,vref",
+    "rename_declared_pins": true
+  },
+  "failure_reason": "device inventory mismatch (model_set): schematic-only {'pnpmpa': 10}, extracted-only {}",
+  "kind": "pex-extract-only",
+  "label": "LAYOUT-DERIVED (extraction only; no simulation leg)",
+  "layout": {
+    "path": "layout/sg13cmos5l-bandgap_top/sg13cmos5l-bandgap_top.gds",
+    "sha256": "4e4e4f85fa0875651c294c95a1f65792fa1913dd20d027fbe6905f2d001cb330",
+    "top_cell": "sg13cmos5l_bandgap_top"
+  },
+  "measurement": {
+    "command": null,
+    "mode": "extract-only",
+    "sides": null,
+    "timeout_s": null
+  },
+  "mode": "extract-only",
+  "pdk": {
+    "name": "ihp-sg13cmos5l",
+    "pin_file": "sim/pdk.json"
+  },
+  "pdk_revision": "f7bca32694fe3d58be0cc7d9df4b9f5db7161a14",
+  "repo_git_sha": "8422e4d",
+  "schema_version": 1,
+  "schematic_dut": {
+    "path": "design/sg13cmos5l/netlist/bandgap_top.spice",
+    "sha256": "a29624d3bbcc89e2f7132ecfb278dd793b248c84b9f74ab51685f8ecde929ad5"
+  },
+  "source_commit": "52535387e6ccf0a89f6490901a9abb2b78144176",
+  "source_repo": "2AMLogic/sg13g2-bandgap",
+  "spec_rows": [
+    "vref_nominal",
+    "tc_endpoint",
+    "tc_box",
+    "psrr_dc",
+    "iq",
+    "startup_self_starting",
+    "startup_time"
+  ],
+  "status": "failed",
+  "t1_item": 7,
+  "timestamp_utc": "20261113T123950Z",
+  "tool": {
+    "deck": "sg13cmos5l",
+    "deck_content_hash": "sha256:5a43b8eb0e1a4c228169cd33d820bf75ca5640812587f68c07f24f4aa2a1738f",
+    "klt_pin": "0.8.0",
+    "klt_version": "0.8.0"
+  }
+}

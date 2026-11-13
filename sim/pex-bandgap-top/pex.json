@@ -1,0 +1,31 @@
+{
+  "_comment": [
+    "The T1-item-7 (post-layout verification) extraction request, read by sim/pex-run.sh (issue #32).",
+    "`spec_rows` are the spec/target-spec.md rows item 7 would have to carry a schematic-vs-extracted delta for -- the same seven graded rows the five item-5 PVT-grid benches cover (decision record 0011). They are declared here as the row set this artifact is ACCOUNTABLE for, not as rows it covers: the extraction-only report carries no delta[] at all, so no row is graded met from it.",
+    "`mode` is `extract-only` (klayout-tools#3739), the gate spec/target-spec.md §Signoff named. It is not a narrowing of item 7 for convenience: the curated `sg13cmos5l` extraction deck declares no bipolar device class, so the bandgap core's three `pnpMPA` devices are absent from every netlist `klt extract` produces for this layout, and a measurement leg run on that netlist would compare two different circuits. sim/tools/pex_device_inventory.py measures that, and sim/pex-bandgap-top/README.md plus spec/decision-records/0012-post-layout-pex-extraction-gap.md state it.",
+    "`pins` plus `rename_declared_pins` reduce the extracted `.SUBCKT` header to the three pins the schematic top declares (vdd, vss, vref), which is the interface a delta run's testbench would have to instantiate on both legs. Without them flat extraction promotes all 13 named nets and the header carries KLayout's joined names (`fb|out`, `in_n|sns1`, `in_p|sns2`).",
+    "`klt_pin` is the version the committed envelope was produced at and the version manifests/README.md pins `klt signoff` to, so the cited artifact and its grader are the same build. `uvx --from` runs it without touching the host tool install."
+  ],
+  "bench": "pex-bandgap-top",
+  "kind": "pex-extract-only",
+  "mode": "extract-only",
+  "t1_item": 7,
+  "layout": "layout/sg13cmos5l-bandgap_top/sg13cmos5l-bandgap_top.gds",
+  "top_cell": "sg13cmos5l_bandgap_top",
+  "schematic_dut": "design/sg13cmos5l/netlist/bandgap_top.spice",
+  "deck": "sg13cmos5l",
+  "pdk": "ihp-sg13cmos5l",
+  "pins": "vdd,vss,vref",
+  "rename_declared_pins": true,
+  "klt_pin": "0.8.0",
+  "spec_rows": [
+    "vref_nominal",
+    "tc_endpoint",
+    "tc_box",
+    "psrr_dc",
+    "iq",
+    "startup_self_starting",
+    "startup_time"
+  ],
+  "criteria": "T1 item 7 is graded on a `klt pex` schematic-vs-extracted delta per spec row. This run produces the extraction half only: `klt pex --extract-only` on the committed `bandgap_top` GDS, with `extraction.model` and `body_bias` quoted into the record, plus a schematic-vs-extracted device inventory. No spec row is graded met or missed from it, and no bound is relaxed: the per-row delta is NOT PRODUCED because the curated `sg13cmos5l` extraction deck recognises no bipolar device, so the extracted netlist is missing all three `pnpMPA` devices of the bandgap core and any delta computed against it would be a delta between two different circuits. Every one of the seven declared rows is therefore `insufficient-evidence` for item 7; their item-5 (schematic) evidence is unaffected."
+}
