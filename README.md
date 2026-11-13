@@ -142,7 +142,10 @@ not repeated here.
   own README.
 - **Signoff record** (T1 grading): regenerate it as described in
   [`manifests/README.md`](manifests/README.md).
-- **Offline format check** (no PDK, no network): `bash sim/tests/test-env-pdk-store.sh`.
+- **Offline checks** (no PDK, no ngspice, no network): `pnpm -s test` runs every
+  suite in `sim/tests/` in order and stops at the first failure; `pnpm -s check:ci`
+  is the same entry point under the name the CI/role docs use. Without node,
+  run one suite directly, e.g. `bash sim/tests/test-env-pdk-store.sh`.
 
 ## T1 status
 
