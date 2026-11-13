@@ -31,7 +31,8 @@ that happens to sit comfortably under the bound.
 
 The row's **"settled"** qualifier is graded rather than assumed: `iq_settle_a` is the largest
 deviation of `|i(Vvdd)|` from its 2 ms value over the last 0.5 ms of the transient, bounded at
-1 µA (1 % of the fallback bound).
+1 µA. That bound is this bench's own definition of "settled" — the row states the qualifier
+but no tolerance for it — not a ratified number.
 
 `rshunt=1e9` is carried over from the reference fixture rather than retuned, and matters enough
 here to state: a 1 GΩ shunt from every node to ground adds at most ~3.6 nA to the rail current
@@ -40,11 +41,13 @@ measured Iq.
 
 ## Result (SIMULATED, batch fleet, 2026-11-13)
 
-Envelope `envelopes/20261113T111553Z-3830083.json`, record
-`records/20261113T111553Z-3830083.json`, job `klt-sim-442d5a006d95`, ngspice-47,
+Envelope `envelopes/20261113T115819Z-0be5a53.json`, record
+`records/20261113T115819Z-0be5a53.json`, job `klt-sim-4335ebe63f06`, ngspice-47,
 PDK `f7bca32…` (model text staged and hash-matched; see `sim/README.md`).
 
-**45/45 points pass.** Graded against the ratified **Fallback** bound of < 100 µA:
+**45/45 points pass.** Graded against the ratified **Target** bound of < 50 µA (decision
+record 0011 §2). The earlier envelope `envelopes/20261113T111553Z-3830083.json` is the same
+grid graded against the Fallback; it is kept as append-only evidence and is no longer cited.
 
 | Measurement | Worst case | Binding corner | Best case |
 |---|---|---|---|
@@ -56,8 +59,8 @@ Against the row's other two columns, reported and **not** graded (`bench.json` s
 
 | Column | Bound | Worst measured | Verdict |
 |---|---|---|---|
-| Fallback | < 100 µA | 41.085 µA | **met** (graded) |
-| Target | < 50 µA | 41.085 µA | **met** |
+| Fallback | < 100 µA | 41.085 µA | met (reported, not graded) |
+| Target | < 50 µA | 41.085 µA | **met** (graded) |
 | Stretch | < 20 µA | 41.085 µA | not met (the best corner, 19.5 µA, is under it; the worst is not) |
 
 This is evidence against the row, not a new ratified number: the ratified bounds are unchanged.

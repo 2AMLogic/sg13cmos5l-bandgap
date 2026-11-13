@@ -1,0 +1,212 @@
+{
+  "bench": "closed-loop-iq",
+  "criteria": "Graded at every one of the 45 points: iq_a < 50 uA, the ratified TARGET bound of the 'Iq' row (decision record 0011 \u00a72 grades each row at its ratified Target wherever the row states a numeric one). The row's Fallback is < 100 uA and its Stretch < 20 uA; both are reported in README.md against the measured worst case, not graded here. The row's 'settled' qualifier is graded as well: iq_settle_a, the largest deviation of |i(Vvdd)| from its 2 ms value over the last 0.5 ms, must be under 1 uA -- the bench's own definition of settled, since the row states the qualifier but no tolerance for it.",
+  "deck_sha256": "5082221c59a0dc952ad80a365dd2371bc978609812dd59146c7e99c85561e223",
+  "envelope": "sim/closed-loop-iq/envelopes/20261113T115819Z-0be5a53.json",
+  "grid": {
+    "envelope_status": "pass",
+    "failing_points": [],
+    "failing_points_truncated": false,
+    "measurements_declared": 4,
+    "measurements_with_limits": 2,
+    "points_errored": 0,
+    "points_failed": 0,
+    "points_inconclusive": 0,
+    "points_passed": 45,
+    "points_total": 45,
+    "rows": [
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "bcs/3.630V/-40C",
+          "value": 1.200391627484
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/125C",
+          "value": 1.188738326905
+        },
+        "name": "vref_v",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/-40C",
+          "margin": null,
+          "value": 1.197177362283
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "bcs/3.630V/125C",
+          "value": 4.108540336771e-05
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/-40C",
+          "value": 1.954841834944e-05
+        },
+        "name": "iq_final_a",
+        "status": "pass",
+        "unit": "A",
+        "worst_case": {
+          "corner_id": "typ/2.970V/-40C",
+          "margin": null,
+          "value": 2.195681864771e-05
+        }
+      },
+      {
+        "limits": {
+          "max": 1e-06
+        },
+        "max": {
+          "corner_id": "wcs/3.630V/-40C",
+          "value": 7.577801030439e-13
+        },
+        "min": {
+          "corner_id": "typ/3.630V/27C",
+          "value": 2.239917642642e-15
+        },
+        "name": "iq_settle_a",
+        "status": "pass",
+        "unit": "A",
+        "worst_case": {
+          "corner_id": "wcs/3.630V/-40C",
+          "margin": 9.99999242219897e-07,
+          "value": 7.577801030439e-13
+        }
+      },
+      {
+        "limits": {
+          "max": 5e-05
+        },
+        "max": {
+          "corner_id": "bcs/3.630V/125C",
+          "value": 4.108540336771e-05
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/-40C",
+          "value": 1.954841834944e-05
+        },
+        "name": "iq_a",
+        "status": "pass",
+        "unit": "A",
+        "worst_case": {
+          "corner_id": "bcs/3.630V/125C",
+          "margin": 8.914596632290004e-06,
+          "value": 4.108540336771e-05
+        }
+      }
+    ]
+  },
+  "kind": "closed-loop-iq-grid",
+  "label": "SIMULATED",
+  "models_staged": {
+    "count": 15,
+    "files": [
+      {
+        "kind": "library",
+        "name": "cornerPNP.lib",
+        "sha256": "65986abd36f61498fd859b66ab1e199e897fd58174c5b6ff789498350d8a0a64"
+      },
+      {
+        "kind": "library",
+        "name": "cornerMOShv.lib",
+        "sha256": "40c4140415a2a2e92d2f42fd64e026d1c04d800708b7a5b663ef083206ddfd62"
+      },
+      {
+        "kind": "library",
+        "name": "cornerRES.lib",
+        "sha256": "bd2fdd7cf19ec817c23c1539c7ab013612e959b8b0698e0a482a7af5ca91d0f9"
+      },
+      {
+        "kind": "dependency",
+        "name": "sg13cmos5l_pnpMPA_mod.lib",
+        "sha256": "0283ad85c094dd1e1be635c5b405c4d4c96ac053423781f25e702bdfbcadaeaa"
+      },
+      {
+        "kind": "dependency",
+        "name": "sg13cmos5l_pnpMPA_stat.lib",
+        "sha256": "f8ec3f58c793d065028823248f2fee95cec2d69aceca1fb7dae0203bdc0680ad"
+      },
+      {
+        "kind": "dependency",
+        "name": "sg13g2_moshv_mod.lib",
+        "sha256": "bf75d51ba73ab6c40bdb76306c9df74f80229db42ee63e3f4cc30a1911645af2"
+      },
+      {
+        "kind": "dependency",
+        "name": "sg13g2_svaricaphv_mod.lib",
+        "sha256": "b6ae39c7334c75c222ecdee9d6b04c9be48657e91351429aebac47d1192a9abb"
+      },
+      {
+        "kind": "dependency",
+        "name": "sg13g2_moshv_mismatch.lib",
+        "sha256": "2e9612bdb8252c281f422511039dc9b3ea983892aec89f8ef3361592e68fed09"
+      },
+      {
+        "kind": "dependency",
+        "name": "sg13g2_moshv_mod_mismatch.lib",
+        "sha256": "97eba3d2d47596488e0e128f950dc30742d1da80cdeec1f7385a9e13cb460936"
+      },
+      {
+        "kind": "dependency",
+        "name": "sg13g2_svaricaphv_mod_mismatch.lib",
+        "sha256": "064e1c751508149f2674914c1791c418195c55fff7d82236d20c2c79f49030fe"
+      },
+      {
+        "kind": "dependency",
+        "name": "sg13g2_moshv_stat.lib",
+        "sha256": "cd30f22637e41fdbbaba506ebe0f17746b8438027e4651a7a87b241a39d68903"
+      },
+      {
+        "kind": "dependency",
+        "name": "resistors_mod.lib",
+        "sha256": "7c77da0c0419c8a332550da3f934f530262bd452734090db827b68ff88d09c43"
+      },
+      {
+        "kind": "dependency",
+        "name": "resistors_mod_mismatch.lib",
+        "sha256": "ce5ea8559df174fbdad8192e45e5d65772ae3af90af61ba295419b2cb5154b29"
+      },
+      {
+        "kind": "dependency",
+        "name": "resistors_stat.lib",
+        "sha256": "9e34411ed09a569323adec8181e4bdd6832af279c9e05b181f00cb2e5d696db6"
+      },
+      {
+        "kind": "dependency",
+        "name": "sg13g2_moshv_parm.lib",
+        "sha256": "eea5bbed39184cb1e2654ae29425a9ed6ee2f2341d6cb76c472591c75237bd35"
+      }
+    ],
+    "hashes_match": true,
+    "runner_reported_count": 15
+  },
+  "osdi_preload": [
+    "psp103",
+    "r3_cmc"
+  ],
+  "pdk": {
+    "name": "ihp-sg13cmos5l",
+    "pin_file": "sim/pdk.json"
+  },
+  "pdk_revision": "f7bca32694fe3d58be0cc7d9df4b9f5db7161a14",
+  "repo_git_sha": "0be5a53",
+  "request_sha256": "c022f60c57ae923bdcb737e51a5bd0a8ed60c955c18e951f2289d6007c285701",
+  "schema_version": 1,
+  "simulator": {
+    "backend": "batch",
+    "klt": "klt 0.9.2.dev901+g7f78667063fb",
+    "ngspice": "ngspice-47"
+  },
+  "source_commit": "52535387e6ccf0a89f6490901a9abb2b78144176",
+  "source_file_sha256": "a29624d3bbcc89e2f7132ecfb278dd793b248c84b9f74ab51685f8ecde929ad5",
+  "source_path": "design/sg13cmos5l/netlist/bandgap_top.spice",
+  "source_repo": "2AMLogic/sg13g2-bandgap",
+  "spec_rows": [
+    "iq"
+  ],
+  "status": "ok",
+  "template_sha256": "6572b65f0b46538258e3958e4edaa157aa1d65a0f12d258b005637146fdf0252",
+  "testbench": "sim/closed-loop-iq/deck.cir.tmpl",
+  "timestamp_utc": "20261113T115819Z"
+}

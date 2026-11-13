@@ -110,7 +110,8 @@ Against the row's columns:
 | Fallback | self-starting | 45/45 on all three criteria | **met** (graded) |
 | Target | self-starting, < 1 ms | 100 µs worst case | **met** (graded) |
 
-The Startup row is the one row where the graded bound is the **Target**, not the Fallback: its
-Fallback column carries no time at all, so grading only the fallback would leave the `< 1 ms`
-unexpressed. The other four benches grade their Fallback column; `bench.json` and
-`request-grid.json` both say so.
+The graded numeric bound is the row's **Target**, `< 1 ms` — the same ratified-Target rule
+every one of the five benches now follows (decision record 0011 §2). It is the row's *only*
+numeric bound either way: the Fallback column carries no time at all, so there was never a
+looser number to grade here. The qualitative "self-starting" that both columns share is what
+the three source criteria grade. `bench.json` and `request-grid.json` both say so.

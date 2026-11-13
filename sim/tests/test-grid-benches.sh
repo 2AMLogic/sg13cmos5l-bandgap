@@ -21,13 +21,19 @@
 #  6. The deck templates carry no SPICE title line and no `.control` block (issue #19: `klt sim`
 #     `.include`s the generated deck, so line 1 is not in title position and a `.control` block
 #     would never run), and every `@@PLACEHOLDER@@` a template uses is one bench.json supplies.
-#  7. Every committed envelope a manifest citation names exists, passed, and is append-only
-#     paired with a record of the same name that carries `schema_version`.
+#  7. Every committed envelope a manifest citation names exists, is graded exactly as the
+#     bench declares (passing, or failing with the declared row set and point count -- see
+#     `expected_failure` in bench.json), returns a verdict for every expanded point with no
+#     errored or inconclusive ones, and is append-only paired with a record of the same name
+#     that carries `schema_version`.
 #
-# Negative control (run while writing it, decision record 0011): retagging one manifest citation's
-# `rows` to `psrr_dc_typo` fails check 2 ("closed-loop-psrr manifest rows equal bench.json's
-# spec_rows") AND check 3 ("every declared row is cited or a declared gap: unaccounted:
-# ['psrr_dc']"), exit 1. Inventoried as a T1 item-10 hygiene check (attest/item10.json), so CI
+# Negative controls (each run while writing it, decision record 0011): retagging one manifest
+# citation's `rows` to `psrr_dc_typo` fails check 2 ("closed-loop-psrr manifest rows equal
+# bench.json's spec_rows") AND check 3 ("every declared row is cited or a declared gap:
+# unaccounted: ['psrr_dc']"); changing closed-loop-psrr's declared `failing_points` from 24 to
+# 23 fails check 7 ("failing point count equals the declared 23: 24 failing"); deleting its
+# `expected_failure` block altogether fails check 7 twice ("cited envelope status is pass as
+# declared: fail", "record status is ok as declared: failed"). All exit 1. Inventoried as a T1 item-10 hygiene check (attest/item10.json), so CI
 # re-runs it through `klt signoff --attest 10 --check`.
 set -u
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
@@ -178,7 +184,12 @@ for b in BENCHES:
     check("%s every deck placeholder is supplied" % b, placeholders <= supplied,
           "unsupplied: %s" % sorted(placeholders - supplied))
 
-# ---- 7. cited envelopes exist, passed, and are paired with a versioned record ------------
+# ---- 7. cited envelopes exist, are graded as declared, and are paired with a record ------
+# An envelope that FAILS is still valid evidence -- since decision record 0011 §2 the grids
+# are graded at the ratified Target, and `psrr_dc` misses it. What must never pass silently
+# is an UNDECLARED failure, so a bench that expects one declares it in bench.json
+# (`expected_failure`) with the exact point count. Any drift in that count, a failure on a
+# bench that declares none, or a declared failure that stops happening, fails this test.
 for b, entry in cited.items():
     rel = entry["file"]
     path = os.path.join(root, rel)
@@ -186,12 +197,31 @@ for b, entry in cited.items():
         check("%s cited envelope exists (%s)" % (b, rel), False)
         continue
     env = load(rel)
-    check("%s cited envelope passed" % b, env.get("status") == "pass", str(env.get("status")))
+    exp = (meta.get(b) or {}).get("expected_failure")
+    want_status = "fail" if exp else "pass"
+    check("%s cited envelope status is %s as declared" % (b, want_status),
+          env.get("status") == want_status, str(env.get("status")))
     check("%s cited envelope graded at least one limit" % b,
           (env.get("coverage") or {}).get("measurements_with_limits", 0) > 0)
+    # Coverage is "every expanded point returned a verdict", pass or fail -- not "every point
+    # passed". An errored or inconclusive point is a hole in the grid and is never allowed.
+    passed, failed = env.get("passed") or 0, env.get("failed") or 0
     check("%s cited envelope covers every expanded point" % b,
-          env.get("passed") == env.get("corner_count"),
-          "%s/%s" % (env.get("passed"), env.get("corner_count")))
+          passed + failed == env.get("corner_count") and not env.get("errored")
+          and not env.get("inconclusive"),
+          "%s pass + %s fail of %s (errored %s, inconclusive %s)"
+          % (passed, failed, env.get("corner_count"), env.get("errored"),
+             env.get("inconclusive")))
+    if exp:
+        check("%s declared failing rows equal bench.json's spec_rows" % b,
+              exp.get("rows") == meta[b]["spec_rows"],
+              "%s vs %s" % (exp.get("rows"), meta[b]["spec_rows"]))
+        check("%s failing point count equals the declared %s" % (b, exp.get("failing_points")),
+              failed == exp.get("failing_points"),
+              "%s failing, declared %s" % (failed, exp.get("failing_points")))
+        check("%s declared grid size equals the envelope's" % b,
+              exp.get("of") == env.get("corner_count"),
+              "%s vs %s" % (exp.get("of"), env.get("corner_count")))
     name = os.path.basename(rel)
     rec_rel = "sim/%s/records/%s" % (b, name)
     if not os.path.isfile(os.path.join(root, rec_rel)):
@@ -201,7 +231,9 @@ for b, entry in cited.items():
     check("%s record carries schema_version 1" % b, rec.get("schema_version") == 1,
           str(rec.get("schema_version")))
     check("%s record names its own envelope" % b, rec.get("envelope") == rel, str(rec.get("envelope")))
-    check("%s record status ok" % b, rec.get("status") == "ok", str(rec.get("status")))
+    want_rec = "failed" if (meta.get(b) or {}).get("expected_failure") else "ok"
+    check("%s record status is %s as declared" % (b, want_rec),
+          rec.get("status") == want_rec, str(rec.get("status")))
     check("%s record binds the staged models by hash" % b,
           (rec.get("models_staged") or {}).get("hashes_match") is True,
           json.dumps((rec.get("models_staged") or {}).get("hashes_match")))

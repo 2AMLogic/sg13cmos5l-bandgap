@@ -65,11 +65,13 @@ inside both numbers: it is part of the DUT and is not corrected for anywhere.
 
 ## Result (SIMULATED, batch fleet, 2026-11-13)
 
-Envelope `envelopes/20261113T111153Z-3830083.json`, record
-`records/20261113T111153Z-3830083.json`, job `klt-sim-88d655000647`, ngspice-47,
+Envelope `envelopes/20261113T115709Z-0be5a53.json`, record
+`records/20261113T115709Z-0be5a53.json`, job `klt-sim-8da2d44d701e`, ngspice-47,
 PDK `f7bca32…` (model text staged and hash-matched; see `sim/README.md`).
 
-**15/15 units pass.** Graded against the ratified **Fallback** bound of < 100 ppm/°C:
+**15/15 units pass.** Graded against the ratified **Target** bound of < 50 ppm/°C (decision
+record 0011 §2). The earlier envelope `envelopes/20261113T111153Z-3830083.json` is the same
+grid graded against the Fallback; it is kept as append-only evidence and is no longer cited.
 
 | Measurement | Worst case | Binding corner | Best case |
 |---|---|---|---|
@@ -83,8 +85,8 @@ Against the row's other two columns, reported and **not** graded (`bench.json` s
 
 | Column | Bound | Worst measured | Verdict |
 |---|---|---|---|
-| Fallback | < 100 ppm/°C | 39.186 | **met** (graded) |
-| Target | < 50 ppm/°C | 39.186 | **met** |
+| Fallback | < 100 ppm/°C | 39.186 | met (reported, not graded) |
+| Target | < 50 ppm/°C | 39.186 | **met** (graded) |
 | Stretch | < 20 ppm/°C | 39.186 | not met |
 
 This is evidence against the row, not a new ratified number: the ratified bounds are unchanged

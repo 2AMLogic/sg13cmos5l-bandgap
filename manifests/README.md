@@ -29,8 +29,9 @@ passing, `limits`-bearing measurement per named row and reports
 envelope did not tag would be reported `uncovered`, not believed.
 
 Four of the nine declared rows are **gaps** — the untrimmed-line (3σ),
-trimmed-line and Trim rows, and `supply` — so item 5 grades `unmet` /
-`partial_coverage` by design. The Area and Signoff rows of the spec table are
+trimmed-line and Trim rows, and `supply` — and a fifth, `psrr_dc`, is cited by
+an envelope that **fails** its ratified Target at 24 of 45 points, so item 5
+grades `unmet` / `check_failed` by design (`failed_rows: ["psrr_dc"]`). The Area and Signoff rows of the spec table are
 deliberately not declared under item 5: T1 items 2, 3 and 4 grade them. The
 reasoning, and why a narrower row set was rejected, is in
 [`0011`](../spec/decision-records/0011-corner-verification-pvt-grids.md) §5.

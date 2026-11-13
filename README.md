@@ -151,11 +151,14 @@ verdict of record is
 [manifests/sg13cmos5l-bandgap.signoff.json](manifests/sg13cmos5l-bandgap.signoff.json);
 see [manifests/README.md](manifests/README.md) for how it is regenerated.
 
-Item 5 (full corner verification) is `unmet` / `partial_coverage`, and that is
-the honest reading rather than a failure of the grids: all five cited envelopes
-pass and every covered row is **derived** from the envelopes' own `spec_row`
-tags, but four of the nine declared spec rows are named gaps. See
-[`0011`](spec/decision-records/0011-corner-verification-pvt-grids.md) §5.
+Item 5 (full corner verification) is `unmet` / `check_failed`, blocked by two
+distinct things the report names separately. Four of the nine declared spec
+rows are named **gaps** with no evidence at all. And one row that does have
+evidence, `psrr_dc`, **misses its ratified Target** at 24 of its 45 points, so
+it is a failed row rather than a covered one. Every other covered row is
+**derived** from the envelopes' own `spec_row` tags. The grids are graded at
+the ratified Target column throughout; see
+[`0011`](spec/decision-records/0011-corner-verification-pvt-grids.md) §2 and §5.
 
 ## Repo layout
 

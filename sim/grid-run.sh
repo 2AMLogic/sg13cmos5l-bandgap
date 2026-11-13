@@ -22,6 +22,11 @@
 # A bench directory must contain:
 #   bench.json          {bench, kind, testbench, spec_rows[], criteria, osdi[],
 #                        deck_substitutions{}, deck_template, request}
+#                       plus the OPTIONAL `expected_failure` {rows[], failing_points, of, why}:
+#                       a bench whose grid is expected to FAIL its graded bound declares it
+#                       there with the exact point count, so sim/tests/test-grid-benches.sh
+#                       accepts that one failure and still catches any other. The runner
+#                       itself does not read it -- a failing grid still exits 5 here.
 #   <deck_template>     the deck body; @@WORK@@ is the scratch dir, plus bench.json's own keys
 #   <request>           the committed, host-portable `klt sim` request (see any bench README)
 #

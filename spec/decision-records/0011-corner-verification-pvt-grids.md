@@ -1,8 +1,15 @@
-# 0010: Corner verification — the five PVT-grid benches, and what they measured
+# 0011: Corner verification — the five PVT-grid benches, and what they measured
 
 - **Status**: ratified, effective when the PR for issue #30 merges
 - **Date**: 2026-11-13
-- **Decided by**: Loom Builder agent, issue #30
+- **Decided by**: Loom Builder agent, issue #30; §2 revised by the Loom Doctor
+  agent on PR #72 review, before the record took effect
+- **Numbering**: drafted as `0010`. `0010` was taken on `main` by
+  [`0010-retire-pvt-section-name-caveat.md`](0010-retire-pvt-section-name-caveat.md)
+  while this branch was open, so this record is `0011`. The envelopes and grid
+  records committed before the renumbering are append-only and still say
+  `0010` in their `criteria` text; they are not edited, and that text means
+  this record.
 
 ## Context
 
@@ -41,27 +48,70 @@ Each commits a host-portable `klt sim` request, tags its graded measurements
 with `measurements[].spec_row`, and writes an append-only raw envelope under
 `envelopes/` beside its record. The manifest cites the five envelopes and
 declares the full row set under `spec_rows.5`, so `klt signoff` **derives** row
-coverage from the envelopes (`row_coverage.row_sources` reads `derived` for all
-seven covered rows) rather than taking the manifest's word.
+coverage from the envelopes (`row_coverage.row_sources` reads `derived` for
+every row a passing citation covers) rather than taking the manifest's word.
 
-### 2. The graded bound is the ratified **Fallback** column, not the Target
+### 2. The graded bound is the ratified **Target** column
 
-[`0001`](0001-target-spec-ratification.md) §5 makes the fallback the threshold
-a miss is judged against ("considered only if the TC fallback (< 100 ppm/°C) is
-itself missed on measured evidence"). So `limits` in each request are the
-Fallback bound; the Target and Stretch are reported against the measured worst
-case in each bench README and in `target-spec.md`'s Status column, and are not
-graded. A Target miss on a met Fallback must not render a whole grid "failing"
-and so bury the result it is reporting.
+`limits` in each request are the ratified **Target** of the row, wherever the
+row states a numeric one: TC < 50 ppm/°C, PSRR > 60 dB, Iq < 50 µA, startup
+< 1 ms. The Fallback and Stretch columns are reported against the measured
+worst case in each bench README and in `target-spec.md`'s Status column, and
+are not graded.
 
-**One exception, stated in the bench:** the Startup row's Fallback column
-carries no time at all, so `t_settle_s` is graded against the row's **Target**
-(< 1 ms). Grading only the fallback there would leave `< 1 ms` unexpressed.
+**This is a correction.** The record first graded the **Fallback** column and
+cited [`0001`](0001-target-spec-ratification.md) §5 as the authority for it.
+§5 does not say that. In full it reads:
+
+> 5. A fallback to an all-MOS reference is a **different block**, not a
+>    recorded fallback of this one. It is considered only if the TC fallback
+>    (< 100 ppm/°C) is itself missed on measured evidence, and then needs its
+>    own issue and record.
+
+That says when a *different block* comes into consideration. It does not name
+a column for the grader, and it says nothing about PSRR or Iq. `0001` §3 says
+the opposite of a relaxation: "targets, fallbacks and stretches are the
+draft's numbers, kept. Nothing is relaxed." Grading the looser column while
+citing §5 for it moved the bound the report is written against without a
+record that says so — the relaxation `CLAUDE.md` forbids, reached through
+`limits` instead of through the table. The citation is withdrawn from this
+record, from all five `criteria` strings and from the requests.
+
+**The consequence is a failing row, and it is meant to be visible.** 24 of the
+45 PSRR points are below the 60 dB Target (every point at 2.97 V, 9 of the 15
+at 3.30 V, none at 3.63 V), so `psrr_dc` is a **failed row**: the envelope's
+status is `fail`, `klt signoff` reports `failed_rows: ["psrr_dc"]`, and item 5
+grades `unmet` / `check_failed`. A grid that reports a missed Target as a
+failure is the grid doing its job. The alternative — a report in which every
+row passes while the prose explains that one of them does not — is the outcome
+this project exists to avoid.
+
+Grading uniformly at the Target also removes a second inconsistency: the
+Startup row's `t_settle_s` was already graded at its Target while the other
+rows were graded at their Fallbacks.
+
+**No bound in the ratified table is edited**, then or now. What changed is
+which ratified column the grader is pointed at.
 
 Two rows have no ratified number to grade at all. `vref_nominal`'s target is
-"nominal at the TC-null point" — a method — so the bound graded at all 45 points
-is this bench's own settle criterion from [`0009`](0009-output-reference-nominal-first-measured.md).
+"nominal at the TC-null point" — a method — so the bound graded at all 45
+points is this bench's own settle criterion from
+[`0009`](0009-output-reference-nominal-first-measured.md).
 `supply` is recorded as met by construction, so it is declared a gap (§5).
+
+**Why `vref_nominal` stays a covered row and `supply` does not.** Both are
+graded against something other than a ratified number, so the question is fair
+to ask of both. They differ in what is measured. `supply` would be asserted
+from the supply values the request itself sets: the measurement is the
+bench's *input*, and nothing the simulator returns can confirm or refute it —
+that is the circularity. `vref` is an *output* of the solve: the grid measures
+the row's own quantity at all 45 points (1.18874 V … 1.20039 V), and the
+settle criterion [`0009`](0009-output-reference-nominal-first-measured.md)
+ratified for this bench is what establishes that those numbers are a settled
+reference rather than a half-converged transient. What the row still lacks is
+a numeric *accuracy* target to be graded against, because its ratified target
+is a method; that limitation is stated in the Status column rather than
+hidden, and it is why the TC-null nominal is still named as future work.
 
 ### 3. The Temp-coefficient bench sweeps temperature *inside* the unit
 
@@ -104,17 +154,21 @@ supply axis via `corners.supply_waveforms` instead of one request per supply.
 
 `spec_rows.5` declares eleven minus two: the Area and Signoff rows are **not**
 declared, because their binding conditions are a layout cell and the
-DRC/LVS/ERC decks, which T1 items 2, 3 and 4 grade. Of the nine declared, seven
-are covered and four are gaps — `vref_untrimmed_line_3sigma` (a device-mismatch
-Monte Carlo reduction a corner matrix cannot express; issue #31, and T1 item 6's
-claim), `vref_trimmed_line` and `trim` (no trim network exists), and `supply`
-(met by construction).
+DRC/LVS/ERC decks, which T1 items 2, 3 and 4 grade. Of the nine declared, four
+are gaps — `vref_untrimmed_line_3sigma` (a device-mismatch Monte Carlo
+reduction a corner matrix cannot express; issue #31, and T1 item 6's claim),
+`vref_trimmed_line` and `trim` (no trim network exists), and `supply` (met by
+construction). Of the remaining five, six rows across four benches are covered
+by passing citations and one, `psrr_dc`, is covered by a citation that
+**fails** its ratified Target (§2).
 
-**Item 5 therefore grades `unmet` / `partial_coverage`, and that is the intended
-outcome.** Declaring a narrower row set would have rendered it `met` by leaving
-the block's unevidenced accuracy rows out of the declaration — the relaxation
-`CLAUDE.md` forbids. `uncovered_rows` and `failed_rows` are both empty: every
-declared row is either covered by a passing derived citation or a named gap.
+**Item 5 therefore grades `unmet`, and that is the intended outcome.**
+Declaring a narrower row set would have rendered it `met` by leaving the
+block's unevidenced accuracy rows out of the declaration — the relaxation
+`CLAUDE.md` forbids. `uncovered_rows` is empty: every declared row is either
+reached by a derived citation or a named gap. `failed_rows` is **not** empty —
+it names `psrr_dc` — and the grading reason is `check_failed` rather than
+`partial_coverage`, because a failing row outranks a missing one.
 
 ### 6. `schema_version: 1` for the grid record, and one runner for five benches
 
@@ -171,13 +225,22 @@ append-only and are not edited.
 
 ## Alternatives considered
 
-- **Grade the Target column.** Rejected: on measured evidence PSRR's Target is
-  missed, so every PSRR envelope would read `fail` and item 5 would report
-  `check_failed`, hiding a met Fallback behind a failed check. 0001 §5 makes the
-  fallback the decision threshold. The miss is instead recorded explicitly, here
-  and in the spec's Status column.
+- **Grade the Fallback column** (what this record did before the §2
+  correction). Rejected: no ratified record names the Fallback as the grader's
+  threshold. `0001` §5 was cited for it and does not say it, and `0001` §3 says
+  nothing is relaxed. Grading the looser column would leave `psrr_dc` a
+  passing, covered row with `failed_rows: []` while 24 of its 45 points sit
+  below the ratified Target — and, once the four declared gaps close, would let
+  item 5 grade `met` with that Target still missed. Keeping the Fallback as the
+  item-5 threshold would be a ruling on what "verified vs the ratified spec"
+  means; it needs the operator, not a record decided by an agent.
 - **Relax or restate the PSRR target.** Rejected outright: agents do not relax
   the ratified spec to make results pass (`CLAUDE.md`). The bound is unchanged.
+- **Grade the Target but suppress the failing verdict** (report the miss in
+  prose only, keep the envelope `pass`). Rejected: that is the Fallback
+  alternative with extra steps. A report whose rows all pass while its prose
+  says one does not is the failure mode this repo's verification rules exist to
+  prevent.
 - **Declare only the covered rows under `spec_rows.5`.** Rejected: it would
   render item 5 `met` while the untrimmed-line, trimmed-line and trim rows have
   no evidence at all. The tier text asks for the *full* row set.
@@ -200,18 +263,26 @@ append-only and are not edited.
 
 ## Consequences
 
-- `klt signoff` grades item 5 `unmet` / `partial_coverage` with five `met`
-  citations, seven `derived` covered rows, no uncovered or failed rows, and four
-  named gaps. T1 stands at 4/11 met; item 5 moves from `no_evidence` to a stated
-  partial. The committed `manifests/sg13cmos5l-bandgap.signoff.json` is
-  regenerated in the same change and `--check` reports `match`.
+- `klt signoff` grades item 5 `unmet` / `check_failed`: four `met` citations
+  and one failed (`closed-loop-psrr`), `failed_rows: ["psrr_dc"]`, six
+  `derived` covered rows, no uncovered rows, and four named gaps. Item 5 moves
+  from `no_evidence` to a stated partial **with one failing row**. The
+  committed `manifests/sg13cmos5l-bandgap.signoff.json` is regenerated in the
+  same change and `--check` reports `match`.
+- Item 5 is now blocked by two distinct things, and the report names both: the
+  four rows with no evidence (gaps), and the one row whose ratified Target the
+  evidence misses (`psrr_dc`). Closing the gaps alone will not make it `met`.
 - Seven rows of `target-spec.md` move to `measured, PVT grid`, a status value
   this record adds. Each carries its worst case and binding corner.
-- **The PSRR @ DC Target is missed**: 55.249 dB worst case at `wcs`/2.97 V/125 °C
-  against a > 60 dB Target (> 50 dB Fallback met at all 45 points). The worst
-  corner is where the amplifier's loop gain is lowest, and this block carries the
-  source amplifier unchanged (0006), so closing the gap is an amplifier change —
-  a design decision outside this issue, not a spec change.
+- **The PSRR @ DC Target is missed, at 24 of the 45 points**: every point at
+  2.97 V, 9 of the 15 at 3.30 V, none at 3.63 V. Worst case 55.249 dB at
+  `wcs`/2.97 V/125 °C, best 68.330 dB at `bcs`/3.63 V/27 °C, against a > 60 dB
+  Target (the > 50 dB Fallback is met at all 45 points, and is reported, not
+  graded). This is a miss across more than half the grid, not at one corner.
+  The failing points are the low-supply ones, where the amplifier's loop gain
+  is lowest; this block carries the source amplifier unchanged (0006), so
+  closing the gap is an amplifier change — a design decision outside this
+  issue, not a spec change.
 - Item 5 cannot become `met` until the mismatch Monte Carlo row has evidence
   (issue #31) and the trim rows have a trim network. Those are the gaps the
   report now names.

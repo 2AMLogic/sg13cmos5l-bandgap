@@ -31,21 +31,21 @@
         "role": "hygiene",
         "path": "README.md",
         "passed": true,
-        "content_hash": "sha256:db3267d709922620f2ec6f7dcd86b93a4b35bf1f511ef50f373b3807d0bb4c3c"
+        "content_hash": "sha256:6e21747d24219ac9df8a1501a503437f704aa5f0e8a8f10fe140435d631e5968"
       },
       {
         "check": "present",
         "role": "hygiene",
         "path": "manifests/README.md",
         "passed": true,
-        "content_hash": "sha256:7c4b480d19b6982410368e5c53f0dbb9df0466dfcff999e337dcb75ab7815d86"
+        "content_hash": "sha256:d70df18605197d821b7e7ee12429b28bcb5b988da39bbc013b367af42e840d3f"
       },
       {
         "check": "present",
         "role": "hygiene",
         "path": "spec/target-spec.md",
         "passed": true,
-        "content_hash": "sha256:5e9516cf7324164c41f720808f5a2e0af1fef232db2896d2b1717daa4c114aad"
+        "content_hash": "sha256:643cf4039abf5365209768931526b271544b063f7f3d08dee99f36306243db68"
       },
       {
         "check": "command",

@@ -73,29 +73,42 @@ a `plausible_range` of [0.5 V, 2.0 V] so a degenerate solve is failed rather tha
 
 ## Result (SIMULATED, batch fleet, 2026-11-13)
 
-Envelope `envelopes/20261113T111443Z-3830083.json`, record
-`records/20261113T111443Z-3830083.json`, job `klt-sim-b03a4aec8d12`, ngspice-47,
+Envelope `envelopes/20261113T115930Z-0be5a53.json`, record
+`records/20261113T115930Z-0be5a53.json`, job `klt-sim-b912e68f5318`, ngspice-47,
 PDK `f7bca32…` (model text staged and hash-matched; see `sim/README.md`).
 
-**45/45 points pass.** Graded against the ratified **Fallback** bound of > 50 dB:
+**21/45 points pass; 24/45 FAIL.** Graded against the ratified **Target** bound of > 60 dB
+(decision record 0011 §2). The earlier envelope `envelopes/20261113T111443Z-3830083.json`
+is the same grid graded against the Fallback; it is kept as append-only evidence and is no
+longer the cited one.
 
 | Measurement | Worst case | Binding corner | Best case |
 |---|---|---|---|
-| `psrr_db` | **55.249 dB** | `wcs/2.970V/125C` | 68.330 dB |
+| `psrr_db` | **55.249 dB** | `wcs/2.970V/125C` | 68.330 dB (`bcs/3.630V/27C`) |
 | `dvdd_v` | 0.1 V | every point | 0.1 V |
 | `dvref_v` | −68.6 µV … +172.8 µV | — | — |
+
+**Where the 24 failures are** — the miss is across more than half the grid, not at one corner:
+
+| Supply | Points below > 60 dB | Of |
+|---|---|---|
+| 2.97 V | **15** | 15 |
+| 3.30 V | **9** | 15 |
+| 3.63 V | 0 | 15 |
 
 Against the row's other two columns, reported and **not** graded (`bench.json` says why):
 
 | Column | Bound | Worst measured | Verdict |
 |---|---|---|---|
-| Fallback | > 50 dB | 55.249 dB | **met** (graded) |
-| Target | > 60 dB | 55.249 dB | **NOT met** |
+| Fallback | > 50 dB | 55.249 dB | met (reported, not graded) |
+| Target | > 60 dB | 55.249 dB | **NOT met — graded, 24/45 fail** |
 | Stretch | > 70 dB | 55.249 dB | not met |
 
 **The PSRR target is missed on measured evidence.** This is the one row of the five where the
 ratified Target does not hold at every point, and it is recorded as a miss rather than
-accommodated: no bound is edited, and the Target column of `spec/target-spec.md` is unchanged.
+accommodated — the envelope's status is `fail` and `klt signoff` reports
+`failed_rows: ["psrr_dc"]`, so the miss is in the machine-readable verdict and not only in
+this prose: no bound is edited, and the Target column of `spec/target-spec.md` is unchanged.
 The worst corner is the slow/worst-case process at the low supply and high temperature, which
 is where the amplifier's loop gain is lowest — PSRR of a bandgap of this topology is set by
 that loop gain, and this design carries the source's amplifier unchanged (decision record
