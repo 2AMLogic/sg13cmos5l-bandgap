@@ -94,11 +94,39 @@ is missing (or a symlink dangles), 2 = no models directory. `--models-dir` overr
 
 Offline exit-code test (fake models tree, no PDK needed): `bash sim/tests/test-model-sections.sh`.
 
-Finding (**not yet at the pin**): run against an unpinned local copy (`~/share/pdk`, no
-`.pdk-revision`, so `env.sh` refuses it), all 12 required names exist exactly as the spec
-writes them; no rename. Which mismatch sections the Monte Carlo benches use (`mos_tt_stat`
-vs `mos_*_mismatch`, `res_stat` vs `res_*_mismatch`) is deliberately not decided here. The
-`model_files` entries added to `pdk.json` carry that caveat until the tool is run at the pin.
+Finding (**at the pin**, 2026-11-13, issue #15): run against `PDK_ROOT=~/share/pdk`
+delivered by the fleet PDK store, whose `ihp-sg13cmos5l/.pdk-store.json` reports version
+`f7bca32694fe3d58be0cc7d9df4b9f5db7161a14` so `sim/env.sh` accepts it (#21), the tool exits 0
+with **12/12 required sections found, 0 problems**. Every section name `spec/target-spec.md`
+§PVT writes resolves verbatim — `cornerPNP.lib` `typ`/`bcs`/`wcs`/`stat`, `cornerMOShv.lib`
+`mos_tt`/`mos_ff`/`mos_ss`/`mos_sf`/`mos_fs`, `cornerRES.lib` `res_typ`/`res_bcs`/`res_wcs` —
+so **no rename, and the spec text needs no decision record**. `stat` pulls in
+`sg13cmos5l_pnpMPA_stat.lib` as the spec says. Negative control at the pin: the same
+`cornerPNP.lib` copied to a scratch directory with its `.LIB stat` block deleted, then
+`--models-dir` at that copy, exits 1 with `ERROR: cornerPNP.lib section 'stat' not defined`
+(11/12). `sim/smoke/run_smoke.sh` passes at the pin on ngspice-47 — record
+`sim/smoke/records/20261113T095737Z-66c149b.json`.
+
+All mismatch candidates exist too (`cornerMOShv.lib` `mos_tt_stat` and `mos_*_mismatch`;
+`cornerRES.lib` `res_stat`, `res_stat_mismatch`, `res_*_mismatch`) but stay informational:
+which of them the Monte Carlo benches use is deliberately **not** decided here.
+
+Second finding — **the store bundle materializes the shared files, and that matters.** An
+upstream combined git checkout at this pin carries the SG13G2-shared models as relative
+symlinks into `../ihp-sg13g2` (`pdk.json` `variant_of_checkout`); the store bundle ships them
+as real files, so every `model_files` entry now reads `real_file: true` and the checker's
+`defined_in` stays inside `ihp-sg13cmos5l/`. This is load-bearing rather than cosmetic: the
+store's sibling `ihp-sg13g2` tree is pinned at **v0.3.0, not at this dev commit**, and
+`cornerRES.lib`, `sg13g2_moshv_mod.lib` and `resistors_mod.lib` differ in content between the
+two trees. Live symlinks on this host would therefore resolve the SG13CMOS5L models to v0.3.0
+content while `env.sh` still reported the `f7bca32` pin. Materialized copies are what keep the
+models at the pin. A host that installs a raw combined git checkout instead will see these as
+symlinks (`real_file: false`) into whatever revision its own `ihp-sg13g2` holds, so the
+`real_file` column describes the install, not the PDK.
+
+`spec/target-spec.md` §PVT still carries its pre-verification caveat ("not verified at the
+`dev` pin") and its unqualified symlink statement; retiring both needs a decision record, so
+it is tracked in #62 rather than edited here.
 
 ## Item 9 attestation
 
