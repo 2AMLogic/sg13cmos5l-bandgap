@@ -9,6 +9,10 @@ __pycache__/
 sim/build/
 # worktree-local Python venv (e.g. a klt install)
 .venv/
+# pnpm scaffolding created by `pnpm test` / `pnpm check:ci`; the test entry
+# point only shells out to sim/tests/, so neither is a real dependency record
+node_modules/
+pnpm-lock.yaml
 # >>> loom-managed (do not edit) >>>
 # Loom runtime state (don't commit these)
 .loom-in-use
