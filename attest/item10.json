@@ -37,6 +37,13 @@
         "bash",
         "sim/tests/test-grid-benches.sh"
       ]
+    },
+    {
+      "name": "pex-device-inventory-test",
+      "argv": [
+        "bash",
+        "sim/tests/test-pex-device-inventory.sh"
+      ]
     }
   ]
 }
