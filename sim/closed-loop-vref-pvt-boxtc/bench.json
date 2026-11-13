@@ -9,7 +9,7 @@
   "deck_template": "deck.cir.tmpl",
   "request": "request-grid.json",
   "spec_rows": ["tc_box", "tc_endpoint"],
-  "criteria": "Graded at every one of the 15 process x supply units: tc_box_ppm_per_c and tc_endpoint_ppm_per_c < 100 ppm/C, the ratified FALLBACK bound of the 'Temp coefficient' row (decision record 0001 §5 names that fallback as the threshold a miss is judged against). The row's Target is < 50 ppm/C and its Stretch < 20 ppm/C; both are reported in README.md against the measured worst case, not graded here, so a target miss on a met fallback cannot render the whole grid 'failing'. temp_points >= 8 is graded too, because the row's own text requires 8 or more temperature points: this bench runs 166.",
+  "criteria": "Graded at every one of the 15 process x supply units: tc_box_ppm_per_c and tc_endpoint_ppm_per_c < 50 ppm/C, the ratified TARGET bound of the 'Temp coefficient' row (decision record 0011 §2 grades each row at its ratified Target wherever the row states a numeric one). The row's Fallback is < 100 ppm/C and its Stretch < 20 ppm/C; both are reported in README.md against the measured worst case, not graded here. temp_points >= 8 is graded too, because the row's own text requires 8 or more temperature points: this bench runs 166.",
   "osdi": ["psp103", "r3_cmc"],
   "deck_substitutions": { "VDD": "3.3" }
 }

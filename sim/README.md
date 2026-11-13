@@ -15,7 +15,7 @@ verification (issue #30).
 | `closed-loop-iq/` | Quiescent supply current, settled. 45 points |
 | `closed-loop-startup/` | Release from `vdd` = 0: self-starting **and** the settling time the inherited source bench never extracted. 45 points |
 | `grid-run.sh` | The one runner for all five grids: stages the migrated DUT, renders the deck, submits the committed request to the batch fleet, writes the envelope and the record |
-| `runner-lib.sh`, `tools/cm5_record.py` | Shared by the bench runners: tool/ngspice gates, append-only record path and write, klt-envelope value extraction and grid reduction (record 0008, extended by 0010) |
+| `runner-lib.sh`, `tools/cm5_record.py` | Shared by the bench runners: tool/ngspice gates, append-only record path and write, klt-envelope value extraction and grid reduction (record 0008, extended by 0011) |
 | `ENV-DECISION.md` | Why `env.sh` is this repo's own and the OSDI builder is adopted by pin |
 
 ## PVT grids: one runner, the batch fleet, and what it can and cannot prove

@@ -11,7 +11,7 @@
     "  - `netlist` is the deck sim/grid-run.sh generates under sim/build/ (gitignored); the runner substitutes an absolute path, and klt's include-closure staging uploads the migrated DUT the deck `.include`s. The relative default below is where the generated deck lands, so `klt sim --dry-run` works from the repo root once a runner has written it.",
     "Process labels map to model sections exactly as the spec/target-spec.md \u00a7PVT table does: pnpMPA has no skew section, so sf and fs read cornerPNP/cornerRES `typ`.",
     "`netlist_source` is `schematic`: the DUT is the xschem-exported netlist migrated by decision record 0006, not an extracted one.",
-    "LIMITS ARE THE RATIFIED FALLBACK COLUMN of spec/target-spec.md, which decision record 0001 \u00a75 names as the threshold a miss is judged against ('considered only if the TC fallback (< 100 ppm/C) is itself missed on measured evidence'). The Target column is the goal, reported in each bench README against the measured value, not graded here: a target miss on a met fallback must not render the whole grid 'failing', and no bound is edited either way."
+    "LIMITS ARE THE RATIFIED TARGET COLUMN of spec/target-spec.md. Decision record 0011 \u00a72 grades each row at the ratified Target wherever the row states a numeric one, so a Target miss is reported by the grader and not only by the prose; the Fallback and Stretch columns are reported in each bench README against the measured worst case, not graded here. No bound in the ratified table is edited either way."
   ],
   "engine": "ngspice",
   "netlist": "../build/closed-loop-vref-pvt-boxtc/deck.cir",
@@ -182,7 +182,7 @@
       "expr": "1e6*(vref_max_v - vref_min_v)/(165*vref_box_mid_v)",
       "unit": "ppm/C",
       "limits": {
-        "max": 100
+        "max": 50
       },
       "spec_row": "tc_box"
     },
@@ -191,7 +191,7 @@
       "expr": "1e6*abs(vref_125_v - vref_m40_v)/(165*vref_27_v)",
       "unit": "ppm/C",
       "limits": {
-        "max": 100
+        "max": 50
       },
       "spec_row": "tc_endpoint"
     }

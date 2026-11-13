@@ -9,7 +9,7 @@
   "deck_template": "deck.cir.tmpl",
   "request": "request-grid.json",
   "spec_rows": ["psrr_dc"],
-  "criteria": "Graded at every one of the 45 points: psrr_db > 50 dB, the ratified FALLBACK bound of the 'PSRR @ DC' row (decision record 0001 §5 names the fallback as the threshold a miss is judged against). The row's Target is > 60 dB and its Stretch > 70 dB; both are reported in README.md against the measured worst case, not graded here, so a target miss on a met fallback cannot render the whole grid 'failing'. psrr_db also carries a plausible_range of [0 dB, 140 dB], which fails a numerically-zero secant masquerading as infinite rejection.",
+  "criteria": "Graded at every one of the 45 points: psrr_db > 60 dB, the ratified TARGET bound of the 'PSRR @ DC' row (decision record 0011 §2 grades each row at its ratified Target wherever the row states a numeric one). The row's Fallback is > 50 dB and its Stretch > 70 dB; both are reported in README.md against the measured worst case, not graded here. This bound is MISSED: 24 of the 45 points are below 60 dB, so psrr_dc is a failing row in the envelope and in `klt signoff`'s failed_rows, which is the honest outcome and not a reason to move the bound. psrr_db also carries a plausible_range of [0 dB, 140 dB], which fails a numerically-zero secant masquerading as infinite rejection.",
   "osdi": ["psp103", "r3_cmc"],
   "deck_substitutions": { "VDD": "3.3" }
 }

@@ -33,7 +33,7 @@ trimmed-line and Trim rows, and `supply` — so item 5 grades `unmet` /
 `partial_coverage` by design. The Area and Signoff rows of the spec table are
 deliberately not declared under item 5: T1 items 2, 3 and 4 grade them. The
 reasoning, and why a narrower row set was rejected, is in
-[`0010`](../spec/decision-records/0010-corner-verification-pvt-grids.md) §5.
+[`0011`](../spec/decision-records/0011-corner-verification-pvt-grids.md) §5.
 
 No `content_hash` is pinned on the item-5 citations. A `klt sim` envelope's
 `provenance.input` hashes the per-corner **deck**, which `sim/grid-run.sh`

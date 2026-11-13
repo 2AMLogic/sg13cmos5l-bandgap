@@ -24,7 +24,7 @@
 #  7. Every committed envelope a manifest citation names exists, passed, and is append-only
 #     paired with a record of the same name that carries `schema_version`.
 #
-# Negative control (run while writing it, decision record 0010): retagging one manifest citation's
+# Negative control (run while writing it, decision record 0011): retagging one manifest citation's
 # `rows` to `psrr_dc_typo` fails check 2 ("closed-loop-psrr manifest rows equal bench.json's
 # spec_rows") AND check 3 ("every declared row is cited or a declared gap: unaccounted:
 # ['psrr_dc']"), exit 1. Inventoried as a T1 item-10 hygiene check (attest/item10.json), so CI

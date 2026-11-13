@@ -8,7 +8,7 @@ the open-source xschem + ngspice flow.
 
 **Status: specification ratified (issue #2); the schematic is now simulated
 across the full PVT corner grid (issue #30,
-[`0010`](spec/decision-records/0010-corner-verification-pvt-grids.md)) — seven
+[`0011`](spec/decision-records/0011-corner-verification-pvt-grids.md)) — seven
 of the eleven spec rows carry measured corner evidence, one ratified Target
 (PSRR @ DC) is missed on that evidence, and the statistical and trim rows have
 none. Nothing is laid out, extracted or measured in silicon here.** The work
@@ -155,7 +155,7 @@ Item 5 (full corner verification) is `unmet` / `partial_coverage`, and that is
 the honest reading rather than a failure of the grids: all five cited envelopes
 pass and every covered row is **derived** from the envelopes' own `spec_row`
 tags, but four of the nine declared spec rows are named gaps. See
-[`0010`](spec/decision-records/0010-corner-verification-pvt-grids.md) §5.
+[`0011`](spec/decision-records/0011-corner-verification-pvt-grids.md) §5.
 
 ## Repo layout
 

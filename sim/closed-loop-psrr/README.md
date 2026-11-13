@@ -100,7 +100,7 @@ The worst corner is the slow/worst-case process at the low supply and high tempe
 is where the amplifier's loop gain is lowest — PSRR of a bandgap of this topology is set by
 that loop gain, and this design carries the source's amplifier unchanged (decision record
 0006). Improving it is an amplifier change, which is a design decision outside this issue;
-decision record 0010 records the miss and leaves the row's status at the measured value.
+decision record 0011 records the miss and leaves the row's status at the measured value.
 
 `dvref_v` changes sign across the grid (the sense of the residual line sensitivity flips
 between corners); `psrr_db` takes its magnitude, which is what the row asks for.

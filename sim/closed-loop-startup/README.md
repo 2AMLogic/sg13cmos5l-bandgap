@@ -26,7 +26,7 @@ does not contain is a settling **time**: every one of its measurements is a
 evidence behind it anywhere — which is exactly what `spec/target-spec.md` says ("The `< 1 ms`
 time was not extracted from that record by this plan").
 
-Extracting it needs a measurement the source bench does not have, so **decision record 0010
+Extracting it needs a measurement the source bench does not have, so **decision record 0011
 supersedes the planned bench for this row with this one**. What is carried over unchanged is
 the fixture and the criteria; what is added is `t_settle_s`.
 

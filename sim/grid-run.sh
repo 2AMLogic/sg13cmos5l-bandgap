@@ -109,7 +109,7 @@ PY
 # "Model library resolution" and "OSDI (Verilog-A) model preload").
 #
 # $CM5_GRID_NO_STAGE=1 turns options.stage_model_inputs off and suffixes both artifacts
-# `.image-models`. That is the provenance cross-check decision record 0010 §7 relies on, kept
+# `.image-models`. That is the provenance cross-check decision record 0011 §7 relies on, kept
 # reproducible rather than merely described: the same grid run against the fleet image's own PDK
 # tree instead of this host's pinned one, so the two envelopes can be compared value for value.
 # Never the default: only a staged run binds the models to sim/pdk.json by hash.
@@ -177,7 +177,7 @@ elif summary["envelope_status"] != "pass":
         summary["envelope_status"], summary["points_passed"], summary["points_total"])
 
 # schema_version 1 is the common grid-record shape decision record 0008 deferred to the
-# first #30 bench and 0010 defines. A record with no schema_version is one of the two
+# first #30 bench and 0011 defines. A record with no schema_version is one of the two
 # legacy single-corner shapes (sim/smoke, closed-loop-vref-pvt/run.sh).
 staged = (envelope or {}).get("environment", {}).get("staged_model_inputs") or []
 remote = (envelope or {}).get("environment", {}).get("remote") or {}

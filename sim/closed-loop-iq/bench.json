@@ -9,7 +9,7 @@
   "deck_template": "deck.cir.tmpl",
   "request": "request-grid.json",
   "spec_rows": ["iq"],
-  "criteria": "Graded at every one of the 45 points: iq_a < 100 uA, the ratified FALLBACK bound of the 'Iq' row (decision record 0001 §5 names the fallback as the threshold a miss is judged against). The row's Target is < 50 uA and its Stretch < 20 uA; both are reported in README.md against the measured worst case, not graded here. The row's 'settled' qualifier is graded as well: iq_settle_a, the largest deviation of |i(Vvdd)| from its 2 ms value over the last 0.5 ms, must be under 1 uA (1% of the fallback bound).",
+  "criteria": "Graded at every one of the 45 points: iq_a < 50 uA, the ratified TARGET bound of the 'Iq' row (decision record 0011 §2 grades each row at its ratified Target wherever the row states a numeric one). The row's Fallback is < 100 uA and its Stretch < 20 uA; both are reported in README.md against the measured worst case, not graded here. The row's 'settled' qualifier is graded as well: iq_settle_a, the largest deviation of |i(Vvdd)| from its 2 ms value over the last 0.5 ms, must be under 1 uA -- the bench's own definition of settled, since the row states the qualifier but no tolerance for it.",
   "osdi": ["psp103", "r3_cmc"],
   "deck_substitutions": { "VDD": "3.3" }
 }
