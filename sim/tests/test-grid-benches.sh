@@ -26,6 +26,14 @@
 #     `expected_failure` in bench.json), returns a verdict for every expanded point with no
 #     errored or inconclusive ones, and is append-only paired with a record of the same name
 #     that carries `schema_version`.
+#  8. The five benches' `corners.process` tables are identical to each other, and the
+#     (corner file, section) pairs they select are exactly `REQUIRED` in
+#     sim/tools/check-model-sections.py minus the one non-corner entry
+#     (`cornerPNP.lib` `stat`). That checker exists to prove at pin time that the
+#     sections the benches select resolve in the PDK, but it proves it for its own
+#     hand-written list: edit a request's `section` -- or a `REQUIRED` entry -- alone and
+#     every offline test stayed green while "12/12 required sections found" described
+#     sections no bench uses. `REQUIRED` is imported from the checker here, never retyped.
 #
 # Negative controls (each run while writing it, decision record 0011): retagging one manifest
 # citation's `rows` to `psrr_dc_typo` fails check 2 ("closed-loop-psrr manifest rows equal
@@ -33,12 +41,25 @@
 # unaccounted: ['psrr_dc']"); changing closed-loop-psrr's declared `failing_points` from 24 to
 # 23 fails check 7 ("failing point count equals the declared 23: 24 failing"); deleting its
 # `expected_failure` block altogether fails check 7 twice ("cited envelope status is pass as
-# declared: fail", "record status is ok as declared: failed"). All exit 1. Inventoried as a T1 item-10 hygiene check (attest/item10.json), so CI
+# declared: fail", "record status is ok as declared: failed"). All exit 1.
+#
+# Negative controls for check 8 (issue #61), each run while writing it and reverted before
+# commit: (a) changing closed-loop-psrr's `wcs` MOS `section` from `mos_ss` to `mos_zz` fails
+# twice -- "closed-loop-psrr corners.process equals closed-loop-vref-pvt's: corner 2: ('wcs',
+# [... ('cornerMOShv.lib', 'mos_zz') ...]) vs ('wcs', [... ('cornerMOShv.lib', 'mos_ss')
+# ...])" and "closed-loop-psrr selects exactly REQUIRED minus cornerPNP.lib:stat: missing
+# [('cornerMOShv.lib', 'mos_ss')]; unexpected [('cornerMOShv.lib', 'mos_zz')]". (b) deleting
+# the ("cornerRES.lib", "res_wcs") entry from the checker's `REQUIRED` fails once per bench --
+# "<bench> selects exactly REQUIRED minus cornerPNP.lib:stat: missing []; unexpected
+# [('cornerRES.lib', 'res_wcs')]". Both exit 1. Edge case, same method: replacing one
+# closed-loop-iq `sections` entry with the string "cornerRES.lib:res_wcs" is reported as
+# "closed-loop-iq corner 'wcs' sections entry is an object: 'cornerRES.lib:res_wcs'" (exit 1),
+# not a Python traceback. Inventoried as a T1 item-10 hygiene check (attest/item10.json), so CI
 # re-runs it through `klt signoff --attest 10 --check`.
 set -u
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 python3 -I - "${root}" <<'PY'
-import json, os, re, sys
+import importlib.util, json, os, re, sys
 
 root = sys.argv[1]
 fails = []
@@ -239,6 +260,96 @@ for b, entry in cited.items():
           json.dumps((rec.get("models_staged") or {}).get("hashes_match")))
     check("%s record spec_rows equal bench.json's" % b,
           rec.get("spec_rows") == meta.get(b, {}).get("spec_rows"))
+
+# ---- 8. the five corner tables agree, and agree with the checker's REQUIRED --------------
+# sim/tools/check-model-sections.py is what proves (at the pin, against the real PDK) that
+# every section these benches select is defined. It checks its own hand-written REQUIRED
+# list, so nothing tied that list to the sections the committed requests actually select:
+# a request edited to a new section name, or a REQUIRED entry edited alone, left every
+# offline test green and the checker's "12/12 required sections found" then described
+# sections no bench uses. The pairs are compared by basename because a request names the
+# lib PDK-relative (checked in 5 above) while REQUIRED names the file only.
+STAT_EXEMPT = ("cornerPNP.lib", "stat")   # mismatch section; no PVT grid corner selects it
+
+
+def corner_pairs(bench, req):
+    """{(basename(lib), section)} a request selects. Malformed entries fail, never raise."""
+    pairs = set()
+    for proc in (req.get("corners") or {}).get("process") or []:
+        if not isinstance(proc, dict):
+            check("%s corners.process entry is an object" % bench, False, repr(proc))
+            continue
+        for sec in proc.get("sections") or []:
+            if not isinstance(sec, dict):
+                check("%s corner %r sections entry is an object" % (bench, proc.get("name")),
+                      False, repr(sec))
+                continue
+            lib, section = sec.get("lib"), sec.get("section")
+            if not isinstance(lib, str) or not isinstance(section, str):
+                check("%s corner %r section entry names a lib and a section"
+                      % (bench, proc.get("name")), False, json.dumps(sec))
+                continue
+            pairs.add((os.path.basename(lib), section))
+    return pairs
+
+
+def corner_summary(proc):
+    """Compact [(name, [(lib basename, section), ...]), ...], for difference reporting."""
+    out = []
+    for c in proc if isinstance(proc, list) else []:
+        if not isinstance(c, dict):
+            out.append((None, repr(c)))
+            continue
+        out.append((c.get("name"), [(os.path.basename(s.get("lib", "")), s.get("section"))
+                                    for s in c.get("sections") or [] if isinstance(s, dict)]))
+    return out
+
+
+def first_difference(got, ref_):
+    """Name the first corner at which two corners.process lists differ."""
+    a, b = corner_summary(got), corner_summary(ref_)
+    for i in range(max(len(a), len(b))):
+        x = a[i] if i < len(a) else None
+        y = b[i] if i < len(b) else None
+        if x != y:
+            return "corner %d: %s vs %s" % (i, x, y)
+    return "lists differ outside the (name, sections) summary"
+
+
+ref = BENCHES[0]
+ref_proc = (requests.get(ref) or {}).get("corners", {}).get("process")
+check("%s declares a non-empty corners.process" % ref,
+      isinstance(ref_proc, list) and bool(ref_proc), json.dumps(ref_proc))
+for b in BENCHES[1:]:
+    if b not in requests or ref not in requests:
+        continue
+    this_proc = requests[b].get("corners", {}).get("process")
+    check("%s corners.process equals %s's" % (b, ref), this_proc == ref_proc,
+          first_difference(this_proc, ref_proc))
+
+# REQUIRED is imported from the checker by path -- the file name has a hyphen so it cannot be
+# named by a plain import, and it is `__main__`-guarded so executing the module runs nothing.
+required = None
+checker_rel = "sim/tools/check-model-sections.py"
+try:
+    _spec = importlib.util.spec_from_file_location("cm5_check_model_sections",
+                                                   os.path.join(root, checker_rel))
+    _mod = importlib.util.module_from_spec(_spec)
+    _spec.loader.exec_module(_mod)
+    required = {tuple(pair) for pair in _mod.REQUIRED}
+except Exception as exc:                                        # noqa: BLE001
+    check("%s is importable and exports REQUIRED" % checker_rel, False, str(exc))
+
+if required is not None:
+    check("%s REQUIRED keeps the %s:%s exemption" % ((checker_rel,) + STAT_EXEMPT),
+          STAT_EXEMPT in required, sorted(required))
+    want = required - {STAT_EXEMPT}
+    for b in BENCHES:
+        if b not in requests:
+            continue
+        got = corner_pairs(b, requests[b])
+        check("%s selects exactly REQUIRED minus %s:%s" % ((b,) + STAT_EXEMPT), got == want,
+              "missing %s; unexpected %s" % (sorted(want - got), sorted(got - want)))
 
 print("" if fails else "all grid-bench consistency checks passed")
 if fails:

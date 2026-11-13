@@ -37,7 +37,7 @@ netlist missing or pin unreadable (named `SOURCE_MISSING`, no record).
 `.subckt bandgap_top`: bare instances `Xx1`/`Xx2`/`Xx3` on nets `vdd vss vref fb sns1 sns2`, then
 `bandgap_core`, `bandgap_amp`, `bandgap_startup` subckts, no `.lib`/`.include`. The deck therefore
 drives `vdd`/`vss`, ties the `sub!` bulk net to `vss`, and supplies the model `.lib`s. The only
-change to the fetched text is dropping its final `.end` card; `source_file_sha256` in each record
+change to the in-repo text is dropping its final `.end` card; `source_file_sha256` in each record
 is the hash of the file as read (equal to the pinned source blob).
 
 ## Record
@@ -49,7 +49,7 @@ Fields: `pdk_revision` (equals `sim/pdk.json` `revision`, enforced by `sim/env.s
 
 ## Non-convergence is a finding
 
-If the fetched netlist does not converge or settle at the `dev` pin, the runner writes a record
+If the DUT netlist does not converge or settle at the `dev` pin, the runner writes a record
 with `status: failed`, no `vref_v` and the reason, and exits 5. The source netlist is not edited.
 `cornerRES.lib res_typ` is the §PVT-table name and is not exercised by the smoke bench; if it does
 not resolve at this pin the failure is recorded here and cross-referenced to #15.
