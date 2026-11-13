@@ -1,0 +1,19 @@
+{
+  "_comment": [
+    "Spec-limits file for `klt yield` (issue #31, T1 item 6). READ THE WINDOW BELOW CAREFULLY: it is an EVIDENCE-REPORTING WINDOW, NOT A SPEC VALUE.",
+    "spec/target-spec.md ratifies no number for the `vref_untrimmed_line_3sigma` row -- its Target column is a method ('untrimmed line (3 sigma) from the device-mismatch Monte Carlo on this core'), and the trimmed-line row says in as many words that it is 'not stated as a number until measured'. `klt yield` cannot run without min/max, so one had to be stated; inventing a number here would be ratifying a bound, which CLAUDE.md forbids and no agent may do.",
+    "What is stated instead is a window with no free parameter in it: min and max are the SMALLEST and LARGEST vref the deterministic 45-point PVT grid actually measured -- 1.18874 V at wcs/2.970V/125C and 1.20039 V at bcs/3.630V/-40C, both read out of the committed envelope sim/closed-loop-vref-pvt/envelopes/20261113T111044Z-3830083.json that decision record 0011 cites for the `vref_nominal` row. Neither endpoint is chosen; both are quoted.",
+    "So the yield this file asks for answers one well-posed question -- what fraction of the statistical population falls inside the deterministic corner envelope the block has already demonstrated? -- and that question is worth asking because its answer is what tells the Trim row whether a trimmable offset exists. It is NOT a pass/fail judgement of the design against its spec, and no yield number produced against it may be read as one. Decision record 0012 says the same thing in the record of account.",
+    "`target_yield` is deliberately ABSENT. A target yield is a claim, and this row has no ratified claim to make, so the measurement is `reported` by klt yield and can never 'fail' -- which is the correct outcome for an unratified row. `klt signoff` grades the row `ratified: false`, i.e. partial coverage, never `met`.",
+    "`target_ci_halfwidth` is 0.02 rather than the 0.01 default: the campaign is sized to resolve the yield to +/-2 percentage points of absolute yield at 95% confidence, which 9 points x 300 draws = 2700 samples delivers at any pass rate (worst case p = 0.5 needs z^2 p (1-p) / h^2 = 2401 draws). The default +/-1 pp would need about 9600 draws at p = 0.5, four times the fleet time, for a precision no unratified row can use. The chosen precision is declared here so the sample-size verdict is measured against something stated in advance rather than against whatever the run happened to achieve."
+  ],
+  "confidence": 0.95,
+  "target_ci_halfwidth": 0.02,
+  "measurements": {
+    "vref_v": {
+      "min": 1.18874,
+      "max": 1.20039,
+      "spec_row": "vref_untrimmed_line_3sigma"
+    }
+  }
+}

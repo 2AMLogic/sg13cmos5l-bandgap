@@ -1,0 +1,68 @@
+{
+  "_comment": [
+    "Campaign metadata read by sim/mc-run.sh (issue #31, T1 item 6). Same spirit as the item-5 grid benches' bench.json, with one difference the Monte Carlo work forces: this bench is not ONE run. It is four campaigns off one deck template and one fixture -- the line, its deterministic zero-spread control, a known-bad 3x-inflated variant, and a per-family attribution sweep -- because a statistical claim is only evidence alongside the controls that show the sampler is live and that the statistics can detect a degraded design.",
+    "`spec_rows` is EMPTY on purpose, and that is the honest entry. The spec row this bench exists for, `vref_untrimmed_line_3sigma`, is declared under manifests/sg13cmos5l-bandgap.json `spec_rows.6` with `ratified: false`: the campaign measures the row's quantity, but the limit it is graded against is an evidence-reporting window and not a ratified number, and the device-mismatch mechanism the row names is only partly reachable in this PDK. Decision record 0012 states both. A `spec_row` tag therefore belongs on the `klt yield` limits file, where the claim is actually made, not on this bench's sim measurements.",
+    "`stat_scale` is 1 for every campaign that runs the pinned libraries unchanged; the inflated control sets 3 and sim/mc-run.sh generates the scale block from the pin."
+  ],
+  "bench": "closed-loop-vref-mc",
+  "kind": "closed-loop-vref-statistical-mc",
+  "testbench": "sim/closed-loop-vref-mc/vref-mc.cir.tmpl",
+  "deck_template": "vref-mc.cir.tmpl",
+  "spec_rows": [],
+  "criteria": "Reported at every point and every draw: vref_v, the closed-loop reference, with a plausible_range of [0.5 V, 2.0 V] so a converged-but-degenerate solution is graded inconclusive instead of entering the statistics. Graded at every draw: vref_settle_v = max |vref(t) - vref(2 ms)| over t in (1.5 ms, 2 ms] < 1 mV, the settle criterion decision record 0009 ratified for the closed-loop vref testbench, so a draw whose loop did not settle fails rather than contributing a number. The statistical claim itself -- mean, sigma, the 3-sigma window, the quantiles, the yield against the evidence-reporting window, its confidence interval and the sample-size verdict -- is not graded here: it is the committed klt yield report's, and decision record 0012 records what it may and may not be read as.",
+  "osdi": ["psp103", "r3_cmc"],
+  "deck_substitutions": { "VDD": "3.3" },
+  "campaigns": [
+    {
+      "name": "line",
+      "role": "population",
+      "request": "request-mc-line.json",
+      "stat_scale": 1,
+      "expect": "spread",
+      "note": "The campaign cited for T1 item 6. 9 points x 300 draws."
+    },
+    {
+      "name": "zero",
+      "role": "deterministic_control",
+      "request": "request-mc-zero.json",
+      "stat_scale": 1,
+      "expect": "zero_spread",
+      "note": "T1 item 6's 'deterministic negative control': the same deck with the statistical sections swapped for their deterministic typ siblings. Every point must report stddev exactly 0.0 and min == max; sim/mc-run.sh exits 7 if any point does not."
+    },
+    {
+      "name": "inflated",
+      "role": "known_bad_control",
+      "request": "request-mc-inflated.json",
+      "stat_scale": 3,
+      "expect": "spread",
+      "note": "The known-bad variant `klt yield` grades as its `negative_control`. Deck rendered with every pinned statistical magnitude tripled."
+    },
+    {
+      "name": "families",
+      "role": "attribution",
+      "request": "request-mc-families.json",
+      "stat_scale": 1,
+      "expect": "spread",
+      "note": "One process entry per device family at the nominal point, so the spread can be attributed. Evidence for decision record 0012's section choice."
+    }
+  ],
+  "stat_scale_params": {
+    "_comment": "Name -> the pinned library and section sim/mc-run.sh reads its nominal value out of before multiplying by a campaign's stat_scale. A name whose value cannot be read at the pin is an error, never a silently skipped scale: an inflated control that quietly did not inflate would make the klt yield negative control read `not_detected` and look like a design finding.",
+    "num_sigmas": { "file": "sg13cmos5l_pnpMPA_stat.lib" },
+    "drsh_rsil": { "file": "resistors_stat.lib" },
+    "drsh_rppd": { "file": "resistors_stat.lib" },
+    "drsh_rhigh": { "file": "resistors_stat.lib" },
+    "dl_rsil": { "file": "resistors_stat.lib" },
+    "dw_rsil": { "file": "resistors_stat.lib" },
+    "dl_rppd": { "file": "resistors_stat.lib" },
+    "dw_rppd": { "file": "resistors_stat.lib" },
+    "dl_rhigh": { "file": "resistors_stat.lib" },
+    "dw_rhigh": { "file": "resistors_stat.lib" }
+  },
+  "yield": {
+    "limits": "yield-limits.json",
+    "measurement": "vref_v",
+    "nominal_campaign": "line",
+    "negative_control_campaign": "inflated"
+  }
+}

@@ -1,0 +1,45 @@
+* sg13cmos5l closed-loop vref statistical-MC bench
+* sg13cmos5l-bandgap -- deck body for the device-variation Monte Carlo campaigns
+* (issue #31, T1 item 6). sim/mc-run.sh substitutes this file's three placeholders --
+* the supply value, the scratch directory and the statistical-scale block -- and writes
+* the deck to sim/build/closed-loop-vref-mc/deck.cir. The placeholder TOKENS are never
+* spelled out in these comments: the scale block expands to several lines, and a comment
+* line holding the token would expand into a comment followed by live cards.
+* Model `.lib` cards, temperature, the supply value and the per-sample
+* `.options seed=` card all come from the `klt sim` request.
+*
+* The fixture is deliberately IDENTICAL to sim/closed-loop-vref-pvt/vref.cir.tmpl:
+* same supply source, same vss, same `sub!` tie, same convergence aids, same DUT
+* include. That is what makes the zero-spread control reproduce the item-5
+* deterministic figure exactly (sim/closed-loop-vref-mc/README.md), so any spread
+* this bench reports is attributable to the model sections the request selects and
+* to nothing in the testbench.
+*
+* The DUT is the in-tree migrated netlist design/sg13cmos5l/netlist/bandgap_top.spice
+* (decision record 0006); sim/runner-lib.sh's cm5_stage_dut copies it into the scratch
+* directory with only its final `.end` card removed.
+*
+* NO SPICE TITLE LINE (issue #19): `klt sim` `.include`s this deck into a top deck
+* of its own, so line 1 here is not in title position. Every line is a comment or a
+* card, and no `.control` block appears here -- OSDI objects load through the
+* request's options.osdi_preload.
+
+* rshunt/gmin: convergence aids only, far below any current read here (the same
+* values the item-5 closed-loop vref bench uses).
+.options rshunt=1e9 gmin=1e-9
+
+Vvdd vdd 0 dc @@VDD@@
+Vvss vss 0 dc 0
+Vsub sub! vss dc 0
+
+.include "@@WORK@@/bandgap_top.spice"
+
+* Statistical-magnitude scale block. EMPTY for every campaign that runs the pinned
+* model libraries unchanged; for the known-bad control sim/mc-run.sh generates one
+* `.param` per statistical magnitude, read out of the PINNED libraries and multiplied
+* by the campaign's `stat_scale`, so the inflated sigmas can never drift from the pin.
+* These cards sit after the request's `.lib` cards, and ngspice resolves a `.param`
+* to its LAST definition, so they win (measured: sim/closed-loop-vref-mc/README.md
+* "The known-bad control"). This is the hand-built equivalent of `klt sim`'s
+* `monte_carlo.mismatch_scale`, which covers sky130 and gf180mcu only.
+@@STAT_SCALE_BLOCK@@
