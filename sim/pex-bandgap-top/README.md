@@ -144,19 +144,77 @@ records the decision.
 verdict, and the one the committed record of
 `manifests/sg13cmos5l-bandgap.signoff.json` carries.
 
-## Two further repo-side gaps a delta run would hit even with the bipolars
+## The two repo-side gaps: closed, and what #32 still needs
 
-Worth stating, because they are *this repo's* work rather than the tool's, and they are not
-blockers today only because the bipolar gap is upstream of them:
+Two gaps a delta run would have hit even with the bipolars were *this repo's* work rather
+than the tool's. Both are **closed** by issue #80 / decision record
+[`0013`](../../spec/decision-records/0013-subckt-wrapped-staged-dut.md).
 
-1. **The migrated DUT is flat.** `design/sg13cmos5l/netlist/bandgap_top.spice` is an xschem
-   export whose top `.subckt` line is commented out, and `klt extract` output is always
-   `.SUBCKT`-wrapped — `klt pex` would fire `flat_dut_mismatch` and skip the extracted leg.
-   Fixable here by wrapping the DUT in a `.SUBCKT sg13cmos5l_bandgap_top vdd vss vref` and
-   instantiating it from the bench deck, which the `--pins`/`--rename-declared-pins` settings
-   in `pex.json` already make interface-compatible.
-2. **The benches probe internal nodes by name.** The item-5 decks measure `v(fb)`, `v(sns1)`,
-   `v(sns2)` and `v(xx3.det)`; extraction joins those nets into `fb|out`, `in_n|sns1`,
-   `in_p|sns2` and flattens the hierarchy away, so one `.meas` card cannot address both legs.
-   A delta run needs benches whose graded measurements are taken at the three declared pins
-   only, or a net-name mapping (`klt pex --tie-net`, which the 0.8.0 pin does not carry).
+1. ~~The migrated DUT is flat.~~ **Closed.** `sim/runner-lib.sh`'s `cm5_stage_dut` now
+   derives a `.subckt sg13cmos5l_bandgap_top vdd vref vss`-wrapped copy at staging time —
+   `vdd vref vss`, the **extracted** header's pin order, not the schematic export's own
+   `vdd vss vref`, because `klt pex` reuses the bench's positional `X…` line on both legs
+   and fires `pin_order_mismatch` on a same-pins-different-order wrapper exactly as it fires
+   `flat_dut_mismatch` on none. `design/sg13cmos5l/netlist/bandgap_top.spice` is not edited
+   (decision record 0006, `attest/item1.json`), and all five item-5 decks instantiate the
+   result as `Xdut vdd vref vss sg13cmos5l_bandgap_top`.
+2. ~~The benches probe internal nodes by name.~~ **Closed as a blocker**, with the per-leg
+   node map below. Graded startup criteria stay on the same nodes with the same limits; only
+   the path gains the wrapper prefix.
+
+**Measured, one corner, local, typ / 27 °C / 3.30 V** (decision record 0013 "What was
+measured"): the unmodified `sim/closed-loop-startup` deck loads and runs with its `.include`
+pointed at either the staged schematic DUT **or** `extracted/20261113T123950Z-8422e4d.spice`,
+with **zero** unknown-subckt, pin-count or unconnected-pin errors on either leg and the
+extracted devices appearing under the instance (`xdut.x$1…`). Reproduce it with
+
+```bash
+source sim/env.sh
+# leg (a): the staged schematic DUT the benches use
+bash -c 'source sim/runner-lib.sh; cm5_stage_dut probe "$PWD" <workdir>'
+# leg (b): point the same deck's .include at the committed extracted netlist instead
+cp sim/pex-bandgap-top/extracted/20261113T123950Z-8422e4d.spice <workdir>/bandgap_top.spice
+# then build sim/closed-loop-startup/deck.cir.tmpl with @@VDD@@=3.3, @@WORK@@=<workdir>
+# and run one `klt sim --backend local` corner per leg.
+```
+
+The extracted leg is **not evidence** and no figure from it is claimed — the netlist is
+missing all three `pnpMPA` devices, and `vref` duly comes out pinned at the rail
+(3.2999 V). All it establishes is that the interface binds.
+
+### Per-leg node map for the item-7 delta (#32)
+
+Derived from the committed extracted netlist. Every entry sits under the deck's `xdut.`
+instance prefix on the schematic leg; extraction flattens the hierarchy away, so the
+extracted side is a plain net under the top cell.
+
+| What it is | Schematic leg (staged, wrapped) | Extracted leg | Graded? |
+|---|---|---|---|
+| amplifier output / core gate drive | `v(xdut.fb)` | `v(fb\|out)` | yes — `fb_headroom_v` |
+| core sense branch 1 | `v(xdut.sns1)` | `v(in_n\|sns1)` | yes — `dvsns_v` |
+| core sense branch 2 | `v(xdut.sns2)` | `v(in_p\|sns2)` | yes — `dvsns_v` |
+| startup detect node | `v(xdut.xx3.det)` | `v(det)` | yes — `det_release_ratio` |
+| the three declared pins | `v(vref)`, `v(vdd)`, `v(vss)` | same | yes — every other row |
+
+The joined names (`fb|out`, `in_n|sns1`, `in_p|sns2`) are extraction's own
+schematic-net-to-layout-label joins; `det` needed no join. The pipe is part of the net name.
+
+**The route is `klt pex --measure-command`, which the 0.8.0 pin carries** (verified in
+`klt pex --help` at `uvx --from "klayout-tools==0.8.0"`): it lets the two legs run different
+measurement commands over the same request, which is what a row whose one `.meas` card
+cannot address both legs needs. Writing that script and running the delta are #32's, not
+this directory's.
+
+**Not `--tie-net`.** An earlier revision of this file named
+"a net-name mapping (`klt pex --tie-net`)" as the alternative. That is wrong and is struck:
+`--tie-net EXTRACTED_NET=SCHEMATIC_NET` only accepts a net listed in the report's
+`body_bias.unbiased_nets` — "any other name is an error" — so it is a body-bias tie, not a
+general alias, and it is absent from the 0.8.0 pin's `klt pex --help` altogether. It cannot
+alias `fb|out` → `fb` at any klt version checked.
+
+**Open for #32's first delta run**: the `vref-pvt` bench's `fb_v` / `sns1_v` / `sns2_v` are
+diagnostic — no `limits`, no `spec_row` — and they do **not** resolve on the extracted leg.
+Whether `klt pex` in testbench mode treats an unresolved *ungraded* measurement as a per-row
+failure, a skipped row, or an envelope-level error is not traced here; the one-corner leg-(b)
+run above returns `status: error` on the corner with those measurements `null`, which
+suggests it needs handling rather than ignoring. Settle it against the real delta.

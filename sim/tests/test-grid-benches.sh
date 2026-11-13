@@ -56,10 +56,20 @@
 # "closed-loop-iq corner 'wcs' sections entry is an object: 'cornerRES.lib:res_wcs'" (exit 1),
 # not a Python traceback. Inventoried as a T1 item-10 hygiene check (attest/item10.json), so CI
 # re-runs it through `klt signoff --attest 10 --check`.
+#
+# Negative controls for the DUT-wrapper half of check 6 (issue #80), each run while writing it
+# and reverted before commit: (a) flipping sim/runner-lib.sh's CM5_DUT_PINS to the schematic
+# export's own "vdd vss vref" order fails SIX times -- once per bench ("<bench> Xdut card is
+# runner-lib.sh's cell name and pin order: ['Xdut', 'vdd', 'vref', 'vss', ...] vs ['Xdut',
+# 'vdd', 'vss', 'vref', ...]") and once on the extraction tie ("...extracted/20261113T123950Z-
+# 8422e4d.spice header equals the staged wrapper's cell name and pin order"), which is exactly
+# the `pin_order_mismatch` klt would report one submitted grid later. (b) deleting the `Xdut`
+# card from closed-loop-iq's template fails once ("closed-loop-iq deck template instantiates
+# the staged DUT exactly once: 0 Xdut cards"). Both exit 1.
 set -u
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 python3 -I - "${root}" <<'PY'
-import importlib.util, json, os, re, sys
+import glob, importlib.util, json, os, re, sys
 
 root = sys.argv[1]
 fails = []
@@ -188,6 +198,26 @@ for b, req in requests.items():
           req.get("netlist_source") == "schematic", req.get("netlist_source"))
 
 # ---- 6. deck templates ------------------------------------------------------------------
+# The DUT wrapper (issue #80, decision record 0013): cm5_stage_dut emits the staged
+# `.subckt` header and each deck instantiates it, so the cell name and the pin order live in
+# TWO places that must agree. They are read from sim/runner-lib.sh here rather than retyped,
+# the same discipline check 8 applies to the checker's REQUIRED: a drift between the staging
+# header and an `Xdut` card would otherwise surface as an "unknown subckt" at load time on
+# the fleet, one submitted grid later, instead of failing offline here.
+with open(os.path.join(root, "sim/runner-lib.sh")) as f:
+    runner_lib = f.read()
+
+
+def shvar(name):
+    m = re.search(r'^%s="([^"]*)"$' % name, runner_lib, re.M)
+    return m.group(1) if m else None
+
+
+dut_subckt, dut_pins = shvar("CM5_DUT_SUBCKT"), shvar("CM5_DUT_PINS")
+check("sim/runner-lib.sh declares CM5_DUT_SUBCKT and CM5_DUT_PINS",
+      bool(dut_subckt) and bool(dut_pins), "%r %r" % (dut_subckt, dut_pins))
+want_xdut = ["Xdut"] + (dut_pins or "").split() + [dut_subckt or ""]
+
 for b in BENCHES:
     m = meta.get(b)
     if not m:
@@ -204,6 +234,34 @@ for b in BENCHES:
     supplied = set(m["deck_substitutions"]) | {"WORK"}
     check("%s every deck placeholder is supplied" % b, placeholders <= supplied,
           "unsupplied: %s" % sorted(placeholders - supplied))
+    includes = [i for i, l in enumerate(body) if l.lower().startswith(".include")]
+    xduts = [i for i, l in enumerate(body) if l.split()[:1] == ["Xdut"]]
+    check("%s deck template instantiates the staged DUT exactly once" % b, len(xduts) == 1,
+          "%d Xdut cards" % len(xduts))
+    if len(xduts) == 1 and len(includes) == 1:
+        check("%s instantiates the DUT after the .include that defines it" % b,
+              xduts[0] > includes[0], "Xdut at %d, .include at %d" % (xduts[0], includes[0]))
+    if xduts:
+        card = body[xduts[0]].split()
+        check("%s Xdut card is runner-lib.sh's cell name and pin order" % b,
+              card == want_xdut, "%s vs %s" % (card, want_xdut))
+
+# The wrapper's pin ORDER is only correct relative to the extracted netlist: `klt pex` reuses
+# the bench's positional Xdut line on both legs and fires pin_order_mismatch when the two
+# headers hold the same pins in a different order (and flat_dut_mismatch with no wrapper at
+# all). Every committed extracted netlist is checked, so a re-extraction that reorders the
+# pins fails here offline rather than at the item-7 delta run (#32).
+extracted = sorted(glob.glob(os.path.join(root, "sim/pex-bandgap-top/extracted/*.spice")))
+check("a committed extracted netlist exists to check the wrapper against", bool(extracted))
+for path in extracted:
+    rel = os.path.relpath(path, root)
+    with open(path) as f:
+        heads = [l.split() for l in f if l.upper().startswith(".SUBCKT ")]
+    check("%s declares exactly one top .SUBCKT" % rel, len(heads) == 1, str(len(heads)))
+    if len(heads) == 1:
+        want_head = [dut_subckt] + (dut_pins or "").split()
+        check("%s header equals the staged wrapper's cell name and pin order" % rel,
+              heads[0][1:] == want_head, "%s vs %s" % (heads[0][1:], want_head))
 
 # ---- 7. cited envelopes exist, are graded as declared, and are paired with a record ------
 # An envelope that FAILS is still valid evidence -- since decision record 0011 §2 the grids

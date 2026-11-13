@@ -27,6 +27,17 @@
 * own, so line 1 here is not in title position and a title line would be parsed as a
 * netlist element. Every line of this template is a comment or a card, and grid-run.sh
 * writes its own leading `*` line as well.
+*
+* DUT INSTANTIATION -- `Xdut vdd vref vss sg13cmos5l_bandgap_top` below. The staged DUT is
+* no longer flat: sim/runner-lib.sh's cm5_stage_dut makes the xschem export's commented-out
+* top block live as `.subckt sg13cmos5l_bandgap_top vdd vref vss` and drops its `.end`
+* card, without editing the attested source (decision record 0013). That cell name and pin
+* order are the layout-extracted netlist's, so this one deck can be pointed at either leg
+* for the T1 item-7 delta; a flat DUT makes `klt pex` fire `flat_dut_mismatch`, and a
+* wrapper in the export's own `vdd vss vref` order makes it fire `pin_order_mismatch`.
+* Electrically a no-op -- measured, not assumed (decision record 0013). Internal nodes are
+* addressed one level down accordingly: v(xdut.fb), v(xdut.sns1), v(xdut.sns2),
+* v(xdut.xx3.det).
 
 * rshunt/gmin: convergence aids only, far below any current read here (same values the
 * source closed-loop bench and sim/closed-loop-vref-pvt use).
@@ -37,3 +48,4 @@ Vvss vss 0 dc 0
 Vsub sub! vss dc 0
 
 .include "@@WORK@@/bandgap_top.spice"
+Xdut vdd vref vss sg13cmos5l_bandgap_top
