@@ -265,6 +265,18 @@ for name in envelopes:
         bad = [p["corner_id"] for p in pts if p.get("stddev") != 0.0 or p.get("min") != p.get("max")]
         check("zero control reports stddev exactly 0.0 at every one of its %d points" % len(pts),
               bool(pts) and not bad, str(bad))
+        # And the stronger claim the same run supports for free: with its statistics off,
+        # the Monte Carlo harness must land on the number the DETERMINISTIC item-5 grid
+        # already recorded at the same point. Any difference means the two benches are
+        # not solving the same circuit, which would invalidate every spread measured
+        # against the item-5 envelope's window.
+        if len(src) == 1 and exists(src[0]):
+            grid = {c["corner_id"]: m["value"] for c in load(src[0])["corners"]
+                    for m in c["measurements"] if m["name"] == MEAS}
+            off = [(p["corner_id"], p.get("mean"), grid.get(p["corner_id"]))
+                   for p in pts if grid.get(p["corner_id"]) != p.get("mean")]
+            check("zero control reproduces the item-5 grid exactly at all %d shared points"
+                  % len(pts), bool(pts) and not off, str(off[:4]))
 for required in ("line", "zero", "inflated"):
     check("campaign %r has a committed envelope" % required, required in seen_campaigns,
           str(sorted(c for c in seen_campaigns if c)))
