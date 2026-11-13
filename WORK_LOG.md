@@ -5,6 +5,21 @@ triage agent. Newest first.
 
 ### 2026-11-13
 
+- **Issue #83** (closed): The decks' `Vsub sub! vss` tie does not reach the DUT: rppd/rhigh bulk nodes are instance-local and held only by rshunt
+- **PR #85**: sim: declare `sub!` global so the item-5 decks' Vsub tie reaches the DUT's resistor bulks
+- **Issue #80** (closed): Make the item-5 benches runnable on an extracted bandgap_top: .SUBCKT-wrapped DUT and measurements addressable on both legs
+- **PR #84**: sim: wrap the staged DUT in .SUBCKT sg13cmos5l_bandgap_top and address bench nodes on both legs
+- **Issue #71** (closed): Wire package.json test/check:ci to the four sim/tests suites: the Loom-template stubs report 'No tests configured' and exit 0
+- **PR #76**: build: run the sim/tests suites from pnpm test and check:ci
+- **PR #79**: sim: commit the item-7 pex extraction and the device inventory that blocks its delta
+- **Issue #64** (closed): Remove fetch-era leftovers from the closed-loop vref runner: dead gh gate, scratch copy, stale DUT wording
+- **PR #78**: sim: drop the dead gh gate and call the shared pin/stage helpers from the vref probe
+- **Issue #61** (closed): Test that the five grid requests' §PVT corner sections agree with each other and with check-model-sections.py REQUIRED
+- **PR #77**: test: tie the grid requests' corner sections to the checker's REQUIRED
+- **Issue #70** (closed): Remove template-era .gitignore rules for flow/, cocotb, a sim harness and per-corner logs that this repo does not have
+- **PR #75**: chore: drop .gitignore rules for a flow, cocotb and sim harness this repo lacks
+- **Issue #30** (closed): T1 item 5 (corner verification): 45-point closed-loop benches for the nominal, TC (box and endpoint), PSRR, Iq and startup rows as klt sim envelopes
+- **PR #72**: sim: run the five closed-loop PVT grids and cite them for T1 item 5
 - **PR #68**: docs(spec): state §PVT section names as verified at the dev pin; record the install-shape hazard
 - **PR #65**: sim: drop the vref deck's SPICE title line and record the first closed-loop vref
 - **PR #63**: docs(sim): record the PVT corner and mismatch sections as resolved at the pinned PDK revision
