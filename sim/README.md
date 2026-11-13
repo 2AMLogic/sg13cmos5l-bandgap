@@ -176,6 +176,16 @@ corner and testbench, and embeds the `klt sim` envelope. The grid benches' `reco
 `write_record` opens with `"x"`); a second run in the same UTC second at the same commit is the
 only case that collides, and it exits 4 rather than overwriting.
 
+The nine smoke records older than `20261113T165702Z-c786f8f.json` carry
+`klt_envelope.environment.netlist_source: "extracted"`. That is a provenance mislabel
+(issue #87): `smoke.cir` is a hand-written bring-up deck, so nothing was extracted from a
+layout to produce it, and `klt sim` takes the field as the caller's word — the same error
+decision record 0011 §8 corrected on the grid benches. The deck is not an xschem export
+either, so `run_smoke.sh` now omits the optional field rather than declaring
+`"schematic"`, and records from that one on carry no `netlist_source` key at all. The
+nine earlier records are not edited — they are append-only, and each carries the
+`deck_sha256` of what it actually ran.
+
 ## Model section check
 
 `source sim/env.sh && python3 -I sim/tools/check-model-sections.py` statically parses
