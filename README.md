@@ -120,9 +120,12 @@ seat → measured silicon. **Current position: schematic simulated across PVT**
 ## Reproduce
 
 Every figure the repo produces is **simulated**, and each record names its
-corner and testbench. All commands run from the repo root; the full cold start
-(PDK pin, ngspice, OSDI build) is in [`sim/README.md`](sim/README.md) and is
-not repeated here.
+corner and testbench — except the two that are **layout-derived** and labelled
+as such: the assembled-top area (`layout/area.json`) and the post-layout
+extraction (`sim/pex-bandgap-top/`), both of which come from geometry and deck
+coefficients, not from a simulator. All commands run from the repo root; the
+full cold start (PDK pin, ngspice, OSDI build) is in
+[`sim/README.md`](sim/README.md) and is not repeated here.
 
 - **Smoke bench** (models load and converge, typ / 27 °C / 3.3 V): after the
   cold start, `source sim/env.sh && sim/smoke/run_smoke.sh`.
@@ -140,6 +143,15 @@ not repeated here.
   plus a record. Grids never run as a local `ngspice` loop. What each bench
   grades, and why: [`sim/README.md`](sim/README.md) §PVT grids and each bench's
   own README.
+- **Post-layout extraction** (T1 item 7): `source sim/env.sh && sim/pex-run.sh`.
+  Runs `klt pex --extract-only` on the committed top GDS at the pinned `klt`
+  version and appends an envelope, the extracted netlist and a record. It exits
+  **5**, on the device inventory: the curated `sg13cmos5l` extraction deck
+  recognises no bipolar, so the extracted netlist is missing all three `pnpMPA`
+  devices of the core and **no schematic-vs-extracted delta is producible**.
+  What that does and does not establish:
+  [`sim/pex-bandgap-top/README.md`](sim/pex-bandgap-top/README.md) and
+  [`0012`](spec/decision-records/0012-post-layout-pex-extraction-gap.md).
 - **Signoff record** (T1 grading): regenerate it as described in
   [`manifests/README.md`](manifests/README.md).
 - **Offline checks** (no PDK, no ngspice, no network): `pnpm -s test` runs every
@@ -162,6 +174,19 @@ it is a failed row rather than a covered one. Every other covered row is
 **derived** from the envelopes' own `spec_row` tags. The grids are graded at
 the ratified Target column throughout; see
 [`0011`](spec/decision-records/0011-corner-verification-pvt-grids.md) §2 and §5.
+
+Item 7 (post-layout verification) is `unmet` / `check_failed` on a **cited**
+`klt pex` report. The extraction itself is committed and clean — 13 nets with no
+`parasitic_integrity` finding, every device body biased — but it holds 17 devices
+against the design's 20 cards / 27 units, the whole difference being the core's
+three `pnpMPA` devices, which the curated `sg13cmos5l` extraction deck declares
+no class for. A delta computed against that netlist would compare two different
+circuits, so none is produced and every spec row stays
+`insufficient-evidence` **for item 7** (their item-5 evidence is unaffected and
+no bound is relaxed). Filed upstream as
+[klayout-tools#5477](https://github.com/2AMLogic/klayout-tools/issues/5477) and
+[#5479](https://github.com/2AMLogic/klayout-tools/issues/5479); the decision is
+[`0012`](spec/decision-records/0012-post-layout-pex-extraction-gap.md).
 
 ## Repo layout
 

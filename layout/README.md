@@ -51,6 +51,26 @@ From `klt stats` on `sg13cmos5l-bandgap_top.gds`, top cell
 This gives the number only; no budget is set, and the Area row stays
 `target-only`. The stream is not claimed to be LVS-clean (issue #29).
 
+## Extraction (T1 item 7)
+
+The same `top` stream extracts, under the same pinned deck, into a
+parasitic-annotated netlist with a clean `parasitic_integrity` result (13 nets,
+0 findings) and fully biased device bodies — committed with its `klt pex`
+envelope under [`sim/pex-bandgap-top/`](../sim/pex-bandgap-top/README.md).
+
+What it does **not** yield is a post-layout figure for any spec row. The curated
+`sg13cmos5l` extraction deck declares no bipolar device class, so the core's
+three `pnpMPA` devices are absent from the extracted netlist (17 devices against
+the design's 20 cards / 27 units; every MOS and both poly-resistor flavours match
+card-for-card), and a schematic-vs-extracted delta against it would compare two
+different circuits. Filed upstream as
+[klayout-tools#5477](https://github.com/2AMLogic/klayout-tools/issues/5477);
+decision record
+[`0012`](../spec/decision-records/0012-post-layout-pex-extraction-gap.md). This
+is the same deck-coverage gap the generators' own docstrings describe for LVS —
+confirmed upstream as klayout-tools#4927 (closed) — reaching extraction, where
+`klt lvs`'s runset-engine escape hatch has no counterpart.
+
 ## DRC (T1 item 3)
 
 `klt drc --deck sg13cmos5l` (`klayout-tools==0.8.0`, klayout 0.30.12, deck

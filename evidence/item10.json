@@ -3,14 +3,14 @@
   "kind": "generic",
   "status": "pass",
   "t1_item": 10,
-  "summary": "T1 item 10 (Repo hygiene): 9/9 attestation checks passed (klt signoff --attest)",
+  "summary": "T1 item 10 (Repo hygiene): 10/10 attestation checks passed (klt signoff --attest)",
   "source": "attest/item10.json",
   "attestation": {
     "producer": "klt signoff --attest",
     "inventory_schema_version": 1,
     "hash_algorithm": "sha256-raw-bytes",
-    "check_count": 9,
-    "passed_count": 9,
+    "check_count": 10,
+    "passed_count": 10,
     "checks": [
       {
         "check": "present",
@@ -31,21 +31,21 @@
         "role": "hygiene",
         "path": "README.md",
         "passed": true,
-        "content_hash": "sha256:e8686f4f4b3f880e117dfeed43366b7ba46e9da4b4ee830c33065d99725393f9"
+        "content_hash": "sha256:43d7fb9eea93bf0399d839ef438979923b8bfded6691049700796f722329cb19"
       },
       {
         "check": "present",
         "role": "hygiene",
         "path": "manifests/README.md",
         "passed": true,
-        "content_hash": "sha256:d70df18605197d821b7e7ee12429b28bcb5b988da39bbc013b367af42e840d3f"
+        "content_hash": "sha256:85c8e38cba67d2b266074411c3ffd29eec0dce062110436326b42f7fe7b5ce2c"
       },
       {
         "check": "present",
         "role": "hygiene",
         "path": "spec/target-spec.md",
         "passed": true,
-        "content_hash": "sha256:643cf4039abf5365209768931526b271544b063f7f3d08dee99f36306243db68"
+        "content_hash": "sha256:2d0df5fe046ddf289e640207b8013e77ca42f7d58673ed2aeadb944ae8824a08"
       },
       {
         "check": "command",
@@ -94,6 +94,18 @@
         "cwd": ".",
         "exit_status": 0,
         "passed": true
+      },
+      {
+        "check": "command",
+        "role": "audit",
+        "name": "pex-device-inventory-test",
+        "argv": [
+          "bash",
+          "sim/tests/test-pex-device-inventory.sh"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true
       }
     ]
   },
@@ -107,7 +119,7 @@
         "path": "attest/item10.json",
         "scope": "repo"
       },
-      "content_hash": "sha256:47aabf1e082e639e7dffafb7b48bdd70ba54579e58445ca50bee4f741b6da8a7"
+      "content_hash": "sha256:5e6beb849559faf1c1420650567967b05ae0102c0a642a0b934a01931ef2a567"
     }
   }
 }

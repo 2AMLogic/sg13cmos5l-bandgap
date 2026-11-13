@@ -5,7 +5,9 @@
     "The declared row set is spec/target-spec.md's ELECTRICAL rows -- the rows whose Binding-conditions column is the §PVT grid. The Area and Signoff rows of that table are deliberately NOT declared here: their binding conditions are a layout cell and the DRC/LVS/ERC decks, which T1 items 2, 3 and 4 grade. Declaring them under item 5 would make a layout artifact a corner-verification gap.",
     "Item 5 is UNMET on purpose. Three declared rows are gaps: the untrimmed-line 3-sigma row, the trimmed-line row and the Trim row. The first needs a device-mismatch Monte Carlo reduction (issue #31), which a corner matrix cannot express and which T1 item 6 grades; the other two need a trim network that does not exist in this design yet. Naming a narrower row set would have rendered item 5 `met` by leaving the block's unevidenced accuracy rows out of the declaration, which is exactly the relaxation CLAUDE.md forbids.",
     "The Supply row is declared as a gap rather than covered because spec/target-spec.md states it is met BY CONSTRUCTION (HV device rating, inherited) and not by a result: every cited envelope did run the ratified 2.97/3.30/3.63 V axis, but no measurement in them establishes the row, and asserting coverage from a supply value the request itself set would be circular.",
-    "Each cited envelope carries `spec_row` tags on its graded measurements, so `klt signoff` DERIVES this coverage from the envelopes (`row_coverage.row_sources` reads `derived`) instead of taking the manifest's word for it."
+    "Each cited envelope carries `spec_row` tags on its graded measurements, so `klt signoff` DERIVES this coverage from the envelopes (`row_coverage.row_sources` reads `derived`) instead of taking the manifest's word for it.",
+    "ITEM 7 (post-layout verification), added by issue #32. ONE `klt pex` envelope, produced in `--extract-only` mode (klayout-tools#3739, closed in the 0.8.0 pin this record is graded at). It is cited and graded `unmet` / `check_failed` ON PURPOSE: the curated `sg13cmos5l` extraction deck declares no bipolar class, so the extracted `bandgap_top` netlist is missing all three `pnpMPA` devices of the core (17 devices against the design's 20 cards / 27 units) and no schematic-vs-extracted delta can be computed against it. Not citing it at all would render item 7 `no_evidence`, which would hide a run that did happen and does establish something -- a clean `parasitic_integrity` result, fully biased device bodies, and the lumped-RC model's own scope statement. Every spec row the item-5 benches grade is `insufficient-evidence` for item 7; no item-5 row and no ratified bound changes. See spec/decision-records/0012-post-layout-pex-extraction-gap.md and sim/pex-bandgap-top/README.md.",
+    "No `content_hash` is pinned on the item-7 citation, for the same reason item 5's are unpinned (README.md): what pins it is the record beside it, which carries the layout, extracted-netlist and schematic-DUT sha256s plus the device inventory, and sim/tests/test-pex-device-inventory.sh re-derives that inventory from the committed netlists on every CI run."
   ],
   "block": "sg13cmos5l-bandgap",
   "kind": "analog",
@@ -40,13 +42,16 @@
         "rows": ["startup_self_starting", "startup_time"]
       }
     ],
+    "7": {
+      "file": "sim/pex-bandgap-top/envelopes/20261113T123950Z-8422e4d.json"
+    },
     "9": {
       "file": "evidence/item9.json",
       "content_hash": "sha256:aeeb3a74259a5822fc56d90eb759031769fbfd2773b8cf87376e3023846d6220"
     },
     "10": {
       "file": "evidence/item10.json",
-      "content_hash": "sha256:47aabf1e082e639e7dffafb7b48bdd70ba54579e58445ca50bee4f741b6da8a7"
+      "content_hash": "sha256:5e6beb849559faf1c1420650567967b05ae0102c0a642a0b934a01931ef2a567"
     }
   },
   "spec_rows": {

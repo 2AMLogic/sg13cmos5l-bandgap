@@ -161,9 +161,13 @@ on 2026-10-17 and re-read on 2026-11-13:
 - #3134: no published CMOS5L batch image (same gate) — **closed, not
   planned**: `remote` has no CMOS5L image, so `batch` is the only off-host route
 - #3094: poly resistors in the CMOS5L deck assume coincident GatPoly/PolyRes
-  (gates LVS of every `rppd` cell)
+  (gated LVS of every `rppd` cell) — **closed, completed**; `rppd` and `rhigh`
+  now extract, confirmed by the item-7 extraction run below (both flavours
+  card-for-card against the schematic)
 - #3739: `klt pex` needs a testbench or measure command to produce an
-  extraction-only report (gates post-layout re-verification)
+  extraction-only report (gated post-layout re-verification) — **closed,
+  completed** in `klt` 0.8.0, the pin this repo grades at; it is what
+  `sim/pex-bandgap-top/` is produced with
 - #5457: a `klt sim` request that selects corners with per-section corner
   libraries has no `models.lib`, so nothing in a batch report can attest the
   models the runner executed (filed while running the item-5 grids). Compounded
@@ -171,11 +175,42 @@ on 2026-10-17 and re-read on 2026-11-13:
   (#5321, #5318). Worked around in this repo with
   `options.stage_model_inputs` (`sim/README.md` → "What the fleet runner cannot
   prove"), which leaves the OSDI binaries unbound.
+- #4927: the curated `sg13cmos5l` deck recognises no `pnpMPA`, so it extracts
+  zero devices from the PDK's own `pnpMPA` testcase — **closed, completed**: the
+  supported path for an LVS *match* is `klt lvs` with `"engine":
+  "klayout-runset"` in its request, against the install's own `sg13cmos5l.lvs`;
+  porting the PDK's Ruby `CustomBJTExtractor` into the curated deck was ruled
+  out of scope (as for the sibling family's HBTs, #1232). This discharges the
+  standing note this section used to carry — that bipolar recognition was a gap
+  with no matching upstream issue found, to be filed or confirmed when the first
+  layout issue ran it.
+- #5477: `klt extract`/`klt pex` have no engine selector at all, so the runset
+  route #4927 documents cannot produce an extracted **netlist**, and an
+  extraction whose deck has no class for a drawn device family omits it with no
+  coverage disclosure (`klt drc` publishes `coverage.rules_skipped`; extraction
+  publishes no counterpart). Filed while running item 7. **This is what gates
+  item 7**: the extracted `bandgap_top` netlist is missing all three `pnpMPA`
+  devices, so no schematic-vs-extracted delta can be computed —
+  [`0012`](decision-records/0012-post-layout-pex-extraction-gap.md),
+  `sim/pex-bandgap-top/`.
+- #5479: an `--extract-only` `klt pex` citation renders T1 item 7 `unmet` /
+  `check_failed` with `citation: null`, indistinguishable from a delta run that
+  ran and failed. Filed while citing item 7.
 
-Not claimed: that this list is complete. Bipolar (`pnpMPA`) recognition in the
-CMOS5L LVS deck is a gap the source documents but this plan did not find a
-matching open klayout-tools issue for; it is filed or confirmed when the first
-layout issue runs LVS.
+Not claimed: that this list is complete.
+
+**Post-layout verification (T1 item 7), as of 2026-11-13.** The extraction half
+is committed and reproducible — `sim/pex-bandgap-top/` carries a `klt pex
+--extract-only` envelope for the committed top stream at the `klt` 0.8.0 pin,
+with `extraction.model` and `body_bias` (`"biased"`, 0 unbiased device bodies)
+quoted into its record. The **per-row delta is not producible**: the extracted
+netlist holds 17 devices against the design's 20 cards / 27 units, the whole
+difference being the core's three `pnpMPA` devices (#5477 above), measured by
+`sim/tools/pex_device_inventory.py` rather than asserted. Every row the item-5
+grids grade is therefore `insufficient-evidence` **for item 7**; their item-5
+evidence and every ratified bound in the table above are unaffected, and no row
+is relaxed. See
+[`0012`](decision-records/0012-post-layout-pex-extraction-gap.md).
 
 ## Open questions, status after this spec
 
