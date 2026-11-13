@@ -38,7 +38,6 @@ cat > "${WORK}/request.json" <<EOF
 {
   "engine": "ngspice",
   "netlist": "${DECK}",
-  "netlist_source": "extracted",
   "models": { "lib": "${BUNDLE}" },
   "corners": { "process": ["typ"], "supply_v": { "Vdd": [3.3] }, "temperature_c": [27] },
   "analysis": { "kind": "tran", "args": "10n 50n" },
