@@ -45,7 +45,7 @@
         "role": "hygiene",
         "path": "spec/target-spec.md",
         "passed": true,
-        "content_hash": "sha256:b3aa4c9e8fc50fcc41a14b719d13f2433a70fc2307da92c8174db21e1762dc80"
+        "content_hash": "sha256:443aacdd45ff32c59730fecacd959e0a77c771d5cb04ccc1ead7aaea1a2a0ef9"
       },
       {
         "check": "command",
