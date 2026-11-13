@@ -182,6 +182,13 @@ is missing (or a symlink dangles), 2 = no models directory. `--models-dir` overr
 
 Offline exit-code test (fake models tree, no PDK needed): `bash sim/tests/test-model-sections.sh`.
 
+`REQUIRED` is the checker's own hand-written list, so `bash sim/tests/test-grid-benches.sh`
+check 8 ties it to the benches: it imports `REQUIRED` from this file and fails unless the
+five grid requests' `corners.process` tables are identical and select exactly those
+(corner file, section) pairs, less the non-corner `cornerPNP.lib` `stat` entry. Editing a
+request's `section` or a `REQUIRED` entry alone is then a test failure, not a silent
+"12/12 required sections found" for sections no bench selects (issue #61).
+
 Finding (**at the pin**, 2026-11-13, issue #15): run against `PDK_ROOT=~/share/pdk`
 delivered by the fleet PDK store, whose `ihp-sg13cmos5l/.pdk-store.json` reports version
 `f7bca32694fe3d58be0cc7d9df4b9f5db7161a14` so `sim/env.sh` accepts it (#21), the tool exits 0
