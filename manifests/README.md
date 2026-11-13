@@ -49,6 +49,50 @@ plus the `models_staged` hashes the fleet worker reported back.
 - `sg13cmos5l-bandgap.signoff.json` is the verdict of record: the committed
   output of `klt signoff`, pinned to `klayout-tools==0.8.0` (the first release with `--attest`).
 
+## Item 6: one `klt yield` report, a pinned sample set, and an honest `ratified: false`
+
+Item 6 (statistical claims carry Monte Carlo evidence) cites the `klt yield` report
+of `sim/closed-loop-vref-mc` and declares the full statistical row set under
+`spec_rows.6`. Which rows are statistical, and why the others are not, is accounted
+for row by row in
+[`0012`](../spec/decision-records/0012-statistical-mc-sections-and-window.md) §4.
+
+| Row | Declared |
+|---|---|
+| `vref_untrimmed_line_3sigma` | cited, **`ratified: false`** |
+| `vref_trimmed_line` | **gap** — needs a trim network this design does not contain |
+
+`ratified: false` is doing real work here. The campaign measured the row's quantity
+— 2700 draws, seed recorded, a deterministic zero-spread control, a known-bad control
+the statistics **detect**, a sufficient sample size — but two things about it are
+unratified: the `min`/`max` the yield is computed against is an *evidence-reporting
+window* quoted out of the item-5 envelope rather than a bound the spec ratifies (it
+ratifies none for this row), and the device-mismatch mechanism the row names is only
+partly reachable at the pin. So item 6 grades **`unmet` / `partial_coverage`**, never
+`met`, and that is the intended outcome rather than a thing to fix.
+
+**This citation pins a `content_hash`, where the item-5 ones do not.** A `klt sim`
+envelope's `provenance.input` hashes a per-corner deck generated under `sim/build/`
+(gitignored), so a pin there would bind the manifest to a path no reviewer has. A
+`klt yield` report's freshness pin is instead the **sample-set document** its
+`samples` field names — and that document is committed beside the report, carrying
+both populations and the sha256 of both source envelopes, so the pin is checkable
+from a clean checkout. Its one limit, which `klt yield`'s own docs state: `klt
+signoff` does not recursively re-hash the campaigns that document's `derivation`
+block names, so editing a source envelope without re-running `sim/mc-yield.sh` would
+leave the pin satisfied. `sim/tests/test-mc-bench.sh` re-checks that both named
+envelopes are committed, and envelopes are append-only.
+
+**A grading quirk to know before reading the report.** Item 6's `detail` lists
+`vref_untrimmed_line_3sigma` under `uncovered_rows` as well as `unratified_rows`,
+although the citation resolves and passes its campaign-discipline gates. `klt
+signoff`'s item-6 row reader counts only a citation whose report `status` is `pass`,
+and a report declaring no `target_yield` is `status: "reported"` — the correct state
+for a row that ratifies no yield claim. Declaring a target the campaign is known to
+clear would make the row read as covered; that is manufacturing a claim to satisfy a
+grader, so it is not done. Filed generically as
+[`klayout-tools#5490`](https://github.com/2AMLogic/klayout-tools/issues/5490).
+
 ## Regenerating the record
 
 Run from the repo root (the record embeds the `--tiers-doc` path). Exit 3

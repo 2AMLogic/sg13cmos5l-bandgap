@@ -188,7 +188,122 @@ the fleet time for a precision an unratified row cannot use.
 <!-- RESULTS:BEGIN -->
 ## Results
 
-Filled in by the campaign runs; see the records under `records/`.
+All **SIMULATED**, ngspice-47, PDK `f7bca32`, `psp103` + `r3_cmc` OSDI, closed loop
+with the real amplifier, settled (`vref_settle_v` < 1 mV graded at every one of the
+4180 units across the four campaigns; 0 errored, 0 inconclusive). Seed `20261113`,
+`seed_scope: point`. Records under `records/`; the cited yield report under `yield/`.
+
+### The untrimmed line
+
+`line` campaign, 9 points × 300 draws = 2700 samples
+(`envelopes/20261113T130628Z-e882c25.line.json`):
+
+| | pooled over the 9 points |
+|---|---|
+| mean `vref` | **1.19485 V** |
+| σ | **22.272 mV** (1.86 % of the mean) |
+| mean ± 3σ | **[1.12803 V, 1.26166 V]** — width **133.6 mV**, i.e. **±5.59 %** |
+| empirical 0.135 / 99.865 percentiles | 1.12260 V / 1.27082 V |
+| min / max observed | 1.10783 V / 1.28503 V |
+
+**So the untrimmed line is ±5.6 % (3σ) on this core** — against a deterministic PVT
+corner envelope only **11.65 mV** wide. The statistical spread is roughly **11×** the
+whole corner spread, which is the finding: for this bandgap, device variation, not
+process corner, sets the untrimmed accuracy.
+
+Per point, σ rises monotonically with temperature and barely moves with supply:
+
+| | −40 °C | 27 °C | 125 °C |
+|---|---|---|---|
+| 2.97 V | 15.72 mV | 20.24 mV | 27.34 mV |
+| 3.30 V | 16.34 mV | 19.80 mV | 28.16 mV |
+| 3.63 V | 14.99 mV | 21.49 mV | 28.96 mV |
+
+The binding point is **`stat`/3.630 V/125 °C**: mean 1.19111 V, σ 28.96 mV, mean ± 3σ
+= [1.10422 V, 1.27800 V].
+
+**The distribution is not normal** and the report says so: Anderson–Darling A² = 3.05
+against a 5 % critical value of 0.787 — `rejected` — with excess kurtosis 0.66, i.e.
+heavier tails than a Gaussian. The parametric ±3σ above therefore *understates* the
+real tails slightly; the empirical 0.135/99.865 percentiles in the table are the
+honest pair to quote beside it. This is reported, not corrected for: a 3σ figure is
+what the spec row asks for, and what its fit is worth is part of the evidence.
+
+### Where the spread comes from
+
+`families` campaign, 4 × 100 draws at 3.300 V / 27 °C — one family's statistical
+section on at a time (`envelopes/20261113T130110Z-d384aed.families.json`):
+
+| Statistical family | σ(`vref`) | share |
+|---|---|---|
+| `pnpMPA` (`cornerPNP.lib stat`, global) | 1.443 mV | small |
+| HV MOS (`cornerMOShv.lib mos_tt_stat`, global) | **0.031 mV** | negligible |
+| resistors (`cornerRES.lib res_stat`, **per instance**) | **18.76 mV** | dominant |
+| all three together | 22.52 mV | — |
+
+The untrimmed line is **resistor-mismatch dominated**, by more than an order of
+magnitude over the next contributor. That is consistent with the circuit: R1 and R2
+are both `rppd`, and `res_stat` draws them independently, so the R1/R2 ratio that
+sets the PTAT gain carries the error directly. It is also why the bipolar gap matters
+less here *for this measurement* than it might have — but only by accident, and the
+missing term is still missing: `pnpMPA`'s 1.443 mV is its **global** spread, not the
+Q1/Q2/Q3 matching error, which has no model to sample at all.
+
+### The controls
+
+**Deterministic (zero-spread).** `zero` campaign, 9 points × 20 draws
+(`envelopes/20261113T125843Z-d384aed.zero.json`): `stddev` exactly `0.0` and
+`min == max` at **all nine** points, and each point's value equals the one the
+deterministic item-5 grid recorded at the same corner, to all six digits — including
+the ratified nominal **1.19696 V** at typ/3.300 V/27 °C. The spread the `line`
+campaign reports is the model sections' and nothing else's.
+
+**Known-bad (3× sigma).** `inflated` campaign, 9 points × 100 draws
+(`envelopes/20261113T130254Z-d384aed.inflated.json`): pooled σ **68.93 mV**, which is
+**3.06×** the `families` `stat_all` σ — the deck-level scale demonstrably reached the
+draws. Graded by `klt yield` against the same window, its yield is **7.67 %
+[6.01, 9.60]** against the nominal's **23.67 % [22.07, 25.32]**: the intervals do not
+overlap, so the verdict is **`detected`**. The statistics do catch a degraded design.
+
+### The `klt yield` report (cited for T1 item 6)
+
+`yield/20261113T130628Z-e882c25.line.yield.json`, produced by **klt 0.9.1** with the
+`[yield]` extra (`yield/…line.yield-record.json` records the build, every input and
+its sha256):
+
+| | |
+|---|---|
+| window (evidence-reporting, **not** a spec value) | [1.18874 V, 1.20039 V] |
+| yield, empirical (Clopper–Pearson) | **23.67 %**, CI [22.07 %, 25.32 %] at 95 %, N = 2700 |
+| Cpk / σ-to-spec | 0.0829 [0.0702, 0.0957] / 0.249 [0.211, 0.287], limiting side upper |
+| sample size | **sufficient** — required 1735, drawn 2700, observed CI half-width ±1.62 pp against the ±2 pp declared |
+| negative control | **detected** |
+| status | `reported` — no `target_yield` is declared, so nothing was claimed and nothing failed |
+
+Read it as: **about three quarters of dice land outside the corner envelope**
+untrimmed. A Cpk of 0.08 against that window is not a verdict on the design — the
+window is 11.65 mV wide and nobody ratified it — it is the quantitative statement
+that corner-level accuracy is unreachable without a trim.
+
+### What this says to the Trim row
+
+`spec/target-spec.md` makes the Trim row conditional: *"a trim is ratified only if the
+untrimmed MC shows a trimmable offset; if it does not, the Trim row falls back to
+'none'."*
+
+It does. The spread is a **static per-die offset** — it comes from a resistor ratio
+drawn once per die, not from drift — so a 1-point trim at 27 °C can remove it, and the
+range it must cover is the untrimmed line: **about ±67 mV (±5.6 %) at 3σ**, ±87 mV if
+sized on the worst point's 3σ. This bench does **not** edit the Trim or trimmed-line
+rows; sizing and ratifying a trim network is separate work with its own decision
+record.
+
+### One number that is easy to misread
+
+The `zero` campaign's **pooled** σ is 3.058 mV, not zero. Pooling unions nine
+different temperature/supply points, which genuinely differ from one another — that is
+deterministic corner spread, not sampling spread. The zero-spread claim is per point,
+and `statistics.by_point` in the record is where it is made.
 <!-- RESULTS:END -->
 
 ## Files
@@ -206,6 +321,16 @@ Filled in by the campaign runs; see the records under `records/`.
 Shared with the rest of `sim/`: `env.sh` (the pin), `runner-lib.sh` (tool gates, the
 pin, DUT staging, the one way a request reaches the fleet), `tools/cm5_record.py`
 (hashes and the append-only write), `tools/stat_locality.py` (the locality probe).
+
+**A note on size before you re-run anything.** These envelopes are large because a
+Monte Carlo envelope carries one entry per *draw*, not per corner: the `line`
+campaign's is 8.5 MB for its 2700 units and the four together are about 14 MB in the
+working tree (far less in the pack — git compresses them roughly 20×). They are
+committed in full and unedited because they are the raw result, and
+`options.keep_artifacts` is already `false`, so there is nothing left to trim that is
+not evidence. Re-running `line` adds another 8.5 MB rather than replacing it:
+`envelopes/` and `records/` are append-only, and `sim/mc-run.sh` refuses to overwrite.
+Re-run a campaign when there is something new to measure, not to tidy.
 
 ## Friction filed
 

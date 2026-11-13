@@ -30,6 +30,11 @@
 #   <name>.samples.json   the derived two-population sample set (what klt signoff hashes)
 #   <name>.yield.json     the `klt yield --format json` report -- the cited artifact
 #   <name>.yield.txt      the same run's text output, for a human reading the diff
+#   <name>.yield-record.json  this repo's own record of the step: the klt build that
+#                         produced the report (which is NOT in the report itself, and is
+#                         not this host's `klt` -- see THE YIELD EXTRA below), the two
+#                         source envelopes with their sha256, the limits file with its
+#                         sha256, and the verdicts read back out of the report
 #
 # THE YIELD EXTRA. `klt yield` needs the klt_yield_native Rust extension, which a plain
 # klayout-tools install does not carry and which must NOT be installed into this host's
@@ -117,10 +122,16 @@ ${KLT_YIELD} yield "${SAMPLES#"${REPO_DIR}/"}" --limits "${LIMITS_REL}" \
     --format text > "${TEXT}" 2>>"${OUT_DIR}/.yield.err" || true
 rm -f "${OUT_DIR}/.yield.err"
 
+RECORD="${OUT_DIR}/${BASE}.yield-record.json"
+[[ ! -e "${RECORD}" ]] || { echo "${TAG}: ${RECORD} exists; artifacts are append-only." >&2; exit 4; }
 python3 -I - "${REPORT}" "${MEASUREMENT}" "${YIELD_RC}" "${YIELD_VERSION}" \
-    "${NOMINAL_REL}" "${CONTROL_REL}" "${LIMITS_REL}" <<'PY'
-import json, sys
-report_p, meas, rc, version, nominal, control, limits = sys.argv[1:]
+    "${NOMINAL_REL}" "${CONTROL_REL}" "${LIMITS_REL}" "${RECORD}" \
+    "${SAMPLES#"${REPO_DIR}/"}" "${REPO_DIR}" "${SIM_DIR}/tools" <<'PY'
+import datetime, json, sys
+(report_p, meas, rc, version, nominal, control, limits, record_p, samples_rel,
+ repo_dir, tools_dir) = sys.argv[1:]
+sys.path.insert(0, tools_dir)
+from cm5_record import sha256, write_record
 r = json.load(open(report_p))
 entry = None
 for m in r.get("measurements") or []:
@@ -149,6 +160,41 @@ print("  capability         cpk %s  sigma_to_spec %s" % (cap.get("cpk"),
 print("  sample size        %s (required_n %s)" % (ss.get("verdict"), ss.get("required_n")))
 print("  negative control   %s" % nc.get("verdict"))
 print("  report status      %s (klt yield exit %s)" % (r.get("status"), rc))
+# The record of the step. The klt build matters and is recorded here because the report
+# does not carry it and this host's own `klt` did not produce it: `klt yield` needs the
+# klt_yield_native extension, which the shared toolchain must not be made to carry.
+write_record(record_p, {
+    "schema_version": 1,
+    "kind": "closed-loop-vref-mc-yield",
+    "label": "SIMULATED",
+    "status": "ok",
+    "timestamp_utc": datetime.datetime.now(datetime.timezone.utc)
+                             .strftime("%Y%m%dT%H%M%SZ"),
+    "tool": {"command": "klt yield-samples + klt yield", "version": version,
+             "exit_status": int(rc)},
+    "measurement": meas,
+    "spec_row": entry.get("spec_row"),
+    "inputs": {
+        "nominal_envelope": {"file": nominal, "sha256": sha256("%s/%s" % (repo_dir, nominal))},
+        "negative_control_envelope": {"file": control,
+                                      "sha256": sha256("%s/%s" % (repo_dir, control))},
+        "limits": {"file": limits, "sha256": sha256("%s/%s" % (repo_dir, limits))},
+        "sample_set": {"file": samples_rel, "sha256": sha256("%s/%s" % (repo_dir, samples_rel))},
+    },
+    "limits_applied": entry.get("limits"),
+    "verdicts": {
+        "report_status": r.get("status"),
+        "measurement_status": entry.get("status"),
+        "sample_size": ss,
+        "negative_control": {k: v for k, v in nc.items() if k != "samples"},
+    },
+    "distribution": d,
+    "capability": cap,
+    "yield": y,
+    "warnings": r.get("warnings"),
+})
+print("  record             %s" % record_p)
+
 problems = []
 if nc.get("verdict") not in ("detected", "not_detected", "not_applicable"):
     problems.append("the negative control reached no verdict (%r)" % nc.get("verdict"))
@@ -160,4 +206,5 @@ status=$?
 echo "${TAG}: wrote ${SAMPLES#"${REPO_DIR}/"}"
 echo "${TAG}: wrote ${REPORT#"${REPO_DIR}/"}"
 echo "${TAG}: wrote ${TEXT#"${REPO_DIR}/"}"
+echo "${TAG}: wrote ${RECORD#"${REPO_DIR}/"}"
 exit $(( status == 0 ? 0 : 6 ))

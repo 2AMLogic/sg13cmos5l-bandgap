@@ -8,7 +8,9 @@
     "Each cited envelope carries `spec_row` tags on its graded measurements, so `klt signoff` DERIVES this coverage from the envelopes (`row_coverage.row_sources` reads `derived`) instead of taking the manifest's word for it.",
     "ITEM 6 (statistical claims carry Monte Carlo evidence), added by issue #31. One `klt yield` report, and `spec_rows.6` declaring the FULL statistical row set. spec/decision-records/0012-statistical-mc-sections-and-window.md records which rows are statistical and why, which model sections the campaign uses, and the window the report is graded against.",
     "Item 6 is UNMET on purpose, and for a reason the evidence states rather than hides. `vref_untrimmed_line_3sigma` IS covered -- the campaign measures the row's quantity, with its seed, its sample size, its deterministic zero-spread control and a known-bad control that the statistics do detect -- but it is declared `ratified: false`, so `klt signoff` reports `partial_coverage` and never `met`. Two things are unratified about it: the limit the yield is graded against is an evidence-reporting window read out of the item-5 envelope, not a bound spec/target-spec.md ratifies (it ratifies none for this row), and the mechanism the row names is only partly reachable in this PDK -- resistor mismatch is sampled per instance, bipolar and MOS mismatch are not sampled at all, because pnpMPA has no per-instance mismatch model and the MOS one is gated on an instance parameter no `klt sim` request can set. Declaring the row `ratified: true` would assert a bound nobody ratified; declaring it a gap would hide a campaign that did run.",
-    "`vref_trimmed_line` is the second statistical row and is a declared gap: it needs a trim network this design does not contain. `trim` is deliberately NOT declared under item 6 -- spec/target-spec.md's Monte Carlo column says `no` for it, and its own evidence is a deterministic monotonicity sweep; what it takes from the Monte Carlo is the range it has to cover, not its own statistics. Record 0012 section 4 accounts for every spec row this way."
+    "`vref_trimmed_line` is the second statistical row and is a declared gap: it needs a trim network this design does not contain. `trim` is deliberately NOT declared under item 6 -- spec/target-spec.md's Monte Carlo column says `no` for it, and its own evidence is a deterministic monotonicity sweep; what it takes from the Monte Carlo is the range it has to cover, not its own statistics. Record 0012 section 4 accounts for every spec row this way.",
+    "The item-6 citation DOES pin a content_hash, where the item-5 citations do not. The difference is what the hash would bind: a klt sim envelope's provenance.input hashes a per-corner deck generated under sim/build/ (gitignored), so a pin there would name a path no reviewer has. A klt yield report's freshness pin is the sample-set document its `samples` field names, and that document IS committed beside the report (...line.samples.json), carrying both populations and the sha256 of both source envelopes. So the pin is checkable from a clean checkout. Its one limit, stated by klt yield's own docs: klt signoff does not recursively re-hash the campaigns that document's `derivation` block names, so editing a source envelope without re-running sim/mc-yield.sh would leave the pin satisfied. sim/tests/test-mc-bench.sh re-checks that both named envelopes are committed, and the envelopes are append-only.",
+    "A grading outcome worth knowing before reading the report: item 6's detail lists vref_untrimmed_line_3sigma under `uncovered_rows` AS WELL AS `unratified_rows`, even though the citation above resolves and passes its campaign-discipline gates (sample size sufficient, negative control detected). klt signoff's item-6 row reader counts only a citation whose report `status` is `pass`, and a klt yield report that declares no `target_yield` is `status: \"reported\"` -- which is the correct state for a row that ratifies no yield claim. Declaring a target the campaign is known to clear would make the row read as covered; that would be manufacturing a claim to satisfy a grader, so it is not done. Filed generically as klayout-tools#5490. The item-6 verdict is `unmet` / `partial_coverage` either way."
   ],
   "block": "sg13cmos5l-bandgap",
   "kind": "analog",
@@ -61,9 +63,17 @@
     },
     "10": {
       "file": "evidence/item10.json",
-      "content_hash": "sha256:47aabf1e082e639e7dffafb7b48bdd70ba54579e58445ca50bee4f741b6da8a7"
+      "content_hash": "sha256:9e9bc19d04d9ae78bed6b96e07d852ec048ea0610eb3593f24da59e7793aca0b"
     },
-    "6": []
+    "6": [
+      {
+        "file": "sim/closed-loop-vref-mc/yield/20261113T130628Z-e882c25.line.yield.json",
+        "rows": [
+          "vref_untrimmed_line_3sigma"
+        ],
+        "content_hash": "sha256:707840a8898b5eedcb296780fbf5c87fe0935685885abd10f7850a6fb10d28c8"
+      }
+    ]
   },
   "spec_rows": {
     "5": [

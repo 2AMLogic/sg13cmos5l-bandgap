@@ -1,0 +1,19 @@
+samples: sim/closed-loop-vref-mc/yield/20261113T130628Z-e882c25.line.samples.json
+limits: sim/closed-loop-vref-mc/yield-limits.json
+source: sample-set  samples_analyzed: 2700
+confidence: 0.95  target_ci_halfwidth: 0.02
+status: reported  measurements: 1
+
+vref_v [V]  status: reported  N: 2700
+  limits: min(>=)=1.18874 max(<=)=1.20039 target_yield=-
+  fit (normal): mean=1.19485 stddev=0.0222718 normality=rejected
+  yield (empirical, clopper-pearson): 0.236667 [0.220742, 0.253165] at 95%, N=2700
+  yield (normal, normal-delta): 0.206308 [0.200930, 0.211687] at 95%, N=2700
+  capability: cp=0.0872 cpk=0.0829 [0.0702, 0.0957] sigma_to_spec=0.2488 limiting=upper
+  sample size: sufficient (N=2700, required>=1735, observed +/-0.016211 vs target +/-0.02)
+  negative control (the same campaign with every pinned statistical magnitude tripled (sim/closed-loop-vref-mc/bench.json campaign 'inflated')): detected -- yield 0.076667 [0.060138, 0.096027] vs nominal 0.236667, N=900
+  warning: measurement 'vref_v': the sample set is not consistent with a normal distribution (Anderson-Darling A2* = 3.0530 > 0.787); treat the parametric yield estimate and Cpk as indicative only and prefer the empirical estimate
+  warning: measurement 'vref_v': samples were pooled across 9 originating corners; each corner is its own population, so the pooled estimate is a worst-case envelope rather than a distribution anyone sampled
+
+warnings:
+  no measurement declared a target_yield, so no yield claim was checked -- the estimates below are reported, never failed

@@ -30,8 +30,9 @@
 #     stddev exactly 0.0 at EVERY point, which is the whole of its evidential value.
 #  8. The committed `klt yield` report is internally consistent with the bench: it grades
 #     the bench's measurement, its sample-set document is committed beside it, that
-#     document's `derivation` names the two committed envelopes, and its negative control
-#     reached a verdict rather than being absent.
+#     document's `derivation` names the two committed envelopes, the yield-step record
+#     beside it names the klt build that produced the report and hashes every input,
+#     and its negative control reached a verdict rather than being absent.
 #  9. The manifest's item-6 declaration agrees with all of it: every declared row appears
 #     in spec/target-spec.md's Row id column, every declared row is cited or a declared
 #     gap, no row is both, and every citation names a committed file.
@@ -302,6 +303,21 @@ for name in reports:
             p = (der.get(role) or {}).get("path")
             check("%s sample set's %s source is a committed envelope (%s)" % (name, role, p),
                   bool(p) and exists(p))
+    rec_rel = "%s/yield/%s" % (BD, name.replace(".yield.json", ".yield-record.json"))
+    check("%s has a yield-step record beside it" % name, exists(rec_rel), rec_rel)
+    if exists(rec_rel):
+        yr = load(rec_rel)
+        # The report does not carry the klt build that produced it, and this host's own
+        # `klt` cannot produce it (no klt_yield_native). The record is the only place the
+        # build is written down, so an empty one would leave the cited artifact unattributed.
+        check("%s yield record names the klt build that produced the report" % name,
+              bool((yr.get("tool") or {}).get("version")),
+              json.dumps(yr.get("tool")))
+        for role in ("nominal_envelope", "negative_control_envelope", "limits", "sample_set"):
+            src_ = (yr.get("inputs") or {}).get(role) or {}
+            check("%s yield record hashes its %s input" % (name, role),
+                  bool(src_.get("sha256")) and exists(src_.get("file", "")),
+                  json.dumps(src_))
     nc = entry.get("negative_control") or {}
     check("%s negative control reached a verdict" % name,
           nc.get("verdict") in ("detected", "not_detected", "not_applicable"),

@@ -215,5 +215,57 @@ Both are committed. Neither stands in for the other.
 <!-- MEASURED:BEGIN -->
 ## 6. What it measured
 
-Filled in from the committed campaign records.
+All **SIMULATED** (ngspice-47, PDK `f7bca32`, closed loop with the real amplifier,
+settled at every unit; 0 errored, 0 inconclusive across 4180 units). Seed
+`20261113`. Full tables, the per-point breakdown and the controls are in
+`sim/closed-loop-vref-mc/README.md`; the figures the spec row needs are:
+
+- **The untrimmed line is ±5.59 % (3σ)**: pooled over 9 points × 300 draws,
+  mean `vref` = **1.19485 V**, σ = **22.272 mV**, mean ± 3σ =
+  **[1.12803 V, 1.26166 V]** (width 133.6 mV). Binding point `stat`/3.630 V/125 °C:
+  σ = 28.96 mV, mean ± 3σ = [1.10422 V, 1.27800 V]. The distribution's normality is
+  **rejected** (Anderson–Darling A² = 3.05 vs 0.787, excess kurtosis 0.66), so the
+  empirical 0.135/99.865 percentiles — 1.12260 V / 1.27082 V — are reported beside
+  the parametric window rather than instead of it.
+- **For comparison, the whole deterministic §PVT corner envelope is 11.65 mV wide.**
+  The statistical spread is roughly **11×** it. On this core, device variation and
+  not process corner sets the untrimmed accuracy.
+- **It is resistor mismatch**, measured one family at a time at the nominal point:
+  σ = 18.76 mV from `res_stat` alone, 1.443 mV from `cornerPNP.lib stat`, 0.031 mV
+  from `mos_tt_stat`, 22.52 mV from all three. R1 and R2 are both `rppd` and
+  `res_stat` draws them independently, so the ratio that sets the PTAT gain carries
+  the error directly. The `pnpMPA` figure is its **global** spread; the Q1/Q2/Q3
+  matching term is still absent, not small.
+- **Both controls held.** The deterministic control reports σ exactly `0.0` at all
+  nine points *and* reproduces the item-5 grid's value at every one of them, to six
+  digits, including the ratified nominal 1.19696 V. The known-bad control (3× sigma,
+  pooled σ 68.93 mV = 3.06× nominal) grades **`detected`**: 7.67 % [6.01, 9.60]
+  against the nominal's 23.67 % [22.07, 25.32], intervals disjoint.
+- **The cited `klt yield` report** (klt 0.9.1 with the `[yield]` extra) reports
+  yield **23.67 %** CI [22.07 %, 25.32 %] at 95 %, N = 2700, against the
+  evidence-reporting window; Cpk 0.0829, σ-to-spec 0.249; sample size **sufficient**
+  (required 1735, drawn 2700, observed half-width ±1.62 pp against the ±2 pp
+  declared); status `reported`, because no `target_yield` is declared.
+
+### The Trim row's condition is met
+
+`target-spec.md` makes the Trim row conditional on "the untrimmed MC showing a
+trimmable offset". It does: the spread is a **static per-die offset** drawn once from
+a resistor ratio, not drift, so a 1-point trim at 27 °C removes it, and the range such
+a trim must cover is the untrimmed line — **about ±67 mV (±5.6 %) at 3σ pooled**,
+±87 mV if sized on the worst point. This record does **not** edit the Trim or
+trimmed-line rows; sizing and ratifying a trim network is separate work.
+
+### One grading outcome is the tool's, not the evidence's
+
+With the row declared `ratified: false` and no `target_yield` declared — both correct
+— `klt signoff` reports the row under **`uncovered_rows`** as well as
+`unratified_rows`, because its item-6 row reader counts only a citation whose report
+`status` is `pass`, and a report with no `target_yield` is `status: "reported"`.
+Declaring a target the campaign is known to clear would make the row read as covered;
+that would be manufacturing a claim to satisfy a grader, so it is not done. The
+contradiction — `klt yield` documents `reported` as "no claim was made, nothing
+failed" while `klt signoff` reads it as "no evidence exists" — is filed generically as
+[`klayout-tools#5490`](https://github.com/2AMLogic/klayout-tools/issues/5490).
+Item 6's verdict is `unmet` / `partial_coverage` either way.
 <!-- MEASURED:END -->

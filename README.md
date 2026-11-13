@@ -6,12 +6,15 @@ reduced-metal-stack sibling of IHP's SG13G2 130 nm open PDK — designed by AI
 agents driving [klayout-tools](https://github.com/2AMLogic/klayout-tools) and
 the open-source xschem + ngspice flow.
 
-**Status: specification ratified (issue #2); the schematic is now simulated
-across the full PVT corner grid (issue #30,
-[`0011`](spec/decision-records/0011-corner-verification-pvt-grids.md)) — seven
-of the eleven spec rows carry measured corner evidence, one ratified Target
-(PSRR @ DC) is missed on that evidence, and the statistical and trim rows have
-none. Nothing is laid out, extracted or measured in silicon here.** The work
+**Status: specification ratified (issue #2); the schematic is simulated across
+the full PVT corner grid (issue #30,
+[`0011`](spec/decision-records/0011-corner-verification-pvt-grids.md)) and the
+untrimmed accuracy row now carries a seeded, controlled Monte Carlo (issue #31,
+[`0012`](spec/decision-records/0012-statistical-mc-sections-and-window.md)) —
+seven of the eleven spec rows carry measured corner evidence, one ratified
+Target (PSRR @ DC) is missed on that evidence, and the untrimmed line is
+measured at **±5.6 % (3σ)** by a mechanism this PDK only partly provides.
+Nothing is laid out, extracted or measured in silicon here.** The work
 starts from the SG13CMOS5L branch already carried in
 [sg13g2-bandgap](https://github.com/2AMLogic/sg13g2-bandgap), not from a
 blank page.
@@ -100,15 +103,34 @@ the cited envelope of each):
 | Iq | < 100 µA | < 50 µA | 41.085 µA | met |
 | Startup | self-starting | self-starting, < 1 ms | 100 µs, 45/45 self-starting | met |
 
-Still unevidenced: the untrimmed-line (3σ) and trimmed-line accuracy rows and
-the Trim row. The first needs the device-mismatch Monte Carlo (issue #31); the
-other two need a trim network this design does not have. They are declared
-gaps in the T1 item-5 report rather than left out of it.
+The untrimmed-line (3σ) row is now measured too, by the statistical Monte Carlo
+bench `sim/closed-loop-vref-mc` (issue #31,
+[`0012`](spec/decision-records/0012-statistical-mc-sections-and-window.md)):
+9 points × 300 seeded draws, a deterministic zero-spread control that reproduces
+the corner grid exactly, and a known-bad control the statistics detect.
+
+| Row | Target | Measured (SIMULATED) |
+|---|---|---|
+| Output reference, untrimmed line | untrimmed line (3σ) from the device-mismatch Monte Carlo | mean 1.19485 V, σ 22.27 mV → **mean ± 3σ = ±5.59 %**, about 11× the 11.65 mV corner envelope |
+
+It is **not** a ratified number and **not** the full device-mismatch Monte Carlo
+the Target names: `pnpMPA` has no per-instance mismatch model in this PDK, so the
+bipolar matching term — normally the dominant one — cannot be sampled at all, and
+the MOS mismatch sections are gated behind an instance parameter no `klt sim`
+request can set. The spread that *is* measured is dominated by resistor mismatch,
+which `cornerRES.lib res_stat` does sample per instance. The row is therefore
+declared `ratified: false` and T1 item 6 grades `partial_coverage`, never `met`.
+
+What it does settle is the **Trim** row's condition — "a trim is ratified only if
+the untrimmed MC shows a trimmable offset". It does: a static per-die offset of
+about ±67 mV (3σ), which a 1-point trim at 27 °C can remove. Still unevidenced:
+the trimmed-line row and the Trim sweep itself, both of which need a trim network
+this design does not have.
 
 Maturity ladder: tooling resolved → spec ratified → schematic simulated
 across PVT → layout DRC/LVS-clean → post-layout re-verification → shuttle
-seat → measured silicon. **Current position: schematic simulated across PVT**
-(corner grids only; the statistical rows are not simulated yet).
+seat → measured silicon. **Current position: schematic simulated across PVT**,
+with the untrimmed accuracy row carrying statistical evidence as well.
 
 ## Tool flow
 
