@@ -3,6 +3,13 @@
 Chronological record of merged PRs and closed issues, maintained by the Guide
 triage agent. Newest first.
 
+### 2026-11-13
+
+- **PR #65**: sim: drop the vref deck's SPICE title line and record the first closed-loop vref
+- **PR #63**: docs(sim): record the PVT corner and mismatch sections as resolved at the pinned PDK revision
+- **Issue #19** (closed): Record the first closed-loop vref run (sim/closed-loop-vref-pvt/run.sh) on a host with the pinned PDK
+- **Issue #15** (closed): Verify the spec's corner and mismatch model sections resolve at the pinned IHP dev revision
+
 ### 2026-11-12
 
 - **PR #58**: Bump Repo Skills 0.25.10 -> 0.26.1
