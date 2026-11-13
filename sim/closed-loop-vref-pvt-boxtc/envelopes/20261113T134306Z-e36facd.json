@@ -1,0 +1,2442 @@
+{
+  "corner_count": 15,
+  "corners": [
+    {
+      "artifacts": {
+        "deck": "/home/ubuntu/GitHub/sg13cmos5l-bandgap/.loom/worktrees/issue-80/sim/build/closed-loop-vref-pvt-boxtc/out/typ_2p970V_27C/corner.cir",
+        "log": "/home/ubuntu/GitHub/sg13cmos5l-bandgap/.loom/worktrees/issue-80/sim/build/closed-loop-vref-pvt-boxtc/out/typ_2p970V_27C/ngspice.log",
+        "raw": null,
+        "waveform": null
+      },
+      "corner_id": "typ/2.970V/27C",
+      "diagnostics": [],
+      "engine_exit_code": 0,
+      "engine_killed_by_signal": null,
+      "measurements": [
+        {
+          "margin": 158.0,
+          "name": "temp_points",
+          "status": "pass",
+          "unit": null,
+          "value": 166.0
+        },
+        {
+          "margin": null,
+          "name": "vref_m40_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.197178703966
+        },
+        {
+          "margin": null,
+          "name": "vref_27_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.196527567935
+        },
+        {
+          "margin": null,
+          "name": "vref_125_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.190535710561
+        },
+        {
+          "margin": null,
+          "name": "vref_min_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.190535710561
+        },
+        {
+          "margin": null,
+          "name": "vref_max_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.197300333633
+        },
+        {
+          "margin": null,
+          "name": "vref_box_mid_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.193918022097
+        },
+        {
+          "margin": 15.661197140760002,
+          "name": "tc_box_ppm_per_c",
+          "status": "pass",
+          "unit": "ppm/C",
+          "value": 34.33880285924
+        },
+        {
+          "margin": 16.35216172762,
+          "name": "tc_endpoint_ppm_per_c",
+          "status": "pass",
+          "unit": "ppm/C",
+          "value": 33.64783827238
+        }
+      ],
+      "monte_carlo": null,
+      "process": "typ",
+      "runtime_s": 0.173,
+      "status": "pass",
+      "supply_v": {
+        "Vvdd": 2.97
+      },
+      "temperature_c": 27
+    },
+    {
+      "artifacts": {
+        "deck": "/home/ubuntu/GitHub/sg13cmos5l-bandgap/.loom/worktrees/issue-80/sim/build/closed-loop-vref-pvt-boxtc/out/typ_3p300V_27C/corner.cir",
+        "log": "/home/ubuntu/GitHub/sg13cmos5l-bandgap/.loom/worktrees/issue-80/sim/build/closed-loop-vref-pvt-boxtc/out/typ_3p300V_27C/ngspice.log",
+        "raw": null,
+        "waveform": null
+      },
+      "corner_id": "typ/3.300V/27C",
+      "diagnostics": [],
+      "engine_exit_code": 0,
+      "engine_killed_by_signal": null,
+      "measurements": [
+        {
+          "margin": 158.0,
+          "name": "temp_points",
+          "status": "pass",
+          "unit": null,
+          "value": 166.0
+        },
+        {
+          "margin": null,
+          "name": "vref_m40_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.197600918932
+        },
+        {
+          "margin": null,
+          "name": "vref_27_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.196959962873
+        },
+        {
+          "margin": null,
+          "name": "vref_125_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.190932579126
+        },
+        {
+          "margin": null,
+          "name": "vref_min_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.190932579126
+        },
+        {
+          "margin": null,
+          "name": "vref_max_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.197727372423
+        },
+        {
+          "margin": null,
+          "name": "vref_box_mid_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.194329975774
+        },
+        {
+          "margin": 15.51994317095,
+          "name": "tc_box_ppm_per_c",
+          "status": "pass",
+          "unit": "ppm/C",
+          "value": 34.48005682905
+        },
+        {
+          "margin": 16.23597956514,
+          "name": "tc_endpoint_ppm_per_c",
+          "status": "pass",
+          "unit": "ppm/C",
+          "value": 33.76402043486
+        }
+      ],
+      "monte_carlo": null,
+      "peak_rss_bytes": 50270208,
+      "process": "typ",
+      "runtime_s": 0.168,
+      "status": "pass",
+      "supply_v": {
+        "Vvdd": 3.3
+      },
+      "temperature_c": 27
+    },
+    {
+      "artifacts": {
+        "deck": "/home/ubuntu/GitHub/sg13cmos5l-bandgap/.loom/worktrees/issue-80/sim/build/closed-loop-vref-pvt-boxtc/out/typ_3p630V_27C/corner.cir",
+        "log": "/home/ubuntu/GitHub/sg13cmos5l-bandgap/.loom/worktrees/issue-80/sim/build/closed-loop-vref-pvt-boxtc/out/typ_3p630V_27C/ngspice.log",
+        "raw": null,
+        "waveform": null
+      },
+      "corner_id": "typ/3.630V/27C",
+      "diagnostics": [],
+      "engine_exit_code": 0,
+      "engine_killed_by_signal": null,
+      "measurements": [
+        {
+          "margin": 158.0,
+          "name": "temp_points",
+          "status": "pass",
+          "unit": null,
+          "value": 166.0
+        },
+        {
+          "margin": null,
+          "name": "vref_m40_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.197923526868
+        },
+        {
+          "margin": null,
+          "name": "vref_27_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.197217264377
+        },
+        {
+          "margin": null,
+          "name": "vref_125_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.190977042405
+        },
+        {
+          "margin": null,
+          "name": "vref_min_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.190977042405
+        },
+        {
+          "margin": null,
+          "name": "vref_max_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.198036727507
+        },
+        {
+          "margin": null,
+          "name": "vref_box_mid_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.194506884956
+        },
+        {
+          "margin": 14.181060104330001,
+          "name": "tc_box_ppm_per_c",
+          "status": "pass",
+          "unit": "ppm/C",
+          "value": 35.81893989567
+        },
+        {
+          "margin": 14.83519984737,
+          "name": "tc_endpoint_ppm_per_c",
+          "status": "pass",
+          "unit": "ppm/C",
+          "value": 35.16480015263
+        }
+      ],
+      "monte_carlo": null,
+      "peak_rss_bytes": 50270208,
+      "process": "typ",
+      "runtime_s": 0.173,
+      "status": "pass",
+      "supply_v": {
+        "Vvdd": 3.63
+      },
+      "temperature_c": 27
+    },
+    {
+      "artifacts": {
+        "deck": "/home/ubuntu/GitHub/sg13cmos5l-bandgap/.loom/worktrees/issue-80/sim/build/closed-loop-vref-pvt-boxtc/out/bcs_2p970V_27C/corner.cir",
+        "log": "/home/ubuntu/GitHub/sg13cmos5l-bandgap/.loom/worktrees/issue-80/sim/build/closed-loop-vref-pvt-boxtc/out/bcs_2p970V_27C/ngspice.log",
+        "raw": null,
+        "waveform": null
+      },
+      "corner_id": "bcs/2.970V/27C",
+      "diagnostics": [],
+      "engine_exit_code": 0,
+      "engine_killed_by_signal": null,
+      "measurements": [
+        {
+          "margin": 158.0,
+          "name": "temp_points",
+          "status": "pass",
+          "unit": null,
+          "value": 166.0
+        },
+        {
+          "margin": null,
+          "name": "vref_m40_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.199682203911
+        },
+        {
+          "margin": null,
+          "name": "vref_27_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.198782563333
+        },
+        {
+          "margin": null,
+          "name": "vref_125_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.192362076517
+        },
+        {
+          "margin": null,
+          "name": "vref_min_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.192362076517
+        },
+        {
+          "margin": null,
+          "name": "vref_max_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.199757176008
+        },
+        {
+          "margin": null,
+          "name": "vref_box_mid_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.196059626262
+        },
+        {
+          "margin": 12.527967825799998,
+          "name": "tc_box_ppm_per_c",
+          "status": "pass",
+          "unit": "ppm/C",
+          "value": 37.4720321742
+        },
+        {
+          "margin": 12.992113990580002,
+          "name": "tc_endpoint_ppm_per_c",
+          "status": "pass",
+          "unit": "ppm/C",
+          "value": 37.00788600942
+        }
+      ],
+      "monte_carlo": null,
+      "peak_rss_bytes": 50270208,
+      "process": "bcs",
+      "runtime_s": 0.169,
+      "status": "pass",
+      "supply_v": {
+        "Vvdd": 2.97
+      },
+      "temperature_c": 27
+    },
+    {
+      "artifacts": {
+        "deck": "/home/ubuntu/GitHub/sg13cmos5l-bandgap/.loom/worktrees/issue-80/sim/build/closed-loop-vref-pvt-boxtc/out/bcs_3p300V_27C/corner.cir",
+        "log": "/home/ubuntu/GitHub/sg13cmos5l-bandgap/.loom/worktrees/issue-80/sim/build/closed-loop-vref-pvt-boxtc/out/bcs_3p300V_27C/ngspice.log",
+        "raw": null,
+        "waveform": null
+      },
+      "corner_id": "bcs/3.300V/27C",
+      "diagnostics": [],
+      "engine_exit_code": 0,
+      "engine_killed_by_signal": null,
+      "measurements": [
+        {
+          "margin": 158.0,
+          "name": "temp_points",
+          "status": "pass",
+          "unit": null,
+          "value": 166.0
+        },
+        {
+          "margin": null,
+          "name": "vref_m40_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.200086937699
+        },
+        {
+          "margin": null,
+          "name": "vref_27_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.199191148482
+        },
+        {
+          "margin": null,
+          "name": "vref_125_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.192722730277
+        },
+        {
+          "margin": null,
+          "name": "vref_min_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.192722730277
+        },
+        {
+          "margin": null,
+          "name": "vref_max_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.200164548938
+        },
+        {
+          "margin": null,
+          "name": "vref_box_mid_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.196443639607
+        },
+        {
+          "margin": 12.303338172289997,
+          "name": "tc_box_ppm_per_c",
+          "status": "pass",
+          "unit": "ppm/C",
+          "value": 37.69666182771
+        },
+        {
+          "margin": 12.781946654339997,
+          "name": "tc_endpoint_ppm_per_c",
+          "status": "pass",
+          "unit": "ppm/C",
+          "value": 37.21805334566
+        }
+      ],
+      "monte_carlo": null,
+      "peak_rss_bytes": 50270208,
+      "process": "bcs",
+      "runtime_s": 0.169,
+      "status": "pass",
+      "supply_v": {
+        "Vvdd": 3.3
+      },
+      "temperature_c": 27
+    },
+    {
+      "artifacts": {
+        "deck": "/home/ubuntu/GitHub/sg13cmos5l-bandgap/.loom/worktrees/issue-80/sim/build/closed-loop-vref-pvt-boxtc/out/bcs_3p630V_27C/corner.cir",
+        "log": "/home/ubuntu/GitHub/sg13cmos5l-bandgap/.loom/worktrees/issue-80/sim/build/closed-loop-vref-pvt-boxtc/out/bcs_3p630V_27C/ngspice.log",
+        "raw": null,
+        "waveform": null
+      },
+      "corner_id": "bcs/3.630V/27C",
+      "diagnostics": [],
+      "engine_exit_code": 0,
+      "engine_killed_by_signal": null,
+      "measurements": [
+        {
+          "margin": 158.0,
+          "name": "temp_points",
+          "status": "pass",
+          "unit": null,
+          "value": 166.0
+        },
+        {
+          "margin": null,
+          "name": "vref_m40_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.200393174159
+        },
+        {
+          "margin": null,
+          "name": "vref_27_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.199422510452
+        },
+        {
+          "margin": null,
+          "name": "vref_125_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.192722726335
+        },
+        {
+          "margin": null,
+          "name": "vref_min_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.192722726335
+        },
+        {
+          "margin": null,
+          "name": "vref_max_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.200459437842
+        },
+        {
+          "margin": null,
+          "name": "vref_box_mid_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.196591082088
+        },
+        {
+          "margin": 10.81438233048,
+          "name": "tc_box_ppm_per_c",
+          "status": "pass",
+          "unit": "ppm/C",
+          "value": 39.18561766952
+        },
+        {
+          "margin": 11.241712435540002,
+          "name": "tc_endpoint_ppm_per_c",
+          "status": "pass",
+          "unit": "ppm/C",
+          "value": 38.75828756446
+        }
+      ],
+      "monte_carlo": null,
+      "peak_rss_bytes": 50270208,
+      "process": "bcs",
+      "runtime_s": 0.166,
+      "status": "pass",
+      "supply_v": {
+        "Vvdd": 3.63
+      },
+      "temperature_c": 27
+    },
+    {
+      "artifacts": {
+        "deck": "/home/ubuntu/GitHub/sg13cmos5l-bandgap/.loom/worktrees/issue-80/sim/build/closed-loop-vref-pvt-boxtc/out/wcs_2p970V_27C/corner.cir",
+        "log": "/home/ubuntu/GitHub/sg13cmos5l-bandgap/.loom/worktrees/issue-80/sim/build/closed-loop-vref-pvt-boxtc/out/wcs_2p970V_27C/ngspice.log",
+        "raw": null,
+        "waveform": null
+      },
+      "corner_id": "wcs/2.970V/27C",
+      "diagnostics": [],
+      "engine_exit_code": 0,
+      "engine_killed_by_signal": null,
+      "measurements": [
+        {
+          "margin": 158.0,
+          "name": "temp_points",
+          "status": "pass",
+          "unit": null,
+          "value": 166.0
+        },
+        {
+          "margin": null,
+          "name": "vref_m40_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.194254048009
+        },
+        {
+          "margin": null,
+          "name": "vref_27_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.193969235276
+        },
+        {
+          "margin": null,
+          "name": "vref_125_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.18873838464
+        },
+        {
+          "margin": null,
+          "name": "vref_min_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.18873838464
+        },
+        {
+          "margin": null,
+          "name": "vref_max_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.1944677214
+        },
+        {
+          "margin": null,
+          "name": "vref_box_mid_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.19160305302
+        },
+        {
+          "margin": 20.86005024663,
+          "name": "tc_box_ppm_per_c",
+          "status": "pass",
+          "unit": "ppm/C",
+          "value": 29.13994975337
+        },
+        {
+          "margin": 22.00240856041,
+          "name": "tc_endpoint_ppm_per_c",
+          "status": "pass",
+          "unit": "ppm/C",
+          "value": 27.99759143959
+        }
+      ],
+      "monte_carlo": null,
+      "peak_rss_bytes": 50270208,
+      "process": "wcs",
+      "runtime_s": 0.166,
+      "status": "pass",
+      "supply_v": {
+        "Vvdd": 2.97
+      },
+      "temperature_c": 27
+    },
+    {
+      "artifacts": {
+        "deck": "/home/ubuntu/GitHub/sg13cmos5l-bandgap/.loom/worktrees/issue-80/sim/build/closed-loop-vref-pvt-boxtc/out/wcs_3p300V_27C/corner.cir",
+        "log": "/home/ubuntu/GitHub/sg13cmos5l-bandgap/.loom/worktrees/issue-80/sim/build/closed-loop-vref-pvt-boxtc/out/wcs_3p300V_27C/ngspice.log",
+        "raw": null,
+        "waveform": null
+      },
+      "corner_id": "wcs/3.300V/27C",
+      "diagnostics": [],
+      "engine_exit_code": 0,
+      "engine_killed_by_signal": null,
+      "measurements": [
+        {
+          "margin": 158.0,
+          "name": "temp_points",
+          "status": "pass",
+          "unit": null,
+          "value": 166.0
+        },
+        {
+          "margin": null,
+          "name": "vref_m40_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.194695491026
+        },
+        {
+          "margin": null,
+          "name": "vref_27_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.194426449631
+        },
+        {
+          "margin": null,
+          "name": "vref_125_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.189171940272
+        },
+        {
+          "margin": null,
+          "name": "vref_min_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.189171940272
+        },
+        {
+          "margin": null,
+          "name": "vref_max_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.194917618663
+        },
+        {
+          "margin": null,
+          "name": "vref_box_mid_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.192044779468
+        },
+        {
+          "margin": 20.78776411527,
+          "name": "tc_box_ppm_per_c",
+          "status": "pass",
+          "unit": "ppm/C",
+          "value": 29.21223588473
+        },
+        {
+          "margin": 21.97310458949,
+          "name": "tc_endpoint_ppm_per_c",
+          "status": "pass",
+          "unit": "ppm/C",
+          "value": 28.02689541051
+        }
+      ],
+      "monte_carlo": null,
+      "peak_rss_bytes": 50270208,
+      "process": "wcs",
+      "runtime_s": 0.167,
+      "status": "pass",
+      "supply_v": {
+        "Vvdd": 3.3
+      },
+      "temperature_c": 27
+    },
+    {
+      "artifacts": {
+        "deck": "/home/ubuntu/GitHub/sg13cmos5l-bandgap/.loom/worktrees/issue-80/sim/build/closed-loop-vref-pvt-boxtc/out/wcs_3p630V_27C/corner.cir",
+        "log": "/home/ubuntu/GitHub/sg13cmos5l-bandgap/.loom/worktrees/issue-80/sim/build/closed-loop-vref-pvt-boxtc/out/wcs_3p630V_27C/ngspice.log",
+        "raw": null,
+        "waveform": null
+      },
+      "corner_id": "wcs/3.630V/27C",
+      "diagnostics": [],
+      "engine_exit_code": 0,
+      "engine_killed_by_signal": null,
+      "measurements": [
+        {
+          "margin": 158.0,
+          "name": "temp_points",
+          "status": "pass",
+          "unit": null,
+          "value": 166.0
+        },
+        {
+          "margin": null,
+          "name": "vref_m40_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.195035906653
+        },
+        {
+          "margin": null,
+          "name": "vref_27_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.194709802608
+        },
+        {
+          "margin": null,
+          "name": "vref_125_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.189259498542
+        },
+        {
+          "margin": null,
+          "name": "vref_min_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.189259498542
+        },
+        {
+          "margin": null,
+          "name": "vref_max_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.19524111378
+        },
+        {
+          "margin": null,
+          "name": "vref_box_mid_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.192250306161
+        },
+        {
+          "margin": 19.59345417892,
+          "name": "tc_box_ppm_per_c",
+          "status": "pass",
+          "unit": "ppm/C",
+          "value": 30.40654582108
+        },
+        {
+          "margin": 20.69703962056,
+          "name": "tc_endpoint_ppm_per_c",
+          "status": "pass",
+          "unit": "ppm/C",
+          "value": 29.30296037944
+        }
+      ],
+      "monte_carlo": null,
+      "peak_rss_bytes": 50270208,
+      "process": "wcs",
+      "runtime_s": 0.073,
+      "status": "pass",
+      "supply_v": {
+        "Vvdd": 3.63
+      },
+      "temperature_c": 27
+    },
+    {
+      "artifacts": {
+        "deck": "/home/ubuntu/GitHub/sg13cmos5l-bandgap/.loom/worktrees/issue-80/sim/build/closed-loop-vref-pvt-boxtc/out/sf_2p970V_27C/corner.cir",
+        "log": "/home/ubuntu/GitHub/sg13cmos5l-bandgap/.loom/worktrees/issue-80/sim/build/closed-loop-vref-pvt-boxtc/out/sf_2p970V_27C/ngspice.log",
+        "raw": null,
+        "waveform": null
+      },
+      "corner_id": "sf/2.970V/27C",
+      "diagnostics": [],
+      "engine_exit_code": 0,
+      "engine_killed_by_signal": null,
+      "measurements": [
+        {
+          "margin": 158.0,
+          "name": "temp_points",
+          "status": "pass",
+          "unit": null,
+          "value": 166.0
+        },
+        {
+          "margin": null,
+          "name": "vref_m40_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.197227597861
+        },
+        {
+          "margin": null,
+          "name": "vref_27_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.196589725791
+        },
+        {
+          "margin": null,
+          "name": "vref_125_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.190602988098
+        },
+        {
+          "margin": null,
+          "name": "vref_min_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.190602988098
+        },
+        {
+          "margin": null,
+          "name": "vref_max_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.197353221116
+        },
+        {
+          "margin": null,
+          "name": "vref_box_mid_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.193978104607
+        },
+        {
+          "margin": 15.735968708919998,
+          "name": "tc_box_ppm_per_c",
+          "status": "pass",
+          "unit": "ppm/C",
+          "value": 34.26403129108
+        },
+        {
+          "margin": 16.44702088617,
+          "name": "tc_endpoint_ppm_per_c",
+          "status": "pass",
+          "unit": "ppm/C",
+          "value": 33.55297911383
+        }
+      ],
+      "monte_carlo": null,
+      "process": "sf",
+      "runtime_s": 0.117,
+      "status": "pass",
+      "supply_v": {
+        "Vvdd": 2.97
+      },
+      "temperature_c": 27
+    },
+    {
+      "artifacts": {
+        "deck": "/home/ubuntu/GitHub/sg13cmos5l-bandgap/.loom/worktrees/issue-80/sim/build/closed-loop-vref-pvt-boxtc/out/sf_3p300V_27C/corner.cir",
+        "log": "/home/ubuntu/GitHub/sg13cmos5l-bandgap/.loom/worktrees/issue-80/sim/build/closed-loop-vref-pvt-boxtc/out/sf_3p300V_27C/ngspice.log",
+        "raw": null,
+        "waveform": null
+      },
+      "corner_id": "sf/3.300V/27C",
+      "diagnostics": [],
+      "engine_exit_code": 0,
+      "engine_killed_by_signal": null,
+      "measurements": [
+        {
+          "margin": 158.0,
+          "name": "temp_points",
+          "status": "pass",
+          "unit": null,
+          "value": 166.0
+        },
+        {
+          "margin": null,
+          "name": "vref_m40_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.197635938034
+        },
+        {
+          "margin": null,
+          "name": "vref_27_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.197005069241
+        },
+        {
+          "margin": null,
+          "name": "vref_125_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.190976128395
+        },
+        {
+          "margin": null,
+          "name": "vref_min_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.190976128395
+        },
+        {
+          "margin": null,
+          "name": "vref_max_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.197765606609
+        },
+        {
+          "margin": null,
+          "name": "vref_box_mid_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.194370867502
+        },
+        {
+          "margin": 15.548094035710001,
+          "name": "tc_box_ppm_per_c",
+          "status": "pass",
+          "unit": "ppm/C",
+          "value": 34.45190596429
+        },
+        {
+          "margin": 16.28044132763,
+          "name": "tc_endpoint_ppm_per_c",
+          "status": "pass",
+          "unit": "ppm/C",
+          "value": 33.71955867237
+        }
+      ],
+      "monte_carlo": null,
+      "process": "sf",
+      "runtime_s": 0.116,
+      "status": "pass",
+      "supply_v": {
+        "Vvdd": 3.3
+      },
+      "temperature_c": 27
+    },
+    {
+      "artifacts": {
+        "deck": "/home/ubuntu/GitHub/sg13cmos5l-bandgap/.loom/worktrees/issue-80/sim/build/closed-loop-vref-pvt-boxtc/out/sf_3p630V_27C/corner.cir",
+        "log": "/home/ubuntu/GitHub/sg13cmos5l-bandgap/.loom/worktrees/issue-80/sim/build/closed-loop-vref-pvt-boxtc/out/sf_3p630V_27C/ngspice.log",
+        "raw": null,
+        "waveform": null
+      },
+      "corner_id": "sf/3.630V/27C",
+      "diagnostics": [],
+      "engine_exit_code": 0,
+      "engine_killed_by_signal": null,
+      "measurements": [
+        {
+          "margin": 158.0,
+          "name": "temp_points",
+          "status": "pass",
+          "unit": null,
+          "value": 166.0
+        },
+        {
+          "margin": null,
+          "name": "vref_m40_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.197945456978
+        },
+        {
+          "margin": null,
+          "name": "vref_27_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.197245785443
+        },
+        {
+          "margin": null,
+          "name": "vref_125_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.190996810266
+        },
+        {
+          "margin": null,
+          "name": "vref_min_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.190996810266
+        },
+        {
+          "margin": null,
+          "name": "vref_max_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.198060824328
+        },
+        {
+          "margin": null,
+          "name": "vref_box_mid_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.194528817297
+        },
+        {
+          "margin": 14.15975419334,
+          "name": "tc_box_ppm_per_c",
+          "status": "pass",
+          "unit": "ppm/C",
+          "value": 35.84024580666
+        },
+        {
+          "margin": 14.825091984289998,
+          "name": "tc_endpoint_ppm_per_c",
+          "status": "pass",
+          "unit": "ppm/C",
+          "value": 35.17490801571
+        }
+      ],
+      "monte_carlo": null,
+      "process": "sf",
+      "runtime_s": 0.12,
+      "status": "pass",
+      "supply_v": {
+        "Vvdd": 3.63
+      },
+      "temperature_c": 27
+    },
+    {
+      "artifacts": {
+        "deck": "/home/ubuntu/GitHub/sg13cmos5l-bandgap/.loom/worktrees/issue-80/sim/build/closed-loop-vref-pvt-boxtc/out/fs_2p970V_27C/corner.cir",
+        "log": "/home/ubuntu/GitHub/sg13cmos5l-bandgap/.loom/worktrees/issue-80/sim/build/closed-loop-vref-pvt-boxtc/out/fs_2p970V_27C/ngspice.log",
+        "raw": null,
+        "waveform": null
+      },
+      "corner_id": "fs/2.970V/27C",
+      "diagnostics": [],
+      "engine_exit_code": 0,
+      "engine_killed_by_signal": null,
+      "measurements": [
+        {
+          "margin": 158.0,
+          "name": "temp_points",
+          "status": "pass",
+          "unit": null,
+          "value": 166.0
+        },
+        {
+          "margin": null,
+          "name": "vref_m40_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.19712692942
+        },
+        {
+          "margin": null,
+          "name": "vref_27_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.196460988981
+        },
+        {
+          "margin": null,
+          "name": "vref_125_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.190463223294
+        },
+        {
+          "margin": null,
+          "name": "vref_min_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.190463223294
+        },
+        {
+          "margin": null,
+          "name": "vref_max_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.197244138024
+        },
+        {
+          "margin": null,
+          "name": "vref_box_mid_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.193853680659
+        },
+        {
+          "margin": 15.576641780419997,
+          "name": "tc_box_ppm_per_c",
+          "status": "pass",
+          "unit": "ppm/C",
+          "value": 34.42335821958
+        },
+        {
+          "margin": 16.24537021293,
+          "name": "tc_endpoint_ppm_per_c",
+          "status": "pass",
+          "unit": "ppm/C",
+          "value": 33.75462978707
+        }
+      ],
+      "monte_carlo": null,
+      "process": "fs",
+      "runtime_s": 0.115,
+      "status": "pass",
+      "supply_v": {
+        "Vvdd": 2.97
+      },
+      "temperature_c": 27
+    },
+    {
+      "artifacts": {
+        "deck": "/home/ubuntu/GitHub/sg13cmos5l-bandgap/.loom/worktrees/issue-80/sim/build/closed-loop-vref-pvt-boxtc/out/fs_3p300V_27C/corner.cir",
+        "log": "/home/ubuntu/GitHub/sg13cmos5l-bandgap/.loom/worktrees/issue-80/sim/build/closed-loop-vref-pvt-boxtc/out/fs_3p300V_27C/ngspice.log",
+        "raw": null,
+        "waveform": null
+      },
+      "corner_id": "fs/3.300V/27C",
+      "diagnostics": [],
+      "engine_exit_code": 0,
+      "engine_killed_by_signal": null,
+      "measurements": [
+        {
+          "margin": 158.0,
+          "name": "temp_points",
+          "status": "pass",
+          "unit": null,
+          "value": 166.0
+        },
+        {
+          "margin": null,
+          "name": "vref_m40_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.197563750036
+        },
+        {
+          "margin": null,
+          "name": "vref_27_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.196911054774
+        },
+        {
+          "margin": null,
+          "name": "vref_125_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.190884508211
+        },
+        {
+          "margin": null,
+          "name": "vref_min_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.190884508211
+        },
+        {
+          "margin": null,
+          "name": "vref_max_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.197686565663
+        },
+        {
+          "margin": null,
+          "name": "vref_box_mid_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.194285536937
+        },
+        {
+          "margin": 15.48179698797,
+          "name": "tc_box_ppm_per_c",
+          "status": "pass",
+          "unit": "ppm/C",
+          "value": 34.51820301203
+        },
+        {
+          "margin": 16.179397105070002,
+          "name": "tc_endpoint_ppm_per_c",
+          "status": "pass",
+          "unit": "ppm/C",
+          "value": 33.82060289493
+        }
+      ],
+      "monte_carlo": null,
+      "process": "fs",
+      "runtime_s": 0.115,
+      "status": "pass",
+      "supply_v": {
+        "Vvdd": 3.3
+      },
+      "temperature_c": 27
+    },
+    {
+      "artifacts": {
+        "deck": "/home/ubuntu/GitHub/sg13cmos5l-bandgap/.loom/worktrees/issue-80/sim/build/closed-loop-vref-pvt-boxtc/out/fs_3p630V_27C/corner.cir",
+        "log": "/home/ubuntu/GitHub/sg13cmos5l-bandgap/.loom/worktrees/issue-80/sim/build/closed-loop-vref-pvt-boxtc/out/fs_3p630V_27C/ngspice.log",
+        "raw": null,
+        "waveform": null
+      },
+      "corner_id": "fs/3.630V/27C",
+      "diagnostics": [],
+      "engine_exit_code": 0,
+      "engine_killed_by_signal": null,
+      "measurements": [
+        {
+          "margin": 158.0,
+          "name": "temp_points",
+          "status": "pass",
+          "unit": null,
+          "value": 166.0
+        },
+        {
+          "margin": null,
+          "name": "vref_m40_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.197900214232
+        },
+        {
+          "margin": null,
+          "name": "vref_27_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.197185644553
+        },
+        {
+          "margin": null,
+          "name": "vref_125_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.190953692014
+        },
+        {
+          "margin": null,
+          "name": "vref_min_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.190953692014
+        },
+        {
+          "margin": null,
+          "name": "vref_max_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.198010790891
+        },
+        {
+          "margin": null,
+          "name": "vref_box_mid_v",
+          "status": "pass",
+          "unit": "V",
+          "value": 1.194482241453
+        },
+        {
+          "margin": 14.193443203800001,
+          "name": "tc_box_ppm_per_c",
+          "status": "pass",
+          "unit": "ppm/C",
+          "value": 35.8065567962
+        },
+        {
+          "margin": 14.834079958330001,
+          "name": "tc_endpoint_ppm_per_c",
+          "status": "pass",
+          "unit": "ppm/C",
+          "value": 35.16592004167
+        }
+      ],
+      "monte_carlo": null,
+      "process": "fs",
+      "runtime_s": 0.116,
+      "status": "pass",
+      "supply_v": {
+        "Vvdd": 3.63
+      },
+      "temperature_c": 27
+    }
+  ],
+  "coverage": {
+    "checked": [
+      "limit:[0,\"typ/2.970V/27C\",\"tc_box_ppm_per_c\",\"max\"]",
+      "limit:[0,\"typ/2.970V/27C\",\"tc_endpoint_ppm_per_c\",\"max\"]",
+      "limit:[0,\"typ/2.970V/27C\",\"temp_points\",\"min\"]",
+      "limit:[1,\"typ/3.300V/27C\",\"tc_box_ppm_per_c\",\"max\"]",
+      "limit:[1,\"typ/3.300V/27C\",\"tc_endpoint_ppm_per_c\",\"max\"]",
+      "limit:[1,\"typ/3.300V/27C\",\"temp_points\",\"min\"]",
+      "limit:[10,\"sf/3.300V/27C\",\"tc_box_ppm_per_c\",\"max\"]",
+      "limit:[10,\"sf/3.300V/27C\",\"tc_endpoint_ppm_per_c\",\"max\"]",
+      "limit:[10,\"sf/3.300V/27C\",\"temp_points\",\"min\"]",
+      "limit:[11,\"sf/3.630V/27C\",\"tc_box_ppm_per_c\",\"max\"]",
+      "limit:[11,\"sf/3.630V/27C\",\"tc_endpoint_ppm_per_c\",\"max\"]",
+      "limit:[11,\"sf/3.630V/27C\",\"temp_points\",\"min\"]",
+      "limit:[12,\"fs/2.970V/27C\",\"tc_box_ppm_per_c\",\"max\"]",
+      "limit:[12,\"fs/2.970V/27C\",\"tc_endpoint_ppm_per_c\",\"max\"]",
+      "limit:[12,\"fs/2.970V/27C\",\"temp_points\",\"min\"]",
+      "limit:[13,\"fs/3.300V/27C\",\"tc_box_ppm_per_c\",\"max\"]",
+      "limit:[13,\"fs/3.300V/27C\",\"tc_endpoint_ppm_per_c\",\"max\"]",
+      "limit:[13,\"fs/3.300V/27C\",\"temp_points\",\"min\"]",
+      "limit:[14,\"fs/3.630V/27C\",\"tc_box_ppm_per_c\",\"max\"]",
+      "limit:[14,\"fs/3.630V/27C\",\"tc_endpoint_ppm_per_c\",\"max\"]",
+      "limit:[14,\"fs/3.630V/27C\",\"temp_points\",\"min\"]",
+      "limit:[2,\"typ/3.630V/27C\",\"tc_box_ppm_per_c\",\"max\"]",
+      "limit:[2,\"typ/3.630V/27C\",\"tc_endpoint_ppm_per_c\",\"max\"]",
+      "limit:[2,\"typ/3.630V/27C\",\"temp_points\",\"min\"]",
+      "limit:[3,\"bcs/2.970V/27C\",\"tc_box_ppm_per_c\",\"max\"]",
+      "limit:[3,\"bcs/2.970V/27C\",\"tc_endpoint_ppm_per_c\",\"max\"]",
+      "limit:[3,\"bcs/2.970V/27C\",\"temp_points\",\"min\"]",
+      "limit:[4,\"bcs/3.300V/27C\",\"tc_box_ppm_per_c\",\"max\"]",
+      "limit:[4,\"bcs/3.300V/27C\",\"tc_endpoint_ppm_per_c\",\"max\"]",
+      "limit:[4,\"bcs/3.300V/27C\",\"temp_points\",\"min\"]",
+      "limit:[5,\"bcs/3.630V/27C\",\"tc_box_ppm_per_c\",\"max\"]",
+      "limit:[5,\"bcs/3.630V/27C\",\"tc_endpoint_ppm_per_c\",\"max\"]",
+      "limit:[5,\"bcs/3.630V/27C\",\"temp_points\",\"min\"]",
+      "limit:[6,\"wcs/2.970V/27C\",\"tc_box_ppm_per_c\",\"max\"]",
+      "limit:[6,\"wcs/2.970V/27C\",\"tc_endpoint_ppm_per_c\",\"max\"]",
+      "limit:[6,\"wcs/2.970V/27C\",\"temp_points\",\"min\"]",
+      "limit:[7,\"wcs/3.300V/27C\",\"tc_box_ppm_per_c\",\"max\"]",
+      "limit:[7,\"wcs/3.300V/27C\",\"tc_endpoint_ppm_per_c\",\"max\"]",
+      "limit:[7,\"wcs/3.300V/27C\",\"temp_points\",\"min\"]",
+      "limit:[8,\"wcs/3.630V/27C\",\"tc_box_ppm_per_c\",\"max\"]",
+      "limit:[8,\"wcs/3.630V/27C\",\"tc_endpoint_ppm_per_c\",\"max\"]",
+      "limit:[8,\"wcs/3.630V/27C\",\"temp_points\",\"min\"]",
+      "limit:[9,\"sf/2.970V/27C\",\"tc_box_ppm_per_c\",\"max\"]",
+      "limit:[9,\"sf/2.970V/27C\",\"tc_endpoint_ppm_per_c\",\"max\"]",
+      "limit:[9,\"sf/2.970V/27C\",\"temp_points\",\"min\"]",
+      "measurement:[0,\"typ/2.970V/27C\",\"vref_125_v\"]/observation",
+      "measurement:[0,\"typ/2.970V/27C\",\"vref_27_v\"]/observation",
+      "measurement:[0,\"typ/2.970V/27C\",\"vref_box_mid_v\"]/observation",
+      "measurement:[0,\"typ/2.970V/27C\",\"vref_m40_v\"]/observation",
+      "measurement:[0,\"typ/2.970V/27C\",\"vref_max_v\"]/observation",
+      "measurement:[0,\"typ/2.970V/27C\",\"vref_min_v\"]/observation",
+      "measurement:[1,\"typ/3.300V/27C\",\"vref_125_v\"]/observation",
+      "measurement:[1,\"typ/3.300V/27C\",\"vref_27_v\"]/observation",
+      "measurement:[1,\"typ/3.300V/27C\",\"vref_box_mid_v\"]/observation",
+      "measurement:[1,\"typ/3.300V/27C\",\"vref_m40_v\"]/observation",
+      "measurement:[1,\"typ/3.300V/27C\",\"vref_max_v\"]/observation",
+      "measurement:[1,\"typ/3.300V/27C\",\"vref_min_v\"]/observation",
+      "measurement:[10,\"sf/3.300V/27C\",\"vref_125_v\"]/observation",
+      "measurement:[10,\"sf/3.300V/27C\",\"vref_27_v\"]/observation",
+      "measurement:[10,\"sf/3.300V/27C\",\"vref_box_mid_v\"]/observation",
+      "measurement:[10,\"sf/3.300V/27C\",\"vref_m40_v\"]/observation",
+      "measurement:[10,\"sf/3.300V/27C\",\"vref_max_v\"]/observation",
+      "measurement:[10,\"sf/3.300V/27C\",\"vref_min_v\"]/observation",
+      "measurement:[11,\"sf/3.630V/27C\",\"vref_125_v\"]/observation",
+      "measurement:[11,\"sf/3.630V/27C\",\"vref_27_v\"]/observation",
+      "measurement:[11,\"sf/3.630V/27C\",\"vref_box_mid_v\"]/observation",
+      "measurement:[11,\"sf/3.630V/27C\",\"vref_m40_v\"]/observation",
+      "measurement:[11,\"sf/3.630V/27C\",\"vref_max_v\"]/observation",
+      "measurement:[11,\"sf/3.630V/27C\",\"vref_min_v\"]/observation",
+      "measurement:[12,\"fs/2.970V/27C\",\"vref_125_v\"]/observation",
+      "measurement:[12,\"fs/2.970V/27C\",\"vref_27_v\"]/observation",
+      "measurement:[12,\"fs/2.970V/27C\",\"vref_box_mid_v\"]/observation",
+      "measurement:[12,\"fs/2.970V/27C\",\"vref_m40_v\"]/observation",
+      "measurement:[12,\"fs/2.970V/27C\",\"vref_max_v\"]/observation",
+      "measurement:[12,\"fs/2.970V/27C\",\"vref_min_v\"]/observation",
+      "measurement:[13,\"fs/3.300V/27C\",\"vref_125_v\"]/observation",
+      "measurement:[13,\"fs/3.300V/27C\",\"vref_27_v\"]/observation",
+      "measurement:[13,\"fs/3.300V/27C\",\"vref_box_mid_v\"]/observation",
+      "measurement:[13,\"fs/3.300V/27C\",\"vref_m40_v\"]/observation",
+      "measurement:[13,\"fs/3.300V/27C\",\"vref_max_v\"]/observation",
+      "measurement:[13,\"fs/3.300V/27C\",\"vref_min_v\"]/observation",
+      "measurement:[14,\"fs/3.630V/27C\",\"vref_125_v\"]/observation",
+      "measurement:[14,\"fs/3.630V/27C\",\"vref_27_v\"]/observation",
+      "measurement:[14,\"fs/3.630V/27C\",\"vref_box_mid_v\"]/observation",
+      "measurement:[14,\"fs/3.630V/27C\",\"vref_m40_v\"]/observation",
+      "measurement:[14,\"fs/3.630V/27C\",\"vref_max_v\"]/observation",
+      "measurement:[14,\"fs/3.630V/27C\",\"vref_min_v\"]/observation",
+      "measurement:[2,\"typ/3.630V/27C\",\"vref_125_v\"]/observation",
+      "measurement:[2,\"typ/3.630V/27C\",\"vref_27_v\"]/observation",
+      "measurement:[2,\"typ/3.630V/27C\",\"vref_box_mid_v\"]/observation",
+      "measurement:[2,\"typ/3.630V/27C\",\"vref_m40_v\"]/observation",
+      "measurement:[2,\"typ/3.630V/27C\",\"vref_max_v\"]/observation",
+      "measurement:[2,\"typ/3.630V/27C\",\"vref_min_v\"]/observation",
+      "measurement:[3,\"bcs/2.970V/27C\",\"vref_125_v\"]/observation",
+      "measurement:[3,\"bcs/2.970V/27C\",\"vref_27_v\"]/observation",
+      "measurement:[3,\"bcs/2.970V/27C\",\"vref_box_mid_v\"]/observation",
+      "measurement:[3,\"bcs/2.970V/27C\",\"vref_m40_v\"]/observation",
+      "measurement:[3,\"bcs/2.970V/27C\",\"vref_max_v\"]/observation",
+      "measurement:[3,\"bcs/2.970V/27C\",\"vref_min_v\"]/observation",
+      "measurement:[4,\"bcs/3.300V/27C\",\"vref_125_v\"]/observation",
+      "measurement:[4,\"bcs/3.300V/27C\",\"vref_27_v\"]/observation",
+      "measurement:[4,\"bcs/3.300V/27C\",\"vref_box_mid_v\"]/observation",
+      "measurement:[4,\"bcs/3.300V/27C\",\"vref_m40_v\"]/observation",
+      "measurement:[4,\"bcs/3.300V/27C\",\"vref_max_v\"]/observation",
+      "measurement:[4,\"bcs/3.300V/27C\",\"vref_min_v\"]/observation",
+      "measurement:[5,\"bcs/3.630V/27C\",\"vref_125_v\"]/observation",
+      "measurement:[5,\"bcs/3.630V/27C\",\"vref_27_v\"]/observation",
+      "measurement:[5,\"bcs/3.630V/27C\",\"vref_box_mid_v\"]/observation",
+      "measurement:[5,\"bcs/3.630V/27C\",\"vref_m40_v\"]/observation",
+      "measurement:[5,\"bcs/3.630V/27C\",\"vref_max_v\"]/observation",
+      "measurement:[5,\"bcs/3.630V/27C\",\"vref_min_v\"]/observation",
+      "measurement:[6,\"wcs/2.970V/27C\",\"vref_125_v\"]/observation",
+      "measurement:[6,\"wcs/2.970V/27C\",\"vref_27_v\"]/observation",
+      "measurement:[6,\"wcs/2.970V/27C\",\"vref_box_mid_v\"]/observation",
+      "measurement:[6,\"wcs/2.970V/27C\",\"vref_m40_v\"]/observation",
+      "measurement:[6,\"wcs/2.970V/27C\",\"vref_max_v\"]/observation",
+      "measurement:[6,\"wcs/2.970V/27C\",\"vref_min_v\"]/observation",
+      "measurement:[7,\"wcs/3.300V/27C\",\"vref_125_v\"]/observation",
+      "measurement:[7,\"wcs/3.300V/27C\",\"vref_27_v\"]/observation",
+      "measurement:[7,\"wcs/3.300V/27C\",\"vref_box_mid_v\"]/observation",
+      "measurement:[7,\"wcs/3.300V/27C\",\"vref_m40_v\"]/observation",
+      "measurement:[7,\"wcs/3.300V/27C\",\"vref_max_v\"]/observation",
+      "measurement:[7,\"wcs/3.300V/27C\",\"vref_min_v\"]/observation",
+      "measurement:[8,\"wcs/3.630V/27C\",\"vref_125_v\"]/observation",
+      "measurement:[8,\"wcs/3.630V/27C\",\"vref_27_v\"]/observation",
+      "measurement:[8,\"wcs/3.630V/27C\",\"vref_box_mid_v\"]/observation",
+      "measurement:[8,\"wcs/3.630V/27C\",\"vref_m40_v\"]/observation",
+      "measurement:[8,\"wcs/3.630V/27C\",\"vref_max_v\"]/observation",
+      "measurement:[8,\"wcs/3.630V/27C\",\"vref_min_v\"]/observation",
+      "measurement:[9,\"sf/2.970V/27C\",\"vref_125_v\"]/observation",
+      "measurement:[9,\"sf/2.970V/27C\",\"vref_27_v\"]/observation",
+      "measurement:[9,\"sf/2.970V/27C\",\"vref_box_mid_v\"]/observation",
+      "measurement:[9,\"sf/2.970V/27C\",\"vref_m40_v\"]/observation",
+      "measurement:[9,\"sf/2.970V/27C\",\"vref_max_v\"]/observation",
+      "measurement:[9,\"sf/2.970V/27C\",\"vref_min_v\"]/observation"
+    ],
+    "corners_simulated": 15,
+    "inapplicable": [
+      {
+        "id": "measurement:[0,\"typ/2.970V/27C\",\"vref_125_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[0,\"typ/2.970V/27C\",\"vref_27_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[0,\"typ/2.970V/27C\",\"vref_box_mid_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[0,\"typ/2.970V/27C\",\"vref_m40_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[0,\"typ/2.970V/27C\",\"vref_max_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[0,\"typ/2.970V/27C\",\"vref_min_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[1,\"typ/3.300V/27C\",\"vref_125_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[1,\"typ/3.300V/27C\",\"vref_27_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[1,\"typ/3.300V/27C\",\"vref_box_mid_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[1,\"typ/3.300V/27C\",\"vref_m40_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[1,\"typ/3.300V/27C\",\"vref_max_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[1,\"typ/3.300V/27C\",\"vref_min_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[10,\"sf/3.300V/27C\",\"vref_125_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[10,\"sf/3.300V/27C\",\"vref_27_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[10,\"sf/3.300V/27C\",\"vref_box_mid_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[10,\"sf/3.300V/27C\",\"vref_m40_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[10,\"sf/3.300V/27C\",\"vref_max_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[10,\"sf/3.300V/27C\",\"vref_min_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[11,\"sf/3.630V/27C\",\"vref_125_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[11,\"sf/3.630V/27C\",\"vref_27_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[11,\"sf/3.630V/27C\",\"vref_box_mid_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[11,\"sf/3.630V/27C\",\"vref_m40_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[11,\"sf/3.630V/27C\",\"vref_max_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[11,\"sf/3.630V/27C\",\"vref_min_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[12,\"fs/2.970V/27C\",\"vref_125_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[12,\"fs/2.970V/27C\",\"vref_27_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[12,\"fs/2.970V/27C\",\"vref_box_mid_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[12,\"fs/2.970V/27C\",\"vref_m40_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[12,\"fs/2.970V/27C\",\"vref_max_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[12,\"fs/2.970V/27C\",\"vref_min_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[13,\"fs/3.300V/27C\",\"vref_125_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[13,\"fs/3.300V/27C\",\"vref_27_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[13,\"fs/3.300V/27C\",\"vref_box_mid_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[13,\"fs/3.300V/27C\",\"vref_m40_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[13,\"fs/3.300V/27C\",\"vref_max_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[13,\"fs/3.300V/27C\",\"vref_min_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[14,\"fs/3.630V/27C\",\"vref_125_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[14,\"fs/3.630V/27C\",\"vref_27_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[14,\"fs/3.630V/27C\",\"vref_box_mid_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[14,\"fs/3.630V/27C\",\"vref_m40_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[14,\"fs/3.630V/27C\",\"vref_max_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[14,\"fs/3.630V/27C\",\"vref_min_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[2,\"typ/3.630V/27C\",\"vref_125_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[2,\"typ/3.630V/27C\",\"vref_27_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[2,\"typ/3.630V/27C\",\"vref_box_mid_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[2,\"typ/3.630V/27C\",\"vref_m40_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[2,\"typ/3.630V/27C\",\"vref_max_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[2,\"typ/3.630V/27C\",\"vref_min_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[3,\"bcs/2.970V/27C\",\"vref_125_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[3,\"bcs/2.970V/27C\",\"vref_27_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[3,\"bcs/2.970V/27C\",\"vref_box_mid_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[3,\"bcs/2.970V/27C\",\"vref_m40_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[3,\"bcs/2.970V/27C\",\"vref_max_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[3,\"bcs/2.970V/27C\",\"vref_min_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[4,\"bcs/3.300V/27C\",\"vref_125_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[4,\"bcs/3.300V/27C\",\"vref_27_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[4,\"bcs/3.300V/27C\",\"vref_box_mid_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[4,\"bcs/3.300V/27C\",\"vref_m40_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[4,\"bcs/3.300V/27C\",\"vref_max_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[4,\"bcs/3.300V/27C\",\"vref_min_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[5,\"bcs/3.630V/27C\",\"vref_125_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[5,\"bcs/3.630V/27C\",\"vref_27_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[5,\"bcs/3.630V/27C\",\"vref_box_mid_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[5,\"bcs/3.630V/27C\",\"vref_m40_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[5,\"bcs/3.630V/27C\",\"vref_max_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[5,\"bcs/3.630V/27C\",\"vref_min_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[6,\"wcs/2.970V/27C\",\"vref_125_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[6,\"wcs/2.970V/27C\",\"vref_27_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[6,\"wcs/2.970V/27C\",\"vref_box_mid_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[6,\"wcs/2.970V/27C\",\"vref_m40_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[6,\"wcs/2.970V/27C\",\"vref_max_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[6,\"wcs/2.970V/27C\",\"vref_min_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[7,\"wcs/3.300V/27C\",\"vref_125_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[7,\"wcs/3.300V/27C\",\"vref_27_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[7,\"wcs/3.300V/27C\",\"vref_box_mid_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[7,\"wcs/3.300V/27C\",\"vref_m40_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[7,\"wcs/3.300V/27C\",\"vref_max_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[7,\"wcs/3.300V/27C\",\"vref_min_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[8,\"wcs/3.630V/27C\",\"vref_125_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[8,\"wcs/3.630V/27C\",\"vref_27_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[8,\"wcs/3.630V/27C\",\"vref_box_mid_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[8,\"wcs/3.630V/27C\",\"vref_m40_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[8,\"wcs/3.630V/27C\",\"vref_max_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[8,\"wcs/3.630V/27C\",\"vref_min_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[9,\"sf/2.970V/27C\",\"vref_125_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[9,\"sf/2.970V/27C\",\"vref_27_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[9,\"sf/2.970V/27C\",\"vref_box_mid_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[9,\"sf/2.970V/27C\",\"vref_m40_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[9,\"sf/2.970V/27C\",\"vref_max_v\"]/limits",
+        "reason": "characterization_without_limits"
+      },
+      {
+        "id": "measurement:[9,\"sf/2.970V/27C\",\"vref_min_v\"]/limits",
+        "reason": "characterization_without_limits"
+      }
+    ],
+    "known": true,
+    "measurements_declared": 9,
+    "measurements_with_limits": 3,
+    "nothing_checked": false,
+    "nothing_checked_reasons": [],
+    "schema_version": 1,
+    "skipped": [],
+    "unknown": [],
+    "unrecognized_limit_keys": []
+  },
+  "diagnostic_counts": {
+    "by_code": {},
+    "by_severity": {},
+    "corners_with_diagnostics": 0
+  },
+  "environment": {
+    "backend": {
+      "requested": "batch",
+      "resolved": "batch",
+      "source": "flag"
+    },
+    "client_ngspice_binary": "/home/ubuntu/.local/bin/ngspice",
+    "corner_section_libs": [
+      {
+        "name": "cornerPNP.lib",
+        "path": null,
+        "scope": "external",
+        "sha256": "c47c8ae5550bab99885ec179c6e583bfcbd1853be788a2fc7cbc822a3e02e9d4"
+      },
+      {
+        "name": "cornerMOShv.lib",
+        "path": null,
+        "scope": "external",
+        "sha256": "5a1f862dc304fdfe2fb9758b15d54809a688d83c3ce981dad2e8473b3e93481a"
+      },
+      {
+        "name": "cornerRES.lib",
+        "path": null,
+        "scope": "external",
+        "sha256": "c6d749e72cfa2e06e4a14fac3f5662541bf6197b89265ecbedd632fd3503c425"
+      }
+    ],
+    "engine": "ngspice",
+    "engine_build": {
+      "binary_sha256": "20b24e16d6550f40d31c0690adbac8c64f3078205bd9aaa60b50274d3eebcf62",
+      "probe": "ok",
+      "reason": null,
+      "version_banner": "******\n** ngspice-47 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2026, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at http://ngspice.sourceforge.net/bugrep.html\n** Creation Date: Thu Nov 12 22:47:40 UTC 2026\n******"
+    },
+    "engine_host": "worker",
+    "engine_version": "47",
+    "models_lib": {
+      "path": null,
+      "scope": "absent"
+    },
+    "models_lib_sha256": null,
+    "models_lib_sha256_scope": "client",
+    "netlist_closure": [
+      {
+        "path": "sim/build/closed-loop-vref-pvt-boxtc/deck.cir",
+        "scope": "repo",
+        "sha256": "d4cd9aeda5ab2625f4aa7ba3a90bdfe5bdcaa23d9df65435bfe8a95983d89e3c"
+      },
+      {
+        "path": "sim/build/closed-loop-vref-pvt-boxtc/bandgap_top.spice",
+        "scope": "repo",
+        "sha256": "718f8f7f50cabd57ee6bab8a21e11c081a6985c7a842a747f8ee94dbf0fcd45e"
+      }
+    ],
+    "netlist_identity": "sha256:bea7e8a80fabfbf328936db2eb4d0a84679f75d6cc6a0283b0dee1f81f216cb4",
+    "netlist_sha256": "d4cd9aeda5ab2625f4aa7ba3a90bdfe5bdcaa23d9df65435bfe8a95983d89e3c",
+    "netlist_source": "schematic",
+    "ngspice_binary": "/usr/local/bin/ngspice",
+    "osdi_preload_runner_resolved": [
+      {
+        "entry": "$PDK_ROOT/ihp-sg13cmos5l/libs.tech/ngspice/osdi/psp103.osdi",
+        "reason": "env_var"
+      },
+      {
+        "entry": "$PDK_ROOT/ihp-sg13cmos5l/libs.tech/ngspice/osdi/r3_cmc.osdi",
+        "reason": "env_var"
+      }
+    ],
+    "remote": {
+      "ami_id": "ami-0f6bb304291339ed0",
+      "availability_zone": "us-east-1b",
+      "client_collected_at": "2026-11-13T13:44:33.050730Z",
+      "client_klt_version": "0.9.2.dev930+g37dbc2458b5a",
+      "client_launched_at": "2026-11-13T13:44:00.513609Z",
+      "client_status_terminal_at": "2026-11-13T13:44:31.925498Z",
+      "client_submitted_at": "2026-11-13T13:43:07.119954Z",
+      "concurrency": "1",
+      "elapsed_seconds": 8,
+      "exit_code": "0",
+      "instance_id": "i-0579dc350b0252a59",
+      "instance_type": "m7i.4xlarge",
+      "job_ceiling": {
+        "basis": "conservative_serial_bound",
+        "check": "enforce",
+        "exceeds_ceiling": false,
+        "job_bound_s": 1920.0,
+        "max_job_seconds": 3600.0,
+        "max_job_seconds_source": "fleet_config",
+        "max_units_per_job": 29,
+        "overhead_s": 120.0,
+        "per_unit_timeout_s": 120,
+        "recommended_hosts": 1,
+        "unit_count": 15
+      },
+      "job_id": "klt-sim-1f8df1bf0dfa",
+      "lifecycle": "spot",
+      "models_lib_comparison": {
+        "reason": "runner_hash_unavailable",
+        "status": "not_comparable"
+      },
+      "physical_cores": "8",
+      "provider": "aws-batch-fleet",
+      "region": "us-east-1",
+      "runner_compatibility": "match",
+      "runner_klt_version": "0.9.0",
+      "runner_model_inputs": [
+        {
+          "name": "cornerPNP.lib",
+          "sha256": "65986abd36f61498fd859b66ab1e199e897fd58174c5b6ff789498350d8a0a64"
+        },
+        {
+          "name": "cornerMOShv.lib",
+          "sha256": "40c4140415a2a2e92d2f42fd64e026d1c04d800708b7a5b663ef083206ddfd62"
+        },
+        {
+          "name": "cornerRES.lib",
+          "sha256": "bd2fdd7cf19ec817c23c1539c7ab013612e959b8b0698e0a482a7af5ca91d0f9"
+        },
+        {
+          "name": "sg13cmos5l_pnpMPA_mod.lib",
+          "sha256": "0283ad85c094dd1e1be635c5b405c4d4c96ac053423781f25e702bdfbcadaeaa"
+        },
+        {
+          "name": "sg13cmos5l_pnpMPA_stat.lib",
+          "sha256": "f8ec3f58c793d065028823248f2fee95cec2d69aceca1fb7dae0203bdc0680ad"
+        },
+        {
+          "name": "sg13g2_moshv_mod.lib",
+          "sha256": "bf75d51ba73ab6c40bdb76306c9df74f80229db42ee63e3f4cc30a1911645af2"
+        },
+        {
+          "name": "sg13g2_svaricaphv_mod.lib",
+          "sha256": "b6ae39c7334c75c222ecdee9d6b04c9be48657e91351429aebac47d1192a9abb"
+        },
+        {
+          "name": "sg13g2_moshv_mismatch.lib",
+          "sha256": "2e9612bdb8252c281f422511039dc9b3ea983892aec89f8ef3361592e68fed09"
+        },
+        {
+          "name": "sg13g2_moshv_mod_mismatch.lib",
+          "sha256": "97eba3d2d47596488e0e128f950dc30742d1da80cdeec1f7385a9e13cb460936"
+        },
+        {
+          "name": "sg13g2_svaricaphv_mod_mismatch.lib",
+          "sha256": "064e1c751508149f2674914c1791c418195c55fff7d82236d20c2c79f49030fe"
+        },
+        {
+          "name": "sg13g2_moshv_stat.lib",
+          "sha256": "cd30f22637e41fdbbaba506ebe0f17746b8438027e4651a7a87b241a39d68903"
+        },
+        {
+          "name": "resistors_mod.lib",
+          "sha256": "7c77da0c0419c8a332550da3f934f530262bd452734090db827b68ff88d09c43"
+        },
+        {
+          "name": "resistors_mod_mismatch.lib",
+          "sha256": "ce5ea8559df174fbdad8192e45e5d65772ae3af90af61ba295419b2cb5154b29"
+        },
+        {
+          "name": "resistors_stat.lib",
+          "sha256": "9e34411ed09a569323adec8181e4bdd6832af279c9e05b181f00cb2e5d696db6"
+        },
+        {
+          "name": "sg13g2_moshv_parm.lib",
+          "sha256": "eea5bbed39184cb1e2654ae29425a9ed6ee2f2341d6cb76c472591c75237bd35"
+        }
+      ],
+      "runner_models_lib_sha256": null,
+      "runner_request_features": {
+        "missing": [],
+        "required": [
+          "measurements[].expr",
+          "corners.process[].sections[]",
+          "options.ngspice_init",
+          "options.osdi_preload",
+          "options.stage_model_inputs"
+        ],
+        "status": "supported"
+      },
+      "spot": true,
+      "state": "done",
+      "worker_environment": {
+        "capture": "ok",
+        "cpu_model": "Intel(R) Xeon(R) Platinum 8488C",
+        "diagnostics": [
+          "pdk stamp unreadable: FileNotFoundError"
+        ],
+        "engine_build_comparison": {
+          "status": "match"
+        },
+        "image_manifest": null,
+        "model_inputs": [
+          {
+            "name": "cornerPNP.lib",
+            "sha256": "65986abd36f61498fd859b66ab1e199e897fd58174c5b6ff789498350d8a0a64"
+          },
+          {
+            "name": "cornerMOShv.lib",
+            "sha256": "40c4140415a2a2e92d2f42fd64e026d1c04d800708b7a5b663ef083206ddfd62"
+          },
+          {
+            "name": "cornerRES.lib",
+            "sha256": "bd2fdd7cf19ec817c23c1539c7ab013612e959b8b0698e0a482a7af5ca91d0f9"
+          },
+          {
+            "name": "sg13cmos5l_pnpMPA_mod.lib",
+            "sha256": "0283ad85c094dd1e1be635c5b405c4d4c96ac053423781f25e702bdfbcadaeaa"
+          },
+          {
+            "name": "sg13cmos5l_pnpMPA_stat.lib",
+            "sha256": "f8ec3f58c793d065028823248f2fee95cec2d69aceca1fb7dae0203bdc0680ad"
+          },
+          {
+            "name": "sg13g2_moshv_mod.lib",
+            "sha256": "bf75d51ba73ab6c40bdb76306c9df74f80229db42ee63e3f4cc30a1911645af2"
+          },
+          {
+            "name": "sg13g2_svaricaphv_mod.lib",
+            "sha256": "b6ae39c7334c75c222ecdee9d6b04c9be48657e91351429aebac47d1192a9abb"
+          },
+          {
+            "name": "sg13g2_moshv_mismatch.lib",
+            "sha256": "2e9612bdb8252c281f422511039dc9b3ea983892aec89f8ef3361592e68fed09"
+          },
+          {
+            "name": "sg13g2_moshv_mod_mismatch.lib",
+            "sha256": "97eba3d2d47596488e0e128f950dc30742d1da80cdeec1f7385a9e13cb460936"
+          },
+          {
+            "name": "sg13g2_svaricaphv_mod_mismatch.lib",
+            "sha256": "064e1c751508149f2674914c1791c418195c55fff7d82236d20c2c79f49030fe"
+          },
+          {
+            "name": "sg13g2_moshv_stat.lib",
+            "sha256": "cd30f22637e41fdbbaba506ebe0f17746b8438027e4651a7a87b241a39d68903"
+          },
+          {
+            "name": "resistors_mod.lib",
+            "sha256": "7c77da0c0419c8a332550da3f934f530262bd452734090db827b68ff88d09c43"
+          },
+          {
+            "name": "resistors_mod_mismatch.lib",
+            "sha256": "ce5ea8559df174fbdad8192e45e5d65772ae3af90af61ba295419b2cb5154b29"
+          },
+          {
+            "name": "resistors_stat.lib",
+            "sha256": "9e34411ed09a569323adec8181e4bdd6832af279c9e05b181f00cb2e5d696db6"
+          },
+          {
+            "name": "sg13g2_moshv_parm.lib",
+            "sha256": "eea5bbed39184cb1e2654ae29425a9ed6ee2f2341d6cb76c472591c75237bd35"
+          }
+        ],
+        "omp_num_threads": null,
+        "pdk": {
+          "models_staged": true,
+          "root": "/opt/pdk",
+          "stamp_scheme": null,
+          "stamp_scope": "image",
+          "stamp_sha256": null,
+          "stamp_text": null,
+          "variant": "ihp-sg13cmos5l"
+        },
+        "pdk_stamp_comparison": {
+          "basis": "staged_model_inputs",
+          "status": "match"
+        },
+        "simulator": {
+          "binary_source": "PATH",
+          "requested_binary": "ngspice",
+          "selected_path": "/usr/local/bin/ngspice",
+          "version_banner": "******\n** ngspice-47 : Circuit level simulation program\n** Compiled with KLU Direct Linear Solver\n** The U. C. Berkeley CAD Group\n** Copyright 1985-1994, Regents of the University of California.\n** Copyright 2001-2026, The ngspice team.\n** Please get your ngspice manual from https://ngspice.sourceforge.io/docs.html\n** Please file your bug-reports at http://ngspice.sourceforge.net/bugrep.html\n** Creation Date: Thu Nov 12 22:47:40 UTC 2026\n******\n",
+          "version_probe": "ok"
+        }
+      }
+    },
+    "staged_model_inputs": [
+      {
+        "field": "corners.process[0].sections[0].lib",
+        "kind": "library",
+        "name": "cornerPNP.lib",
+        "rewritten": true,
+        "sha256": "65986abd36f61498fd859b66ab1e199e897fd58174c5b6ff789498350d8a0a64",
+        "source_sha256": "c47c8ae5550bab99885ec179c6e583bfcbd1853be788a2fc7cbc822a3e02e9d4",
+        "transform": "include-path-rewrite"
+      },
+      {
+        "field": "corners.process[0].sections[1].lib",
+        "kind": "library",
+        "name": "cornerMOShv.lib",
+        "rewritten": true,
+        "sha256": "40c4140415a2a2e92d2f42fd64e026d1c04d800708b7a5b663ef083206ddfd62",
+        "source_sha256": "5a1f862dc304fdfe2fb9758b15d54809a688d83c3ce981dad2e8473b3e93481a",
+        "transform": "include-path-rewrite"
+      },
+      {
+        "field": "corners.process[0].sections[2].lib",
+        "kind": "library",
+        "name": "cornerRES.lib",
+        "rewritten": true,
+        "sha256": "bd2fdd7cf19ec817c23c1539c7ab013612e959b8b0698e0a482a7af5ca91d0f9",
+        "source_sha256": "c6d749e72cfa2e06e4a14fac3f5662541bf6197b89265ecbedd632fd3503c425",
+        "transform": "include-path-rewrite"
+      },
+      {
+        "field": "corners.process[0].sections[0].lib",
+        "kind": "dependency",
+        "name": "sg13cmos5l_pnpMPA_mod.lib",
+        "rewritten": false,
+        "sha256": "0283ad85c094dd1e1be635c5b405c4d4c96ac053423781f25e702bdfbcadaeaa",
+        "source_sha256": "0283ad85c094dd1e1be635c5b405c4d4c96ac053423781f25e702bdfbcadaeaa"
+      },
+      {
+        "field": "corners.process[0].sections[0].lib",
+        "kind": "dependency",
+        "name": "sg13cmos5l_pnpMPA_stat.lib",
+        "rewritten": false,
+        "sha256": "f8ec3f58c793d065028823248f2fee95cec2d69aceca1fb7dae0203bdc0680ad",
+        "source_sha256": "f8ec3f58c793d065028823248f2fee95cec2d69aceca1fb7dae0203bdc0680ad"
+      },
+      {
+        "field": "corners.process[0].sections[1].lib",
+        "kind": "dependency",
+        "name": "sg13g2_moshv_mod.lib",
+        "rewritten": true,
+        "sha256": "bf75d51ba73ab6c40bdb76306c9df74f80229db42ee63e3f4cc30a1911645af2",
+        "source_sha256": "58ce3084c253f2d3753c3b95386e8f4b81dcadfed4f4503dce56862a556c3328",
+        "transform": "include-path-rewrite"
+      },
+      {
+        "field": "corners.process[0].sections[1].lib",
+        "kind": "dependency",
+        "name": "sg13g2_svaricaphv_mod.lib",
+        "rewritten": false,
+        "sha256": "b6ae39c7334c75c222ecdee9d6b04c9be48657e91351429aebac47d1192a9abb",
+        "source_sha256": "b6ae39c7334c75c222ecdee9d6b04c9be48657e91351429aebac47d1192a9abb"
+      },
+      {
+        "field": "corners.process[0].sections[1].lib",
+        "kind": "dependency",
+        "name": "sg13g2_moshv_mismatch.lib",
+        "rewritten": false,
+        "sha256": "2e9612bdb8252c281f422511039dc9b3ea983892aec89f8ef3361592e68fed09",
+        "source_sha256": "2e9612bdb8252c281f422511039dc9b3ea983892aec89f8ef3361592e68fed09"
+      },
+      {
+        "field": "corners.process[0].sections[1].lib",
+        "kind": "dependency",
+        "name": "sg13g2_moshv_mod_mismatch.lib",
+        "rewritten": true,
+        "sha256": "97eba3d2d47596488e0e128f950dc30742d1da80cdeec1f7385a9e13cb460936",
+        "source_sha256": "75c30f6975aad4cfe95af7c80fcea142ab0df6c9d7667c09120c7d0c9b814801",
+        "transform": "include-path-rewrite"
+      },
+      {
+        "field": "corners.process[0].sections[1].lib",
+        "kind": "dependency",
+        "name": "sg13g2_svaricaphv_mod_mismatch.lib",
+        "rewritten": false,
+        "sha256": "064e1c751508149f2674914c1791c418195c55fff7d82236d20c2c79f49030fe",
+        "source_sha256": "064e1c751508149f2674914c1791c418195c55fff7d82236d20c2c79f49030fe"
+      },
+      {
+        "field": "corners.process[0].sections[1].lib",
+        "kind": "dependency",
+        "name": "sg13g2_moshv_stat.lib",
+        "rewritten": false,
+        "sha256": "cd30f22637e41fdbbaba506ebe0f17746b8438027e4651a7a87b241a39d68903",
+        "source_sha256": "cd30f22637e41fdbbaba506ebe0f17746b8438027e4651a7a87b241a39d68903"
+      },
+      {
+        "field": "corners.process[0].sections[2].lib",
+        "kind": "dependency",
+        "name": "resistors_mod.lib",
+        "rewritten": false,
+        "sha256": "7c77da0c0419c8a332550da3f934f530262bd452734090db827b68ff88d09c43",
+        "source_sha256": "7c77da0c0419c8a332550da3f934f530262bd452734090db827b68ff88d09c43"
+      },
+      {
+        "field": "corners.process[0].sections[2].lib",
+        "kind": "dependency",
+        "name": "resistors_mod_mismatch.lib",
+        "rewritten": false,
+        "sha256": "ce5ea8559df174fbdad8192e45e5d65772ae3af90af61ba295419b2cb5154b29",
+        "source_sha256": "ce5ea8559df174fbdad8192e45e5d65772ae3af90af61ba295419b2cb5154b29"
+      },
+      {
+        "field": "corners.process[0].sections[2].lib",
+        "kind": "dependency",
+        "name": "resistors_stat.lib",
+        "rewritten": false,
+        "sha256": "9e34411ed09a569323adec8181e4bdd6832af279c9e05b181f00cb2e5d696db6",
+        "source_sha256": "9e34411ed09a569323adec8181e4bdd6832af279c9e05b181f00cb2e5d696db6"
+      },
+      {
+        "field": "corners.process[0].sections[1].lib",
+        "kind": "dependency",
+        "name": "sg13g2_moshv_parm.lib",
+        "rewritten": false,
+        "sha256": "eea5bbed39184cb1e2654ae29425a9ed6ee2f2341d6cb76c472591c75237bd35",
+        "source_sha256": "eea5bbed39184cb1e2654ae29425a9ed6ee2f2341d6cb76c472591c75237bd35"
+      }
+    ]
+  },
+  "errored": 0,
+  "failed": 0,
+  "inconclusive": 0,
+  "measurements": [
+    {
+      "limits": {
+        "min": 8
+      },
+      "max": {
+        "corner_id": "typ/2.970V/27C",
+        "value": 166.0
+      },
+      "min": {
+        "corner_id": "typ/2.970V/27C",
+        "value": 166.0
+      },
+      "name": "temp_points",
+      "status": "pass",
+      "unit": null,
+      "worst_case": {
+        "corner_id": "typ/2.970V/27C",
+        "margin": 158.0,
+        "value": 166.0
+      }
+    },
+    {
+      "limits": null,
+      "max": {
+        "corner_id": "bcs/3.630V/27C",
+        "value": 1.200393174159
+      },
+      "min": {
+        "corner_id": "wcs/2.970V/27C",
+        "value": 1.194254048009
+      },
+      "name": "vref_m40_v",
+      "plausible_range": {
+        "max": 2.0,
+        "min": 0.5
+      },
+      "status": "pass",
+      "unit": "V",
+      "worst_case": {
+        "corner_id": "typ/2.970V/27C",
+        "margin": null,
+        "value": 1.197178703966
+      }
+    },
+    {
+      "limits": null,
+      "max": {
+        "corner_id": "bcs/3.630V/27C",
+        "value": 1.199422510452
+      },
+      "min": {
+        "corner_id": "wcs/2.970V/27C",
+        "value": 1.193969235276
+      },
+      "name": "vref_27_v",
+      "plausible_range": {
+        "max": 2.0,
+        "min": 0.5
+      },
+      "status": "pass",
+      "unit": "V",
+      "worst_case": {
+        "corner_id": "typ/2.970V/27C",
+        "margin": null,
+        "value": 1.196527567935
+      }
+    },
+    {
+      "limits": null,
+      "max": {
+        "corner_id": "bcs/3.300V/27C",
+        "value": 1.192722730277
+      },
+      "min": {
+        "corner_id": "wcs/2.970V/27C",
+        "value": 1.18873838464
+      },
+      "name": "vref_125_v",
+      "plausible_range": {
+        "max": 2.0,
+        "min": 0.5
+      },
+      "status": "pass",
+      "unit": "V",
+      "worst_case": {
+        "corner_id": "typ/2.970V/27C",
+        "margin": null,
+        "value": 1.190535710561
+      }
+    },
+    {
+      "limits": null,
+      "max": {
+        "corner_id": "bcs/3.300V/27C",
+        "value": 1.192722730277
+      },
+      "min": {
+        "corner_id": "wcs/2.970V/27C",
+        "value": 1.18873838464
+      },
+      "name": "vref_min_v",
+      "plausible_range": {
+        "max": 2.0,
+        "min": 0.5
+      },
+      "status": "pass",
+      "unit": "V",
+      "worst_case": {
+        "corner_id": "typ/2.970V/27C",
+        "margin": null,
+        "value": 1.190535710561
+      }
+    },
+    {
+      "limits": null,
+      "max": {
+        "corner_id": "bcs/3.630V/27C",
+        "value": 1.200459437842
+      },
+      "min": {
+        "corner_id": "wcs/2.970V/27C",
+        "value": 1.1944677214
+      },
+      "name": "vref_max_v",
+      "plausible_range": {
+        "max": 2.0,
+        "min": 0.5
+      },
+      "status": "pass",
+      "unit": "V",
+      "worst_case": {
+        "corner_id": "typ/2.970V/27C",
+        "margin": null,
+        "value": 1.197300333633
+      }
+    },
+    {
+      "limits": null,
+      "max": {
+        "corner_id": "bcs/3.630V/27C",
+        "value": 1.196591082088
+      },
+      "min": {
+        "corner_id": "wcs/2.970V/27C",
+        "value": 1.19160305302
+      },
+      "name": "vref_box_mid_v",
+      "status": "pass",
+      "unit": "V",
+      "worst_case": {
+        "corner_id": "typ/2.970V/27C",
+        "margin": null,
+        "value": 1.193918022097
+      }
+    },
+    {
+      "limits": {
+        "max": 50
+      },
+      "max": {
+        "corner_id": "bcs/3.630V/27C",
+        "value": 39.18561766952
+      },
+      "min": {
+        "corner_id": "wcs/2.970V/27C",
+        "value": 29.13994975337
+      },
+      "name": "tc_box_ppm_per_c",
+      "spec_row": "tc_box",
+      "status": "pass",
+      "unit": "ppm/C",
+      "worst_case": {
+        "corner_id": "bcs/3.630V/27C",
+        "margin": 10.81438233048,
+        "value": 39.18561766952
+      }
+    },
+    {
+      "limits": {
+        "max": 50
+      },
+      "max": {
+        "corner_id": "bcs/3.630V/27C",
+        "value": 38.75828756446
+      },
+      "min": {
+        "corner_id": "wcs/2.970V/27C",
+        "value": 27.99759143959
+      },
+      "name": "tc_endpoint_ppm_per_c",
+      "spec_row": "tc_endpoint",
+      "status": "pass",
+      "unit": "ppm/C",
+      "worst_case": {
+        "corner_id": "bcs/3.630V/27C",
+        "margin": 11.241712435540002,
+        "value": 38.75828756446
+      }
+    }
+  ],
+  "metrics": {
+    "sim__corner__count": 15,
+    "sim__corner__errored_count": 0,
+    "sim__corner__failed_count": 0,
+    "sim__corner__inconclusive_count": 0,
+    "sim__corner__passed_count": 15
+  },
+  "netlist": {
+    "path": "sim/build/closed-loop-vref-pvt-boxtc/deck.cir",
+    "scope": "repo"
+  },
+  "passed": 15,
+  "provenance": {
+    "deck": null,
+    "input": {
+      "content_hash": "sha256:d4cd9aeda5ab2625f4aa7ba3a90bdfe5bdcaa23d9df65435bfe8a95983d89e3c",
+      "role": "netlist"
+    },
+    "klayout_version": "0.30.13",
+    "klt_git_commit": "37dbc2458b5ad83bcadd85f77997c4e30800e791",
+    "klt_reinstall_spec": "klayout-tools @ git+https://github.com/2AMLogic/klayout-tools@37dbc2458b5ad83bcadd85f77997c4e30800e791",
+    "klt_version": "0.9.2.dev930+g37dbc2458b5a",
+    "pdk": {
+      "name": "ihp-sg13cmos5l",
+      "source": "PDK_ROOT environment variable",
+      "version": null
+    }
+  },
+  "schema_version": 3,
+  "status": "pass"
+}
