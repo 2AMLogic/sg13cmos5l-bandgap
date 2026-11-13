@@ -1,0 +1,46 @@
+{
+  "bench": "closed-loop-vref-pvt",
+  "criteria": "Graded at every point: vref_settle_v = max |vref(t) - vref(2 ms)| over t in (1.5 ms, 2 ms] < 1 mV -- the settle criterion decision record 0009 ratified for this bench, now applied to all 45 points. vref_v is recorded as evidence at every point with a plausible_range of [0.5 V, 2.0 V], which fails a converged-but-degenerate solution rather than recording it as a reference. The 'Output reference, nominal' row's ratified target is the TC-null point (a method, not a number), so no numeric accuracy bound exists to grade against; the untrimmed-line spread is the Monte Carlo row's (issue #31), not this one's.",
+  "deck_sha256": "ca59a711334bca580889175223aac2b1c3007960d1dcde83e2eb3ac399fee640",
+  "envelope": null,
+  "failure_reason": "klt sim exited 1: sim-ec308b385c74 submitting to s3://<bucket>/jobs/klt-sim-ec308b385c74\nklt sim: batch job klt-sim-ec308b385c74: submitted\n{\n  \"schema_version\": 1,\n  \"error\": {\n    \"command\": \"sim\",\n    \"message\": \"batch backend failed: batch-fleet-provision.sh launch failed (exit 1): error: 256 vCPU already running + 1 instance(s) of up to 32 vCPU exceeds BATCH_MAX_VCPU=224, and only 0 type(s) fit the -32 vCPU left (floor 3) \\u2014 the spot quota is shared with ci-spot (batch-fleet.md \\u00a7vCPU budget) (capacity wait budget of 600s exhausted after 6 launch attempt(s))\",\n    \"code\": \"batch_no_capacity\"\n  }\n}",
+  "grid": null,
+  "kind": "closed-loop-vref-grid",
+  "label": "SIMULATED",
+  "models_staged": {
+    "count": 0,
+    "files": [],
+    "hashes_match": null,
+    "runner_reported_count": null
+  },
+  "osdi_preload": [
+    "psp103",
+    "r3_cmc"
+  ],
+  "pdk": {
+    "name": "ihp-sg13cmos5l",
+    "pin_file": "sim/pdk.json"
+  },
+  "pdk_revision": "f7bca32694fe3d58be0cc7d9df4b9f5db7161a14",
+  "repo_git_sha": "e36facd",
+  "request_sha256": "6f7daeb77b1a9f61c2929080053b30f482581448abb2d10edf608c34bc4256fa",
+  "schema_version": 1,
+  "simulator": {
+    "backend": "batch",
+    "klt": "klt 0.9.2.dev930+g37dbc2458b5a",
+    "ngspice": "ngspice-47"
+  },
+  "source_commit": "52535387e6ccf0a89f6490901a9abb2b78144176",
+  "source_file_sha256": "a29624d3bbcc89e2f7132ecfb278dd793b248c84b9f74ab51685f8ecde929ad5",
+  "source_path": "design/sg13cmos5l/netlist/bandgap_top.spice",
+  "source_repo": "2AMLogic/sg13g2-bandgap",
+  "spec_rows": [
+    "vref_nominal"
+  ],
+  "staged_dut_sha256": "718f8f7f50cabd57ee6bab8a21e11c081a6985c7a842a747f8ee94dbf0fcd45e",
+  "staged_dut_subckt": "sg13cmos5l_bandgap_top",
+  "status": "failed",
+  "template_sha256": "7f381a9e1f7760857f907b923813975ae8283203f11553536e54f214bdf782cc",
+  "testbench": "sim/closed-loop-vref-pvt/vref.cir.tmpl",
+  "timestamp_utc": "20261113T133248Z"
+}

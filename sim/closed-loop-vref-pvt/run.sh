@@ -72,10 +72,12 @@ klt sim --backend local --format json -o "${WORK}/out" "${WORK}/request.json" > 
 set +e
 python3 -I - "${WORK}/envelope.json" "${REC}" "${DECK}" "${BENCH_DIR}/vref.cir.tmpl" "${CM5_DUT_FETCHED}" \
   "${NGSPICE_VERSION}" "${CM5_PDK_REVISION}" "${SHA}" "${STAMP}" "${SIM_DIR}/pdk.json" \
-  "${SRC_REPO}" "${SRC_COMMIT}" "${KLT_RC}" "${WORK}/klt.err" "${SIM_DIR}/tools" <<'PY'
+  "${SRC_REPO}" "${SRC_COMMIT}" "${KLT_RC}" "${WORK}/klt.err" "${SIM_DIR}/tools" \
+  "${CM5_DUT_SHA256}" "${CM5_DUT_SUBCKT}" <<'PY'
 import json, sys
 (env_p, rec_p, deck_p, tmpl_p, dut_p, ngspice, pdk_rev, sha, stamp, pin_p,
- src_repo, src_commit, klt_rc, klt_err_p, tools_dir) = sys.argv[1:]
+ src_repo, src_commit, klt_rc, klt_err_p, tools_dir,
+ staged_dut_sha256, staged_dut_subckt) = sys.argv[1:]
 sys.path.insert(0, tools_dir)
 from cm5_record import collect, klt_version as get_klt_version, sha256, write_record
 pin = json.load(open(pin_p))
@@ -112,6 +114,11 @@ record = {
     "source_commit": src_commit,
     "source_path": "design/sg13cmos5l/netlist/bandgap_top.spice",
     "source_file_sha256": sha256(dut_p),
+    # The staged DUT is the source wrapped in `.subckt <staged_dut_subckt> vdd vref vss`
+    # with its `.end` card dropped, derived by cm5_stage_dut and never committed (decision
+    # record 0013). source_file_sha256 still pins the unedited source; this pins what RAN.
+    "staged_dut_sha256": staged_dut_sha256,
+    "staged_dut_subckt": staged_dut_subckt,
     "simulator": {"ngspice": ngspice, "klt": klt_version, "backend": "local"},
     "deck_sha256": sha256(deck_p),
     "template_sha256": sha256(tmpl_p),

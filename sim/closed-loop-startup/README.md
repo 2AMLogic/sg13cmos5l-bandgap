@@ -61,7 +61,8 @@ that because it had inlined the devices. This bench cannot: splitting that net w
 editing the migrated DUT, which decision record 0006 forbids.
 
 The release is graded on the startup cell's **detect node** instead, through the hierarchical
-name `v(xx3.det)` — which is `XMKFB`'s gate drive, and is the source's *other*, equivalent
+name `v(xdut.xx3.det)` (`xdut.` is the DUT `.subckt` wrapper decision record 0013 stages;
+the node itself is unchanged) — which is `XMKFB`'s gate drive, and is the source's *other*, equivalent
 release criterion (`v(det) ≤ 0.2·vdd`). A released startup cell holds `det` near ground, and
 `XMKFB` is then off by construction; the measured worst case is `det/vdd` = 0.0089, i.e. 8.9 mV
 of gate drive at 3.63 V, far below the device's threshold. The `|i(XMKFB)| ≤ 50 nA` form of the

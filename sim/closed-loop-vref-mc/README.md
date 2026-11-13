@@ -4,7 +4,7 @@ The bench behind `spec/target-spec.md`'s **Output reference, untrimmed line (3σ
 row (`vref_untrimmed_line_3sigma`) and the evidence T1 **item 6** — "statistical
 claims carry Monte Carlo evidence" — is graded on. Issue #31; the decision this
 bench was asked to make, and what it may and may not be read as, are recorded in
-[`0013`](../../spec/decision-records/0013-statistical-mc-sections-and-window.md).
+[`0014`](../../spec/decision-records/0014-statistical-mc-sections-and-window.md).
 
 Everything here is **SIMULATED**.
 

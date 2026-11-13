@@ -17,6 +17,7 @@ verification (issue #30), the statistical Monte Carlo bench behind T1 item 6
 | `closed-loop-startup/` | Release from `vdd` = 0: self-starting **and** the settling time the inherited source bench never extracted. 45 points |
 | `closed-loop-vref-mc/` | The statistical Monte Carlo bench: the untrimmed-line (3σ) row and T1 item 6. Four campaigns — the population, a deterministic zero-spread control, a known-bad 3× control, and a per-family attribution sweep — plus the committed `klt yield` report |
 | `grid-run.sh` | The one runner for all five grids: stages the migrated DUT, renders the deck, submits the committed request to the batch fleet, writes the envelope and the record |
+| | *Staging wraps the DUT*: `cm5_stage_dut` derives `.subckt sg13cmos5l_bandgap_top vdd vref vss` from the attested netlist's commented-out top block, without editing it, so one deck serves both legs of the item-7 delta. Decks instantiate it as `Xdut` and address internal nodes as `v(xdut.…)`. Decision record 0013 |
 | `mc-run.sh`, `mc-yield.sh` | The Monte Carlo pair: one campaign to the fleet, then `klt yield-samples` + `klt yield` over two committed envelopes |
 | `pex-bandgap-top/` | T1 item 7 (post-layout verification): the committed `klt pex --extract-only` envelope, the extracted netlist, and the schematic-vs-extracted device inventory. **No delta** — see below |
 | `pex-run.sh`, `tools/pex_device_inventory.py` | The item-7 runner and the offline device-inventory comparator it embeds in each record |
@@ -91,9 +92,12 @@ against the fleet image's own PDK tree can be compared value for value with the 
 | `20261113T111044Z-3830083.json` | staged from this host's pin (15 files, hashes matched by the worker) | `klt-sim-fbbab809f5c5` |
 
 All **315** measurements (45 points × 7) agree exactly. The image's SG13CMOS5L models and this
-pin's are therefore behaviourally identical for these sections — measured, not assumed.
-`manifests/` cites the staged envelope, because only that one binds the models to the pin by
-hash.
+pin's are therefore behaviourally identical for these sections — measured, not assumed. That
+pair is a provenance cross-check at one commit, not the citation: `manifests/` always cites a
+**staged** envelope, because only a staged run binds the models to the pin by hash, and the
+cited one is re-taken whenever the deck changes (it is `20261113T135709Z-e36facd.json` since
+the DUT wrapper of decision record 0013, whose 315 measurements are in turn bit-identical to
+`20261113T111044Z-3830083.json`'s).
 
 The tool-side half of the gap is filed as generic friction at
 [`2AMLogic/klayout-tools#5457`](https://github.com/2AMLogic/klayout-tools/issues/5457): a
@@ -137,7 +141,7 @@ source sim/env.sh && python3 -I sim/tools/stat_locality.py
 
 The consequence — the bipolar matching term cannot be sampled at all, and statistics
 exist only at typ so the process-corner axis collapses — is recorded in
-[`0013`](../spec/decision-records/0013-statistical-mc-sections-and-window.md), and
+[`0014`](../spec/decision-records/0014-statistical-mc-sections-and-window.md), and
 is why the row is declared `ratified: false` under `spec_rows."6"` rather than
 covered. The tool half is filed generically as
 [`klayout-tools#5486`](https://github.com/2AMLogic/klayout-tools/issues/5486).

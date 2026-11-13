@@ -4,7 +4,7 @@
     "WHY THIS BENCH EXISTS IN THIS TREE. The row's planned testbench is the inherited sim/sg13cmos5l-closed-loop-startup at the commit in reuse.lock.json. That bench recorded 45/45 points SELF-STARTING (source record 20260829-085039-94869af) but never extracted a settling TIME: every one of its measurements is a `.meas ... find ... at=` card at 20 us or at the 2 ms end point, so the row's `< 1 ms` has no evidence behind it anywhere. Extracting it needs a measurement the source bench does not have, so decision record 0011 supersedes the planned bench for this row with this one. The fixture (200 us ramp, 2 ms window, rshunt/gmin) and the three self-starting criteria are carried over unchanged, so the trajectory is the source's; what is added is t_settle_s.",
     "THE BAND. `< 1 ms` names no band, so this bench states one and grades it: t_settle_s is the last instant at which |vref(t) - vref(2 ms)| exceeded 1% of vref(2 ms), measured from t = 0 (the release from vdd = 0), so it INCLUDES the 200 us supply ramp. A tighter band or a start taken from vdd-valid would both be easier to pass; this is the conservative reading of the row.",
     "`analysis.linearize` resamples the transient onto a uniform 2 us grid before the expressions run, so t_settle_s has a deterministic 2 us resolution instead of depending on where the solver happened to step. Every measurement here is an `expr` over those linearized vectors -- no `.meas` cards -- so all of them read the same grid.",
-    "SELF-STARTING, as the source bench defined it (its record's Claim paragraph), all three graded here: the startup circuit releases (det_release_ratio = v(xx3.det)/v(vdd) <= 0.2), the real amplifier closes the loop (dvsns_v = |sns1 - sns2| <= 20 mV), and fb settles to an interior equilibrium rather than railing (fb_headroom_v = min(fb, vdd - fb) >= 0.05 V). vref_start_v is recorded to show the release really was from zero.",
+    "SELF-STARTING, as the source bench defined it (its record's Claim paragraph), all three graded here: the startup circuit releases (det_release_ratio = v(xdut.xx3.det)/v(vdd) <= 0.2), the real amplifier closes the loop (dvsns_v = |sns1 - sns2| <= 20 mV), and fb settles to an interior equilibrium rather than railing (fb_headroom_v = min(fb, vdd - fb) >= 0.05 V). vref_start_v is recorded to show the release really was from zero.",
     "`corners.supply_waveforms` rescales the deck's PWL ramp per supply point (peak -> the corner's supply) instead of `alter`ing it, which ngspice cannot do to a waveform source. That is what lets one request carry the whole 45-point grid where the source bench needed one request per supply.",
     "PORTABLE BY CONSTRUCTION: nothing here is a path that exists only on the submitting host, so this one request serves `--backend local` (a single-corner probe, narrowed by hand) and `--backend batch` (the grid sim/grid-run.sh submits).",
     "  - `models.pdk` selects the variant and the fleet's batch image (klayout-tools#2727 publishes sg13cmos5l). Each corner names its own PDK-relative section libraries, so no `models.lib` and no generated corner bundle is needed; an absolute host path here would be refused on batch (`models_lib_host_path`).",
@@ -163,22 +163,22 @@
     },
     {
       "name": "sns1_final_v",
-      "expr": "v(sns1)[length(time)-1]",
+      "expr": "v(xdut.sns1)[length(time)-1]",
       "unit": "V"
     },
     {
       "name": "sns2_final_v",
-      "expr": "v(sns2)[length(time)-1]",
+      "expr": "v(xdut.sns2)[length(time)-1]",
       "unit": "V"
     },
     {
       "name": "fb_final_v",
-      "expr": "v(fb)[length(time)-1]",
+      "expr": "v(xdut.fb)[length(time)-1]",
       "unit": "V"
     },
     {
       "name": "det_final_v",
-      "expr": "v(xx3.det)[length(time)-1]",
+      "expr": "v(xdut.xx3.det)[length(time)-1]",
       "unit": "V"
     },
     {

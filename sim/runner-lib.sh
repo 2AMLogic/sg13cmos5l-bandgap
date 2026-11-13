@@ -64,11 +64,39 @@ PY
   ) || { echo "${tag}: cannot read the pinned source from reuse.lock.json." >&2; exit 6; }
 }
 
+# The subcircuit name the staged DUT is wrapped in, and the pin order it is wrapped with
+# (decision record 0013). Both are the EXTRACTED netlist's, not the schematic export's:
+# `klt pex` reuses the bench's positional `X...` line on both legs, so a wrapper with the
+# same pins in the schematic's own `vdd vss vref` order fires `pin_order_mismatch` and the
+# extracted leg is skipped. Named here, once, because the deck templates' `Xdut` line and
+# sim/tests/test-grid-benches.sh both have to agree with it.
+CM5_DUT_SUBCKT="sg13cmos5l_bandgap_top"
+CM5_DUT_PINS="vdd vref vss"
+
 # cm5_stage_dut <tag> <repo_dir> <work_dir>: stage the in-repo migrated DUT netlist
 # (decision record 0006) for a bench deck to `.include`. Sets CM5_DUT_FETCHED (the file
-# as read, whose sha256 equals the pinned source blob) and CM5_DUT (the same text with
-# only its final `.end` card dropped, so the including deck's end card is the only one).
-# Exit 6 if the netlist is absent or is not the expected flattened export.
+# as read, whose sha256 equals the pinned source blob), CM5_DUT (the staged, wrapped copy)
+# and CM5_DUT_SHA256 (the staged copy's own hash, recorded next to the source's).
+#
+# The staged copy differs from the source in exactly three ways, all derived here and none
+# of them an edit to the attested file (decision record 0013):
+#   1. the commented-out top block header `**.subckt bandgap_top vdd vss vref` becomes a
+#      live `.subckt ${CM5_DUT_SUBCKT} ${CM5_DUT_PINS}` card,
+#   2. its matching `**.ends` becomes `.ends ${CM5_DUT_SUBCKT}`,
+#   3. the final `.end` card is dropped, so the including deck's end card is the only one.
+# Decks instantiate the result (`Xdut vdd vref vss sg13cmos5l_bandgap_top`); nothing else in
+# the netlist is touched, and the three leaf `.subckt` definitions stay where they are.
+#
+# Electrically a no-op, measured rather than assumed: on typ/27 C/3.30 V every
+# sim/closed-loop-vref-pvt measurement is identical to the flat deck's to all reported
+# digits (vref_v = 1.19696 V, decision record 0013 "What was measured"). The source's
+# `sub!` resistor-bulk nodes were ALREADY local to each leaf instance under ngspice
+# (`xx1.sub!`, `xx3.sub!` -- `!` is an xschem global marker, not an ngspice one), so the
+# wrapper only lengthens them to `xdut.xx1.sub!`; no `.global sub!` card is added, and
+# adding one would newly tie those bulks to vss and change the recorded item-5 results.
+#
+# Exit 6 if the netlist is absent, is not the expected flattened export, or does not carry
+# exactly one expected top block to rewrite.
 cm5_stage_dut() {
   local tag="$1" repo_dir="$2" work="$3"
   local rel="design/sg13cmos5l/netlist/bandgap_top.spice"
@@ -81,7 +109,27 @@ cm5_stage_dut() {
   cp "${repo_dir}/${rel}" "${CM5_DUT_FETCHED}"
   grep -q '^\.subckt bandgap_core ' "${CM5_DUT_FETCHED}" \
     || { echo "${tag}: ${rel} has no 'bandgap_core' subckt; not the expected netlist." >&2; exit 6; }
-  grep -v -x '\.end' "${CM5_DUT_FETCHED}" > "${CM5_DUT}"
+  python3 -I - "${CM5_DUT_FETCHED}" "${CM5_DUT}" "${CM5_DUT_SUBCKT}" "${CM5_DUT_PINS}" <<'PY' \
+    || { echo "${tag}: ${rel} is not the expected flattened export; see the error above." >&2; exit 6; }
+import sys
+src, dst, top, pins = sys.argv[1:]
+HEAD = "**.subckt bandgap_top vdd vss vref"   # the xschem export's commented-out top block
+FOOT = "**.ends"
+lines = open(src).read().splitlines()
+heads = [i for i, l in enumerate(lines) if l.strip() == HEAD]
+foots = [i for i, l in enumerate(lines) if l.strip() == FOOT]
+if len(heads) != 1 or len(foots) != 1 or foots[0] < heads[0]:
+    sys.exit("TOP_BLOCK_UNEXPECTED: want exactly one %r followed by one %r; found %d and %d"
+             % (HEAD, FOOT, len(heads), len(foots)))
+lines[heads[0]] = ".subckt %s %s" % (top, pins)
+lines[foots[0]] = ".ends %s" % top
+# Drop the file's own end card (never a leaf `.ends`), so the including deck's is the only one.
+kept = [l for l in lines if l.strip().lower() != ".end"]
+with open(dst, "w") as f:
+    f.write("\n".join(kept) + "\n")
+PY
+  # shellcheck disable=SC2034  # set for the caller (grid-run.sh passes it into the record)
+  CM5_DUT_SHA256="$(sha256sum "${CM5_DUT}" | cut -d' ' -f1)"
 }
 
 # cm5_grid_submit <tag> <request> <outdir> <envelope_out> <err_out>: run one multi-corner

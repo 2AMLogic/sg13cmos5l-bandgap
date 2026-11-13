@@ -10,7 +10,7 @@ the open-source xschem + ngspice flow.
 the full PVT corner grid (issue #30,
 [`0011`](spec/decision-records/0011-corner-verification-pvt-grids.md)) and the
 untrimmed accuracy row now carries a seeded, controlled Monte Carlo (issue #31,
-[`0013`](spec/decision-records/0013-statistical-mc-sections-and-window.md)) —
+[`0014`](spec/decision-records/0014-statistical-mc-sections-and-window.md)) —
 seven of the eleven spec rows carry measured corner evidence, one ratified
 Target (PSRR @ DC) is missed on that evidence, and the untrimmed line is
 measured at **±5.6 % (3σ)** by a mechanism this PDK only partly provides.
@@ -105,7 +105,7 @@ the cited envelope of each):
 
 The untrimmed-line (3σ) row is now measured too, by the statistical Monte Carlo
 bench `sim/closed-loop-vref-mc` (issue #31,
-[`0013`](spec/decision-records/0013-statistical-mc-sections-and-window.md)):
+[`0014`](spec/decision-records/0014-statistical-mc-sections-and-window.md)):
 9 points × 300 seeded draws, a deterministic zero-spread control that reproduces
 the corner grid exactly, and a known-bad control the statistics detect.
 

@@ -151,11 +151,11 @@ python3 -I - "${WORK}/envelope.json" "${ENVELOPE}" "${REC}" "${ENVELOPE_NAME}" "
   "${DECK}" "${TMPL}" "${REQUEST_SRC}" "${CM5_DUT_FETCHED}" \
   "${CM5_DUT_SOURCE_PATH}" "${NGSPICE_VERSION}" "${CM5_PDK_REVISION}" "${SHA}" "${STAMP}" \
   "${SIM_DIR}/pdk.json" "${SRC_REPO}" "${SRC_COMMIT}" "${CM5_KLT_RC}" "${CM5_BACKEND}" \
-  "${WORK}/klt.err" "${BENCH}" "${SIM_DIR}/tools" <<'PY'
+  "${WORK}/klt.err" "${BENCH}" "${SIM_DIR}/tools" "${CM5_DUT_SHA256}" "${CM5_DUT_SUBCKT}" <<'PY'
 import json, sys
 (env_p, envelope_out, rec_p, envelope_name, bench_p, deck_p, tmpl_p, request_p, dut_p,
  dut_rel, ngspice, pdk_rev, sha, stamp, pin_p, src_repo, src_commit, klt_rc, backend,
- klt_err_p, bench, tools_dir) = sys.argv[1:]
+ klt_err_p, bench, tools_dir, staged_dut_sha256, staged_dut_subckt) = sys.argv[1:]
 sys.path.insert(0, tools_dir)
 from cm5_record import grid_summary, klt_version as get_klt_version, sha256, write_record
 
@@ -204,6 +204,11 @@ record = {
     "source_commit": src_commit,
     "source_path": dut_rel,
     "source_file_sha256": sha256(dut_p),
+    # The staged DUT is the source wrapped in `.subckt <staged_dut_subckt> vdd vref vss`
+    # with its `.end` card dropped, derived by cm5_stage_dut and never committed (decision
+    # record 0013). source_file_sha256 still pins the unedited source; this pins what RAN.
+    "staged_dut_sha256": staged_dut_sha256,
+    "staged_dut_subckt": staged_dut_subckt,
     "simulator": {"ngspice": ngspice, "klt": get_klt_version(), "backend": backend},
     "deck_sha256": sha256(deck_p),
     "template_sha256": sha256(tmpl_p),

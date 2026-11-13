@@ -163,7 +163,7 @@
       "citation": null,
       "citations_graded": [
         {
-          "citation": "sim/closed-loop-vref-pvt/envelopes/20261113T111044Z-3830083.json",
+          "citation": "sim/closed-loop-vref-pvt/envelopes/20261113T135709Z-e36facd.json",
           "rows": [
             "vref_nominal"
           ],
@@ -171,7 +171,7 @@
           "reason": null
         },
         {
-          "citation": "sim/closed-loop-vref-pvt-boxtc/envelopes/20261113T115709Z-0be5a53.json",
+          "citation": "sim/closed-loop-vref-pvt-boxtc/envelopes/20261113T134306Z-e36facd.json",
           "rows": [
             "tc_endpoint",
             "tc_box"
@@ -180,7 +180,7 @@
           "reason": null
         },
         {
-          "citation": "sim/closed-loop-psrr/envelopes/20261113T115930Z-0be5a53.json",
+          "citation": "sim/closed-loop-psrr/envelopes/20261113T134433Z-e36facd.json",
           "rows": [
             "psrr_dc"
           ],
@@ -188,7 +188,7 @@
           "reason": "check_failed"
         },
         {
-          "citation": "sim/closed-loop-iq/envelopes/20261113T115819Z-0be5a53.json",
+          "citation": "sim/closed-loop-iq/envelopes/20261113T134743Z-e36facd.json",
           "rows": [
             "iq"
           ],
@@ -196,7 +196,7 @@
           "reason": null
         },
         {
-          "citation": "sim/closed-loop-startup/envelopes/20261113T111658Z-3830083.json",
+          "citation": "sim/closed-loop-startup/envelopes/20261113T135532Z-e36facd.json",
           "rows": [
             "startup_self_starting",
             "startup_time"
@@ -214,7 +214,7 @@
           }
         ],
         "failed_citations": [
-          "sim/closed-loop-psrr/envelopes/20261113T115930Z-0be5a53.json"
+          "sim/closed-loop-psrr/envelopes/20261113T134433Z-e36facd.json"
         ],
         "failed_rows": [
           "psrr_dc"

@@ -86,7 +86,7 @@ Item 6 (statistical claims carry Monte Carlo evidence) cites the `klt yield` rep
 of `sim/closed-loop-vref-mc` and declares the full statistical row set under
 `spec_rows.6`. Which rows are statistical, and why the others are not, is accounted
 for row by row in
-[`0013`](../spec/decision-records/0013-statistical-mc-sections-and-window.md) §4.
+[`0014`](../spec/decision-records/0014-statistical-mc-sections-and-window.md) §4.
 
 | Row | Declared |
 |---|---|
