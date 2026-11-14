@@ -2,9 +2,11 @@
   "schema_version": 1,
   "kind": "t1-attestation-inventory",
   "t1_item": 1,
-  "description": "T1 item 1 (design sources) for the SG13CMOS5L cells migrated from sg13g2-bandgap@52535387 by decision record 0006. Freshness checks need xschem and the pinned PDK (PDK_ROOT, PDK=ihp-sg13cmos5l), so they are local_only.",
+  "description": "T1 item 1 (design sources) for the SG13CMOS5L cells migrated from sg13g2-bandgap@52535387 by decision record 0006. Each netlist's freshness check re-exports its schematic with `klt netlist` and compares the result under the classified normalization of design/tools/netlist_pin_delta.py -- NOT a raw `klt netlist --check` byte compare, which cannot pass here because xschem's absolute-path provenance comments differ on every checkout and the PDK revision this repo pins emits an extra `mm_ok=1` instance parameter that the archived pin the committed bytes were exported at did not. Decision record 0015 states the predicate, the two tolerated differences, the evidence that nothing else is tolerated, and why regenerating the committed netlists is sg13g2-bandgap's call (its #322) and not available here. The gate needs xschem 3.4.7, klt and the PDK revision sim/pdk.json pins, so it is local_only. design/check-netlist-freshness.sh and design/tools/netlist_pin_delta.py are listed as sources ON PURPOSE: item 1 binds every source by hash, so the predicate the attestation rests on cannot be widened without re-attesting and re-pinning the manifest.",
   "sources": [
     "design/xschemrc",
+    "design/check-netlist-freshness.sh",
+    "design/tools/netlist_pin_delta.py",
     "design/sg13cmos5l/bandgap_amp.sch",
     "design/sg13cmos5l/bandgap_amp.sym",
     "design/sg13cmos5l/bandgap_core.sch",
@@ -17,22 +19,22 @@
     {
       "path": "design/sg13cmos5l/netlist/bandgap_amp.spice",
       "generator": "klt netlist",
-      "check": {"argv": ["klt", "netlist", "bandgap_amp.sch", "-o", "netlist/bandgap_amp.spice", "--rcfile", "../xschemrc", "--check"], "cwd": "design/sg13cmos5l", "local_only": true}
+      "check": {"argv": ["bash", "design/check-netlist-freshness.sh", "bandgap_amp"], "local_only": true}
     },
     {
       "path": "design/sg13cmos5l/netlist/bandgap_core.spice",
       "generator": "klt netlist",
-      "check": {"argv": ["klt", "netlist", "bandgap_core.sch", "-o", "netlist/bandgap_core.spice", "--rcfile", "../xschemrc", "--check"], "cwd": "design/sg13cmos5l", "local_only": true}
+      "check": {"argv": ["bash", "design/check-netlist-freshness.sh", "bandgap_core"], "local_only": true}
     },
     {
       "path": "design/sg13cmos5l/netlist/bandgap_startup.spice",
       "generator": "klt netlist",
-      "check": {"argv": ["klt", "netlist", "bandgap_startup.sch", "-o", "netlist/bandgap_startup.spice", "--rcfile", "../xschemrc", "--check"], "cwd": "design/sg13cmos5l", "local_only": true}
+      "check": {"argv": ["bash", "design/check-netlist-freshness.sh", "bandgap_startup"], "local_only": true}
     },
     {
       "path": "design/sg13cmos5l/netlist/bandgap_top.spice",
       "generator": "klt netlist",
-      "check": {"argv": ["klt", "netlist", "bandgap_top.sch", "-o", "netlist/bandgap_top.spice", "--rcfile", "../xschemrc", "--check"], "cwd": "design/sg13cmos5l", "local_only": true}
+      "check": {"argv": ["bash", "design/check-netlist-freshness.sh", "bandgap_top"], "local_only": true}
     }
   ]
 }

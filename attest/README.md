@@ -1,4 +1,16 @@
-# T1 item 9 attestation (testbenches shipped)
+# T1 attestation inventories
+
+This directory holds one `klt signoff --attest` inventory per attested T1 item:
+`item1.json` (design sources), `item9.json` (testbenches shipped) and
+`item10.json` (repo hygiene), plus `make-item2-envelope.py` for item 2. Every
+envelope they produce lands in `../evidence/` and is cited by
+`../manifests/sg13cmos5l-bandgap.json`.
+
+**Everything below is about item 9 unless a heading says otherwise**; item 1 has
+its own section at the end, item 10's regeneration command is in
+`../manifests/README.md`, and item 2's is in `../layout/README.md`.
+
+## Item 9 (testbenches shipped)
 
 - `item9.json`: the inventory. Lists every committed bench, the cold-start command and the pins
   (PDK name and revision, klt, ngspice, OSDI build commit).
@@ -54,3 +66,48 @@ committed **`klt sim` request** — what the bench is. `bench.json` and `sim/gri
 runner plumbing and are deliberately not inventoried, the same convention that already left each
 bench's `run.sh` out. The grids themselves are not cold-started here either: they go to the
 Spot batch fleet, which a GitHub runner cannot reach any more than it can reach the PDK.
+
+## Item 1 (design sources)
+
+- `item1.json`: the inventory. Lists the four schematics, their three symbols,
+  `design/xschemrc`, and — deliberately — the two files that implement the
+  freshness gate itself (`design/check-netlist-freshness.sh`,
+  `design/tools/netlist_pin_delta.py`). Item 1 binds every `sources` entry by
+  hash, so listing the gate there means its tolerance cannot be widened without
+  re-attesting and re-pinning the manifest.
+- `../evidence/item1.json`: the envelope, 18 checks (10 `present` sources, 4
+  `present` derived netlists, 4 `freshness` commands).
+
+The freshness check is **not** a raw `klt netlist --check`. It is
+`design/check-netlist-freshness.sh`, one invocation per cell, which re-exports
+the schematic with `klt netlist` and compares the result under a normalization
+that tolerates exactly two classified differences — xschem's absolute-path
+provenance comments and the `mm_ok=1` PDK-pin delta — and nothing else. Why, and
+why the netlists are not simply regenerated, is
+[`0015`](../spec/decision-records/0015-item1-netlist-freshness-gate.md); how to
+run it is `../design/README.md`.
+
+### Regenerating
+
+Needs xschem 3.4.7 and the PDK revision `sim/pdk.json` pins (`sim/env.sh`
+refuses any other revision):
+
+```
+source sim/env.sh
+uvx --from "klayout-tools==0.8.0" klt signoff --attest 1 \
+    --inventory attest/item1.json -o evidence/item1.json
+```
+
+Then re-pin the item-1 `content_hash` in the manifest to the inventory sha256 it
+prints as `inventory:`, and regenerate the signoff record
+(`../manifests/README.md`).
+
+### What CI skips
+
+All four `freshness` commands are `local_only`: a GitHub runner has no xschem and
+no PDK. CI runs `klt signoff --attest 1 ... --check`, which lists them `[SKIP]`
+with their committed outcome carried and still re-hashes every inventoried file.
+A green CI run therefore does **not** re-prove the re-export; only a provisioned
+host's `--attest` does. What CI *does* re-prove on every push is that the
+normalization stayed narrow, via `design/tests/test-netlist-pin-delta.sh`, which
+needs only bash and python3.

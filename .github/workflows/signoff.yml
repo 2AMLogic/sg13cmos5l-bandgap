@@ -32,6 +32,26 @@ jobs:
       - name: Check the item-9 inventory pins against sim/pdk.json and reuse.lock.json
         run: bash sim/tests/test-attest-pins.sh
 
+      # The item-1 freshness gate itself needs xschem and the pinned PDK, so it cannot run
+      # here. Its NARROWNESS can: this suite is the negative controls that keep the gate's two
+      # tolerated differences (xschem's absolute-path provenance comments, the classified
+      # `mm_ok=1` PDK-pin delta) from widening into "ignores everything". A resize, a deleted
+      # device, a renamed net, a reordered subckt port list, mm_ok at the wrong value or on the
+      # wrong device model must all still read as drift. Needs only bash and python3.
+      # See spec/decision-records/0015-item1-netlist-freshness-gate.md.
+      - name: Check the item-1 netlist freshness normalization stays narrow
+        run: bash design/tests/test-netlist-pin-delta.sh
+
+      # The four per-cell freshness commands are local_only (each re-exports a schematic with
+      # `klt netlist`, needing xschem 3.4.7 and the pinned PDK), so they are listed under
+      # skipped_checks with their committed outcome. What this step does prove is that every
+      # inventoried file still hashes to what the envelope recorded -- which, at the 0.8.0 pin,
+      # is the only thing that catches a schematic edit: item-1 input-set binding ships after
+      # 0.8.0, so the manifest content_hash is the inventory's own sha256 and does not move
+      # when a .sch does. Same division of labour as the item-9 step below.
+      - name: Check the item-1 attestation envelope has not drifted
+        run: klt signoff --attest 1 --inventory attest/item1.json --check evidence/item1.json --format text
+
       # cold_start is local_only (needs the pinned PDK, ngspice >= 43 and psp103.osdi), so it is
       # not run here: it is listed under skipped_checks with its committed outcome. File presence
       # and content hashes of every inventoried testbench are still re-verified.
