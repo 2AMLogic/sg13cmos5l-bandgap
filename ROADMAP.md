@@ -23,7 +23,7 @@ on 2026-10-17 and predates everything below).
 | 2 | Layout | **met** | `evidence/item2.json`; top GDS regenerated from `layout/*/generate.py` (record `0007`, #27) |
 | 3 | DRC clean | **met** | `layout/sg13cmos5l-bandgap_top/drc.json`, `clean`; the signoff record quotes 6 rule-free layers and 24 skipped rules (#28) |
 | 4 | LVS clean | unmet / `no_evidence` | No `klt lvs` report is committed. #29 |
-| 5 | Corner verification | unmet / `check_failed` | Five 45-point closed-loop grids (record `0011`, PR #72; re-taken in PRs #84, #85). Six rows pass; `psrr_dc` fails its Target at 24 of 45 points; four rows are declared gaps |
+| 5 | Corner verification | unmet / `check_failed` | Five closed-loop grids — four at 45 points, the TC box bench at 15 units × 166 temperatures (record `0011` §1, PR #72; re-taken in PRs #84, #85). Six rows pass; `psrr_dc` fails its Target at 24 of 45 points; four rows are declared gaps |
 | 6 | Monte Carlo | unmet / `no_evidence` | Bench in review: #31, PR #82 |
 | 7 | Post-layout | unmet / `check_failed` | `sim/pex-bandgap-top/` extraction committed (record `0012`, PR #79); it holds 17 devices against 20 cards because the curated deck extracts no `pnpMPA`, so no delta exists. #32 |
 | 8 | Characterization report | unmet / `no_evidence` | Not started. #33 |
@@ -32,8 +32,9 @@ on 2026-10-17 and predates everything below).
 | 11 | Power delivery | unmet / `no_evidence` | No `klt erc` supply spec or report. #36 |
 
 Simulated results at the ratified Target column (`spec/target-spec.md`, all
-closed loop, schematic netlist): TC worst 39.186 ppm/°C box (< 50, met); Iq
-worst 41.085 µA (< 50, met); startup settles in 100 µs worst case (< 1 ms,
+closed loop, schematic netlist): TC worst 39.186 ppm/°C box at `bcs` / 3.63 V
+(< 50, met); Iq worst 41.085 µA at `bcs` / 3.63 V / 125 °C (< 50, met);
+startup settles in 100 µs worst case at `wcs` / 2.97 V / −40 °C (< 1 ms,
 met); `vref` 1.19696 V at typ / 27 °C / 3.30 V. **PSRR @ DC misses**: worst
 55.249 dB at `wcs` / 2.97 V / 125 °C against > 60 dB, failing at every 2.97 V
 point and 9 of 15 at 3.30 V. Nothing is measured in silicon.
