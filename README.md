@@ -11,7 +11,11 @@ across the full PVT corner grid (issue #30,
 [`0011`](spec/decision-records/0011-corner-verification-pvt-grids.md)) — seven
 of the eleven spec rows carry measured corner evidence, one ratified Target
 (PSRR @ DC) is missed on that evidence, and the statistical and trim rows have
-none. Nothing is laid out, extracted or measured in silicon here.** The work
+none. The layout is committed and DRC clean with the deck's coverage limits
+disclosed ([`layout/README.md`](layout/README.md)), the post-layout extraction
+is committed but no schematic-vs-extracted delta is producible
+([`0012`](spec/decision-records/0012-post-layout-pex-extraction-gap.md)), and
+nothing is measured in silicon here.** The work
 starts from the SG13CMOS5L branch already carried in
 [sg13g2-bandgap](https://github.com/2AMLogic/sg13g2-bandgap), not from a
 blank page.
@@ -195,6 +199,8 @@ spec/          ratified spec + decision records + porting plan
 design/        schematics / netlists (xschem)
 sim/           testbenches + PVT corner results (ngspice)
 manifests/     T1 block manifest, vendored checklist, signoff record
+attest/        attestation inventories (signoff inputs)
+evidence/      generated per-item evidence records
 layout/        GDS + DRC/LVS reports (klayout-tools driven)
 measurements/  silicon characterization (empty until tape-out)
 ```
