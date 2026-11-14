@@ -3,6 +3,13 @@
 Chronological record of merged PRs and closed issues, maintained by the Guide
 triage agent. Newest first.
 
+### 2026-11-14
+
+- **Issue #90** (closed): Reconcile the two lists of the offline test suite: attest/item10.json misses test-smoke-request.sh, so CI never runs it
+- **PR #96**: test: attest test-smoke-request.sh and assert every offline suite is inventoried
+- **PR #92**: docs: roadmap as of 2026-11-13
+- **Issue #47** (closed): Run sim/smoke/run_smoke.sh once on a toolchain host and diff record keys after runner-lib refactor
+
 ### 2026-11-13
 
 - **Issue #87** (closed): Remove the `netlist_source: "extracted"` label from sim/smoke/run_smoke.sh: a hand-written deck declared post-layout
