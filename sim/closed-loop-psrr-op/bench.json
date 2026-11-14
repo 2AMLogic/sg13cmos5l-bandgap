@@ -1,0 +1,16 @@
+{
+  "_comment": [
+    "Bench metadata read by sim/grid-run.sh (issue #93). This is the SIXTH bench directory that runner serves and the first that is NOT a T1 item-5 corner-verification grid: `sim/grid-run.sh <bench-directory-name>` is generic by construction (it reads this file for the deck template, the request, the OSDI objects and the record's criteria text), so attribution evidence reuses it rather than adding a second runner.",
+    "`spec_rows` IS DELIBERATELY EMPTY. This bench grades nothing: its request carries no `limits` and no `spec_row` tag, so no measurement here can pass or fail a bound, and nothing it produces may be cited in manifests/sg13cmos5l-bandgap.json. That is not an oversight to be tidied up later -- sim/tests/test-grid-benches.sh:142 asserts 'manifest item 5 cites exactly the five grid benches', and more to the point, a bench that explains a miss must not also be scored as evidence that the miss is smaller. The ratified `psrr_dc` bound in spec/target-spec.md is untouched, its Status is untouched, and sim/closed-loop-psrr/ remains the only cited PSRR evidence.",
+    "No `expected_failure` block, for the same reason: with nothing graded the envelope's status is `pass` and sim/grid-run.sh exits 0. `pass` here means 'every one of the 12 points returned a value for all 141 declared measurements', not 'the PSRR target is met' -- it is not; see sim/closed-loop-psrr/."
+  ],
+  "bench": "closed-loop-psrr-op",
+  "kind": "closed-loop-psrr-op-attribution",
+  "testbench": "sim/closed-loop-psrr-op/deck.cir.tmpl",
+  "deck_template": "deck.cir.tmpl",
+  "request": "request-grid.json",
+  "spec_rows": [],
+  "criteria": "UNGRADED EVIDENCE -- no limits, no spec_row tag, no manifest citation. Records, at 12 of the committed PSRR grid's 45 points (process {typ, wcs} x supply {2.970, 3.300, 3.630} V x {27, 125} C, 6 of which fail the ratified > 60 dB Target in sim/closed-loop-psrr/ and 6 of which pass), three DC `op` solves per point: the PSRR bench's own +/-0.05 V `Vpsrr` secant, which must reproduce that grid's psrr_db at the same point, and then a third solve with `Vpsrr` back at its 0 V deck default, from which every one of the 14 MOS devices' vgs, vds, vdss, gm, gds and ids is read. Derived per point: the saturation margin |vds| - |vdss| for all 14 devices (this PDK's PSP103 models expose `vdss`, not `vdsat`), the amplifier's DC gain from the measured gm/gds, how closely fb tracks the rail, and the output mirror leg's measured current excursion against what its own gm and gds predict. The purpose is to attribute the recorded `psrr_dc` miss; the pass/fail verdict on that row stays with sim/closed-loop-psrr/.",
+  "osdi": ["psp103", "r3_cmc"],
+  "deck_substitutions": { "VDD": "3.3" }
+}

@@ -1,0 +1,42 @@
+* sg13cmos5l-bandgap -- operating-point attribution deck for the FAILED `psrr_dc` row
+* (issue #93). Template: sim/grid-run.sh substitutes @@VDD@@ and @@WORK@@ and writes the deck
+* to sim/build/closed-loop-psrr-op/deck.cir. The model `.lib` cards, the temperature and the
+* supply value come from the `klt sim` request (request-grid.json).
+*
+* THE FIXTURE IS sim/closed-loop-psrr/deck.cir.tmpl's, UNCHANGED. Every card line below is
+* byte-identical to that template's -- same `Vpsrr` perturbation handle at the same deck
+* default of `dc 0`, same `.options rshunt/gmin`, same `.global sub!` + `Vsub sub! vss dc 0`
+* substrate tie (issue #83, decision record 0014), same `.include` and the same
+* `Xdut vdd vref vss sg13cmos5l_bandgap_top` instantiation of the staged DUT (decision
+* record 0013). Only this comment header differs, and sim/grid-run.sh strips `*` lines before
+* it writes the deck. Checkable, and worth checking, because the whole point of this bench is
+* that it reads the operating point THE COMMITTED PSRR GRID SOLVED, not a similar one:
+*
+*   diff <(grep -v '^\*' sim/closed-loop-psrr/deck.cir.tmpl) \
+*        <(grep -v '^\*' sim/closed-loop-psrr-op/deck.cir.tmpl)     # must be empty
+*
+* The bench is its REQUEST, not its deck: request-grid.json runs the PSRR bench's own two
+* `Vpsrr` = -0.05 V / +0.05 V secant solves, then a third `op` with `Vpsrr` altered back to
+* 0 V -- a DC short, so that third solve is the unperturbed bias the secant was taken about --
+* and reads every MOS device's operating point out of it with hand-written `@n.<path>[...]`
+* expressions. Why hand-written and not `klt sim --op-lint`: the lint cannot address this PDK's
+* OSDI (PSP103) devices (2AMLogic/klayout-tools#5637). See README.md and request-grid.json.
+*
+* A separate deck template rather than a second request in sim/closed-loop-psrr/: bench.json,
+* the deck template and the request are one unit to sim/grid-run.sh, which takes ONE bench
+* directory name, and sim/closed-loop-psrr/'s own files are cited by name in manifests/ and in
+* decision record 0011. This directory is cited by neither and grades nothing.
+*
+* NO SPICE TITLE LINE (issue #19): `klt sim` `.include`s this deck into a top deck of its own,
+* so line 1 here is not in title position and a title line would be parsed as a netlist element.
+
+.options rshunt=1e9 gmin=1e-9
+
+Vvdd vddsrc 0 dc @@VDD@@
+Vpsrr vdd vddsrc dc 0
+Vvss vss 0 dc 0
+.global sub!
+Vsub sub! vss dc 0
+
+.include "@@WORK@@/bandgap_top.spice"
+Xdut vdd vref vss sg13cmos5l_bandgap_top
