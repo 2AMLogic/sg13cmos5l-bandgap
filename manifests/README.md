@@ -2,12 +2,42 @@
 
 `sg13cmos5l-bandgap.json` is the block manifest graded by `klt signoff`
 against the T1 checklist. Its `evidence` map gains one
-citation per checklist item as artifacts land (item 2: `evidence/item2.json`,
+citation per checklist item as artifacts land (item 1: `evidence/item1.json`,
+see below and `attest/README.md`; item 2: `evidence/item2.json`,
 written by `attest/make-item2-envelope.py`, see `layout/README.md`; item 5: a
 **list** of five `klt sim` envelopes, see below; item 7: one `klt pex`
 envelope, see below; item 9:
 `evidence/item9.json`, see `attest/README.md`; item 10: `evidence/item10.json`,
 produced from `attest/item10.json`).
+
+## Item 1: met on a normalized freshness gate
+
+Item 1 (design sources) cites `evidence/item1.json`, the `klt signoff --attest 1`
+envelope over `attest/item1.json` (18/18 checks, all four freshness commands
+executed on a provisioned host). Its per-netlist freshness check is
+`design/check-netlist-freshness.sh`, **not** a raw `klt netlist --check` byte
+compare, which cannot pass here: xschem writes the generating checkout's absolute
+path into its `** sch_path:` comments, and the PDK revision `sim/pdk.json` pins
+emits an `mm_ok=1` instance parameter that the archived pin the committed netlists
+were exported at did not.
+
+Exactly those two differences are tolerated; every other byte — device cards,
+sizes, nets, multipliers, `.subckt` port order — is compared verbatim, and
+`design/tests/test-netlist-pin-delta.sh` holds the negative controls that keep it
+that way. Regenerating the netlists would make a byte compare pass and is
+deliberately **not** done: `2AMLogic/sg13g2-bandgap` owns these cells by lineage
+and ratified keeping the archived-pin bytes (its #405/#406, regeneration deferred
+to its #322), and regenerating would orphan every item-5 envelope's
+`source_file_sha256` and the item-7 record's `schematic_dut.sha256`. Full
+reasoning, including the xschem 3.4.4/3.4.7 port-order finding that this
+measurement closes, is in
+[`0015`](../spec/decision-records/0015-item1-netlist-freshness-gate.md).
+
+The four freshness commands are `local_only`, so CI lists them `[SKIP]` with
+their committed outcome and re-hashes every inventoried file instead. At the
+0.8.0 pin that re-hash is what catches a schematic edit: item-1 input-set binding
+ships after 0.8.0, so the manifest `content_hash` is the inventory's own sha256
+and does not move when a `.sch` does.
 
 ## Item 5: five envelopes and a declared row set
 
@@ -95,6 +125,20 @@ uvx --from "klayout-tools==0.8.0" klt signoff \
 Any change to the manifest, the checklist or cited evidence must regenerate
 the record in the same PR. `.github/workflows/signoff.yml` re-runs the
 command with the same pin (0.8.0), accepts exit 0 and 3 only, and byte-compares.
+
+## Item 1 attestation
+
+On a host with xschem 3.4.7 and the pinned PDK:
+
+```
+source sim/env.sh
+uvx --from "klayout-tools==0.8.0" klt signoff --attest 1 \
+    --inventory attest/item1.json -o evidence/item1.json
+```
+
+Update the item-1 `content_hash` in the manifest to the inventory sha256 it
+prints as `inventory:`, then regenerate the signoff record above. CI runs the
+same command with `--check`.
 
 ## Item 10 attestation
 

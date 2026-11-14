@@ -1,0 +1,188 @@
+{
+  "schema_version": 1,
+  "kind": "generic",
+  "status": "pass",
+  "t1_item": 1,
+  "summary": "T1 item 1 (Design sources): 18/18 attestation checks passed (klt signoff --attest)",
+  "source": "attest/item1.json",
+  "attestation": {
+    "producer": "klt signoff --attest",
+    "inventory_schema_version": 1,
+    "hash_algorithm": "sha256-raw-bytes",
+    "check_count": 18,
+    "passed_count": 18,
+    "checks": [
+      {
+        "check": "present",
+        "role": "source",
+        "path": "design/check-netlist-freshness.sh",
+        "passed": true,
+        "content_hash": "sha256:fa3c27b75eba9cda084469216aadb9c8086a5fb8f853ce100a25d9c671b2d67f"
+      },
+      {
+        "check": "present",
+        "role": "source",
+        "path": "design/sg13cmos5l/bandgap_amp.sch",
+        "passed": true,
+        "content_hash": "sha256:db2a7050ebe355e377b8c11bc458265d5a7ea185e8978bcc0b70dd838ce70abb"
+      },
+      {
+        "check": "present",
+        "role": "source",
+        "path": "design/sg13cmos5l/bandgap_amp.sym",
+        "passed": true,
+        "content_hash": "sha256:b5af19a92554164cae49cf5b8c65baae21d807188a752608b2348c99454e31fe"
+      },
+      {
+        "check": "present",
+        "role": "source",
+        "path": "design/sg13cmos5l/bandgap_core.sch",
+        "passed": true,
+        "content_hash": "sha256:66a996151b8f55b90c288753c1cfc47edb377eabe4bd28ab2e7fc4aca1721e96"
+      },
+      {
+        "check": "present",
+        "role": "source",
+        "path": "design/sg13cmos5l/bandgap_core.sym",
+        "passed": true,
+        "content_hash": "sha256:c7916c2f07bd6ff281edf1e1f61902b168fa3dc2181ad2f1009bc7f570713512"
+      },
+      {
+        "check": "present",
+        "role": "source",
+        "path": "design/sg13cmos5l/bandgap_startup.sch",
+        "passed": true,
+        "content_hash": "sha256:8c3d6a723dc6da0b9e473abd203e2f9a4d896a8090ab9a07260e0894735074c1"
+      },
+      {
+        "check": "present",
+        "role": "source",
+        "path": "design/sg13cmos5l/bandgap_startup.sym",
+        "passed": true,
+        "content_hash": "sha256:b028d72edc621393132dd024869400f6a113746e67150997f1a01f5048ecf81c"
+      },
+      {
+        "check": "present",
+        "role": "source",
+        "path": "design/sg13cmos5l/bandgap_top.sch",
+        "passed": true,
+        "content_hash": "sha256:423b9d5c4451478a9890f7fb555cbcb0e9621b9cc6c527f23cc7bbf9e4db0e4f"
+      },
+      {
+        "check": "present",
+        "role": "source",
+        "path": "design/tools/netlist_pin_delta.py",
+        "passed": true,
+        "content_hash": "sha256:aeb3e6d6fac9aecff3c82e9d75cd78df762f1affc770b90d52884f129d96c5ca"
+      },
+      {
+        "check": "present",
+        "role": "source",
+        "path": "design/xschemrc",
+        "passed": true,
+        "content_hash": "sha256:2db904d04cc8900b6e6c06aec8ceedb4384ff155557d67460576e7afac5d6359"
+      },
+      {
+        "check": "present",
+        "role": "derived",
+        "path": "design/sg13cmos5l/netlist/bandgap_amp.spice",
+        "passed": true,
+        "content_hash": "sha256:5b5013faa0353b10105e7aa5dec1dbe7e1d313ceebdc103db0ec06e1f1355ba2"
+      },
+      {
+        "check": "present",
+        "role": "derived",
+        "path": "design/sg13cmos5l/netlist/bandgap_core.spice",
+        "passed": true,
+        "content_hash": "sha256:548b7683c74486dbeb844e75beab8e5b3117694471bb9b3f677e82b22424b0f2"
+      },
+      {
+        "check": "present",
+        "role": "derived",
+        "path": "design/sg13cmos5l/netlist/bandgap_startup.spice",
+        "passed": true,
+        "content_hash": "sha256:69ad3209df7f02d2829050cbb5df6a7f379165de229e9c202447b97248ee8727"
+      },
+      {
+        "check": "present",
+        "role": "derived",
+        "path": "design/sg13cmos5l/netlist/bandgap_top.spice",
+        "passed": true,
+        "content_hash": "sha256:a29624d3bbcc89e2f7132ecfb278dd793b248c84b9f74ab51685f8ecde929ad5"
+      },
+      {
+        "check": "command",
+        "role": "freshness",
+        "target": "design/sg13cmos5l/netlist/bandgap_amp.spice",
+        "generator": "klt netlist",
+        "argv": [
+          "bash",
+          "design/check-netlist-freshness.sh",
+          "bandgap_amp"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true,
+        "local_only": true
+      },
+      {
+        "check": "command",
+        "role": "freshness",
+        "target": "design/sg13cmos5l/netlist/bandgap_core.spice",
+        "generator": "klt netlist",
+        "argv": [
+          "bash",
+          "design/check-netlist-freshness.sh",
+          "bandgap_core"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true,
+        "local_only": true
+      },
+      {
+        "check": "command",
+        "role": "freshness",
+        "target": "design/sg13cmos5l/netlist/bandgap_startup.spice",
+        "generator": "klt netlist",
+        "argv": [
+          "bash",
+          "design/check-netlist-freshness.sh",
+          "bandgap_startup"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true,
+        "local_only": true
+      },
+      {
+        "check": "command",
+        "role": "freshness",
+        "target": "design/sg13cmos5l/netlist/bandgap_top.spice",
+        "generator": "klt netlist",
+        "argv": [
+          "bash",
+          "design/check-netlist-freshness.sh",
+          "bandgap_top"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true,
+        "local_only": true
+      }
+    ]
+  },
+  "provenance": {
+    "klt_version": "0.8.0",
+    "klayout_version": null,
+    "pdk": null,
+    "deck": null,
+    "input": {
+      "path": {
+        "path": "attest/item1.json",
+        "scope": "repo"
+      },
+      "content_hash": "sha256:8d54a72a8dfd54b34b6326a296eb1caafcac149b966ad7b84ca9f4ccb947afb2"
+    }
+  }
+}

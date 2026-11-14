@@ -1,6 +1,7 @@
 {
   "_comment": [
     "Block manifest graded by `klt signoff --manifest`. See README.md for the regeneration command and the pin.",
+    "ITEM 1 (design sources), added by issue #26. One `klt signoff --attest 1` envelope over attest/item1.json. Its per-netlist freshness check is design/check-netlist-freshness.sh, a NORMALIZED compare -- not a raw `klt netlist --check` byte compare, which cannot pass here: xschem writes the generating checkout's absolute path into `** sch_path:` comments, and the PDK revision sim/pdk.json pins emits an `mm_ok=1` instance parameter that the archived pin the committed netlists were exported at did not. Exactly those two differences are tolerated and every other byte -- device cards, sizes, nets, multipliers, subckt port order -- is compared verbatim; design/tests/test-netlist-pin-delta.sh holds the negative controls that keep the tolerance narrow, and CI runs it PDK-free. Regenerating the committed netlists would make a raw byte compare pass, and is NOT done here: 2AMLogic/sg13g2-bandgap owns these cells by lineage and ratified keeping the archived-pin bytes (its #405/#406, regeneration deferred to its #322), and regenerating would also orphan every item-5 envelope's `source_file_sha256` and the item-7 record's `schematic_dut.sha256`. See spec/decision-records/0015-item1-netlist-freshness-gate.md. The freshness checks are local_only (xschem 3.4.7 + the pinned PDK), so the CI `--attest 1 --check` step carries their committed outcome and re-hashes every inventoried file; at the 0.8.0 pin the manifest content_hash is the inventory's own sha256 (item-1 set binding ships after 0.8.0), so that CI step is what catches a schematic edit, exactly as for item 9.",
     "ITEM 5 (full corner verification vs a ratified spec), added by issue #30. Five `klt sim` envelopes, one per row family, each naming the spec/target-spec.md row ids it covers; `spec_rows.5` declares the FULL row set, so a row no envelope covers is visible in the report instead of being silently absent.",
     "The declared row set is spec/target-spec.md's ELECTRICAL rows -- the rows whose Binding-conditions column is the §PVT grid. The Area and Signoff rows of that table are deliberately NOT declared here: their binding conditions are a layout cell and the DRC/LVS/ERC decks, which T1 items 2, 3 and 4 grade. Declaring them under item 5 would make a layout artifact a corner-verification gap.",
     "Item 5 is UNMET on purpose. Three declared rows are gaps: the untrimmed-line 3-sigma row, the trimmed-line row and the Trim row. The first needs a device-mismatch Monte Carlo reduction (issue #31), which a corner matrix cannot express and which T1 item 6 grades; the other two need a trim network that does not exist in this design yet. Naming a narrower row set would have rendered item 5 `met` by leaving the block's unevidenced accuracy rows out of the declaration, which is exactly the relaxation CLAUDE.md forbids.",
@@ -12,6 +13,10 @@
   "block": "sg13cmos5l-bandgap",
   "kind": "analog",
   "evidence": {
+    "1": {
+      "file": "evidence/item1.json",
+      "content_hash": "sha256:8d54a72a8dfd54b34b6326a296eb1caafcac149b966ad7b84ca9f4ccb947afb2"
+    },
     "2": {
       "file": "evidence/item2.json",
       "content_hash": "sha256:4e4e4f85fa0875651c294c95a1f65792fa1913dd20d027fbe6905f2d001cb330"
