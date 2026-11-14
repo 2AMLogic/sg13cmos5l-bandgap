@@ -5,6 +5,8 @@ triage agent. Newest first.
 
 ### 2026-11-13
 
+- **Issue #87** (closed): Remove the `netlist_source: "extracted"` label from sim/smoke/run_smoke.sh: a hand-written deck declared post-layout
+- **PR #89**: sim: drop the false `extracted` provenance label from the smoke request
 - **Issue #83** (closed): The decks' `Vsub sub! vss` tie does not reach the DUT: rppd/rhigh bulk nodes are instance-local and held only by rshunt
 - **PR #85**: sim: declare `sub!` global so the item-5 decks' Vsub tie reaches the DUT's resistor bulks
 - **Issue #80** (closed): Make the item-5 benches runnable on an extracted bandgap_top: .SUBCKT-wrapped DUT and measurements addressable on both legs
