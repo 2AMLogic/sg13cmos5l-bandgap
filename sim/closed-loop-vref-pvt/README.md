@@ -6,7 +6,7 @@ First closed-loop `vref` bench (issue #14, part of #5). It is the planned bench 
 | File | Role |
 |---|---|
 | `run.sh` | Single-corner probe: one `klt sim --backend local` unit at typ / 27 °C / 3.30 V, writes one record |
-| `vref.cir.tmpl` | Deck template: supply, substrate tie, include of the in-repo DUT netlist |
+| `vref.cir.tmpl` | Deck template: supply, substrate tie, include of the in-repo DUT netlist. Also the shared DC-supply fixture — `closed-loop-iq` and `closed-loop-vref-pvt-boxtc` name it in their `bench.json` (decision record 0015) |
 | `request-45pt.json` | The full §PVT grid (5 process × 3 temperature × 3 supply = 45), **run** — see "The 45-point grid" below |
 | `bench.json` | Grid metadata `sim/grid-run.sh` reads: the graded criteria, the spec row id, the OSDI objects |
 | `records/` | Append-only JSON records (`<UTC>-<short sha>.json`), from both runners |

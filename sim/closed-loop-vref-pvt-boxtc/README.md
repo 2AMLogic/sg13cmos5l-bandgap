@@ -7,7 +7,7 @@ corners × 3 supplies. Every figure is **simulated**.
 | File | Role |
 |---|---|
 | `bench.json` | Grid metadata `sim/grid-run.sh` reads: the graded criteria, the spec row ids, the OSDI objects |
-| `deck.cir.tmpl` | Deck body: the same fixture as `closed-loop-vref-pvt/vref.cir.tmpl`, with no transient |
+| `../closed-loop-vref-pvt/vref.cir.tmpl` | Deck fixture, shared with the reference bench (`bench.json` names it; decision record 0015 — the supply stimulus is byte-identical); no transient here |
 | `request-grid.json` | The committed, host-portable `klt sim` request: 15 units, each a 166-point DC sweep of `TEMP` |
 | `records/`, `envelopes/` | Append-only evidence (see `sim/README.md` §PVT grids) |
 
@@ -44,6 +44,7 @@ used, at this PDK pin:
 |---|---|---|
 | `closed-loop-vref-pvt`, typ/3.30 V/27 °C | 2 ms transient, settled | 1.19696 V (decision record 0009) |
 | this bench, typ/3.30 V, sweep index 67 | `dc temp` | 1.196961 V |
+| this bench, typ/3.30 V, 7.14 °C and 125 °C sweep points | `dc temp` | 1.19746 V and 1.19093 V |
 
 The DC solve lands on the same closed-loop operating point, to six digits. That continuity is
 re-checked on every run rather than taken on trust: `vref_m40_v`, `vref_27_v`, `vref_125_v`,

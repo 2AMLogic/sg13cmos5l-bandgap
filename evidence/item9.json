@@ -3,22 +3,15 @@
   "kind": "generic",
   "status": "pass",
   "t1_item": 9,
-  "summary": "T1 item 9 (Testbenches shipped): 14/14 attestation checks passed (klt signoff --attest)",
+  "summary": "T1 item 9 (Testbenches shipped): 12/12 attestation checks passed (klt signoff --attest)",
   "source": "attest/item9.json",
   "attestation": {
     "producer": "klt signoff --attest",
     "inventory_schema_version": 1,
     "hash_algorithm": "sha256-raw-bytes",
-    "check_count": 14,
-    "passed_count": 14,
+    "check_count": 12,
+    "passed_count": 12,
     "checks": [
-      {
-        "check": "present",
-        "role": "testbench",
-        "path": "sim/closed-loop-iq/deck.cir.tmpl",
-        "passed": true,
-        "content_hash": "sha256:71029fb6e3f8a986d3e08c537ec47e09f1c4eb74eded60431ab95623c5bf178b"
-      },
       {
         "check": "present",
         "role": "testbench",
@@ -31,7 +24,7 @@
         "role": "testbench",
         "path": "sim/closed-loop-psrr/deck.cir.tmpl",
         "passed": true,
-        "content_hash": "sha256:7268669cec3dfa79b1886d19708997dbf3f53641140af673d892e6972f24c8e4"
+        "content_hash": "sha256:818f7ce772bb25af3cdca1f23990e72e9b06c7b38d367a818e62f89e151e0982"
       },
       {
         "check": "present",
@@ -45,7 +38,7 @@
         "role": "testbench",
         "path": "sim/closed-loop-startup/deck.cir.tmpl",
         "passed": true,
-        "content_hash": "sha256:351b5200a507e23c6f88e972b495602b5fdef3cda35b110ef7a972b54db90f1f"
+        "content_hash": "sha256:4d7e2899c25d295c2e028e7afde826e1f67f42668cdcf26220861b9311d9232c"
       },
       {
         "check": "present",
@@ -53,13 +46,6 @@
         "path": "sim/closed-loop-startup/request-grid.json",
         "passed": true,
         "content_hash": "sha256:64d3ec5fa01d11ee6415b618b802a718e81b79364fe44c5fd646be1dbf3918fe"
-      },
-      {
-        "check": "present",
-        "role": "testbench",
-        "path": "sim/closed-loop-vref-pvt-boxtc/deck.cir.tmpl",
-        "passed": true,
-        "content_hash": "sha256:46843360fc6946cb9d80483867b7188cfcd78343440d10fb75934ccf62c81f03"
       },
       {
         "check": "present",
@@ -80,7 +66,7 @@
         "role": "testbench",
         "path": "sim/closed-loop-vref-pvt/vref.cir.tmpl",
         "passed": true,
-        "content_hash": "sha256:c9de35c98f78140aa0dd4b3d216f324c4965dfcea744bce443d2a27155591640"
+        "content_hash": "sha256:73e0f7b50c69aced376bb6520ad890de081b7a3e211a8a0b49537f88fb83c510"
       },
       {
         "check": "present",
@@ -133,7 +119,7 @@
         "path": "attest/item9.json",
         "scope": "repo"
       },
-      "content_hash": "sha256:aeeb3a74259a5822fc56d90eb759031769fbfd2773b8cf87376e3023846d6220"
+      "content_hash": "sha256:0b68a93ab116224a9ebfcd83773f0d8232348abca3967d969b35ce271f0012bb"
     }
   }
 }

@@ -31,7 +31,10 @@ source sim/env.sh && sim/grid-run.sh closed-loop-psrr      # or any of the five 
 
 Each bench directory carries `bench.json` (the graded criteria and which files to use), a
 deck template, and a committed `request-grid.json` (`request-45pt.json` in
-`closed-loop-vref-pvt`, whose name decision record 0009 already cites). `grid-run.sh` writes
+`closed-loop-vref-pvt`, whose name decision record 0009 already cites). The deck template is
+named by filename, so benches whose supply stimulus is identical share one file:
+`closed-loop-iq` and `closed-loop-vref-pvt-boxtc` point at
+`closed-loop-vref-pvt/vref.cir.tmpl` (decision record 0015). `grid-run.sh` writes
 two artifacts per run, both append-only:
 
 - `envelopes/<UTC>-<short sha>.json` — the raw `klt sim --format json` envelope. **This is the
@@ -51,6 +54,52 @@ Every committed request is **host-portable**: `models.pdk` plus PDK-relative per
 libraries (no generated corner bundle, no absolute host path, which `batch` refuses),
 `$PDK_ROOT/...` OSDI entries the runner resolves on its own box, and
 `options.stage_model_inputs: true`.
+
+### Deck fixture conventions, stated once for the grid benches
+
+The grid benches' deck templates each carry one small circuit section plus that bench's own
+fixture note (its full measured story is in the bench's `README.md`); the five explanations
+below are shared by every fixture and live here, so a corrected fact has one place to land
+and a template edit does not force a re-attestation of four copies of the same prose. The
+templates themselves only point here. Since decision record 0015 a bench on an already-attested
+stimulus names the existing fixture in its `bench.json` (`deck_template` and `testbench`)
+instead of copying it: `closed-loop-iq` and `closed-loop-vref-pvt-boxtc` run
+`closed-loop-vref-pvt/vref.cir.tmpl` unchanged.
+
+- **No SPICE title line (issue #19).** `klt sim` writes its own top deck (title
+  `* klt sim -- generated corner deck, do not edit`) and pulls the bench deck in with
+  `.include`, so line 1 of a template is **not** in title position — it is parsed as a netlist
+  element. A bare `sg13cmos5l … bench` title line was read as an `S`-prefix
+  (voltage-controlled switch) instance with no model, which failed the whole run with
+  "Unable to find definition of model" before any analysis started. Every line of every
+  template is therefore a comment or a card, and `grid-run.sh` writes its own leading `*`
+  line so the generated deck has an inert line 1 either way (same convention as
+  `sim/smoke/smoke.cir`, whose line 1 is a comment).
+- **`.options rshunt=1e9 gmin=1e-9` are convergence aids only**, far below any current or
+  voltage read here (the values the inherited source closed-loop bench uses). They are not
+  what resolves the resistor bulk nodes — the `.global sub!` card below ties those to `vss`
+  deliberately (decision record 0014); before it, `rshunt` was the only thing holding them.
+- **The substrate tie (issue #83, decision record 0014).** Every fixture declares the
+  substrate net `sub!` global (`.global sub!`) and ties it to `vss` through
+  `Vsub sub! vss dc 0`. `!` is an xschem global-net marker, not an ngspice one, and the
+  migrated netlist carries no `.global` card of its own, so without the card the
+  `rppd`/`rhigh` bulk terminals inside `bandgap_core` and `bandgap_startup` stay per-instance
+  LOCAL nodes (`xdut.xx1.sub!`, `xdut.xx3.sub!`) — different nodes from the one `Vsub` drives,
+  with no deliberate DC path and nothing but `rshunt` resolving them. With the card there is
+  one `sub!` net at every hierarchy level, so the 0 V source holds the resistor bulks at
+  `vss` as the schematics' `body=sub!` say it should.
+- **The staged DUT wrapper (decision record 0013).** `sim/runner-lib.sh`'s `cm5_stage_dut`
+  makes the xschem export's commented-out top block live as
+  `.subckt sg13cmos5l_bandgap_top vdd vref vss` and drops the final `.end` card, without
+  editing the attested source. That cell name and pin order are the layout-extracted
+  netlist's, so one deck can be pointed at either leg for the T1 item-7 delta: a flat DUT
+  makes `klt pex` fire `flat_dut_mismatch`, and a wrapper in the export's own
+  `vdd vss vref` order makes it fire `pin_order_mismatch`. Electrically a no-op — measured,
+  not assumed (decision record 0013). Internal nodes are addressed one level down
+  accordingly: `v(xdut.fb)`, `v(xdut.sns1)`, `v(xdut.sns2)`, `v(xdut.xx3.det)`.
+- **OSDI objects load through the request's `options.osdi_preload`, not a `.control`
+  block**: a `.control` block here would land inside the deck `klt sim` `.include`s, not in
+  the top deck it generates, so its commands would never run.
 
 ### What the fleet runner cannot prove (and what staging fixes)
 
