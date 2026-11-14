@@ -2,7 +2,8 @@
 
 Simulation environment for the SG13CMOS5L bandgap: the PDK pin, a bring-up smoke bench
 (issue #4, T1 item 9), the five PVT-grid benches that carry T1 item 5's corner
-verification (issue #30), and the post-layout extraction that carries T1 item 7 (issue #32).
+verification (issue #30), the statistical Monte Carlo bench behind T1 item 6
+(issue #31), and the post-layout extraction that carries T1 item 7 (issue #32).
 
 | File | Role |
 |---|---|
@@ -14,11 +15,14 @@ verification (issue #30), and the post-layout extraction that carries T1 item 7 
 | `closed-loop-psrr/` | PSRR @ DC: two DC solves per point and a 0.1 V supply secant. 45 points |
 | `closed-loop-iq/` | Quiescent supply current, settled. 45 points |
 | `closed-loop-startup/` | Release from `vdd` = 0: self-starting **and** the settling time the inherited source bench never extracted. 45 points |
+| `closed-loop-vref-mc/` | The statistical Monte Carlo bench: the untrimmed-line (3σ) row and T1 item 6. Four campaigns — the population, a deterministic zero-spread control, a known-bad 3× control, and a per-family attribution sweep — plus the committed `klt yield` report |
 | `grid-run.sh` | The one runner for all five grids: stages the migrated DUT, renders the deck, submits the committed request to the batch fleet, writes the envelope and the record |
 | | *Staging wraps the DUT*: `cm5_stage_dut` derives `.subckt sg13cmos5l_bandgap_top vdd vref vss` from the attested netlist's commented-out top block, without editing it, so one deck serves both legs of the item-7 delta. Decks instantiate it as `Xdut` and address internal nodes as `v(xdut.…)`. Decision record 0013 |
+| `mc-run.sh`, `mc-yield.sh` | The Monte Carlo pair: one campaign to the fleet, then `klt yield-samples` + `klt yield` over two committed envelopes |
 | `pex-bandgap-top/` | T1 item 7 (post-layout verification): the committed `klt pex --extract-only` envelope, the extracted netlist, and the schematic-vs-extracted device inventory. **No delta** — see below |
 | `pex-run.sh`, `tools/pex_device_inventory.py` | The item-7 runner and the offline device-inventory comparator it embeds in each record |
 | `runner-lib.sh`, `tools/cm5_record.py` | Shared by the bench runners: tool/ngspice gates, append-only record path and write, klt-envelope value extraction and grid reduction (record 0008, extended by 0011) |
+| `tools/stat_locality.py` | Measures whether a model section varies a device per instance or globally, by instantiating the same device twice and comparing — the question `klt sim`'s own `family_mismatch` report cannot answer for this PDK |
 | `ENV-DECISION.md` | Why `env.sh` is this repo's own and the OSDI builder is adopted by pin |
 
 ## PVT grids: one runner, the batch fleet, and what it can and cannot prove
@@ -105,6 +109,47 @@ The unreadable image stamp itself is `klayout-tools#5321`/`#5318`, already filed
 
 Every figure these produce is **simulated**. The smoke circuit is not part of the
 design and proves only that the models load and converge.
+
+## Monte Carlo: the statistical bench, and what the PDK lets it sample
+
+`sim/closed-loop-vref-mc` carries the `vref_untrimmed_line_3sigma` row and T1 item 6.
+Run one campaign, then the yield step:
+
+```bash
+source sim/env.sh && sim/mc-run.sh zero      # then: line, inflated, families
+sim/mc-yield.sh sim/closed-loop-vref-mc/envelopes/<utc>-<sha>.line.json \
+                sim/closed-loop-vref-mc/envelopes/<utc>-<sha>.inflated.json
+```
+
+`CM5_MC_DRY_RUN=1` renders and validates a campaign without submitting or writing
+anything. Campaigns go to the batch fleet exactly as the grids do, split into jobs
+sized from the fleet's own ceiling (`batch.job_ceiling_check: "split"`), and write
+append-only `envelopes/` and `records/` with the seed, N, the fleet job ids, the
+per-point statistics and the control verdict.
+
+**What this PDK can and cannot sample is measured, not assumed.** `cornerPNP.lib`
+`stat` and `cornerMOShv.lib` `mos_tt_stat` vary top-level `.param`s, so every
+instance shares one draw: they are global statistical variation. The `*_mismatch`
+sections are per-instance but gated on the subcircuit parameter `mm_ok` (default
+`0`), which the migrated DUT does not set, so they sample exactly zero.
+`cornerRES.lib` `res_stat` *is* per-instance, despite its own comment. Reproduce the
+whole table in a few seconds:
+
+```bash
+source sim/env.sh && python3 -I sim/tools/stat_locality.py
+```
+
+The consequence — the bipolar matching term cannot be sampled at all, and statistics
+exist only at typ so the process-corner axis collapses — is recorded in
+[`0014`](../spec/decision-records/0014-statistical-mc-sections-and-window.md), and
+is why the row is declared `ratified: false` under `spec_rows."6"` rather than
+covered. The tool half is filed generically as
+[`klayout-tools#5486`](https://github.com/2AMLogic/klayout-tools/issues/5486).
+
+`klt yield` needs the `klt_yield_native` extension, which this host's shared `klt`
+does not carry and which must not be installed into it. `sim/mc-yield.sh` reaches it
+through a throwaway `uvx --from 'klayout-tools[yield]' klt` and records the resolved
+version; `$CM5_KLT_YIELD` overrides the command.
 
 ## Prerequisites
 
