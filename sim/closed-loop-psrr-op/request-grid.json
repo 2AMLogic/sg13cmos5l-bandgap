@@ -1,0 +1,930 @@
+{
+  "_comment": [
+    "sg13cmos5l-bandgap -- operating-point attribution for the FAILED `psrr_dc` row of",
+    "spec/target-spec.md (issue #93). This bench GRADES NOTHING: it carries no `limits` and no",
+    "`spec_row` tag, is cited by no manifest item, and adds no coverage claim. It exists to say WHY",
+    "the committed sim/closed-loop-psrr grid misses its ratified Target, which that grid records but",
+    "does not explain. The ratified bound is untouched.",
+    "",
+    "SUB-GRID, not the full 45: process {typ, wcs} x supply {2.970, 3.300, 3.630} V x {27, 125} C =",
+    "12 points. It is a cross product because `corners` is one, and it is THIS cross product because",
+    "the question is the supply dependence: each (process, temperature) pair appears at all three",
+    "supplies, so within each such triple vdd is the only thing that moves. It contains the",
+    "three points the issue requires -- the worst failing point wcs/2.970V/125C (55.249 dB in the",
+    "committed grid), a passing 3.63 V point (all four 3.63 V points pass; wcs/3.630V/125C is",
+    "67.470 dB), and typ/3.300V/27C (59.443 dB) -- and 6 of the 12 fail the Target in that grid,",
+    "6 pass.",
+    "",
+    "THREE SOLVES PER POINT, all DC `op`. No `ac` analysis and no frequency point: the row is DC",
+    "only (sim/closed-loop-psrr/README.md says why), and no loop-break deck is used.",
+    "  - `lo` and `hi` are the committed PSRR bench's own two solves, in the same order with the",
+    "    same +/-0.05 V `Vpsrr` alters, so psrr_db here is the same secant and must reproduce the",
+    "    committed grid's value at the same point (the bench README quotes both numbers).",
+    "  - `op` returns `Vpsrr` to its deck default of 0 V. A 0 V source is a DC short, so this third",
+    "    solve is the UNPERTURBED bias the secant was taken about -- the right operating point to",
+    "    attribute the miss to. The steps are cumulative (no `reset`), so it starts from `hi`'s",
+    "    solution and converges to the unperturbed point.",
+    "",
+    "WHY THE DEVICE PARAMETERS ARE WRITTEN BY HAND AS `@n....` EXPRESSIONS. `klt sim --op-lint`",
+    "is the obvious instrument and cannot do this on SG13CMOS5L: the PDK's `.subckt sg13_hv_pmos`",
+    "wraps an OSDI (PSP103) `N` instance, the lint probes only `@m.<path>.<element>`, and the",
+    "`op_lint.models.*.op_point_element` override substitutes the element name but not the `@m.`",
+    "prefix -- so every value comes back null with `region: \"unknown\"`. Filed as generic tool",
+    "friction at 2AMLogic/klayout-tools#5637; this bench does not wait on it. The expressions below",
+    "lower into the same `.control` `let`/`print` idiom klt uses for any `measurements[].expr`.",
+    "",
+    "THERE IS NO `vdsat` ON THIS PDK. PSP103 exposes `vdss`, its own name for the saturation",
+    "voltage; `save @n....[vdsat]` fails with 'vector is not available'. So the issue's",
+    "`vds - vdsat` margin is recorded here as `<dev>_marg_v = |vds| - |vdss|`, over all 14 MOS",
+    "devices. The magnitudes are taken because PSP103 reports device-oriented quantities, so the",
+    "expression is correct for both the p- and the n-channel devices without a per-type sign rule.",
+    "A negative margin is a device out of saturation and is RECORDED AS SUCH -- it is not graded,",
+    "not clamped and not dropped.",
+    "",
+    "TWO FIGURES ABOUT THE AMPLIFIER, one of which is deliberately NOT a gain. The issue asks for",
+    "'the amplifier's DC gain or an equivalent loop-gain figure':",
+    "  - `av_amp_derived` is the DC GAIN FIGURE the issue asks for. It is DERIVED from the",
+    "    measured op point by the textbook two-stage",
+    "    small-signal formula, 0.5 * av1 * gm2_s * rout_ohm, with av1, gm2_s and rout_ohm recorded",
+    "    separately so the arithmetic can be re-done from the raw gm/gds. Its stated neglects: the",
+    "    body effect (gmb), and the tail-current feedback from xmtail's gate being the amplifier's",
+    "    own output node fb.",
+    "  - `fb_per_dvid` is MEASURED and is NOT a gain: it is |d(fb)/d(sns2-sns1)| across the supply",
+    "    secant, i.e. the gain the feedback loop WOULD need if the differential input error were the",
+    "    only thing moving fb. The rail also moves the amplifier's own supply-referred bias (xmtail,",
+    "    xmp3 and xmp4 have their sources on vdd), so it is not. Recorded precisely because",
+    "    comparing it with `av_amp_derived` measures how much of fb's tracking the loop cannot",
+    "    account for.",
+    "Every per-device gm, gds, ids, vgs, vds and vdss is recorded, so any other figure a reader",
+    "prefers can be recomputed from the record without re-running the bench.",
+    "",
+    "THE MIRROR LEG IS TESTED, NOT ASSERTED. `dids_m3_a` is the measured change in the output",
+    "mirror leg's current across the secant; `dids_m3_predicted_a` is what the measured small-signal",
+    "parameters predict for it, gm3*(dvdd - dfb) + gds3*(dvdd - dvref) in PSP103's device-oriented",
+    "convention. Agreement means the mirror's own channel-length modulation plus the imperfect",
+    "tracking of fb accounts for the whole error; a gap means something else does. The two terms are",
+    "also recorded SEPARATELY (`dids_m3_gds_term_a`, `dids_m3_gm_term_a`) because they have opposite",
+    "signs and nearly cancel, so the sum alone would hide which one is large. `rbranch_ohm` is the",
+    "measured d(vref)/d(ids_m3) of the output branch (XR1 in series with XQ3's own slope), the gain",
+    "that turns that residual current into the recorded d(vref). `r1_ohm` and `r2_ohm` measure the",
+    "two core resistors themselves from the op point ((vref - e3)/ids_m3 and (sns2 - e2)/ids_m2),",
+    "so rbranch_ohm's composition is measured rather than attributed to XR1 by its geometry.",
+    "",
+    "THE STARTUP LEG IS INCLUDED SO IT CAN BE RULED OUT BY MEASUREMENT. xx3.xmkfb pulls fb toward",
+    "vss and would be a competing, supply-dependent mechanism independent of any headroom; its ids",
+    "and vds, and the det node it is gated from, are recorded at every point.",
+    "",
+    "PORTABLE BY CONSTRUCTION, on the same terms as the five grid benches: `models.pdk` plus",
+    "PDK-relative per-section corner libraries (no absolute host path, which `batch` refuses),",
+    "`$PDK_ROOT/...` osdi_preload entries the runner resolves on its own box, and",
+    "`options.stage_model_inputs: true` so the model text behind every figure is bound to",
+    "sim/pdk.json's pin by sha256. `netlist` is the deck sim/grid-run.sh generates under sim/build/",
+    "(gitignored). The solver tolerances and `numdgt`/`measureprec` are the PSRR bench's, unchanged,",
+    "so the secant is the same numerical object.",
+    "",
+    "THE PER-DEVICE MEASUREMENT BLOCK IS MACHINE-GENERATED (14 devices x 6 quantities is too long",
+    "to hand-write without a transcription error), from a one-shot script that is not part of the",
+    "bench. THIS FILE is the committed artifact and the thing that runs; the record's",
+    "request_sha256 binds it.",
+    "",
+    "Process labels map to model sections exactly as spec/target-spec.md \u00a7PVT does.",
+    "`netlist_source` is `schematic`: the DUT is the decision-record-0006 migrated xschem export."
+  ],
+  "engine": "ngspice",
+  "netlist": "../build/closed-loop-psrr-op/deck.cir",
+  "netlist_source": "schematic",
+  "models": {
+    "pdk": "ihp-sg13cmos5l"
+  },
+  "corners": {
+    "process": [
+      {
+        "name": "typ",
+        "sections": [
+          {
+            "lib": "libs.tech/ngspice/models/cornerPNP.lib",
+            "section": "typ"
+          },
+          {
+            "lib": "libs.tech/ngspice/models/cornerMOShv.lib",
+            "section": "mos_tt"
+          },
+          {
+            "lib": "libs.tech/ngspice/models/cornerRES.lib",
+            "section": "res_typ"
+          }
+        ]
+      },
+      {
+        "name": "wcs",
+        "sections": [
+          {
+            "lib": "libs.tech/ngspice/models/cornerPNP.lib",
+            "section": "wcs"
+          },
+          {
+            "lib": "libs.tech/ngspice/models/cornerMOShv.lib",
+            "section": "mos_ss"
+          },
+          {
+            "lib": "libs.tech/ngspice/models/cornerRES.lib",
+            "section": "res_wcs"
+          }
+        ]
+      }
+    ],
+    "supply_v": {
+      "Vvdd": [
+        2.97,
+        3.3,
+        3.63
+      ]
+    },
+    "temperature_c": [
+      27,
+      125
+    ]
+  },
+  "analysis_steps": [
+    {
+      "name": "lo",
+      "analysis": {
+        "kind": "op",
+        "args": ""
+      },
+      "alter": {
+        "Vpsrr": -0.05
+      },
+      "measurements": [
+        {
+          "name": "vref",
+          "expr": "v(vref)",
+          "unit": "V",
+          "plausible_range": {
+            "min": 0.5,
+            "max": 2.0
+          }
+        },
+        {
+          "name": "vdd",
+          "expr": "v(vdd)",
+          "unit": "V"
+        },
+        {
+          "name": "fb",
+          "expr": "v(xdut.fb)",
+          "unit": "V"
+        },
+        {
+          "name": "sns1",
+          "expr": "v(xdut.sns1)",
+          "unit": "V"
+        },
+        {
+          "name": "sns2",
+          "expr": "v(xdut.sns2)",
+          "unit": "V"
+        },
+        {
+          "name": "m1_ids",
+          "expr": "@n.xdut.xx1.xm1.nsg13_hv_pmos[ids]",
+          "unit": "A"
+        },
+        {
+          "name": "m2_ids",
+          "expr": "@n.xdut.xx1.xm2.nsg13_hv_pmos[ids]",
+          "unit": "A"
+        },
+        {
+          "name": "m3_ids",
+          "expr": "@n.xdut.xx1.xm3.nsg13_hv_pmos[ids]",
+          "unit": "A"
+        }
+      ]
+    },
+    {
+      "name": "hi",
+      "analysis": {
+        "kind": "op",
+        "args": ""
+      },
+      "alter": {
+        "Vpsrr": 0.05
+      },
+      "measurements": [
+        {
+          "name": "vref",
+          "expr": "v(vref)",
+          "unit": "V",
+          "plausible_range": {
+            "min": 0.5,
+            "max": 2.0
+          }
+        },
+        {
+          "name": "vdd",
+          "expr": "v(vdd)",
+          "unit": "V"
+        },
+        {
+          "name": "fb",
+          "expr": "v(xdut.fb)",
+          "unit": "V"
+        },
+        {
+          "name": "sns1",
+          "expr": "v(xdut.sns1)",
+          "unit": "V"
+        },
+        {
+          "name": "sns2",
+          "expr": "v(xdut.sns2)",
+          "unit": "V"
+        },
+        {
+          "name": "m1_ids",
+          "expr": "@n.xdut.xx1.xm1.nsg13_hv_pmos[ids]",
+          "unit": "A"
+        },
+        {
+          "name": "m2_ids",
+          "expr": "@n.xdut.xx1.xm2.nsg13_hv_pmos[ids]",
+          "unit": "A"
+        },
+        {
+          "name": "m3_ids",
+          "expr": "@n.xdut.xx1.xm3.nsg13_hv_pmos[ids]",
+          "unit": "A"
+        }
+      ]
+    },
+    {
+      "name": "op",
+      "analysis": {
+        "kind": "op",
+        "args": ""
+      },
+      "alter": {
+        "Vpsrr": 0.0
+      },
+      "measurements": [
+        {
+          "name": "vref",
+          "expr": "v(vref)",
+          "unit": "V",
+          "plausible_range": {
+            "min": 0.5,
+            "max": 2.0
+          }
+        },
+        {
+          "name": "vdd",
+          "expr": "v(vdd)",
+          "unit": "V"
+        },
+        {
+          "name": "fb",
+          "expr": "v(xdut.fb)",
+          "unit": "V"
+        },
+        {
+          "name": "sns1",
+          "expr": "v(xdut.sns1)",
+          "unit": "V"
+        },
+        {
+          "name": "sns2",
+          "expr": "v(xdut.sns2)",
+          "unit": "V"
+        },
+        {
+          "name": "det",
+          "expr": "v(xdut.xx3.det)",
+          "unit": "V"
+        },
+        {
+          "name": "e2",
+          "expr": "v(xdut.xx1.e2)",
+          "unit": "V"
+        },
+        {
+          "name": "e3",
+          "expr": "v(xdut.xx1.e3)",
+          "unit": "V"
+        },
+        {
+          "name": "m1_vds",
+          "expr": "@n.xdut.xx1.xm1.nsg13_hv_pmos[vds]",
+          "unit": "V"
+        },
+        {
+          "name": "m1_vdss",
+          "expr": "@n.xdut.xx1.xm1.nsg13_hv_pmos[vdss]",
+          "unit": "V"
+        },
+        {
+          "name": "m1_vgs",
+          "expr": "@n.xdut.xx1.xm1.nsg13_hv_pmos[vgs]",
+          "unit": "V"
+        },
+        {
+          "name": "m1_gm",
+          "expr": "@n.xdut.xx1.xm1.nsg13_hv_pmos[gm]",
+          "unit": "S"
+        },
+        {
+          "name": "m1_gds",
+          "expr": "@n.xdut.xx1.xm1.nsg13_hv_pmos[gds]",
+          "unit": "S"
+        },
+        {
+          "name": "m1_ids",
+          "expr": "@n.xdut.xx1.xm1.nsg13_hv_pmos[ids]",
+          "unit": "A"
+        },
+        {
+          "name": "m2_vds",
+          "expr": "@n.xdut.xx1.xm2.nsg13_hv_pmos[vds]",
+          "unit": "V"
+        },
+        {
+          "name": "m2_vdss",
+          "expr": "@n.xdut.xx1.xm2.nsg13_hv_pmos[vdss]",
+          "unit": "V"
+        },
+        {
+          "name": "m2_vgs",
+          "expr": "@n.xdut.xx1.xm2.nsg13_hv_pmos[vgs]",
+          "unit": "V"
+        },
+        {
+          "name": "m2_gm",
+          "expr": "@n.xdut.xx1.xm2.nsg13_hv_pmos[gm]",
+          "unit": "S"
+        },
+        {
+          "name": "m2_gds",
+          "expr": "@n.xdut.xx1.xm2.nsg13_hv_pmos[gds]",
+          "unit": "S"
+        },
+        {
+          "name": "m2_ids",
+          "expr": "@n.xdut.xx1.xm2.nsg13_hv_pmos[ids]",
+          "unit": "A"
+        },
+        {
+          "name": "m3_vds",
+          "expr": "@n.xdut.xx1.xm3.nsg13_hv_pmos[vds]",
+          "unit": "V"
+        },
+        {
+          "name": "m3_vdss",
+          "expr": "@n.xdut.xx1.xm3.nsg13_hv_pmos[vdss]",
+          "unit": "V"
+        },
+        {
+          "name": "m3_vgs",
+          "expr": "@n.xdut.xx1.xm3.nsg13_hv_pmos[vgs]",
+          "unit": "V"
+        },
+        {
+          "name": "m3_gm",
+          "expr": "@n.xdut.xx1.xm3.nsg13_hv_pmos[gm]",
+          "unit": "S"
+        },
+        {
+          "name": "m3_gds",
+          "expr": "@n.xdut.xx1.xm3.nsg13_hv_pmos[gds]",
+          "unit": "S"
+        },
+        {
+          "name": "m3_ids",
+          "expr": "@n.xdut.xx1.xm3.nsg13_hv_pmos[ids]",
+          "unit": "A"
+        },
+        {
+          "name": "mtail_vds",
+          "expr": "@n.xdut.xx2.xmtail.nsg13_hv_pmos[vds]",
+          "unit": "V"
+        },
+        {
+          "name": "mtail_vdss",
+          "expr": "@n.xdut.xx2.xmtail.nsg13_hv_pmos[vdss]",
+          "unit": "V"
+        },
+        {
+          "name": "mtail_vgs",
+          "expr": "@n.xdut.xx2.xmtail.nsg13_hv_pmos[vgs]",
+          "unit": "V"
+        },
+        {
+          "name": "mtail_gm",
+          "expr": "@n.xdut.xx2.xmtail.nsg13_hv_pmos[gm]",
+          "unit": "S"
+        },
+        {
+          "name": "mtail_gds",
+          "expr": "@n.xdut.xx2.xmtail.nsg13_hv_pmos[gds]",
+          "unit": "S"
+        },
+        {
+          "name": "mtail_ids",
+          "expr": "@n.xdut.xx2.xmtail.nsg13_hv_pmos[ids]",
+          "unit": "A"
+        },
+        {
+          "name": "mp1_vds",
+          "expr": "@n.xdut.xx2.xmp1.nsg13_hv_pmos[vds]",
+          "unit": "V"
+        },
+        {
+          "name": "mp1_vdss",
+          "expr": "@n.xdut.xx2.xmp1.nsg13_hv_pmos[vdss]",
+          "unit": "V"
+        },
+        {
+          "name": "mp1_vgs",
+          "expr": "@n.xdut.xx2.xmp1.nsg13_hv_pmos[vgs]",
+          "unit": "V"
+        },
+        {
+          "name": "mp1_gm",
+          "expr": "@n.xdut.xx2.xmp1.nsg13_hv_pmos[gm]",
+          "unit": "S"
+        },
+        {
+          "name": "mp1_gds",
+          "expr": "@n.xdut.xx2.xmp1.nsg13_hv_pmos[gds]",
+          "unit": "S"
+        },
+        {
+          "name": "mp1_ids",
+          "expr": "@n.xdut.xx2.xmp1.nsg13_hv_pmos[ids]",
+          "unit": "A"
+        },
+        {
+          "name": "mp2_vds",
+          "expr": "@n.xdut.xx2.xmp2.nsg13_hv_pmos[vds]",
+          "unit": "V"
+        },
+        {
+          "name": "mp2_vdss",
+          "expr": "@n.xdut.xx2.xmp2.nsg13_hv_pmos[vdss]",
+          "unit": "V"
+        },
+        {
+          "name": "mp2_vgs",
+          "expr": "@n.xdut.xx2.xmp2.nsg13_hv_pmos[vgs]",
+          "unit": "V"
+        },
+        {
+          "name": "mp2_gm",
+          "expr": "@n.xdut.xx2.xmp2.nsg13_hv_pmos[gm]",
+          "unit": "S"
+        },
+        {
+          "name": "mp2_gds",
+          "expr": "@n.xdut.xx2.xmp2.nsg13_hv_pmos[gds]",
+          "unit": "S"
+        },
+        {
+          "name": "mp2_ids",
+          "expr": "@n.xdut.xx2.xmp2.nsg13_hv_pmos[ids]",
+          "unit": "A"
+        },
+        {
+          "name": "mp3_vds",
+          "expr": "@n.xdut.xx2.xmp3.nsg13_hv_pmos[vds]",
+          "unit": "V"
+        },
+        {
+          "name": "mp3_vdss",
+          "expr": "@n.xdut.xx2.xmp3.nsg13_hv_pmos[vdss]",
+          "unit": "V"
+        },
+        {
+          "name": "mp3_vgs",
+          "expr": "@n.xdut.xx2.xmp3.nsg13_hv_pmos[vgs]",
+          "unit": "V"
+        },
+        {
+          "name": "mp3_gm",
+          "expr": "@n.xdut.xx2.xmp3.nsg13_hv_pmos[gm]",
+          "unit": "S"
+        },
+        {
+          "name": "mp3_gds",
+          "expr": "@n.xdut.xx2.xmp3.nsg13_hv_pmos[gds]",
+          "unit": "S"
+        },
+        {
+          "name": "mp3_ids",
+          "expr": "@n.xdut.xx2.xmp3.nsg13_hv_pmos[ids]",
+          "unit": "A"
+        },
+        {
+          "name": "mp4_vds",
+          "expr": "@n.xdut.xx2.xmp4.nsg13_hv_pmos[vds]",
+          "unit": "V"
+        },
+        {
+          "name": "mp4_vdss",
+          "expr": "@n.xdut.xx2.xmp4.nsg13_hv_pmos[vdss]",
+          "unit": "V"
+        },
+        {
+          "name": "mp4_vgs",
+          "expr": "@n.xdut.xx2.xmp4.nsg13_hv_pmos[vgs]",
+          "unit": "V"
+        },
+        {
+          "name": "mp4_gm",
+          "expr": "@n.xdut.xx2.xmp4.nsg13_hv_pmos[gm]",
+          "unit": "S"
+        },
+        {
+          "name": "mp4_gds",
+          "expr": "@n.xdut.xx2.xmp4.nsg13_hv_pmos[gds]",
+          "unit": "S"
+        },
+        {
+          "name": "mp4_ids",
+          "expr": "@n.xdut.xx2.xmp4.nsg13_hv_pmos[ids]",
+          "unit": "A"
+        },
+        {
+          "name": "mn1_vds",
+          "expr": "@n.xdut.xx2.xmn1.nsg13_hv_nmos[vds]",
+          "unit": "V"
+        },
+        {
+          "name": "mn1_vdss",
+          "expr": "@n.xdut.xx2.xmn1.nsg13_hv_nmos[vdss]",
+          "unit": "V"
+        },
+        {
+          "name": "mn1_vgs",
+          "expr": "@n.xdut.xx2.xmn1.nsg13_hv_nmos[vgs]",
+          "unit": "V"
+        },
+        {
+          "name": "mn1_gm",
+          "expr": "@n.xdut.xx2.xmn1.nsg13_hv_nmos[gm]",
+          "unit": "S"
+        },
+        {
+          "name": "mn1_gds",
+          "expr": "@n.xdut.xx2.xmn1.nsg13_hv_nmos[gds]",
+          "unit": "S"
+        },
+        {
+          "name": "mn1_ids",
+          "expr": "@n.xdut.xx2.xmn1.nsg13_hv_nmos[ids]",
+          "unit": "A"
+        },
+        {
+          "name": "mn2_vds",
+          "expr": "@n.xdut.xx2.xmn2.nsg13_hv_nmos[vds]",
+          "unit": "V"
+        },
+        {
+          "name": "mn2_vdss",
+          "expr": "@n.xdut.xx2.xmn2.nsg13_hv_nmos[vdss]",
+          "unit": "V"
+        },
+        {
+          "name": "mn2_vgs",
+          "expr": "@n.xdut.xx2.xmn2.nsg13_hv_nmos[vgs]",
+          "unit": "V"
+        },
+        {
+          "name": "mn2_gm",
+          "expr": "@n.xdut.xx2.xmn2.nsg13_hv_nmos[gm]",
+          "unit": "S"
+        },
+        {
+          "name": "mn2_gds",
+          "expr": "@n.xdut.xx2.xmn2.nsg13_hv_nmos[gds]",
+          "unit": "S"
+        },
+        {
+          "name": "mn2_ids",
+          "expr": "@n.xdut.xx2.xmn2.nsg13_hv_nmos[ids]",
+          "unit": "A"
+        },
+        {
+          "name": "mn3_vds",
+          "expr": "@n.xdut.xx2.xmn3.nsg13_hv_nmos[vds]",
+          "unit": "V"
+        },
+        {
+          "name": "mn3_vdss",
+          "expr": "@n.xdut.xx2.xmn3.nsg13_hv_nmos[vdss]",
+          "unit": "V"
+        },
+        {
+          "name": "mn3_vgs",
+          "expr": "@n.xdut.xx2.xmn3.nsg13_hv_nmos[vgs]",
+          "unit": "V"
+        },
+        {
+          "name": "mn3_gm",
+          "expr": "@n.xdut.xx2.xmn3.nsg13_hv_nmos[gm]",
+          "unit": "S"
+        },
+        {
+          "name": "mn3_gds",
+          "expr": "@n.xdut.xx2.xmn3.nsg13_hv_nmos[gds]",
+          "unit": "S"
+        },
+        {
+          "name": "mn3_ids",
+          "expr": "@n.xdut.xx2.xmn3.nsg13_hv_nmos[ids]",
+          "unit": "A"
+        },
+        {
+          "name": "mn4_vds",
+          "expr": "@n.xdut.xx2.xmn4.nsg13_hv_nmos[vds]",
+          "unit": "V"
+        },
+        {
+          "name": "mn4_vdss",
+          "expr": "@n.xdut.xx2.xmn4.nsg13_hv_nmos[vdss]",
+          "unit": "V"
+        },
+        {
+          "name": "mn4_vgs",
+          "expr": "@n.xdut.xx2.xmn4.nsg13_hv_nmos[vgs]",
+          "unit": "V"
+        },
+        {
+          "name": "mn4_gm",
+          "expr": "@n.xdut.xx2.xmn4.nsg13_hv_nmos[gm]",
+          "unit": "S"
+        },
+        {
+          "name": "mn4_gds",
+          "expr": "@n.xdut.xx2.xmn4.nsg13_hv_nmos[gds]",
+          "unit": "S"
+        },
+        {
+          "name": "mn4_ids",
+          "expr": "@n.xdut.xx2.xmn4.nsg13_hv_nmos[ids]",
+          "unit": "A"
+        },
+        {
+          "name": "msense_vds",
+          "expr": "@n.xdut.xx3.xmsense.nsg13_hv_nmos[vds]",
+          "unit": "V"
+        },
+        {
+          "name": "msense_vdss",
+          "expr": "@n.xdut.xx3.xmsense.nsg13_hv_nmos[vdss]",
+          "unit": "V"
+        },
+        {
+          "name": "msense_vgs",
+          "expr": "@n.xdut.xx3.xmsense.nsg13_hv_nmos[vgs]",
+          "unit": "V"
+        },
+        {
+          "name": "msense_gm",
+          "expr": "@n.xdut.xx3.xmsense.nsg13_hv_nmos[gm]",
+          "unit": "S"
+        },
+        {
+          "name": "msense_gds",
+          "expr": "@n.xdut.xx3.xmsense.nsg13_hv_nmos[gds]",
+          "unit": "S"
+        },
+        {
+          "name": "msense_ids",
+          "expr": "@n.xdut.xx3.xmsense.nsg13_hv_nmos[ids]",
+          "unit": "A"
+        },
+        {
+          "name": "mkfb_vds",
+          "expr": "@n.xdut.xx3.xmkfb.nsg13_hv_nmos[vds]",
+          "unit": "V"
+        },
+        {
+          "name": "mkfb_vdss",
+          "expr": "@n.xdut.xx3.xmkfb.nsg13_hv_nmos[vdss]",
+          "unit": "V"
+        },
+        {
+          "name": "mkfb_vgs",
+          "expr": "@n.xdut.xx3.xmkfb.nsg13_hv_nmos[vgs]",
+          "unit": "V"
+        },
+        {
+          "name": "mkfb_gm",
+          "expr": "@n.xdut.xx3.xmkfb.nsg13_hv_nmos[gm]",
+          "unit": "S"
+        },
+        {
+          "name": "mkfb_gds",
+          "expr": "@n.xdut.xx3.xmkfb.nsg13_hv_nmos[gds]",
+          "unit": "S"
+        },
+        {
+          "name": "mkfb_ids",
+          "expr": "@n.xdut.xx3.xmkfb.nsg13_hv_nmos[ids]",
+          "unit": "A"
+        }
+      ]
+    }
+  ],
+  "measurements": [
+    {
+      "name": "dvdd_v",
+      "expr": "hi.vdd - lo.vdd",
+      "unit": "V"
+    },
+    {
+      "name": "dvref_v",
+      "expr": "hi.vref - lo.vref",
+      "unit": "V"
+    },
+    {
+      "name": "psrr_db",
+      "expr": "db(abs(hi.vdd - lo.vdd)/abs(hi.vref - lo.vref))",
+      "unit": "dB",
+      "plausible_range": {
+        "min": 0,
+        "max": 140
+      }
+    },
+    {
+      "name": "dfb_v",
+      "expr": "hi.fb - lo.fb",
+      "unit": "V"
+    },
+    {
+      "name": "fb_tracking",
+      "expr": "(hi.fb - lo.fb)/(hi.vdd - lo.vdd)",
+      "unit": "V/V"
+    },
+    {
+      "name": "dvid_v",
+      "expr": "(hi.sns2 - hi.sns1) - (lo.sns2 - lo.sns1)",
+      "unit": "V"
+    },
+    {
+      "name": "dvgs_m3_v",
+      "expr": "(hi.fb - lo.fb) - (hi.vdd - lo.vdd)",
+      "unit": "V"
+    },
+    {
+      "name": "fb_per_dvid",
+      "expr": "abs((hi.fb - lo.fb)/((hi.sns2 - hi.sns1) - (lo.sns2 - lo.sns1)))",
+      "unit": "V/V"
+    },
+    {
+      "name": "m1_marg_v",
+      "expr": "abs(op.m1_vds) - abs(op.m1_vdss)",
+      "unit": "V"
+    },
+    {
+      "name": "m2_marg_v",
+      "expr": "abs(op.m2_vds) - abs(op.m2_vdss)",
+      "unit": "V"
+    },
+    {
+      "name": "m3_marg_v",
+      "expr": "abs(op.m3_vds) - abs(op.m3_vdss)",
+      "unit": "V"
+    },
+    {
+      "name": "mtail_marg_v",
+      "expr": "abs(op.mtail_vds) - abs(op.mtail_vdss)",
+      "unit": "V"
+    },
+    {
+      "name": "mp1_marg_v",
+      "expr": "abs(op.mp1_vds) - abs(op.mp1_vdss)",
+      "unit": "V"
+    },
+    {
+      "name": "mp2_marg_v",
+      "expr": "abs(op.mp2_vds) - abs(op.mp2_vdss)",
+      "unit": "V"
+    },
+    {
+      "name": "mp3_marg_v",
+      "expr": "abs(op.mp3_vds) - abs(op.mp3_vdss)",
+      "unit": "V"
+    },
+    {
+      "name": "mp4_marg_v",
+      "expr": "abs(op.mp4_vds) - abs(op.mp4_vdss)",
+      "unit": "V"
+    },
+    {
+      "name": "mn1_marg_v",
+      "expr": "abs(op.mn1_vds) - abs(op.mn1_vdss)",
+      "unit": "V"
+    },
+    {
+      "name": "mn2_marg_v",
+      "expr": "abs(op.mn2_vds) - abs(op.mn2_vdss)",
+      "unit": "V"
+    },
+    {
+      "name": "mn3_marg_v",
+      "expr": "abs(op.mn3_vds) - abs(op.mn3_vdss)",
+      "unit": "V"
+    },
+    {
+      "name": "mn4_marg_v",
+      "expr": "abs(op.mn4_vds) - abs(op.mn4_vdss)",
+      "unit": "V"
+    },
+    {
+      "name": "msense_marg_v",
+      "expr": "abs(op.msense_vds) - abs(op.msense_vdss)",
+      "unit": "V"
+    },
+    {
+      "name": "mkfb_marg_v",
+      "expr": "abs(op.mkfb_vds) - abs(op.mkfb_vdss)",
+      "unit": "V"
+    },
+    {
+      "name": "av1",
+      "expr": "op.mp1_gm/(op.mn1_gm + op.mn1_gds + op.mp1_gds)",
+      "unit": "V/V"
+    },
+    {
+      "name": "gm2_s",
+      "expr": "op.mn3_gm + op.mp4_gm*op.mn4_gm/(op.mp3_gm + op.mp3_gds + op.mn4_gds)",
+      "unit": "S"
+    },
+    {
+      "name": "rout_ohm",
+      "expr": "1/(op.mn3_gds + op.mp4_gds)",
+      "unit": "ohm"
+    },
+    {
+      "name": "av_amp_derived",
+      "expr": "0.5*(op.mp1_gm/(op.mn1_gm + op.mn1_gds + op.mp1_gds))*(op.mn3_gm + op.mp4_gm*op.mn4_gm/(op.mp3_gm + op.mp3_gds + op.mn4_gds))/(op.mn3_gds + op.mp4_gds)",
+      "unit": "V/V"
+    },
+    {
+      "name": "dids_m3_a",
+      "expr": "hi.m3_ids - lo.m3_ids",
+      "unit": "A"
+    },
+    {
+      "name": "dids_m3_predicted_a",
+      "expr": "op.m3_gm*((hi.vdd - lo.vdd) - (hi.fb - lo.fb)) + op.m3_gds*((hi.vdd - lo.vdd) - (hi.vref - lo.vref))",
+      "unit": "A"
+    },
+    {
+      "name": "dids_m3_gds_term_a",
+      "expr": "op.m3_gds*((hi.vdd - lo.vdd) - (hi.vref - lo.vref))",
+      "unit": "A"
+    },
+    {
+      "name": "dids_m3_gm_term_a",
+      "expr": "op.m3_gm*((hi.vdd - lo.vdd) - (hi.fb - lo.fb))",
+      "unit": "A"
+    },
+    {
+      "name": "rbranch_ohm",
+      "expr": "(hi.vref - lo.vref)/(hi.m3_ids - lo.m3_ids)",
+      "unit": "ohm"
+    },
+    {
+      "name": "r1_ohm",
+      "expr": "(op.vref - op.e3)/op.m3_ids",
+      "unit": "ohm"
+    },
+    {
+      "name": "r2_ohm",
+      "expr": "(op.sns2 - op.e2)/op.m2_ids",
+      "unit": "ohm"
+    }
+  ],
+  "options": {
+    "timeout_s": 120,
+    "keep_artifacts": true,
+    "stage_model_inputs": true,
+    "osdi_preload": [
+      "$PDK_ROOT/ihp-sg13cmos5l/libs.tech/ngspice/osdi/psp103.osdi",
+      "$PDK_ROOT/ihp-sg13cmos5l/libs.tech/ngspice/osdi/r3_cmc.osdi"
+    ],
+    "ngspice_init": [
+      "set numdgt=12",
+      "set measureprec=12"
+    ],
+    "ngspice_options": {
+      "reltol": 1e-08,
+      "vntol": 1e-10,
+      "abstol": 1e-14
+    }
+  },
+  "batch": {
+    "job_ceiling_check": "enforce"
+  }
+}
