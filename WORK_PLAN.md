@@ -14,20 +14,19 @@ _None._
 
 `loom:very-important` (one counts per workspace); every stage takes these first.
 
-_None._
+- **#26**: T1 item 1 (design sources): attest the pinned SG13CMOS5L core/amp/startup/top schematics and derived netlists (or migrate them under decision record 0002)
 
 ## Important
 
 `loom:important`; taken before unlabelled work.
 
-- **#26**: T1 item 1 (design sources): attest the pinned SG13CMOS5L core/amp/startup/top schematics and derived netlists (or migrate them under decision record 0002)
 - **#32**: T1 item 7 (post-layout verification): klt pex re-run of the closed-loop row benches on the extracted bandgap_top
 
 ## Ready
 
 Human-approved issues ready for implementation (`loom:issue`).
 
-_None._
+- **#26**: T1 item 1 (design sources): attest the pinned SG13CMOS5L core/amp/startup/top schematics and derived netlists (or migrate them under decision record 0002)
 
 ## In Progress
 
@@ -61,7 +60,7 @@ Issues carrying `loom:curated`.
 - **#66**: Remove the unread model_files table from sim/pdk.json: fifth copy of the PVT section list, with a host-dependent column *(hermit)*
 - **#67**: Remove the tautological --regenerated default from attest/make-item2-envelope.py: the item-2 regeneration claim is true by construction *(hermit)*
 - **#81**: Remove the vendored manifests/design-evidence-tiers.md: byte-identical to the checklist bundled in the pinned klayout-tools wheel *(hermit)*
-- **#87**: Remove the `netlist_source: "extracted"` label from sim/smoke/run_smoke.sh: a hand-written deck declared post-layout *(hermit)*
+- **#90**: Reconcile the two lists of the offline test suite: attest/item10.json misses test-smoke-request.sh, so CI never runs it *(hermit)*
 
 ## Epics
 
@@ -72,9 +71,9 @@ _None._
 | Bucket | Count |
 |------|-------|
 | Operator merge-risk holds | 0 |
-| Very important | 0 |
-| Important | 2 |
-| Ready (`loom:issue`) | 0 |
+| Very important | 1 |
+| Important | 1 |
+| Ready (`loom:issue`) | 1 |
 | In Progress (`loom:building`) | 1 |
 | PRs awaiting review | 0 |
 | Approved PRs awaiting merge | 0 |
