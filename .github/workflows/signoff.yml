@@ -29,7 +29,7 @@ jobs:
       - name: Install pinned klt
         run: pip install klayout-tools==0.8.0
 
-      - name: Check the item-9 inventory pins against sim/pdk.json and reuse.lock.json
+      - name: Check the item-9 inventory pins and that every offline suite is attested under item 10
         run: bash sim/tests/test-attest-pins.sh
 
       # cold_start is local_only (needs the pinned PDK, ngspice >= 43 and psp103.osdi), so it is
