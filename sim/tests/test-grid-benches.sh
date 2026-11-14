@@ -38,7 +38,7 @@
 #     Two ratified deviations are declared rather than ignored: closed-loop-vref-pvt-boxtc
 #     sweeps temperature inside its analysis (`dc temp -40 125 1`) and so carries no
 #     `corners.temperature_c` (an undeclared omission fails), and an axis a bench adds
-#     beyond the reference's keys (0011 §6, closed-loop-startup's `supply_waveforms`) is
+#     beyond the reference's keys (0011 §4, closed-loop-startup's `supply_waveforms`) is
 #     an addition, not a divergent value. Before issue #101 only `corners.process` was
 #     compared, so a request edited to a new supply or temperature axis left every offline
 #     test green.
@@ -439,7 +439,7 @@ check("%s declares a non-empty corners.process" % ref,
 # (`dc temp -40 125 1`), so it carries no `corners.temperature_c`. Any axis omitted
 # without an entry here fails, so the exception is checked rather than assumed -- and a
 # declaration that stops describing an omission fails too. An axis a bench *adds*
-# beyond the reference's keys (0011 §6, closed-loop-startup's `supply_waveforms`) is an
+# beyond the reference's keys (0011 §4, closed-loop-startup's `supply_waveforms`) is an
 # addition, not a divergent value, and is accepted.
 DECLARED_AXIS_OMISSIONS = {("closed-loop-vref-pvt-boxtc", "temperature_c")}
 
