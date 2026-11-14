@@ -64,9 +64,10 @@ eight points where the residual is appreciable, and within 0.64 dB at the four
 **The supply dependence is that near-cancellation closing as the rail rises.**
 Required over-tracking *falls* ~10 % from 2.97 V to 3.63 V (`gds(M3)` falls as
 `Vds(M3)` rises from 1.77 V to 2.44 V) while delivered over-tracking *rises*
-~25 %, so the ratio runs 0.64 → 0.90 at 27 °C and 0.67 → 1.16 at 125 °C. At
-3.63 V/125 °C it overshoots unity, which is why ΔVref **changes sign** there —
-the sign flip `sim/closed-loop-psrr/README.md` noted without explaining.
+~25 % at 27 °C and ~52 % at 125 °C, so the ratio runs 0.64 → 0.90 at 27 °C
+and 0.67 → 1.16 at 125 °C. At 3.63 V/125 °C it overshoots unity, which is why
+ΔVref **changes sign** there — the sign flip
+`sim/closed-loop-psrr/README.md` noted without explaining.
 
 **2. Headroom is ruled out, by measurement.** All **12 signal-path devices**
 (the three mirror PMOS and the nine amplifier devices) are in saturation at
@@ -111,7 +112,10 @@ would hold the *input* leg's current, setting the over-tracking to
 (1.19 V) and `XM1`'s at `sns1` (0.78 V), so the two identical devices do not
 have identical `Vds`. The irreducible residual is
 `gm(M3) · |gds(M3)/gm(M3) − gds(M1)/gm(M1)| · Rbranch`, which gives a ceiling
-of **65.2 … 79.8 dB**, worst **65.2 dB** at `wcs`/2.970 V/125 °C. So:
+of **65.2 … 79.8 dB**. At the worst-PSRR corner `wcs`/2.970 V/125 °C it is
+**65.2 dB** (65.24 dB exactly); the range's exact minimum, 65.20 dB, falls at
+`typ`/2.970 V/125 °C — 0.04 dB lower, and the same 65.2 dB at the precision
+printed here. So:
 
 - the ratified 60 dB Target is **not** forbidden by this topology — there is
   10.0 dB of headroom lost to finite gain at the worst point, and closing it
@@ -211,7 +215,7 @@ it are computed from `XM3`'s own measured `gm` and `gds`
 
 | Corner | psrr (dB) | ΔVref (µV) | ΔI<sub>M3</sub> (nA) | `gds` term | `gm` term | sum (nA) | req (ppm) | got (ppm) | got/req | formula (dB) |
 |---|---|---|---|---|---|---|---|---|---|---|
-| `typ`/2.970 V/27 °C | 56.240 | +154.2 | +1.626 | +4.643 | −3.020 | +1.623 | 981.6 | 637.5 | 0.650 | 56.217 |
+| `typ`/2.970 V/27 °C | 56.240 | +154.2 | +1.626 | +4.643 | −3.020 | +1.623 | 981.6 | 637.5 | 0.649 | 56.217 |
 | `typ`/3.300 V/27 °C | 59.443 | +106.6 | +1.091 | +4.358 | −3.267 | +1.091 | 920.1 | 689.1 | 0.749 | 59.408 |
 | `typ`/3.630 V/27 °C | 66.795 | +45.7 | +0.382 | +4.180 | −3.771 | +0.409 | 881.4 | 794.8 | 0.902 | 66.160 |
 | `typ`/2.970 V/125 °C | 55.741 | +163.3 | +1.690 | +5.088 | −3.399 | +1.688 | 1120.2 | 747.3 | 0.667 | 55.705 |
@@ -220,14 +224,14 @@ it are computed from `XM3`'s own measured `gm` and `gds`
 | `wcs`/2.970 V/27 °C | 55.858 | +161.1 | +1.515 | +4.210 | −2.697 | +1.512 | 972.7 | 622.2 | 0.640 | 55.833 |
 | `wcs`/3.300 V/27 °C | 58.816 | +114.6 | +1.047 | +3.957 | −2.911 | +1.046 | 912.9 | 670.8 | 0.735 | 58.781 |
 | `wcs`/3.630 V/27 °C | 65.497 | +53.1 | +0.404 | +3.800 | −3.371 | +0.429 | 875.5 | 776.2 | 0.887 | 64.928 |
-| **`wcs`/2.970 V/125 °C** | **55.249** | **+172.8** | +1.596 | +4.604 | −3.009 | +1.595 | 1107.4 | 722.5 | 0.653 | 55.212 |
+| **`wcs`/2.970 V/125 °C** | **55.249** | **+172.8** | +1.596 | +4.604 | −3.009 | +1.595 | 1107.4 | 722.5 | 0.652 | 55.212 |
 | `wcs`/3.300 V/125 °C | 61.367 | +85.4 | +0.735 | +4.267 | −3.530 | +0.737 | 1024.5 | 846.9 | 0.827 | 61.308 |
-| `wcs`/3.630 V/125 °C | 67.470 | **−42.3** | **−0.550** | +4.055 | −4.574 | −0.519 | 971.9 | 1096.8 | **1.129** | 67.946 |
+| `wcs`/3.630 V/125 °C | 67.470 | **−42.3** | **−0.550** | +4.055 | −4.574 | −0.519 | 971.9 | 1096.8 | **1.128** | 67.946 |
 
 Read it this way. The measured mirror-leg excursion is accounted for by `XM3`'s
 own two terms to **0.03–0.20 %** wherever it is appreciable; the 4.5–7.1 % at the
 four 3.63 V points is what a 7 % error in a difference of two ≈ 4 nA terms
-looks like, and it is the same three points where the closed form is 0.4–0.6 dB
+looks like, and it is the same four points where the closed form is 0.37–0.64 dB
 out. The `got/req` column is the whole story in one number: it is 0.64–0.67 at
 every failing 2.97 V point, 0.73–0.85 at 3.30 V, and 0.89–1.16 at 3.63 V.
 
@@ -324,8 +328,8 @@ and not only the ones a hypothesis singled out.
   figures, so a design response can be proposed — and `sg13g2-bandgap`, which
   owns the circuit, can be handed a mechanism rather than a number.
 - The follow-up it enables is an **amplifier** change (the ~40 dB DC gain,
-  whose first stage is below unity), bounded by the derived 65.2 dB
-  worst-corner topology ceiling of Decision §5 — which says gain alone buys at
+  whose first stage is below unity), bounded by the derived 65.2 dB topology
+  ceiling at the worst-PSRR corner of Decision §5 — which says gain alone buys at
   most ~5 dB over Target at `wcs`/2.970 V/125 °C, so a `Vds`-matching change to
   the mirror leg may be needed with it. Neither is proposed here.
 - Two prose claims in `0011` are now measured rather than asserted: "the worst
