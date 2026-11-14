@@ -44,6 +44,13 @@
         "bash",
         "sim/tests/test-pex-device-inventory.sh"
       ]
+    },
+    {
+      "name": "smoke-request-test",
+      "argv": [
+        "bash",
+        "sim/tests/test-smoke-request.sh"
+      ]
     }
   ]
 }
