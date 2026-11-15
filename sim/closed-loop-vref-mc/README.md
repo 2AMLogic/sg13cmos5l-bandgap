@@ -22,10 +22,13 @@ under the staging then in tree (DUT included flat, no `.global sub!` card, flat-
 probes) — is **not deleted**: its records still bind the deck bytes as run
 (`template_sha256` `8164a9b0…`; `deck_sha256` `23f5adca…` for `zero`/`families`/`line`,
 `d6896ed4…` for `inflated`) and are the superseded historical evidence. The re-take
-(issue #115) reproduced the historical campaign **bit-for-bit** at the fixed seed
-`20261113` — same means, same sigmas, same yield to every published digit — so the
-arrangement change demonstrably moved no figure, and every filename cited below is a
-current artifact.
+(issue #115) reproduced the historical campaign's figures at the fixed seed
+`20261113` — same means, same sigmas, same yield to every published digit, all nine
+zero-control per-point means bit-identical — but not byte-for-byte: 3 of the 16,720
+graded measurement values differ by one printed LSB (`vref_v` twice, `sns2_v` once),
+and `vref_settle_v`, a nanovolt settle residual graded against this bench's 1 mV
+criterion, differs throughout. The arrangement change demonstrably moved no published
+figure, and every filename cited below is a current artifact.
 
 ```bash
 source sim/env.sh
