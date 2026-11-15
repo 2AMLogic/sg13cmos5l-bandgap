@@ -53,10 +53,11 @@ re-run the regeneration above on a provisioned host, and commit the inventory, e
 manifest hash, signoff record and any new smoke record together.
 
 Done once already, for the five item-5 PVT-grid benches (issue #30, decision record 0011): the
-inventory carries 9 entries, each bench contributing its **deck template** and its
+inventory carries 10 entries, each bench contributing its **deck template** and its
 committed **`klt sim` request** — what the bench is; benches on an identical supply stimulus
-share one template, so two benches name `closed-loop-vref-pvt/vref.cir.tmpl` (decision
-record 0015). `bench.json` and `sim/grid-run.sh` are
+share one template, so two grids name `closed-loop-vref-pvt/vref.cir.tmpl` and the
+ungraded attribution bench `closed-loop-psrr-op` names `closed-loop-psrr/deck.cir.tmpl`
+(decision record 0016). `bench.json` and `sim/grid-run.sh` are
 runner plumbing and are deliberately not inventoried, the same convention that already left each
 bench's `run.sh` out. The grids themselves are not cold-started here either: they go to the
 Spot batch fleet, which a GitHub runner cannot reach any more than it can reach the PDK.

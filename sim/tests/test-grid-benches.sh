@@ -26,14 +26,22 @@
 #     `expected_failure` in bench.json), returns a verdict for every expanded point with no
 #     errored or inconclusive ones, and is append-only paired with a record of the same name
 #     that carries `schema_version`.
-#  8. The five benches' `corners.process` tables are identical to each other, and the
-#     (corner file, section) pairs they select are exactly `REQUIRED` in
+#  8. The five benches' whole `corners` mappings are identical to each other, axis by
+#     axis (process, supply_v, temperature_c -- decision record 0011's §PVT grid), and
+#     the (corner file, section) pairs they select are exactly `REQUIRED` in
 #     sim/tools/check-model-sections.py minus the one non-corner entry
 #     (`cornerPNP.lib` `stat`). That checker exists to prove at pin time that the
 #     sections the benches select resolve in the PDK, but it proves it for its own
 #     hand-written list: edit a request's `section` -- or a `REQUIRED` entry -- alone and
 #     every offline test stayed green while "12/12 required sections found" described
 #     sections no bench uses. `REQUIRED` is imported from the checker here, never retyped.
+#     Two ratified deviations are declared rather than ignored: closed-loop-vref-pvt-boxtc
+#     sweeps temperature inside its analysis (`dc temp -40 125 1`) and so carries no
+#     `corners.temperature_c` (an undeclared omission fails), and an axis a bench adds
+#     beyond the reference's keys (0011 §4, closed-loop-startup's `supply_waveforms`) is
+#     an addition, not a divergent value. Before issue #101 only `corners.process` was
+#     compared, so a request edited to a new supply or temperature axis left every offline
+#     test green.
 #
 # Negative controls (each run while writing it, decision record 0011): retagging one manifest
 # citation's `rows` to `psrr_dc_typo` fails check 2 ("closed-loop-psrr manifest rows equal
@@ -56,6 +64,20 @@
 # "closed-loop-iq corner 'wcs' sections entry is an object: 'cornerRES.lib:res_wcs'" (exit 1),
 # not a Python traceback. Inventoried as a T1 item-10 hygiene check (attest/item10.json), so CI
 # re-runs it through `klt signoff --attest 10 --check`.
+#
+# Negative controls for the whole-corners comparison (issue #101), each run while writing
+# it and reverted before commit: (a) editing closed-loop-iq's `corners.supply_v` to
+# {"Vvdd": [2.97, 3.3, 3.5]} fails once, naming the bench and the axis -- "closed-loop-iq
+# corners.supply_v equals closed-loop-vref-pvt's: {"Vvdd": [2.97, 3.3, 3.5]} vs
+# {"Vvdd": [2.97, 3.3, 3.63]}". (b) editing closed-loop-psrr's `corners.temperature_c` to
+# [-40, 27, 150] fails once, same shape ("closed-loop-psrr corners.temperature_c equals
+# closed-loop-vref-pvt's: [-40, 27, 150] vs [-40, 27, 125]"). (c) emptying
+# `DECLARED_AXIS_OMISSIONS` fails once -- "closed-loop-vref-pvt-boxtc omits
+# corners.temperature_c only if it declares the axis in-analysis: undeclared omission". (d)
+# giving boxtc a divergent `corners.temperature_c` while it still declares the omission
+# fails twice -- the equality check above plus "closed-loop-vref-pvt-boxtc declares
+# corners.temperature_c in-analysis and so omits it: stale declaration:
+# corners.temperature_c present". All exit 1.
 #
 # Negative controls for the substrate-tie half of check 6 (issue #83), each run while writing
 # it and reverted before commit: (a) deleting the `.global sub!` card from
@@ -136,6 +158,25 @@ for b in BENCHES:
         requests[b] = load("sim/%s/%s" % (b, m["request"]))
     except Exception as exc:                                    # noqa: BLE001
         check("%s request readable" % b, False, str(exc))
+
+# The sixth bench (issue #93, decision record 0015-psrr-dc-attribution) is ungraded and is
+# deliberately not in BENCHES: item 5 cites exactly the five grids (asserted above), check 7
+# iterates the cited manifests and check 8 the five grids' corners mapping -- none of which
+# may grow. Its deck fixture and its placeholder supply, though, follow decision record
+# 0016 like any bench on an already-attested stimulus, so its bench.json joins the
+# per-distinct-template fixture groups and the per-bench placeholder check only.
+FIXTURE_BENCHES = BENCHES + ["closed-loop-psrr-op"]
+for b in FIXTURE_BENCHES:
+    if b in meta:
+        continue
+    m = load("sim/%s/bench.json" % b)                           # noqa: BLE001
+    missing = [k for k in ("testbench", "deck_substitutions", "deck_template") if k not in m]
+    check("%s bench.json has the keys the fixture checks read" % b, not missing, str(missing))
+    for key in ("deck_template",):
+        rel = "sim/%s/%s" % (b, m.get(key, ""))
+        check("%s %s exists (%s)" % (b, key, m.get(key)),
+              os.path.isfile(os.path.join(root, rel)))
+    meta[b] = m
 
 # ---- 2/4. spec_row tags vs bench.json vs the manifest -----------------------------------
 cited = {}
@@ -236,14 +277,15 @@ check("sim/runner-lib.sh declares CM5_DUT_SUBCKT and CM5_DUT_PINS",
 want_xdut = ["Xdut"] + (dut_pins or "").split() + [dut_subckt or ""]
 
 # Fixture assertions run once per DISTINCT template, not once per bench (issue #99, decision
-# record 0015): benches whose supply stimulus is already identical share one fixture
+# record 0016): benches whose supply stimulus is already identical share one fixture
 # (closed-loop-iq and closed-loop-vref-pvt-boxtc name closed-loop-vref-pvt/vref.cir.tmpl in
-# their bench.json), so five benches carry three fixtures between them -- checking the same
-# file once per bench would re-read the same bytes and guard copies that no longer exist.
-# The placeholder check stays per bench, further down: each bench's own deck_substitutions
+# their bench.json, and the ungraded closed-loop-psrr-op names closed-loop-psrr/deck.cir.tmpl),
+# so six bench directories carry three fixtures between them -- checking the same file once
+# per bench would re-read the same bytes and guard copies that no longer exist. The
+# placeholder check stays per bench, further down: each bench's own deck_substitutions
 # is read against the template its bench.json names, whatever directory that template sits in.
 tmpl_benches, tmpl_text = {}, {}
-for b in BENCHES:
+for b in FIXTURE_BENCHES:
     m = meta.get(b)
     if not m:
         continue
@@ -296,7 +338,7 @@ for tpl_rel in sorted(tmpl_benches):
 # Per bench: every @@PLACEHOLDER@@ the template this bench names uses must be one its own
 # deck_substitutions (plus the runner's @@WORK@@) supplies. A shared fixture carries exactly
 # the placeholders its stimulus needs; a bench repointed at it supplies the same map.
-for b in BENCHES:
+for b in FIXTURE_BENCHES:
     m = meta.get(b)
     if not m:
         continue
@@ -379,7 +421,7 @@ for b, entry in cited.items():
     check("%s record spec_rows equal bench.json's" % b,
           rec.get("spec_rows") == meta.get(b, {}).get("spec_rows"))
 
-# ---- 8. the five corner tables agree, and agree with the checker's REQUIRED --------------
+# ---- 8. the five corners mappings agree, and agree with the checker's REQUIRED ----------
 # sim/tools/check-model-sections.py is what proves (at the pin, against the real PDK) that
 # every section these benches select is defined. It checks its own hand-written REQUIRED
 # list, so nothing tied that list to the sections the committed requests actually select:
@@ -435,15 +477,45 @@ def first_difference(got, ref_):
 
 
 ref = BENCHES[0]
-ref_proc = (requests.get(ref) or {}).get("corners", {}).get("process")
+ref_corners = (requests.get(ref) or {}).get("corners") or {}
 check("%s declares a non-empty corners.process" % ref,
-      isinstance(ref_proc, list) and bool(ref_proc), json.dumps(ref_proc))
+      isinstance(ref_corners.get("process"), list) and bool(ref_corners.get("process")),
+      json.dumps(ref_corners.get("process")))
+# A bench may declare an axis it handles in-analysis instead of in the grid (decision
+# record 0011): closed-loop-vref-pvt-boxtc sweeps temperature inside its analysis
+# (`dc temp -40 125 1`), so it carries no `corners.temperature_c`. Any axis omitted
+# without an entry here fails, so the exception is checked rather than assumed -- and a
+# declaration that stops describing an omission fails too. An axis a bench *adds*
+# beyond the reference's keys (0011 §4, closed-loop-startup's `supply_waveforms`) is an
+# addition, not a divergent value, and is accepted.
+DECLARED_AXIS_OMISSIONS = {("closed-loop-vref-pvt-boxtc", "temperature_c")}
+
+
+def axis_difference(axis, got, ref_axis):
+    """Name the first difference at which one corners axis diverges from the reference's."""
+    if axis == "process":
+        return first_difference(got, ref_axis)
+    return "%s vs %s" % (json.dumps(got, sort_keys=True), json.dumps(ref_axis, sort_keys=True))
+
+
 for b in BENCHES[1:]:
     if b not in requests or ref not in requests:
         continue
-    this_proc = requests[b].get("corners", {}).get("process")
-    check("%s corners.process equals %s's" % (b, ref), this_proc == ref_proc,
-          first_difference(this_proc, ref_proc))
+    corners = requests[b].get("corners") or {}
+    ref_keys = set(ref_corners)
+    for axis in sorted(ref_keys & set(corners)):
+        check("%s corners.%s equals %s's" % (b, axis, ref),
+              corners[axis] == ref_corners[axis],
+              axis_difference(axis, corners[axis], ref_corners[axis]))
+    for axis in sorted(ref_keys - set(corners)):
+        check("%s omits corners.%s only if it declares the axis in-analysis" % (b, axis),
+              (b, axis) in DECLARED_AXIS_OMISSIONS, "undeclared omission")
+for bench, axis in sorted(DECLARED_AXIS_OMISSIONS):
+    bench_corners = (requests.get(bench) or {}).get("corners") or {}
+    check("%s declares corners.%s in-analysis and so omits it" % (bench, axis),
+          axis in ref_corners and axis not in bench_corners,
+          "stale declaration: %s" % ("corners.%s present" % axis if axis in bench_corners
+                                     else "corners.%s is not a reference axis" % axis))
 
 # REQUIRED is imported from the checker by path -- the file name has a hyphen so it cannot be
 # named by a plain import, and it is `__main__`-guarded so executing the module runs nothing.

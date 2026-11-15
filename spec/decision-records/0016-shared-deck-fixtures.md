@@ -1,4 +1,4 @@
-# 0015: Grid benches on an identical supply stimulus share one deck fixture
+# 0016: Grid benches on an identical supply stimulus share one deck fixture
 
 - **Status**: ratified, effective when the PR for issue #99 merges
 - **Amends**: decision record
@@ -11,6 +11,10 @@
 - **Date**: 2026-11-14
 - **Decided by**: Loom Curator proposal, Champion-approved (issue #99);
   implemented by the Loom Builder agent
+- **Numbering note**: drafted as 0015 while PR #98 (issue #93) was still open;
+  #98 merged first and took `0015` for
+  [`0015-psrr-dc-attribution`](0015-psrr-dc-attribution.md), so this record
+  renumbers to the next free slot. No content change.
 
 ## Context
 
@@ -66,6 +70,18 @@ stimulus.
    stimulus contributes a new fixture. The acceptance test is mechanical: no
    two templates named by any `bench.json` may have equal card bodies.
 
+3. **The sixth bench is absorbed by the rule, not excepted from it.** PR #98
+   (issue #93) added `closed-loop-psrr-op` while this record was in review,
+   with a deck template whose card lines are byte-identical to
+   `closed-loop-psrr/deck.cir.tmpl` — measured, and asserted in that
+   template's own header. On the merged tree the convention applies:
+   `closed-loop-psrr-op` sets `deck_template:
+   ../closed-loop-psrr/deck.cir.tmpl` and its duplicate template is deleted,
+   so item 9 narrows from 13 entries to 10 and three fixtures serve all six
+   bench directories. The rule was written for exactly this case: a bench's
+   identity is its stimulus and its request, not a copy of another bench's
+   cards.
+
 ## Alternatives considered
 
 - **One fixture with a `@@SUPPLY@@` placeholder supplied by
@@ -87,15 +103,17 @@ stimulus.
 
 ## Consequences
 
-- T1 item 9's inventory carries 9 entries instead of 11; its envelope carries
-  12 passed checks instead of 14 (9 testbench present-checks + 1 cold start +
-  2 pin checks). The inventory, envelope, manifest `content_hash`, signoff
-  record and the cold start's new smoke record are regenerated in the same PR
+- T1 item 9's inventory carries 10 entries instead of the merged tree's 13
+  (five grids minus two duplicates, plus the absorbed sixth bench's request and
+  the shared fixtures); on the pre-#98 tree this record read 9 instead of 11.
+  The inventory, envelope, manifest `content_hash`, signoff record and the
+  cold start's new smoke record are regenerated in the same PR
   (`attest/README.md` § Extending).
 - `template_sha256` in future grid records is the shared fixture's hash for the
-  three benches that share it — which is the point: three benches running the
-  same cards record the same template hash. Committed records are append-only
-  and keep the hashes of what they actually ran.
+  benches that share one — three on `vref.cir.tmpl`, and, with the sixth bench
+  absorbed, two on `closed-loop-psrr/deck.cir.tmpl` — which is the point:
+  benches running the same cards record the same template hash. Committed
+  records are append-only and keep the hashes of what they actually ran.
 - Generated decks are unchanged byte-for-byte: the deleted templates' card
   bodies were identical to the survivor's, `grid-run.sh` strips every `*` line,
   and the substituted values did not change.
