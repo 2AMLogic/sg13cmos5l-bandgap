@@ -332,7 +332,9 @@ re-derives the value from the envelope's full-precision `corners[].measurements[
 rounds **once** to the printed literal's own decimal places, and requires the printed literal
 to occur in the covered block as a standalone number — the presence match is boundary-aware,
 so a short literal is not satisfied by a longer number containing it (`0` is not satisfied by
-the `0` inside `3.30`) while sign-leading literals such as `−68.7` still match. Editing the
+the `0` inside `3.30`) while sign-leading literals such as `−68.7` still match, and a figure
+may abut a sentence-ending period — a following dot is excluded only when it starts a decimal
+fraction (`2.97` still does not match inside `2.970V`). Editing the
 prose without the annotation fails, and editing the annotation without the prose fails too.
 A second rounding of a rounded value (the PR #98
 `got/req` bug) is exactly what this forbids. Extent claims (`range` endpoints, plain
