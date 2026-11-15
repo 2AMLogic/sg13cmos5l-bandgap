@@ -12,12 +12,15 @@ machine-checkable form:
     | `psrr_db` | **55.249 dB** | `wcs/2.970V/125C` | 68.330 dB (`bcs/3.630V/27C`) |
 
 For each annotation the checker (a) re-derives the value from the cited
-envelope's full-precision `corners[].measurements[].value`, (b) rounds ONCE to
-the printed literal's own decimal places -- directionally for extents, because
-a range endpoint or an extremum states a bound, not a rounded value: a minimum
-is compared against the floored rounding and a maximum against the ceilinged
-rounding at the printed precision, so a printed endpoint may widen the stated
-range but never narrow it -- and (c) requires the printed literal to occur in
+envelope's full-precision `corners[].measurements[].value`, (b) rounds ONCE
+to the printed literal's own decimal places -- directionally for extents,
+because a range endpoint or a plain extremum states a bound, not a rounded
+value: a minimum is compared against the floored rounding and a maximum
+against the ceilinged rounding at the printed precision, so a printed
+endpoint may widen the stated range but never narrow it; a `keyed_to`
+extremum instead states one corner's cell value, which is not an extent of
+anything, so it is compared against the nearest rounding -- and (c) requires
+the printed literal to occur in
 the covered block -- so editing the prose without the annotation fails, and
 editing the annotation without the prose fails too. Values are
 never taken from a figure already printed in a document or from the envelope's
@@ -55,8 +58,11 @@ the lines containing it):
                named corner is really that quantity's extremum, in which case
                printed.value is `measurement` AT that corner; printed.corner
                is optional when the covered block states only the value;
-               printed.value rounds toward the conservative side (floor for
-               a minimum, ceiling for a maximum)
+               a plain extremum's printed.value is a bound and rounds toward
+               the conservative side (floor for a minimum, ceiling for a
+               maximum), while a keyed_to value is one corner's cell and is
+               compared against the nearest rounding -- a floored restatement
+               of a keyed cell is rejected, not accepted as conservative
 
 Units convert through a small explicit scale table (V/mV/uV/nV, A/mA/uA/nA,
 dB, dimensionless); typographic minus, dashes, micro signs and ellipses are
@@ -69,7 +75,8 @@ coverage summary reports it, because a document nobody has annotated yet must
 not turn the suite red.
 
 Exit status: 0 every annotation re-derives and matches (coverage summary
-printed, including the count of un-annotated decimal figures per document);
+printed, accounting every decimal literal per document as asserted /
+unasserted inside covered blocks / un-annotated);
 1 a mismatch, a malformed annotation, a printed literal absent from its
 covered block, or a document / cited envelope missing; 2 could not run
 (manifest unreadable or malformed, bad arguments).
@@ -225,6 +232,15 @@ def claim_str(j):
     return " ".join(bits)
 
 
+def literal_present(lit, block):
+    # Boundary-aware: a bare substring test lets a short literal pass via a
+    # longer number ("0" inside "3.30", "2.97" inside "2.970V"). A \b-wrapped
+    # match is wrong here: a sign-leading literal like "-68.7" has no word
+    # boundary at its leading "-", so anchor on "not a word char or dot" on
+    # both sides instead.
+    return re.search(r"(?<![\w.])" + re.escape(norm(lit)) + r"(?![\w.])", block) is not None
+
+
 def check_value(printed, expected, block, what, env_rel, bound=None):
     ps = str(printed)
     nd = decimals_in(ps)
@@ -238,7 +254,7 @@ def check_value(printed, expected, block, what, env_rel, bound=None):
     probs = []
     if parse_num(ps) != want:
         probs.append(f"printed {ps} does not match {what}; expected {fmt_dec(want, nd)}{bound_txt} (from {env_rel})")
-    if norm(ps) not in block:
+    if not literal_present(ps, block):
         probs.append(f"printed literal {ps} absent from covered block")
     return probs
 
@@ -309,7 +325,7 @@ def check_count(j, env, block, env_rel):
     else:
         if parse_num(ps) != Decimal(count):
             probs.append(f"printed {ps} does not match; expected {count} ({desc}, from {env_rel})")
-    if norm(ps) not in block:
+    if not literal_present(ps, block):
         probs.append(f"printed literal {ps} absent from covered block")
     return probs
 
@@ -433,7 +449,16 @@ def check_extremum(j, env, block, env_rel):
         if holder is None:
             probs.append(f"printed corner {pc} does not hold the {ext}imum of {kname}; "
                          f"expected one of {holder_ids} (from {env_rel})")
+    bnd = ext  # a plain extremum is a real extent: keep the directional bound
     if keyed:
+        # A keyed cell value is one corner's value, not an extent of anything,
+        # so the directional floor/ceiling does not apply: compare against the
+        # nearest rounding (ROUND_HALF_UP), which demands the printed literal
+        # exactly. This deliberately reverses the old verdict on this path --
+        # a floored restatement of a keyed cell is now rejected, not accepted
+        # as "conservative" (a documented reversal: no committed document uses
+        # keyed_to; see sim/README.md, Documented-figure check).
+        bnd = None
         if holder is None:
             return probs
         m = get_meas(holder, name)
@@ -452,7 +477,7 @@ def check_extremum(j, env, block, env_rel):
         expected = convert(expected, src_unit, punit)
         if norm(punit) not in block:
             probs.append(f"printed unit {punit} absent from covered block")
-    probs += check_value(printed["value"], expected, block, what, env_rel, bound=ext)
+    probs += check_value(printed["value"], expected, block, what, env_rel, bound=bnd)
     if pc is not None and norm(pc) not in block:
         probs.append(f"printed corner {pc} absent from covered block")
     return probs
@@ -609,6 +634,25 @@ def main():
             continue
         anns, covered, ann_lines = parse_document(text)
         cache = {}
+        # Issue #113 item 1: the asserted printed-literal set (printed
+        # value/min/max/values fields only -- not subset selectors or corner
+        # id strings), collected before checking so the summary can account
+        # for every decimal in the document.
+        asserted = set()
+        for ann in anns:
+            j = ann.get("json")
+            if not isinstance(j, dict):
+                continue
+            p = j.get("printed")
+            if not isinstance(p, dict):
+                continue
+            lits = [p.get(k) for k in ("value", "min", "max")]
+            vv = p.get("values")
+            if isinstance(vv, dict):
+                lits += list(vv.values())
+            for lit in lits:
+                if isinstance(lit, (str, int, float)):
+                    asserted.update(NUM_RE.findall(norm(str(lit))))
         n_ok = 0
         for ann in anns:
             if ann["malformed"]:
@@ -624,12 +668,34 @@ def main():
                     failures.append(fail(rel, ann, p))
             else:
                 n_ok += 1
-        unann = sum(len(NUM_RE.findall(norm(line)))
-                    for idx, line in enumerate(text.splitlines())
-                    if idx not in covered and idx not in ann_lines)
+        lines = text.splitlines()
+        on_ann = cov_matched = cov_unasserted = unann = 0
+        for idx, line in enumerate(lines):
+            lits = NUM_RE.findall(norm(line))
+            if idx in ann_lines:
+                on_ann += len(lits)
+            elif idx in covered:
+                # Mechanical definition: a covered decimal counts as asserted
+                # iff its literal equals one of the printed figures. Literal
+                # matching cannot attribute per occurrence, so this both
+                # over-reports (corner-id / table-key decimals count as
+                # unasserted though the printed.corner / anchor checks cover
+                # them) and under-reports (a covered decimal coinciding with
+                # a different annotation's printed literal counts as
+                # asserted); stated in sim/README.md.
+                for lit in lits:
+                    if lit in asserted:
+                        cov_matched += 1
+                    else:
+                        cov_unasserted += 1
+            else:
+                unann += len(lits)
+        ndec = on_ann + cov_matched + cov_unasserted + unann
         total_ok += n_ok
         summaries.append(f"{rel}: {n_ok}/{len(anns)} annotation(s) verified, "
-                         f"{unann} un-annotated decimal figure(s)")
+                         f"{ndec} decimal figure(s): {on_ann + cov_matched} asserted, "
+                         f"{cov_unasserted} unasserted inside covered block(s), "
+                         f"{unann} un-annotated")
 
     print("Documented-figure coverage")
     for s in summaries:

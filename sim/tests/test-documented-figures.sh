@@ -11,8 +11,12 @@
 # value in the message; the exit-code contract (un-annotated in-scope document
 # -> 0 with the gap reported, malformed annotation -> 1, missing cited envelope
 # -> 1, unreadable manifest -> 2); unit scaling (V recorded -> uV / mV printed);
-# single vs double rounding of a derived cell; and a real-tree run requiring
-# exit 0 against the committed sim/closed-loop-psrr/README.md and manifest.
+# single vs double rounding of a derived cell; the keyed_to path compares the
+# nearest rounding while a plain extremum keeps the directional bound (issue
+# #113 item 2); boundary-aware literal presence (item 4); degenerate
+# single-valued ranges pin the documented straddle (item 3); and a real-tree
+# run requiring exit 0 against the committed sim/closed-loop-psrr/README.md
+# plus the per-document decimal accounting (item 1).
 set -u
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 tool="${root}/sim/tools/check-documented-figures.py"
@@ -68,7 +72,29 @@ E4='[
  {"corner_id":"b","process":"typ","supply_v":{"Vvdd":3.3},"temperature_c":125,"status":"pass",
   "measurements":[{"name":"dvref","unit":"V","value":0.0001728075273892}]}]'
 
-for e in 1 2 3 4; do
+# Issue #113 item 2: the k minimum sits at wcs/2.970V/125C, where m3 = 2.976;
+# floor = 2.97, nearest = 2.98 at two decimals.
+E5='[
+ {"corner_id":"wcs/2.970V/125C","process":"wcs","supply_v":{"Vvdd":2.97},"temperature_c":125,"status":"fail",
+  "measurements":[{"name":"k","unit":"V","value":0.5},{"name":"m3","unit":"V","value":2.976}]},
+ {"corner_id":"bcs/3.630V/27C","process":"bcs","supply_v":{"Vvdd":3.63},"temperature_c":27,"status":"pass",
+  "measurements":[{"name":"k","unit":"V","value":5.0},{"name":"m3","unit":"V","value":9.0}]}]'
+
+# Issue #113 item 3: a single-valued measurement inexact at two decimals
+# (floor 0.12, ceiling 0.13).
+E6='[
+ {"corner_id":"lo/27C","process":"typ","supply_v":{"Vvdd":3.3},"temperature_c":27,"status":"pass",
+  "measurements":[{"name":"s","unit":"V","value":0.125}]},
+ {"corner_id":"hi/125C","process":"typ","supply_v":{"Vvdd":3.3},"temperature_c":125,"status":"pass",
+  "measurements":[{"name":"s","unit":"V","value":0.125}]}]'
+
+# Issue #113 item 4: a zero figure that a weak substring presence check
+# would accept via the 0 inside 3.30.
+E7='[
+ {"corner_id":"typ/27C","process":"typ","supply_v":{"Vvdd":3.3},"temperature_c":27,"status":"pass",
+  "measurements":[{"name":"z","unit":"V","value":0.0}]}]'
+
+for e in 1 2 3 4 5 6 7; do
   var="E${e}"; mkenv "${tmp}/envs/e${e}.json" "${!var}"
 done
 
@@ -125,6 +151,21 @@ EOF
 expect3 "double-rounded cell rejected, names file+claim+expected" "${d}" 1 \
   "sim/bench/README.md" "cell g" "expected 0.649"
 
+# ---- issue #113 item 4: literal presence is boundary-aware --------------------
+d="$(mkcase literal-presence e7.json)"
+cat > "${d}/sim/bench/README.md" <<'EOF'
+<!-- figure: {"envelope":"envelopes/cited.json","kind":"cell","corner":"typ/27C","measurement":"z","printed":{"value":"0","unit":"V"}} -->
+At the 3.30 V operating point the residual needs no figure here.
+EOF
+expect3 "single-digit literal not satisfied by a substring of another number" "${d}" 1 \
+  "sim/bench/README.md" "cell z" "printed literal 0 absent from covered block"
+
+cat > "${d}/sim/bench/README.md" <<'EOF'
+<!-- figure: {"envelope":"envelopes/cited.json","kind":"cell","corner":"typ/27C","measurement":"z","printed":{"value":"0","unit":"V"}} -->
+The residual is 0 V at the 3.30 V operating point.
+EOF
+expect "single-digit literal passes when the figure is stated standalone" "${d}" 0
+
 # ---- PR #98 error shape 2: a range that is not the subset's min/max ----------
 d="$(mkcase range e1.json)"
 cat > "${d}/sim/bench/README.md" <<'EOF'
@@ -149,6 +190,29 @@ cat > "${d}/sim/bench/README.md" <<'EOF'
 The error span is 0.37 V to 0.64 V.
 EOF
 expect "exact range passes" "${d}" 0
+
+# ---- issue #113 item 3: a degenerate (single-valued) range at insufficient
+# ---- precision pins the documented straddle ----------------------------------
+d="$(mkcase degenerate-range e6.json)"
+cat > "${d}/sim/bench/README.md" <<'EOF'
+<!-- figure: {"envelope":"envelopes/cited.json","kind":"range","measurement":"s","subset":{},"printed":{"min":"0.12","max":"0.13","unit":"V"}} -->
+The value is 0.125 V at every corner, printed as the straddle 0.12 V … 0.13 V.
+EOF
+expect "single-valued inexact range passes as the straddling pair" "${d}" 0
+
+cat > "${d}/sim/bench/README.md" <<'EOF'
+<!-- figure: {"envelope":"envelopes/cited.json","kind":"range","measurement":"s","subset":{},"printed":{"min":"0.12","max":"0.12","unit":"V"}} -->
+The value is 0.125 V at every corner, printed as 0.12 V to 0.12 V.
+EOF
+expect3 "degenerate range printed below the ceiling rejected" "${d}" 1 \
+  "sim/bench/README.md" "range s" "expected 0.13"
+
+cat > "${d}/sim/bench/README.md" <<'EOF'
+<!-- figure: {"envelope":"envelopes/cited.json","kind":"range","measurement":"s","subset":{},"printed":{"min":"0.13","max":"0.13","unit":"V"}} -->
+The value is 0.125 V at every corner, printed as 0.13 V to 0.13 V.
+EOF
+expect3 "degenerate range printed above the floor rejected" "${d}" 1 \
+  "sim/bench/README.md" "range s" "expected 0.12"
 
 # ---- PR #98 error shape 3: a count that does not match the predicate ---------
 d="$(mkcase count e1.json)"
@@ -175,7 +239,7 @@ EOF
 expect "count by corner status passes" "${d}" 0
 cat > "${d}/sim/bench/README.md" <<'EOF'
 <!-- figure: {"envelope":"envelopes/cited.json","kind":"count","measurement":"m","subset":{"corner_id":"*/125C"},"predicate":{"op":">","value":5,"unit":"V"},"printed":{"value":"2"}} -->
-Two of the 125C points exceed 5 V.
+Exactly 2 of the 125C points exceed 5 V.
 EOF
 expect "corner_id glob subset passes" "${d}" 0
 cat > "${d}/sim/bench/README.md" <<'EOF'
@@ -240,6 +304,24 @@ Worst r is 0.3 V.
 EOF
 expect "conservatively rounded minimum passes" "${d}" 0
 
+# ---- issue #113 item 2: a keyed_to cell value is compared against the nearest
+# ---- rounding, not a directional bound ---------------------------------------
+# The k minimum sits at wcs/2.970V/125C where m3 = 2.976: floor = 2.97,
+# nearest = 2.98. Both verdicts are asserted so the reversal is pinned.
+d="$(mkcase keyed-round e5.json)"
+cat > "${d}/sim/bench/README.md" <<'EOF'
+<!-- figure: {"envelope":"envelopes/cited.json","kind":"extremum","measurement":"m3","extremum":"min","subset":{},"keyed_to":"k","printed":{"value":"2.98","unit":"V","corner":"wcs/2.970V/125C"}} -->
+The m3 cell at wcs/2.970V/125C, the corner holding the k minimum, is 2.98 V.
+EOF
+expect "keyed cell value passes at the nearest rounding" "${d}" 0
+
+cat > "${d}/sim/bench/README.md" <<'EOF'
+<!-- figure: {"envelope":"envelopes/cited.json","kind":"extremum","measurement":"m3","extremum":"min","subset":{},"keyed_to":"k","printed":{"value":"2.97","unit":"V","corner":"wcs/2.970V/125C"}} -->
+The m3 cell at wcs/2.970V/125C, the corner holding the k minimum, is 2.97 V.
+EOF
+expect3 "keyed cell value rejected at the floor restatement" "${d}" 1 \
+  "sim/bench/README.md" "extremum m3 min" "expected 2.98"
+
 # ---- exit-code contract ------------------------------------------------------
 d="$(mkcase unannotated e1.json)"
 printf 'A document that cites an envelope (envelopes/cited.json) but has no annotations yet: 1.5 V.\n' > "${d}/sim/bench/README.md"
@@ -288,6 +370,15 @@ expect "wrong-scale unit rejected" "${d}" 1 "expected -0.0687"
 # ---- real committed tree -----------------------------------------------------
 expect "real committed tree verifies (closed-loop-psrr annotated)" "${root}" 0 \
   "sim/closed-loop-psrr/README.md: 18/18 annotation(s) verified"
+
+# ---- issue #113 item 1: the summary accounts for every decimal ---------------
+# Mechanical reading: a covered decimal counts as asserted iff its literal is
+# one of the annotations' printed figures. Measured on the committed document:
+# 54 decimals = 36 asserted (25 on annotation lines + 11 covered matches),
+# 9 unasserted inside covered blocks (L57 x4, L98 corner ids, L113-115 keys),
+# 9 un-annotated. Reported, never gated: exit stays 0.
+expect "real-tree summary accounts for every decimal figure" "${root}" 0 \
+  "54 decimal figure(s): 36 asserted, 9 unasserted inside covered block(s), 9 un-annotated"
 
 if [[ ${fails} -ne 0 ]]; then echo "${fails} case(s) FAILED"; exit 1; fi
 echo "all cases passed"

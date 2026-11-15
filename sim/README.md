@@ -330,15 +330,27 @@ immediately above the block (paragraph, list item, or table) that states it. The
 human-readable; the annotation is the machine-checkable form. For each annotation the checker
 re-derives the value from the envelope's full-precision `corners[].measurements[].value`,
 rounds **once** to the printed literal's own decimal places, and requires the printed literal
-to occur in the covered block — editing the prose without the annotation fails, and editing
-the annotation without the prose fails too. A second rounding of a rounded value (the PR #98
-`got/req` bug) is exactly what this forbids. Extent claims (`range` endpoints, `extremum`
-values) are bounds, not rounded values, so their comparison is directional: a minimum is
+to occur in the covered block as a standalone number — the presence match is boundary-aware,
+so a short literal is not satisfied by a longer number containing it (`0` is not satisfied by
+the `0` inside `3.30`) while sign-leading literals such as `−68.7` still match. Editing the
+prose without the annotation fails, and editing the annotation without the prose fails too.
+A second rounding of a rounded value (the PR #98
+`got/req` bug) is exactly what this forbids. Extent claims (`range` endpoints, plain
+`extremum` values) are bounds, not rounded values, so their comparison is directional: a minimum is
 checked against the floored rounding and a maximum against the ceilinged rounding, each at
 the printed literal's own decimal places — a printed endpoint may widen the stated range but
 never narrow it. `0.37–0.64` printed as `0.4–0.6` is rejected (that literal is the PR #98
 defect in its original form); `0.37–0.64`, a conservatively widened `0.3–0.7`, and a maximum
-whose ceiling coincides (`68.3298…` → `68.330`) all pass.
+whose ceiling coincides (`68.3298…` → `68.330`) all pass. A degenerate (single-valued) range
+that is not exact at the printed precision must print as two straddling literals — each
+endpoint is a bound rounded directionally, so 0.125 V at two decimals is `0.12 … 0.13`, never
+`0.12 … 0.12` or `0.13 … 0.13`, each of which contradicts one endpoint's rounding; no
+committed measurement hits this today, and one surfacing at #107 would be rejected naming
+the endpoint's expected literal. An `extremum` whose corner is `keyed_to` another
+measurement states that corner's **cell value**, not a bound of anything, so it is compared
+against the nearest rounding instead of the directional bound — a floored restatement of a
+keyed cell is rejected (issue #113 deliberately reversed the behaviour on that path; no
+committed document uses `keyed_to`, so no committed figure changes).
 
 Five annotation kinds, one per claim class: `cell` (one corner's measurement), `count`
 (corners satisfying a `predicate`, carrying a `status`, or the subset size; printed `N` or
@@ -346,7 +358,8 @@ Five annotation kinds, one per claim class: `cell` (one corner's measurement), `
 `pct_change` (change from a `from` corner to
 every corner of the subset, or split `per` field with one printed value per group), and
 `extremum` (the corner actually holding the min/max, or `keyed_to` another measurement's
-extremum; its value rounds toward the conservative side). `subset` is equality/membership over the four fields an envelope corner carries —
+extremum; a plain extremum's value rounds toward the conservative side, a keyed cell is
+compared at the nearest rounding). `subset` is equality/membership over the four fields an envelope corner carries —
 `process`, `supply_v` (mapping; a bare value matches any net, `supply_v.<net>` names one),
 `temperature_c`, `corner_id` (glob). Units convert through a small explicit scale table
 (V/mV/µV/nV, A/mA/µA/nA, dB, dimensionless) — `dvref_v` is recorded in V and printed in µV.
@@ -358,14 +371,28 @@ Scope is enumerated by `sim/documented-figures.json`, not globbed; each `envelop
 resolves relative to its document's directory. The first entry is
 `sim/closed-loop-psrr/README.md` (18 annotations); annotating the other four benches is
 follow-up #107. Exit 0 = every annotation re-derives and matches, with a coverage summary
-including the count of **un-annotated** decimal figures per document — un-annotated figures
-are reported, never failed, so a bench nobody has annotated yet cannot turn CI red. Exit 1 =
+that accounts for **every decimal literal** in the document: decimals on annotation lines
+plus covered decimals whose literal equals one of the annotations' printed figures
+(`printed.value`/`min`/`max`/`values`) count as **asserted**; covered decimals matching no
+printed figure are **unasserted inside covered blocks** — the count that tracks #107's
+progress across the benches; the rest are **un-annotated**; the three buckets sum to the
+document's decimal-literal total (54 = 36 + 9 + 9 for `closed-loop-psrr`). The matching is
+by literal text only and cannot attribute per occurrence, so it both over-reports (corner-id
+and table-key decimals inside covered blocks — this document's `2.970`/`3.630` corner ids and
+`2.97`/`3.30`/`3.63` table keys — count as unasserted though the `printed.corner`/anchor
+checks cover them) and under-reports (a covered decimal coinciding with a different
+annotation's printed literal — this document's resolution-bullet `0.1` — counts as asserted
+though it is a different quantity). All figures are reported, never failed — un-annotated
+figures are exit 0 by design, so a bench nobody has annotated yet cannot turn CI red.
+Exit 1 =
 a mismatch, a malformed annotation, a printed literal absent from its covered block, or a
 document / cited envelope missing. Exit 2 = manifest unreadable or bad arguments. Offline by
 construction: committed files under the repo root only, no network, no ngspice, no absolute
 paths. Fake-tree suite: `bash sim/tests/test-documented-figures.sh` (the four PR #98 error
 shapes each asserted to fail naming file + claim + expected value, the exit-code contract,
-unit scaling, and a real-tree exit-0 assertion); inventoried under `attest/item10.json`.
+unit scaling, the keyed nearest-rounding split with both verdicts of the reversal pinned,
+boundary-aware literal presence, the degenerate-range straddle, and a real-tree exit-0
+assertion plus the real-tree decimal accounting); inventoried under `attest/item10.json`.
 
 ## Post-layout extraction (T1 item 7): what is committed, and what is not producible
 
