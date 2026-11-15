@@ -51,6 +51,13 @@
         "bash",
         "sim/tests/test-smoke-request.sh"
       ]
+    },
+    {
+      "name": "documented-figures-fake-tree-test",
+      "argv": [
+        "bash",
+        "sim/tests/test-documented-figures.sh"
+      ]
     }
   ]
 }

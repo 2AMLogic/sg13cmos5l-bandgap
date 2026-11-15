@@ -274,6 +274,54 @@ symlinks (`real_file: false`) into whatever revision its own `ihp-sg13g2` holds,
 `dev` pin") and its unqualified symlink statement; retiring both needs a decision record, so
 it is tracked in #62 rather than edited here.
 
+## Documented-figure check
+
+`python3 -I sim/tools/check-documented-figures.py` re-derives the figures that in-scope
+documents state, from the committed envelopes those documents cite — the committed version of
+the one-off script PR #98 used pre-commit (it caught six transcription errors, and all four
+errors the Judge then required sat in prose a per-cell table check never looks at). A figure
+is checked only where the document declares it: an HTML comment carrying one JSON annotation
+immediately above the block (paragraph, list item, or table) that states it. The prose stays
+human-readable; the annotation is the machine-checkable form. For each annotation the checker
+re-derives the value from the envelope's full-precision `corners[].measurements[].value`,
+rounds **once** to the printed literal's own decimal places, and requires the printed literal
+to occur in the covered block — editing the prose without the annotation fails, and editing
+the annotation without the prose fails too. A second rounding of a rounded value (the PR #98
+`got/req` bug) is exactly what this forbids. Extent claims (`range` endpoints, `extremum`
+values) are bounds, not rounded values, so their comparison is directional: a minimum is
+checked against the floored rounding and a maximum against the ceilinged rounding, each at
+the printed literal's own decimal places — a printed endpoint may widen the stated range but
+never narrow it. `0.37–0.64` printed as `0.4–0.6` is rejected (that literal is the PR #98
+defect in its original form); `0.37–0.64`, a conservatively widened `0.3–0.7`, and a maximum
+whose ceiling coincides (`68.3298…` → `68.330`) all pass.
+
+Five annotation kinds, one per claim class: `cell` (one corner's measurement), `count`
+(corners satisfying a `predicate`, carrying a `status`, or the subset size; printed `N` or
+`N/total`), `range` (min/max over a `subset`, endpoints compared directionally as above),
+`pct_change` (change from a `from` corner to
+every corner of the subset, or split `per` field with one printed value per group), and
+`extremum` (the corner actually holding the min/max, or `keyed_to` another measurement's
+extremum; its value rounds toward the conservative side). `subset` is equality/membership over the four fields an envelope corner carries —
+`process`, `supply_v` (mapping; a bare value matches any net, `supply_v.<net>` names one),
+`temperature_c`, `corner_id` (glob). Units convert through a small explicit scale table
+(V/mV/µV/nV, A/mA/µA/nA, dB, dimensionless) — `dvref_v` is recorded in V and printed in µV.
+An optional `anchor` narrows a table-level annotation to the row containing it, so stacked
+annotations above one table stay coupled to their own rows. The full schema is the checker's
+docstring.
+
+Scope is enumerated by `sim/documented-figures.json`, not globbed; each `envelope` path
+resolves relative to its document's directory. The first entry is
+`sim/closed-loop-psrr/README.md` (18 annotations); annotating the other four benches is
+follow-up #107. Exit 0 = every annotation re-derives and matches, with a coverage summary
+including the count of **un-annotated** decimal figures per document — un-annotated figures
+are reported, never failed, so a bench nobody has annotated yet cannot turn CI red. Exit 1 =
+a mismatch, a malformed annotation, a printed literal absent from its covered block, or a
+document / cited envelope missing. Exit 2 = manifest unreadable or bad arguments. Offline by
+construction: committed files under the repo root only, no network, no ngspice, no absolute
+paths. Fake-tree suite: `bash sim/tests/test-documented-figures.sh` (the four PR #98 error
+shapes each asserted to fail naming file + claim + expected value, the exit-code contract,
+unit scaling, and a real-tree exit-0 assertion); inventoried under `attest/item10.json`.
+
 ## Post-layout extraction (T1 item 7): what is committed, and what is not producible
 
 ```bash

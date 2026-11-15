@@ -339,7 +339,7 @@
         "command": null,
         "kind": "generic",
         "check_status": "pass",
-        "content_hash": "sha256:e120f6b5e35011a84b9ac6540dccc064be6dec5df2434af4883663e4b0eba4a8",
+        "content_hash": "sha256:7d441c3d0c48e2c3416ffce9ad5646b9c11eb96f6a6a1e3a53d794d5432536ea",
         "input_verified": true,
         "exit_status": 0,
         "artifact_binding": {
@@ -348,15 +348,15 @@
             "path": "attest/item10.json",
             "scope": "repo"
           },
-          "content_hash": "sha256:e120f6b5e35011a84b9ac6540dccc064be6dec5df2434af4883663e4b0eba4a8",
+          "content_hash": "sha256:7d441c3d0c48e2c3416ffce9ad5646b9c11eb96f6a6a1e3a53d794d5432536ea",
           "input_verified": true,
-          "summary": "T1 item 10 (Repo hygiene): 11/11 attestation checks passed (klt signoff --attest)",
+          "summary": "T1 item 10 (Repo hygiene): 12/12 attestation checks passed (klt signoff --attest)",
           "source": "attest/item10.json",
           "attestation": {
             "producer": "klt signoff --attest",
             "inventory_schema_version": 1,
-            "check_count": 11,
-            "passed_count": 11
+            "check_count": 12,
+            "passed_count": 12
           }
         }
       }
