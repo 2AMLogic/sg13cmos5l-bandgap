@@ -5,6 +5,8 @@ triage agent. Newest first.
 
 ### 2026-11-15
 
+- **PR #131**: test: assert bench.json deck_template and testbench resolve to the same file
+- **Issue #119** (closed): sim: no check asserts bench.json's `deck_template` and `testbench` resolve to the same file (both bench suites)
 - **PR #128**: fix: sign-aware left boundary in documented-figure literal presence
 - **Issue #127** (closed): sim: literal_present accepts a sign-flipped figure (a positive printed literal is satisfied by its negative in prose)
 - **PR #125**: fix: admit a sentence-ending period in documented-figure literal presence
