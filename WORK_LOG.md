@@ -5,6 +5,8 @@ triage agent. Newest first.
 
 ### 2026-11-15
 
+- **PR #128**: fix: sign-aware left boundary in documented-figure literal presence
+- **Issue #127** (closed): sim: literal_present accepts a sign-flipped figure (a positive printed literal is satisfied by its negative in prose)
 - **PR #125**: fix: admit a sentence-ending period in documented-figure literal presence
 - **Issue #121** (closed): sim: boundary-aware literal presence rejects a figure that ends a sentence
 - **PR #111**: sim: share one deck fixture across grid benches on an identical supply stimulus
