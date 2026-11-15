@@ -8,6 +8,24 @@ bench was asked to make, and what it may and may not be read as, are recorded in
 
 Everything here is **SIMULATED**.
 
+**Provenance: the deck in tree is newer than the committed campaign, on purpose.**
+The committed campaign (`repo_git_sha` `e882c25`, 2026-11-13) ran under the staging
+then in tree — the DUT netlist included flat, and no `.global sub!` card, so the
+resistor bulk nodes sat on per-instance local nets resolved by `rshunt`, the exact
+arrangement main's decision records
+[`0013`](../../spec/decision-records/0013-subckt-wrapped-staged-dut.md) and
+[`0014`](../../spec/decision-records/0014-substrate-net-global.md) later documented
+and changed (#83/#84 re-took the item-5 evidence on the new arrangement). This
+directory's deck has since been brought up to that arrangement — it instantiates the
+wrapped staged DUT and declares `sub!` global — and `sim/tests/test-mc-bench.sh`
+§6 checks both. The committed `records/*.json` still bind the deck bytes **as run**
+(`template_sha256` `8164a9b0…`, `deck_sha256` `23f5adca…`) and are append-only, so
+they evidence that campaign, not this file's current bytes; a byte-exact re-run of
+it is possible only at its recorded commit. The item-5 anchor the zero control
+reproduces is unchanged across the re-takes (1.19696 V at typ/3.30 V/27 °C in all
+three committed item-5 envelopes). Re-taking the campaign on the current arrangement
+is filed as [#115](https://github.com/2AMLogic/sg13cmos5l-bandgap/issues/115).
+
 ```bash
 source sim/env.sh
 sim/mc-run.sh zero          # the deterministic control, first: it proves the harness

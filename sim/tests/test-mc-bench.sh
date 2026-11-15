@@ -23,7 +23,10 @@
 #     stages its model inputs -- the same portability contract the item-5 grids have
 #     (sim/tests/test-grid-benches.sh check 5), for the same reason.
 #  6. The deck template carries no SPICE title line, no `.control` block and no `.end`
-#     card (issue #19), and every @@PLACEHOLDER@@ it uses is one the runner supplies.
+#     card (issue #19), every @@PLACEHOLDER@@ it uses is one the runner supplies, and it
+#     instantiates the wrapped staged DUT exactly once with runner-lib.sh's cell name and
+#     pin order, with `sub!` declared `.global` where it drives it (issues #80/#83,
+#     decision records 0013 and 0014-substrate-net-global).
 #  7. Every committed envelope is paired with a record of the same name that carries
 #     schema_version 1, names its own envelope, names the fleet job(s) it ran as, binds
 #     the staged models by hash on every one of them, and reports its expectation as met -- and the zero control's record shows
@@ -203,6 +206,29 @@ for name, req in requests.items():
           req.get("netlist_source") == "schematic", req.get("netlist_source"))
 
 # ---- 6. the deck template ----------------------------------------------------------------
+# The staged DUT is wrapped in a subckt (issue #80, decision record 0013) and the deck
+# instantiates it, so the cell name and pin order live in TWO places that must agree.
+# They are read from sim/runner-lib.sh here rather than retyped, the same discipline
+# sim/tests/test-grid-benches.sh applies to the five grid benches: a drift between the
+# staging header and an `Xdut` card would otherwise surface as an "unknown subckt" at
+# load time on the fleet, one submitted campaign later, instead of failing offline here.
+# The substrate tie (issue #83, decision record 0014-substrate-net-global) is checked
+# the same way: a deck that drives `sub!` with `Vsub` only ties the DUT's rppd/rhigh
+# bulks if `sub!` is an ngspice GLOBAL net, and no measured value would look wrong
+# without one.
+with open(os.path.join(root, "sim/runner-lib.sh")) as f:
+    runner_lib = f.read()
+
+
+def shvar(name):
+    m = re.search(r'^%s="([^"]*)"$' % name, runner_lib, re.M)
+    return m.group(1) if m else None
+
+
+dut_subckt, dut_pins = shvar("CM5_DUT_SUBCKT"), shvar("CM5_DUT_PINS")
+check("sim/runner-lib.sh declares CM5_DUT_SUBCKT and CM5_DUT_PINS",
+      bool(dut_subckt) and bool(dut_pins), "%r %r" % (dut_subckt, dut_pins))
+want_xdut = ["Xdut"] + (dut_pins or "").split() + [dut_subckt or ""]
 with open(os.path.join(root, BD, meta["deck_template"])) as f:
     tmpl = f.read()
 body = [l for l in tmpl.splitlines() if l and not l.startswith("*")]
@@ -210,6 +236,30 @@ check("deck template line 1 is a comment", tmpl.splitlines()[0].startswith("*"))
 check("deck template has no .control block",
       not any(l.lower().startswith(".control") for l in body))
 check("deck template has no .end card", not any(l.strip().lower() == ".end" for l in body))
+vsub_sub = [l for l in body
+            if l.split()[:1] and l.split()[0].lower().startswith("vsub")
+            and "sub!" in l.lower()]
+globals_ = [l.split() for l in body if l.split()[:1] == [".global"]]
+sub_global = [g for g in globals_ if "sub!" in g[1:]]
+check("deck template drives sub! with a Vsub card", len(vsub_sub) == 1,
+      "%d Vsub cards naming sub!" % len(vsub_sub))
+check("deck template declares sub! global where it drives it",
+      len(sub_global) == 1 if vsub_sub else not sub_global,
+      "%d .global cards naming sub! for %d Vsub sub! cards"
+      % (len(sub_global), len(vsub_sub)))
+check("deck template's .global cards name only sub!",
+      all(g[1:] == ["sub!"] for g in globals_), str(globals_))
+includes = [i for i, l in enumerate(body) if l.lower().startswith(".include")]
+xduts = [i for i, l in enumerate(body) if l.split()[:1] == ["Xdut"]]
+check("deck template instantiates the staged DUT exactly once", len(xduts) == 1,
+      "%d Xdut cards" % len(xduts))
+if len(xduts) == 1 and len(includes) == 1:
+    check("deck template instantiates the DUT after the .include that defines it",
+          xduts[0] > includes[0], "Xdut at %d, .include at %d" % (xduts[0], includes[0]))
+if xduts:
+    card = body[xduts[0]].split()
+    check("Xdut card is runner-lib.sh's cell name and pin order",
+          card == want_xdut, "%s vs %s" % (card, want_xdut))
 placeholders = set(re.findall(r"@@([A-Z_]+)@@", tmpl))
 supplied = set(meta["deck_substitutions"]) | {"WORK", "STAT_SCALE_BLOCK"}
 check("every deck placeholder is supplied", placeholders <= supplied,

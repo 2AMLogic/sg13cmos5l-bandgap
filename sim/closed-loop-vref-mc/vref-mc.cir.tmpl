@@ -17,7 +17,9 @@
 *
 * The DUT is the in-tree migrated netlist design/sg13cmos5l/netlist/bandgap_top.spice
 * (decision record 0006); sim/runner-lib.sh's cm5_stage_dut copies it into the scratch
-* directory with only its final `.end` card removed.
+* directory and wraps it in `.subckt sg13cmos5l_bandgap_top vdd vref vss` (decision
+* record 0013), so this deck instantiates it as `Xdut` below and top-level `vref` is
+* the wrapper's pin -- `v(vref)` reads it directly.
 *
 * NO SPICE TITLE LINE (issue #19): `klt sim` `.include`s this deck into a top deck
 * of its own, so line 1 here is not in title position. Every line is a comment or a
@@ -30,9 +32,23 @@
 
 Vvdd vdd 0 dc @@VDD@@
 Vvss vss 0 dc 0
+* `.global sub!` is what makes the `Vsub` tie below actually reach the DUT (issue #83,
+* decision record 0014-substrate-net-global): `!` is an xschem marker, the migrated
+* netlist carries no `.global` card of its own, and inside the staged wrapper the
+* rppd/rhigh bulk terminals would otherwise be per-instance LOCAL nodes
+* (`xdut.xx1.sub!`, `xdut.xx3.sub!`) resolved by rshunt alone. With the card there is
+* one `sub!` net at every hierarchy level, so the 0 V source below holds the resistor
+* bulks at vss as the schematics' `body=sub!` says.
+.global sub!
 Vsub sub! vss dc 0
 
 .include "@@WORK@@/bandgap_top.spice"
+
+* The staged DUT, instantiated exactly once (decision record 0013). The wrapper's pin
+* order is runner-lib.sh's CM5_DUT_PINS, and sim/tests/test-mc-bench.sh section 6
+* checks this card's cell name and pin order against runner-lib.sh so a drift fails
+* offline instead of as an "unknown subckt" on the fleet.
+Xdut vdd vref vss sg13cmos5l_bandgap_top
 
 * Statistical-magnitude scale block. EMPTY for every campaign that runs the pinned
 * model libraries unchanged; for the known-bad control sim/mc-run.sh generates one
