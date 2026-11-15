@@ -13,9 +13,13 @@ machine-checkable form:
 
 For each annotation the checker (a) re-derives the value from the cited
 envelope's full-precision `corners[].measurements[].value`, (b) rounds ONCE to
-the printed literal's own decimal places, and (c) requires the printed literal
-to occur in the covered block -- so editing the prose without the annotation
-fails, and editing the annotation without the prose fails too. Values are
+the printed literal's own decimal places -- directionally for extents, because
+a range endpoint or an extremum states a bound, not a rounded value: a minimum
+is compared against the floored rounding and a maximum against the ceilinged
+rounding at the printed precision, so a printed endpoint may widen the stated
+range but never narrow it -- and (c) requires the printed literal to occur in
+the covered block -- so editing the prose without the annotation fails, and
+editing the annotation without the prose fails too. Values are
 never taken from a figure already printed in a document or from the envelope's
 rounded summaries: a second rounding of a rounded value is exactly the bug
 this checker exists for.
@@ -35,8 +39,13 @@ the lines containing it):
                ==|!=", "value": n, "unit": opt}` on `measurement`), or carrying
                `status` ("pass"/"fail"), or, with neither, the subset size;
                printed as "N" or "N/total"
-  range        min/max of `measurement` over `subset`, each rounded once
-               (printed.min / printed.max, one shared printed.unit)
+  range        min/max of `measurement` over `subset` (printed.min /
+               printed.max, one shared printed.unit); endpoints are bounds,
+               each rounded once directionally -- the minimum against the
+               floor and the maximum against the ceiling at the printed
+               precision, so a span of 0.37-0.64 printed as 0.4-0.6 at one
+               decimal is rejected while 0.37-0.64 and a conservative
+               0.3-0.7 both pass
   pct_change   percentage change of `measurement` from the `from` corner to
                every corner in `subset`; must hold for EVERY corner, or split
                with "per": "<field>" and printed.values keyed by group value;
@@ -45,7 +54,9 @@ the lines containing it):
                `subset`; "keyed_to": "<other measurement>" declares that the
                named corner is really that quantity's extremum, in which case
                printed.value is `measurement` AT that corner; printed.corner
-               is optional when the covered block states only the value
+               is optional when the covered block states only the value;
+               printed.value rounds toward the conservative side (floor for
+               a minimum, ceiling for a maximum)
 
 Units convert through a small explicit scale table (V/mV/uV/nV, A/mA/uA/nA,
 dB, dimensionless); typographic minus, dashes, micro signs and ellipses are
@@ -72,7 +83,7 @@ import math
 import os
 import re
 import sys
-from decimal import Decimal, ROUND_HALF_UP
+from decimal import Decimal, ROUND_CEILING, ROUND_FLOOR, ROUND_HALF_UP
 from fnmatch import fnmatch
 
 SUBSET_FIELDS = ("process", "supply_v", "temperature_c", "corner_id")
@@ -124,9 +135,9 @@ def decimals_in(s):
     return len(t.split(".", 1)[1]) if "." in t else 0
 
 
-def round_once(value, nd):
-    d = value if isinstance(value, Decimal) else Decimal(float(value))
-    return d.quantize(Decimal(1).scaleb(-nd), rounding=ROUND_HALF_UP)
+def round_once(value, nd, rounding=ROUND_HALF_UP):
+    d = value if isinstance(value, Decimal) else Decimal(repr(float(value)))
+    return d.quantize(Decimal(1).scaleb(-nd), rounding=rounding)
 
 
 def fmt_dec(d, nd):
@@ -214,13 +225,19 @@ def claim_str(j):
     return " ".join(bits)
 
 
-def check_value(printed, expected, block, what, env_rel):
+def check_value(printed, expected, block, what, env_rel, bound=None):
     ps = str(printed)
     nd = decimals_in(ps)
-    want = round_once(expected, nd)
+    if bound == "min":
+        rounding, bound_txt = ROUND_FLOOR, " (conservative bound: floor at printed precision)"
+    elif bound == "max":
+        rounding, bound_txt = ROUND_CEILING, " (conservative bound: ceiling at printed precision)"
+    else:
+        rounding, bound_txt = ROUND_HALF_UP, ""
+    want = round_once(expected, nd, rounding)
     probs = []
     if parse_num(ps) != want:
-        probs.append(f"printed {ps} does not match {what}; expected {fmt_dec(want, nd)} (from {env_rel})")
+        probs.append(f"printed {ps} does not match {what}; expected {fmt_dec(want, nd)}{bound_txt} (from {env_rel})")
     if norm(ps) not in block:
         probs.append(f"printed literal {ps} absent from covered block")
     return probs
@@ -318,8 +335,8 @@ def check_range(j, env, block, env_rel):
         if punit:
             v = convert(v, m.get("unit"), punit)
         vals.append(v)
-    probs = check_value(printed["min"], min(vals), block, f"min {name} over subset", env_rel)
-    probs += check_value(printed["max"], max(vals), block, f"max {name} over subset", env_rel)
+    probs = check_value(printed["min"], min(vals), block, f"min {name} over subset", env_rel, bound="min")
+    probs += check_value(printed["max"], max(vals), block, f"max {name} over subset", env_rel, bound="max")
     if punit and norm(punit) not in block:
         probs.append(f"printed unit {punit} absent from covered block")
     return probs
@@ -435,7 +452,7 @@ def check_extremum(j, env, block, env_rel):
         expected = convert(expected, src_unit, punit)
         if norm(punit) not in block:
             probs.append(f"printed unit {punit} absent from covered block")
-    probs += check_value(printed["value"], expected, block, what, env_rel)
+    probs += check_value(printed["value"], expected, block, what, env_rel, bound=ext)
     if pc is not None and norm(pc) not in block:
         probs.append(f"printed corner {pc} absent from covered block")
     return probs

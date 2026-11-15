@@ -3,8 +3,9 @@
 # python3: no PDK, no network, no ngspice. Run: bash sim/tests/test-documented-figures.sh
 #
 # Covers the four PR #98 error shapes (a count claim printing 3 where 4 corners
-# satisfy the predicate; a range claim printing 0.40-0.60 where the span is
-# 0.37-0.64; a pct_change claim printing one grid-wide value that holds at only
+# satisfy the predicate; a range claim printing 0.4-0.6, the PR #98 document's
+# own literal, or 0.40-0.60 where the span is 0.37-0.64; a pct_change claim
+# printing one grid-wide value that holds at only
 # one temperature; an extremum claim naming a corner that does not hold the
 # extremum), each asserted to fail with the file, the claim and the expected
 # value in the message; the exit-code contract (un-annotated in-scope document
@@ -133,6 +134,17 @@ EOF
 expect3 "coarsened range rejected, names file+claim+expected" "${d}" 1 \
   "sim/bench/README.md" "range r" "expected 0.64"
 cat > "${d}/sim/bench/README.md" <<'EOF'
+<!-- figure: {"envelope":"envelopes/cited.json","kind":"range","measurement":"r","subset":{},"printed":{"min":"0.4","max":"0.6","unit":"V"}} -->
+The error span is 0.4 V to 0.6 V.
+EOF
+expect3 "range at the PR #98 document's own one-decimal precision rejected" "${d}" 1 \
+  "sim/bench/README.md" "range r" "expected 0.7"
+cat > "${d}/sim/bench/README.md" <<'EOF'
+<!-- figure: {"envelope":"envelopes/cited.json","kind":"range","measurement":"r","subset":{},"printed":{"min":"0.3","max":"0.7","unit":"V"}} -->
+The error span is 0.3 V to 0.7 V.
+EOF
+expect "conservatively widened one-decimal range passes" "${d}" 0
+cat > "${d}/sim/bench/README.md" <<'EOF'
 <!-- figure: {"envelope":"envelopes/cited.json","kind":"range","measurement":"r","subset":{},"printed":{"min":"0.37","max":"0.64","unit":"V"}} -->
 The error span is 0.37 V to 0.64 V.
 EOF
@@ -215,6 +227,19 @@ Worst m2 is 2.0 V at wcs/2.970V/125C, the corner that holds the k minimum.
 EOF
 expect "extremum passes once keyed_to declares the quantity it is keyed to" "${d}" 0
 
+cat > "${d}/sim/bench/README.md" <<'EOF'
+<!-- figure: {"envelope":"envelopes/cited.json","kind":"extremum","measurement":"r","extremum":"min","subset":{},"printed":{"value":"0.4","unit":"V"}} -->
+Worst r is 0.4 V.
+EOF
+expect3 "optimistically rounded minimum rejected as a false bound" "${d}" 1 \
+  "sim/bench/README.md" "extremum r min" "expected 0.3"
+
+cat > "${d}/sim/bench/README.md" <<'EOF'
+<!-- figure: {"envelope":"envelopes/cited.json","kind":"extremum","measurement":"r","extremum":"min","subset":{},"printed":{"value":"0.3","unit":"V"}} -->
+Worst r is 0.3 V.
+EOF
+expect "conservatively rounded minimum passes" "${d}" 0
+
 # ---- exit-code contract ------------------------------------------------------
 d="$(mkcase unannotated e1.json)"
 printf 'A document that cites an envelope (envelopes/cited.json) but has no annotations yet: 1.5 V.\n' > "${d}/sim/bench/README.md"
@@ -249,16 +274,16 @@ expect "unreadable manifest exits 2" "${d}" 2 "${MANIFEST_ERROR_PREFIX}"
 # ---- unit scaling ------------------------------------------------------------
 d="$(mkcase uv e4.json)"
 cat > "${d}/sim/bench/README.md" <<'EOF'
-<!-- figure: {"envelope":"envelopes/cited.json","kind":"range","measurement":"dvref","subset":{},"printed":{"min":"-68.6","max":"+172.8","unit":"µV"}} -->
-The residual spans −68.6 µV … +172.8 µV.
+<!-- figure: {"envelope":"envelopes/cited.json","kind":"range","measurement":"dvref","subset":{},"printed":{"min":"-68.7","max":"+172.9","unit":"µV"}} -->
+The residual spans −68.7 µV … +172.9 µV.
 EOF
-expect "range with V recorded and µV printed passes" "${d}" 0
+expect "range with V recorded and µV printed passes (conservative endpoints)" "${d}" 0
 
 cat > "${d}/sim/bench/README.md" <<'EOF'
 <!-- figure: {"envelope":"envelopes/cited.json","kind":"range","measurement":"dvref","subset":{},"printed":{"min":"-68.6348","max":"+172.8075","unit":"mV"}} -->
 The residual spans -68.6348 mV to 172.8075 mV.
 EOF
-expect "wrong-scale unit rejected" "${d}" 1 "expected -0.0686"
+expect "wrong-scale unit rejected" "${d}" 1 "expected -0.0687"
 
 # ---- real committed tree -----------------------------------------------------
 expect "real committed tree verifies (closed-loop-psrr annotated)" "${root}" 0 \

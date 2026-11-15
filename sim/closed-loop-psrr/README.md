@@ -88,16 +88,16 @@ PDK `f7bca32…` (model text staged and hash-matched; see `sim/README.md`).
 is the same grid graded against the Fallback; it is kept as append-only evidence and is no
 longer the cited one.
 
-<!-- figure: {"envelope":"envelopes/20261113T115930Z-0be5a53.json","kind":"extremum","measurement":"psrr_db","extremum":"min","subset":{},"anchor":"psrr_db","printed":{"value":"55.249","unit":"dB","corner":"wcs/2.970V/125C"}} -->
+<!-- figure: {"envelope":"envelopes/20261113T115930Z-0be5a53.json","kind":"extremum","measurement":"psrr_db","extremum":"min","subset":{},"anchor":"psrr_db","printed":{"value":"55.248","unit":"dB","corner":"wcs/2.970V/125C"}} -->
 <!-- figure: {"envelope":"envelopes/20261113T115930Z-0be5a53.json","kind":"extremum","measurement":"psrr_db","extremum":"max","subset":{},"anchor":"psrr_db","printed":{"value":"68.330","unit":"dB","corner":"bcs/3.630V/27C"}} -->
 <!-- figure: {"envelope":"envelopes/20261113T115930Z-0be5a53.json","kind":"range","measurement":"dvdd_v","subset":{},"anchor":"dvdd_v","printed":{"min":"0.1","max":"0.1","unit":"V"}} -->
-<!-- figure: {"envelope":"envelopes/20261113T115930Z-0be5a53.json","kind":"range","measurement":"dvref_v","subset":{},"anchor":"dvref_v","printed":{"min":"-68.6","max":"+172.8","unit":"µV"}} -->
+<!-- figure: {"envelope":"envelopes/20261113T115930Z-0be5a53.json","kind":"range","measurement":"dvref_v","subset":{},"anchor":"dvref_v","printed":{"min":"-68.7","max":"+172.9","unit":"µV"}} -->
 
 | Measurement | Worst case | Binding corner | Best case |
 |---|---|---|---|
-| `psrr_db` | **55.249 dB** | `wcs/2.970V/125C` | 68.330 dB (`bcs/3.630V/27C`) |
+| `psrr_db` | **55.248 dB** | `wcs/2.970V/125C` | 68.330 dB (`bcs/3.630V/27C`) |
 | `dvdd_v` | 0.1 V | every point | 0.1 V |
-| `dvref_v` | −68.6 µV … +172.8 µV | — | — |
+| `dvref_v` | −68.7 µV … +172.9 µV | — | — |
 
 **Where the 24 failures are** — the miss is across more than half the grid, not at one corner:
 
@@ -116,16 +116,16 @@ longer the cited one.
 
 Against the row's other two columns, reported and **not** graded (`bench.json` says why):
 
-<!-- figure: {"envelope":"envelopes/20261113T115930Z-0be5a53.json","kind":"extremum","measurement":"psrr_db","extremum":"min","subset":{},"anchor":"Fallback","printed":{"value":"55.249","unit":"dB"}} -->
-<!-- figure: {"envelope":"envelopes/20261113T115930Z-0be5a53.json","kind":"extremum","measurement":"psrr_db","extremum":"min","subset":{},"anchor":"Target","printed":{"value":"55.249","unit":"dB"}} -->
+<!-- figure: {"envelope":"envelopes/20261113T115930Z-0be5a53.json","kind":"extremum","measurement":"psrr_db","extremum":"min","subset":{},"anchor":"Fallback","printed":{"value":"55.248","unit":"dB"}} -->
+<!-- figure: {"envelope":"envelopes/20261113T115930Z-0be5a53.json","kind":"extremum","measurement":"psrr_db","extremum":"min","subset":{},"anchor":"Target","printed":{"value":"55.248","unit":"dB"}} -->
 <!-- figure: {"envelope":"envelopes/20261113T115930Z-0be5a53.json","kind":"count","subset":{},"status":"fail","anchor":"Target","printed":{"value":"24/45"}} -->
-<!-- figure: {"envelope":"envelopes/20261113T115930Z-0be5a53.json","kind":"extremum","measurement":"psrr_db","extremum":"min","subset":{},"anchor":"Stretch","printed":{"value":"55.249","unit":"dB"}} -->
+<!-- figure: {"envelope":"envelopes/20261113T115930Z-0be5a53.json","kind":"extremum","measurement":"psrr_db","extremum":"min","subset":{},"anchor":"Stretch","printed":{"value":"55.248","unit":"dB"}} -->
 
 | Column | Bound | Worst measured | Verdict |
 |---|---|---|---|
-| Fallback | > 50 dB | 55.249 dB | met (reported, not graded) |
-| Target | > 60 dB | 55.249 dB | **NOT met — graded, 24/45 fail** |
-| Stretch | > 70 dB | 55.249 dB | not met |
+| Fallback | > 50 dB | 55.248 dB | met (reported, not graded) |
+| Target | > 60 dB | 55.248 dB | **NOT met — graded, 24/45 fail** |
+| Stretch | > 70 dB | 55.248 dB | not met |
 
 **The PSRR target is missed on measured evidence.** This is the one row of the five where the
 ratified Target does not hold at every point, and it is recorded as a miss rather than

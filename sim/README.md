@@ -252,14 +252,21 @@ re-derives the value from the envelope's full-precision `corners[].measurements[
 rounds **once** to the printed literal's own decimal places, and requires the printed literal
 to occur in the covered block — editing the prose without the annotation fails, and editing
 the annotation without the prose fails too. A second rounding of a rounded value (the PR #98
-`got/req` bug) is exactly what this forbids.
+`got/req` bug) is exactly what this forbids. Extent claims (`range` endpoints, `extremum`
+values) are bounds, not rounded values, so their comparison is directional: a minimum is
+checked against the floored rounding and a maximum against the ceilinged rounding, each at
+the printed literal's own decimal places — a printed endpoint may widen the stated range but
+never narrow it. `0.37–0.64` printed as `0.4–0.6` is rejected (that literal is the PR #98
+defect in its original form); `0.37–0.64`, a conservatively widened `0.3–0.7`, and a maximum
+whose ceiling coincides (`68.3298…` → `68.330`) all pass.
 
 Five annotation kinds, one per claim class: `cell` (one corner's measurement), `count`
 (corners satisfying a `predicate`, carrying a `status`, or the subset size; printed `N` or
-`N/total`), `range` (min/max over a `subset`), `pct_change` (change from a `from` corner to
+`N/total`), `range` (min/max over a `subset`, endpoints compared directionally as above),
+`pct_change` (change from a `from` corner to
 every corner of the subset, or split `per` field with one printed value per group), and
 `extremum` (the corner actually holding the min/max, or `keyed_to` another measurement's
-extremum). `subset` is equality/membership over the four fields an envelope corner carries —
+extremum; its value rounds toward the conservative side). `subset` is equality/membership over the four fields an envelope corner carries —
 `process`, `supply_v` (mapping; a bare value matches any net, `supply_v.<net>` names one),
 `temperature_c`, `corner_id` (glob). Units convert through a small explicit scale table
 (V/mV/µV/nV, A/mA/µA/nA, dB, dimensionless) — `dvref_v` is recorded in V and printed in µV.
