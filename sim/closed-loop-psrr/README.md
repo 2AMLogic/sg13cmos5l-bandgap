@@ -50,6 +50,9 @@ settled transient figure. The committed grid's own typ/3.300V/27C point reports
 
 ### Three things that could have made the number wrong, and what guards each
 
+<!-- figure: {"envelope":"envelopes/20261113T115930Z-0be5a53.json","kind":"range","measurement":"dvdd_v","subset":{},"printed":{"min":"0.1","max":"0.1","unit":"V"}} -->
+<!-- figure: {"envelope":"envelopes/20261113T115930Z-0be5a53.json","kind":"count","subset":{},"printed":{"value":"45"}} -->
+
 - **Supply excursion.** The two solves sit ±50 mV about each grid supply, so the rail reaches
   3.68 V at the 3.63 V point and 2.92 V at the 2.97 V point — just outside the ratified ±10 %
   operating window. That is disclosed, not hidden: a derivative needs two points, and a secant
@@ -77,18 +80,33 @@ Envelope `envelopes/20261113T115930Z-0be5a53.json`, record
 `records/20261113T115930Z-0be5a53.json`, job `klt-sim-b912e68f5318`, ngspice-47,
 PDK `f7bca32…` (model text staged and hash-matched; see `sim/README.md`).
 
+<!-- figure: {"envelope":"envelopes/20261113T115930Z-0be5a53.json","kind":"count","subset":{},"status":"pass","printed":{"value":"21/45"}} -->
+<!-- figure: {"envelope":"envelopes/20261113T115930Z-0be5a53.json","kind":"count","subset":{},"status":"fail","printed":{"value":"24/45"}} -->
+
 **21/45 points pass; 24/45 FAIL.** Graded against the ratified **Target** bound of > 60 dB
 (decision record 0011 §2). The earlier envelope `envelopes/20261113T111443Z-3830083.json`
 is the same grid graded against the Fallback; it is kept as append-only evidence and is no
 longer the cited one.
 
+<!-- figure: {"envelope":"envelopes/20261113T115930Z-0be5a53.json","kind":"extremum","measurement":"psrr_db","extremum":"min","subset":{},"anchor":"psrr_db","printed":{"value":"55.248","unit":"dB","corner":"wcs/2.970V/125C"}} -->
+<!-- figure: {"envelope":"envelopes/20261113T115930Z-0be5a53.json","kind":"extremum","measurement":"psrr_db","extremum":"max","subset":{},"anchor":"psrr_db","printed":{"value":"68.330","unit":"dB","corner":"bcs/3.630V/27C"}} -->
+<!-- figure: {"envelope":"envelopes/20261113T115930Z-0be5a53.json","kind":"range","measurement":"dvdd_v","subset":{},"anchor":"dvdd_v","printed":{"min":"0.1","max":"0.1","unit":"V"}} -->
+<!-- figure: {"envelope":"envelopes/20261113T115930Z-0be5a53.json","kind":"range","measurement":"dvref_v","subset":{},"anchor":"dvref_v","printed":{"min":"-68.7","max":"+172.9","unit":"µV"}} -->
+
 | Measurement | Worst case | Binding corner | Best case |
 |---|---|---|---|
-| `psrr_db` | **55.249 dB** | `wcs/2.970V/125C` | 68.330 dB (`bcs/3.630V/27C`) |
+| `psrr_db` | **55.248 dB** | `wcs/2.970V/125C` | 68.330 dB (`bcs/3.630V/27C`) |
 | `dvdd_v` | 0.1 V | every point | 0.1 V |
-| `dvref_v` | −68.6 µV … +172.8 µV | — | — |
+| `dvref_v` | −68.7 µV … +172.9 µV | — | — |
 
 **Where the 24 failures are** — the miss is across more than half the grid, not at one corner:
+
+<!-- figure: {"envelope":"envelopes/20261113T115930Z-0be5a53.json","kind":"count","measurement":"psrr_db","subset":{"supply_v":2.97},"predicate":{"op":"<=","value":60,"unit":"dB"},"anchor":"2.97","printed":{"value":"15"}} -->
+<!-- figure: {"envelope":"envelopes/20261113T115930Z-0be5a53.json","kind":"count","subset":{"supply_v":2.97},"anchor":"2.97","printed":{"value":"15"}} -->
+<!-- figure: {"envelope":"envelopes/20261113T115930Z-0be5a53.json","kind":"count","measurement":"psrr_db","subset":{"supply_v":3.3},"predicate":{"op":"<=","value":60,"unit":"dB"},"anchor":"3.30","printed":{"value":"9"}} -->
+<!-- figure: {"envelope":"envelopes/20261113T115930Z-0be5a53.json","kind":"count","subset":{"supply_v":3.3},"anchor":"3.30","printed":{"value":"15"}} -->
+<!-- figure: {"envelope":"envelopes/20261113T115930Z-0be5a53.json","kind":"count","measurement":"psrr_db","subset":{"supply_v":3.63},"predicate":{"op":"<=","value":60,"unit":"dB"},"anchor":"3.63","printed":{"value":"0"}} -->
+<!-- figure: {"envelope":"envelopes/20261113T115930Z-0be5a53.json","kind":"count","subset":{"supply_v":3.63},"anchor":"3.63","printed":{"value":"15"}} -->
 
 | Supply | Points below > 60 dB | Of |
 |---|---|---|
@@ -98,11 +116,16 @@ longer the cited one.
 
 Against the row's other two columns, reported and **not** graded (`bench.json` says why):
 
+<!-- figure: {"envelope":"envelopes/20261113T115930Z-0be5a53.json","kind":"extremum","measurement":"psrr_db","extremum":"min","subset":{},"anchor":"Fallback","printed":{"value":"55.248","unit":"dB"}} -->
+<!-- figure: {"envelope":"envelopes/20261113T115930Z-0be5a53.json","kind":"extremum","measurement":"psrr_db","extremum":"min","subset":{},"anchor":"Target","printed":{"value":"55.248","unit":"dB"}} -->
+<!-- figure: {"envelope":"envelopes/20261113T115930Z-0be5a53.json","kind":"count","subset":{},"status":"fail","anchor":"Target","printed":{"value":"24/45"}} -->
+<!-- figure: {"envelope":"envelopes/20261113T115930Z-0be5a53.json","kind":"extremum","measurement":"psrr_db","extremum":"min","subset":{},"anchor":"Stretch","printed":{"value":"55.248","unit":"dB"}} -->
+
 | Column | Bound | Worst measured | Verdict |
 |---|---|---|---|
-| Fallback | > 50 dB | 55.249 dB | met (reported, not graded) |
-| Target | > 60 dB | 55.249 dB | **NOT met — graded, 24/45 fail** |
-| Stretch | > 70 dB | 55.249 dB | not met |
+| Fallback | > 50 dB | 55.248 dB | met (reported, not graded) |
+| Target | > 60 dB | 55.248 dB | **NOT met — graded, 24/45 fail** |
+| Stretch | > 70 dB | 55.248 dB | not met |
 
 **The PSRR target is missed on measured evidence.** This is the one row of the five where the
 ratified Target does not hold at every point, and it is recorded as a miss rather than
