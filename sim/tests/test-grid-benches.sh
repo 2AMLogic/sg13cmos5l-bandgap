@@ -105,6 +105,27 @@
 # card from the shared DC fixture (the vref.cir.tmpl closed-loop-iq's bench.json names) fails
 # once ("sim/closed-loop-vref-pvt/vref.cir.tmpl deck template instantiates the staged DUT
 # exactly once: 0 Xdut cards"). Both exit 1.
+#
+# Negative controls for the reference-anchor axis guard (issue #109), each run while writing
+# it and reverted before commit: check 8's cross-bench loops iterate the *reference's*
+# corners keys, so an axis the reference (closed-loop-vref-pvt) itself omits is compared
+# nowhere -- the new guard above requires the three ratified §PVT axes (process, supply_v,
+# temperature_c; spec/target-spec.md, decision record 0011) present and non-empty on it.
+# (a) deleting corners.supply_v from the reference request fails once -- "closed-loop-vref-pvt
+# declares a non-empty corners.supply_v: null"; the four `corners.supply_v equals` comparisons
+# cease to exist rather than fail, which is exactly the silent state this guard exists to end.
+# (b) deleting corners.temperature_c fails twice -- the presence guard plus the pre-existing
+# stale-declaration check ("closed-loop-vref-pvt declares a non-empty corners.temperature_c:
+# null", "closed-loop-vref-pvt-boxtc declares corners.temperature_c in-analysis and so omits
+# it: stale declaration: corners.temperature_c is not a reference axis") -- so the cover no
+# longer depends on closed-loop-vref-pvt-boxtc continuing to declare that omission. (c)
+# emptying corners.supply_v to {} fails FIVE times -- the guard ("closed-loop-vref-pvt
+# declares a non-empty corners.supply_v: {}") plus the four pre-existing per-axis equality
+# FAILs -- because emptiness was already caught once the key is present: the hole is key
+# absence, so this control does not flip green-to-red. Edge case, same method: deleting the
+# reference's whole `corners` mapping fails without a traceback -- the three guard FAILs
+# ("...: null" for each axis) plus the stale-declaration and REQUIRED-selection failures
+# downstream. All exit 1.
 set -u
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 python3 -I - "${root}" <<'PY'
@@ -490,9 +511,21 @@ def first_difference(got, ref_):
 
 ref = BENCHES[0]
 ref_corners = (requests.get(ref) or {}).get("corners") or {}
-check("%s declares a non-empty corners.process" % ref,
-      isinstance(ref_corners.get("process"), list) and bool(ref_corners.get("process")),
-      json.dumps(ref_corners.get("process")))
+# Every cross-bench corners comparison below iterates the *reference's* keys, so an
+# axis the reference omits is in neither loop and is compared nowhere -- the other
+# benches' values for it read as additions, which decision record 0011 §4 accepts by
+# design. The three ratified §PVT axes of spec/target-spec.md (Process/Temperature/
+# Supply rows) must therefore be present and non-empty on the reference, or the
+# comparison silently stops meaning anything for that axis (issue #109: deleting
+# corners.supply_v from the reference request left every offline test green). The
+# keys are hard-coded because the spec table names the axes in prose, not by request
+# key; each keeps its request shape (process/temperature_c lists, supply_v a dict)
+# so a reshaped axis fails this guard rather than merely reading empty.
+PVT_AXIS_SHAPES = {"process": list, "supply_v": dict, "temperature_c": list}
+for axis, shape in sorted(PVT_AXIS_SHAPES.items()):
+    check("%s declares a non-empty corners.%s" % (ref, axis),
+          isinstance(ref_corners.get(axis), shape) and bool(ref_corners.get(axis)),
+          json.dumps(ref_corners.get(axis)))
 # A bench may declare an axis it handles in-analysis instead of in the grid (decision
 # record 0011): closed-loop-vref-pvt-boxtc sweeps temperature inside its analysis
 # (`dc temp -40 125 1`), so it carries no `corners.temperature_c`. Any axis omitted

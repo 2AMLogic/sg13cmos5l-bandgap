@@ -1,0 +1,323 @@
+{
+  "bench": "closed-loop-vref-mc",
+  "campaign": "families",
+  "campaign_role": "attribution",
+  "criteria": "Reported at every point and every draw: vref_v, the closed-loop reference, with a plausible_range of [0.5 V, 2.0 V] so a converged-but-degenerate solution is graded inconclusive instead of entering the statistics. Graded at every draw: vref_settle_v = max |vref(t) - vref(2 ms)| over t in (1.5 ms, 2 ms] < 1 mV, the settle criterion decision record 0009 ratified for the closed-loop vref testbench, so a draw whose loop did not settle fails rather than contributing a number. The statistical claim itself -- mean, sigma, the 3-sigma window, the quantiles, the yield against the evidence-reporting window, its confidence interval and the sample-size verdict -- is not graded here: it is the committed klt yield report's, and decision record 0012 records what it may and may not be read as.",
+  "deck_sha256": "23f5adca8bca0bd29fa8ba5610a5cb903f9fbe7dbdff55288fa5506ecdfd7f78",
+  "envelope": "sim/closed-loop-vref-mc/envelopes/20261113T130110Z-d384aed.families.json",
+  "expectation": {
+    "detail": "every point reports a non-zero stddev",
+    "expect": "spread",
+    "met": true,
+    "offending_points": []
+  },
+  "fleet_jobs": [
+    {
+      "elapsed_seconds": 10,
+      "exit_code": "0",
+      "instance_type": "c7i.8xlarge",
+      "job_id": "klt-sim-766dc9557b4c",
+      "lifecycle": "spot",
+      "runner_compatibility": "match",
+      "runner_klt_version": "0.9.0",
+      "runner_model_input_count": 15,
+      "staged_models_hashes_match": true,
+      "state": "done"
+    },
+    {
+      "elapsed_seconds": 9,
+      "exit_code": "0",
+      "instance_type": "c7i.8xlarge",
+      "job_id": "klt-sim-a491b1298fd6",
+      "lifecycle": "spot",
+      "runner_compatibility": "match",
+      "runner_klt_version": "0.9.0",
+      "runner_model_input_count": 15,
+      "staged_models_hashes_match": true,
+      "state": "done"
+    },
+    {
+      "elapsed_seconds": 46,
+      "exit_code": "0",
+      "instance_type": "c7i.8xlarge",
+      "job_id": "klt-sim-a9fd97ffa344",
+      "lifecycle": "spot",
+      "runner_compatibility": "match",
+      "runner_klt_version": "0.9.0",
+      "runner_model_input_count": 15,
+      "staged_models_hashes_match": true,
+      "state": "done"
+    }
+  ],
+  "kind": "closed-loop-vref-statistical-mc",
+  "label": "SIMULATED",
+  "models_staged": {
+    "count": 15,
+    "files": [
+      {
+        "kind": "library",
+        "name": "cornerPNP.lib",
+        "sha256": "65986abd36f61498fd859b66ab1e199e897fd58174c5b6ff789498350d8a0a64"
+      },
+      {
+        "kind": "library",
+        "name": "cornerMOShv.lib",
+        "sha256": "40c4140415a2a2e92d2f42fd64e026d1c04d800708b7a5b663ef083206ddfd62"
+      },
+      {
+        "kind": "library",
+        "name": "cornerRES.lib",
+        "sha256": "bd2fdd7cf19ec817c23c1539c7ab013612e959b8b0698e0a482a7af5ca91d0f9"
+      },
+      {
+        "kind": "dependency",
+        "name": "sg13cmos5l_pnpMPA_mod.lib",
+        "sha256": "0283ad85c094dd1e1be635c5b405c4d4c96ac053423781f25e702bdfbcadaeaa"
+      },
+      {
+        "kind": "dependency",
+        "name": "sg13cmos5l_pnpMPA_stat.lib",
+        "sha256": "f8ec3f58c793d065028823248f2fee95cec2d69aceca1fb7dae0203bdc0680ad"
+      },
+      {
+        "kind": "dependency",
+        "name": "sg13g2_moshv_mod.lib",
+        "sha256": "bf75d51ba73ab6c40bdb76306c9df74f80229db42ee63e3f4cc30a1911645af2"
+      },
+      {
+        "kind": "dependency",
+        "name": "sg13g2_svaricaphv_mod.lib",
+        "sha256": "b6ae39c7334c75c222ecdee9d6b04c9be48657e91351429aebac47d1192a9abb"
+      },
+      {
+        "kind": "dependency",
+        "name": "sg13g2_moshv_mismatch.lib",
+        "sha256": "2e9612bdb8252c281f422511039dc9b3ea983892aec89f8ef3361592e68fed09"
+      },
+      {
+        "kind": "dependency",
+        "name": "sg13g2_moshv_mod_mismatch.lib",
+        "sha256": "97eba3d2d47596488e0e128f950dc30742d1da80cdeec1f7385a9e13cb460936"
+      },
+      {
+        "kind": "dependency",
+        "name": "sg13g2_svaricaphv_mod_mismatch.lib",
+        "sha256": "064e1c751508149f2674914c1791c418195c55fff7d82236d20c2c79f49030fe"
+      },
+      {
+        "kind": "dependency",
+        "name": "sg13g2_moshv_stat.lib",
+        "sha256": "cd30f22637e41fdbbaba506ebe0f17746b8438027e4651a7a87b241a39d68903"
+      },
+      {
+        "kind": "dependency",
+        "name": "resistors_mod.lib",
+        "sha256": "7c77da0c0419c8a332550da3f934f530262bd452734090db827b68ff88d09c43"
+      },
+      {
+        "kind": "dependency",
+        "name": "resistors_mod_mismatch.lib",
+        "sha256": "ce5ea8559df174fbdad8192e45e5d65772ae3af90af61ba295419b2cb5154b29"
+      },
+      {
+        "kind": "dependency",
+        "name": "resistors_stat.lib",
+        "sha256": "9e34411ed09a569323adec8181e4bdd6832af279c9e05b181f00cb2e5d696db6"
+      },
+      {
+        "kind": "dependency",
+        "name": "sg13g2_moshv_parm.lib",
+        "sha256": "eea5bbed39184cb1e2654ae29425a9ed6ee2f2341d6cb76c472591c75237bd35"
+      }
+    ],
+    "hashes_match": true,
+    "jobs_reporting": 3
+  },
+  "monte_carlo": {
+    "family_mismatch": [
+      {
+        "active": null,
+        "family": "other",
+        "note": "mismatch activity for the 'other' family is not independently verified for PDK family 'sg13cmos5l'; treat any sampled spread for it as unconfirmed."
+      },
+      {
+        "active": null,
+        "family": "mosfet",
+        "note": "mismatch activity for the 'mosfet' family is not independently verified for PDK family 'sg13cmos5l'; treat any sampled spread for it as unconfirmed."
+      },
+      {
+        "active": null,
+        "family": "bipolar",
+        "note": "mismatch activity for the 'bipolar' family is not independently verified for PDK family 'sg13cmos5l'; treat any sampled spread for it as unconfirmed."
+      }
+    ],
+    "k_sigma": 3.0,
+    "n": 100,
+    "points": 4,
+    "quantiles": [
+      0.135,
+      5.0,
+      50.0,
+      95.0,
+      99.865
+    ],
+    "seed": 20261113,
+    "seed_scope": "point",
+    "units": 400,
+    "unseeded_sources": null,
+    "vary": "both"
+  },
+  "osdi_preload": [
+    "psp103",
+    "r3_cmc"
+  ],
+  "pdk": {
+    "name": "ihp-sg13cmos5l",
+    "pin_file": "sim/pdk.json"
+  },
+  "pdk_revision": "f7bca32694fe3d58be0cc7d9df4b9f5db7161a14",
+  "repo_git_sha": "d384aed",
+  "request_sha256": "cda5ef5fcb219d77002ef50ca19973e89403974acbfb977cd32a2584b65a7744",
+  "schema_version": 1,
+  "simulator": {
+    "backend": "batch",
+    "klt": "klt 0.9.2.dev887+gec7400b7d8e5",
+    "ngspice": "ngspice-47"
+  },
+  "source_commit": "52535387e6ccf0a89f6490901a9abb2b78144176",
+  "source_file_sha256": "a29624d3bbcc89e2f7132ecfb278dd793b248c84b9f74ab51685f8ecde929ad5",
+  "source_path": "design/sg13cmos5l/netlist/bandgap_top.spice",
+  "source_repo": "2AMLogic/sg13g2-bandgap",
+  "spec_rows": [],
+  "stat_scale": 1.0,
+  "stat_scale_block": "",
+  "statistics": {
+    "by_point": [
+      {
+        "corner_id": "stat_pnp/3.300V/27C",
+        "errored": 0,
+        "inconclusive": 0,
+        "max": 1.20003,
+        "mean": 1.1968888,
+        "min": 1.19327,
+        "n": 100,
+        "quantiles": {
+          "p0.135": 1.1933889485000002,
+          "p5": 1.1946985,
+          "p50": 1.1968,
+          "p95": 1.1993839999999998,
+          "p99.865": 1.2000259905
+        },
+        "sigma_window": {
+          "high": 1.2012179743491633,
+          "k": 3.0,
+          "low": 1.1925596256508366,
+          "margin": null,
+          "status": "pass"
+        },
+        "stddev": 0.001443058116387797
+      },
+      {
+        "corner_id": "stat_mos/3.300V/27C",
+        "errored": 0,
+        "inconclusive": 0,
+        "max": 1.19703,
+        "mean": 1.1969565,
+        "min": 1.19689,
+        "n": 100,
+        "quantiles": {
+          "p0.135": 1.19689,
+          "p5": 1.19691,
+          "p50": 1.19696,
+          "p95": 1.19702,
+          "p99.865": 1.1970286635
+        },
+        "sigma_window": {
+          "high": 1.1970503446491911,
+          "k": 3.0,
+          "low": 1.1968626553508088,
+          "margin": null,
+          "status": "pass"
+        },
+        "stddev": 3.12815497304046e-05
+      },
+      {
+        "corner_id": "stat_res/3.300V/27C",
+        "errored": 0,
+        "inconclusive": 0,
+        "max": 1.23997,
+        "mean": 1.1986949,
+        "min": 1.14794,
+        "n": 100,
+        "quantiles": {
+          "p0.135": 1.14914285,
+          "p5": 1.169547,
+          "p50": 1.19965,
+          "p95": 1.2304755,
+          "p99.865": 1.2398430325
+        },
+        "sigma_window": {
+          "high": 1.254971868079959,
+          "k": 3.0,
+          "low": 1.142417931920041,
+          "margin": null,
+          "status": "pass"
+        },
+        "stddev": 0.01875898935998635
+      },
+      {
+        "corner_id": "stat_all/3.300V/27C",
+        "errored": 0,
+        "inconclusive": 0,
+        "max": 1.24988,
+        "mean": 1.1987978,
+        "min": 1.13116,
+        "n": 100,
+        "quantiles": {
+          "p0.135": 1.1341804899999999,
+          "p5": 1.164036,
+          "p50": 1.199095,
+          "p95": 1.2372684999999999,
+          "p99.865": 1.2492946130000002
+        },
+        "sigma_window": {
+          "high": 1.2663632075800224,
+          "k": 3.0,
+          "low": 1.1312323924199774,
+          "margin": null,
+          "status": "pass"
+        },
+        "stddev": 0.022521802526674135
+      }
+    ],
+    "measurement": "vref_v",
+    "pooled": {
+      "errored": 0,
+      "inconclusive": 0,
+      "max": 1.24988,
+      "mean": 1.1978345,
+      "min": 1.13116,
+      "n": 400,
+      "quantiles": {
+        "p0.135": 1.140198547,
+        "p5": 1.173275,
+        "p50": 1.19696,
+        "p95": 1.223676,
+        "p99.865": 1.247520713
+      },
+      "sigma_window": {
+        "high": 1.241774034333486,
+        "k": 3.0,
+        "low": 1.1538949656665138,
+        "margin": null,
+        "status": "pass"
+      },
+      "stddev": 0.014646511444495391
+    },
+    "unit": "V"
+  },
+  "status": "ok",
+  "template_sha256": "8164a9b06b4cb665ca08bf820206f807e3c37abc732d83ace08a7faadf98e92a",
+  "testbench": "sim/closed-loop-vref-mc/vref-mc.cir.tmpl",
+  "timestamp_utc": "20261113T130110Z"
+}

@@ -1,0 +1,127 @@
+{
+  "_comment": [
+    "The untrimmed-line statistical campaign: `cornerPNP.lib stat` + `cornerMOShv.lib mos_tt_stat` + `cornerRES.lib res_stat` over the ratified supply and temperature axes of spec/target-spec.md SS PVT, 300 samples per point (9 points x 300 = 2700 units). Decision record 0012 records why these three sections, and why the five process labels collapse to one statistical point: the PDK publishes statistical sections ONLY at typ (cornerPNP.lib has typ/stat/bcs/wcs, cornerMOShv.lib has mos_tt_stat and no mos_ss_stat/mos_ff_stat, cornerRES.lib has res_stat and no res_bcs_stat/res_wcs_stat), so statistics REPLACE the process-corner axis here instead of combining with it.",
+    "This is the campaign manifests/sg13cmos5l-bandgap.json cites for T1 item 6.",
+    "PORTABLE BY CONSTRUCTION, on the same terms as the item-5 grid requests (see sim/README.md): `models.pdk` selects the variant, every corner names its own PDK-relative section library (no `models.lib`, no generated corner bundle, no absolute host path), `options.osdi_preload` entries stay literal `$PDK_ROOT/...` so the fleet runner resolves them on its own box, and `options.stage_model_inputs` ships THIS host's pinned libraries and their whole include closure so the models that ran are bound by sha256 to sim/pdk.json's pin.",
+    "`netlist` is the deck sim/mc-run.sh generates under sim/build/ (gitignored); the runner substitutes an absolute path before submitting.",
+    "`options.keep_artifacts` is FALSE here and true on the item-5 grids: these campaigns expand to thousands of units, and a per-unit rawfile/log tree for them is neither committable nor useful. The per-sample seeds in the envelope are what makes a single unit reproducible.",
+    "`options.timeout_s` is 20 s, not the grids' 60 s. A unit of this deck takes about 1.5 s; 20 s is still more than ten times that, and it is what sizes the split: the fleet's one-job ceiling is `timeout_s x units + 120 s <= max_job_seconds`, so `batch.job_ceiling_check: \"split\"` below submits this campaign as the fewest balanced jobs that each fit -- 174 units per job at the fleet's 3600 s ceiling, rather than the 58 a 60 s timeout would allow. No unit count is hard-coded here: the split is derived from the fleet's own configuration at submit time, and `max_concurrent_jobs` keeps at most three of those jobs in flight so a large campaign does not take the whole vCPU budget. `capacity_wait_s` is the host rule's 600 s backoff.",
+    "`monte_carlo.vary` is `both` because the sections selected below drive BOTH kinds of variation and the bench does not get to choose: `cornerPNP.lib stat` and `cornerMOShv.lib mos_tt_stat` vary global `.param`s (one draw shared by every instance) while `cornerRES.lib res_stat` is re-evaluated per instance. Both facts are measured, not assumed -- sim/tools/stat_locality.py and sim/closed-loop-vref-mc/README.md.",
+    "`monte_carlo.seed_scope` is `point`, so a single point re-run or any re-partition of this grid draws the same samples as the whole campaign. `k_sigma` is 3 so the envelope itself reports the mean +/- 3 sigma window the spec row's `untrimmed line (3 sigma)` asks for; `vref_v` carries no `limits`, so that window is reported and can never fail the run."
+  ],
+  "engine": "ngspice",
+  "netlist": "../build/closed-loop-vref-mc/deck.cir",
+  "netlist_source": "schematic",
+  "models": {
+    "pdk": "ihp-sg13cmos5l"
+  },
+  "corners": {
+    "process": [
+      {
+        "name": "stat",
+        "sections": [
+          {
+            "lib": "libs.tech/ngspice/models/cornerPNP.lib",
+            "section": "stat"
+          },
+          {
+            "lib": "libs.tech/ngspice/models/cornerMOShv.lib",
+            "section": "mos_tt_stat"
+          },
+          {
+            "lib": "libs.tech/ngspice/models/cornerRES.lib",
+            "section": "res_stat"
+          }
+        ]
+      }
+    ],
+    "supply_v": {
+      "Vvdd": [
+        2.97,
+        3.3,
+        3.63
+      ]
+    },
+    "temperature_c": [
+      -40,
+      27,
+      125
+    ]
+  },
+  "monte_carlo": {
+    "n": 300,
+    "seed": 20261113,
+    "vary": "both",
+    "seed_scope": "point",
+    "quantiles": [
+      0.135,
+      5,
+      50,
+      95,
+      99.865
+    ],
+    "k_sigma": 3
+  },
+  "analysis": {
+    "kind": "tran",
+    "args": "2u 2m"
+  },
+  "measurements": [
+    {
+      "name": "vref_v",
+      "spice": ".meas tran vref_v find v(vref) at=2m",
+      "unit": "V",
+      "plausible_range": {
+        "min": 0.5,
+        "max": 2.0
+      }
+    },
+    {
+      "name": "vref_prev_v",
+      "spice": ".meas tran vref_prev_v find v(vref) at=1.5m",
+      "unit": "V"
+    },
+    {
+      "name": "fb_v",
+      "spice": ".meas tran fb_v find v(fb) at=2m",
+      "unit": "V"
+    },
+    {
+      "name": "sns1_v",
+      "spice": ".meas tran sns1_v find v(sns1) at=2m",
+      "unit": "V"
+    },
+    {
+      "name": "sns2_v",
+      "spice": ".meas tran sns2_v find v(sns2) at=2m",
+      "unit": "V"
+    },
+    {
+      "name": "vref_final_v",
+      "expr": "v(vref)[length(v(vref))-1]",
+      "unit": "V"
+    },
+    {
+      "name": "vref_settle_v",
+      "expr": "vecmax(abs(v(vref) - vref_final_v)*(time gt 1.5e-3))",
+      "unit": "V",
+      "limits": {
+        "max": 0.001
+      }
+    }
+  ],
+  "options": {
+    "timeout_s": 20,
+    "keep_artifacts": false,
+    "stage_model_inputs": true,
+    "osdi_preload": [
+      "$PDK_ROOT/ihp-sg13cmos5l/libs.tech/ngspice/osdi/psp103.osdi",
+      "$PDK_ROOT/ihp-sg13cmos5l/libs.tech/ngspice/osdi/r3_cmc.osdi"
+    ]
+  },
+  "batch": {
+    "job_ceiling_check": "split",
+    "max_concurrent_jobs": 3,
+    "capacity_wait_s": 600
+  }
+}
