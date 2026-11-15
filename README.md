@@ -110,7 +110,7 @@ the cited envelope of each):
 
 The untrimmed-line (3σ) row is now measured too, by the statistical Monte Carlo
 bench `sim/closed-loop-vref-mc` (issue #31,
-[`0014`](spec/decision-records/0014-statistical-mc-sections-and-window.md)):
+[`0016`](spec/decision-records/0016-statistical-mc-sections-and-window.md)):
 9 points × 300 seeded draws, a deterministic zero-spread control that reproduces
 the corner grid exactly, and a known-bad control the statistics detect.
 

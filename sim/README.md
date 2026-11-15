@@ -176,7 +176,7 @@ source sim/env.sh && python3 -I sim/tools/stat_locality.py
 
 The consequence — the bipolar matching term cannot be sampled at all, and statistics
 exist only at typ so the process-corner axis collapses — is recorded in
-[`0014`](../spec/decision-records/0014-statistical-mc-sections-and-window.md), and
+[`0016`](../spec/decision-records/0016-statistical-mc-sections-and-window.md), and
 is why the row is declared `ratified: false` under `spec_rows."6"` rather than
 covered. The tool half is filed generically as
 [`klayout-tools#5486`](https://github.com/2AMLogic/klayout-tools/issues/5486).

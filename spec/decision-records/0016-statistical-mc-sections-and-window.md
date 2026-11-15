@@ -1,15 +1,18 @@
-# 0014: The statistical Monte Carlo bench — which model sections, which window, and what the untrimmed-line row may be read as
+# 0016: The statistical Monte Carlo bench — which model sections, which window, and what the untrimmed-line row may be read as
 
 - **Status**: ratified, effective when the PR for issue #31 merges
 - **Date**: 2026-11-13
 - **Decided by**: Loom Builder agent, issue #31
 
-> **Numbering note.** This record has been renumbered twice, each time because a
+> **Numbering note.** This record has been renumbered three times, each time because a
 > record merged to `main` first and took the number this branch was using. It was
 > written as `0012`, before [`0012`](0012-post-layout-pex-extraction-gap.md)
 > (issue #32, post-layout PEX extraction gap) merged and took that number; it then
 > became `0013`, before [`0013`](0013-subckt-wrapped-staged-dut.md) (issue #80,
-> the subckt-wrapped staged DUT) merged and took *that* number. It is now `0014`.
+> the subckt-wrapped staged DUT) merged and took *that* number; it then became
+> `0014`, before [`0014`](0014-substrate-net-global.md) (substrate net global)
+> and [`0015`](0015-psrr-dc-attribution.md) (issue #93, the psrr_dc attribution
+> bench) merged and took those numbers. It is now `0016`.
 >
 > Each renumber was applied to this record and to the **living documents** that
 > cite it (`README.md`, `manifests/README.md`, `manifests/sg13cmos5l-bandgap.json`,
