@@ -388,7 +388,11 @@ to occur in the covered block as a standalone number — the presence match is b
 so a short literal is not satisfied by a longer number containing it (`0` is not satisfied by
 the `0` inside `3.30`) while sign-leading literals such as `−68.7` still match, and a figure
 may abut a sentence-ending period — a following dot is excluded only when it starts a decimal
-fraction (`2.97` still does not match inside `2.970V`). Editing the
+fraction (`2.97` still does not match inside `2.970V`). For an unsigned figure the left
+boundary is also sign-aware: a preceding `-` blocks the match only when it reads as a sign,
+so an unsigned printed value is not satisfied by prose stating its negation (`68.7` does not
+match `−68.7`), while a `+` prefix (`+172.9` satisfies `172.9` — the same number, not a flip)
+and a digit-preceded range hyphen (`0.40-0.60`) still match. Editing the
 prose without the annotation fails, and editing the annotation without the prose fails too.
 A second rounding of a rounded value (the PR #98
 `got/req` bug) is exactly what this forbids. Extent claims (`range` endpoints, plain

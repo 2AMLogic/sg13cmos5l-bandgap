@@ -15,7 +15,9 @@
 # nearest rounding while a plain extremum keeps the directional bound (issue
 # #113 item 2); boundary-aware literal presence, admitting a figure that
 # abuts a sentence-ending period while still rejecting a longer number
-# (item 4; issue #121); degenerate
+# (item 4; issue #121), and a sign-aware left boundary that rejects an
+# unsigned figure satisfied only via a sign-like '-' while '+' prefixes and
+# range hyphens still match (issue #127); degenerate
 # single-valued ranges pin the documented straddle (item 3); and a real-tree
 # run requiring exit 0 against the committed sim/closed-loop-psrr/README.md
 # plus the per-document decimal accounting (item 1).
@@ -193,6 +195,31 @@ At the wcs/2.970V/125C corner the value is not restated.
 EOF
 expect3 "decimal literal still not satisfied by the digits of a longer number" "${d}" 1 \
   "sim/bench/README.md" "cell z" "printed literal 2.97 absent from covered block"
+
+# Issue #127: the left boundary is sign-aware for an unsigned literal. A
+# preceding '-' blocks the match only when it reads as a sign — one that is
+# not itself digit-preceded — so an unsigned printed figure is not satisfied
+# by its negation in the prose. A '+' prefix is the same number, not a flip,
+# and a digit-preceded hyphen is a range separator; neither blocks.
+d="$(mkcase literal-sign e1.json)"
+cat > "${d}/sim/bench/README.md" <<'EOF'
+<!-- figure: {"envelope":"envelopes/cited.json","kind":"cell","corner":"typ/3.300V/27C","measurement":"m","printed":{"value":"10.0","unit":"V"}} -->
+The shift is -10.0 V at the typ corner.
+EOF
+expect3 "unsigned literal not satisfied by its sign-flipped negation" "${d}" 1 \
+  "sim/bench/README.md" "cell m" "printed literal 10.0 absent from covered block"
+
+cat > "${d}/sim/bench/README.md" <<'EOF'
+<!-- figure: {"envelope":"envelopes/cited.json","kind":"cell","corner":"typ/3.300V/27C","measurement":"m","printed":{"value":"10.0","unit":"V"}} -->
+The shift is +10.0 V at the typ corner.
+EOF
+expect "plus-prefixed occurrence still satisfies an unsigned literal" "${d}" 0
+
+cat > "${d}/sim/bench/README.md" <<'EOF'
+<!-- figure: {"envelope":"envelopes/cited.json","kind":"range","measurement":"r","subset":{},"printed":{"min":"0.37","max":"0.64","unit":"V"}} -->
+The error span is 0.37-0.64 V.
+EOF
+expect "digit-preceded hyphen stays a range separator, not a sign" "${d}" 0
 
 # ---- PR #98 error shape 2: a range that is not the subset's min/max ----------
 d="$(mkcase range e1.json)"
