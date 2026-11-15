@@ -241,7 +241,17 @@ def literal_present(lit, block):
     # longer token and (?!\.\d) excludes a following dot only when it is a
     # decimal point, so a sentence-ending period does not reject a figure
     # that abuts it (issue #121).
-    return re.search(r"(?<![\w.])" + re.escape(norm(lit)) + r"(?!\w)(?!\.\d)", block) is not None
+    l = norm(lit)
+    core = re.escape(l) + r"(?!\w)(?!\.\d)"
+    if l[:1] in "+-":
+        return re.search(r"(?<![\w.])" + core, block) is not None
+    # Unsigned literal: the plain left anchor also admitted a preceding '-',
+    # so a positive printed figure verified clean against prose stating its
+    # negation. Reject a '-' that reads as a sign — one that is not itself
+    # digit-preceded — so '-68.7' does not satisfy '68.7', while a '+'
+    # prefix ('+172.9' is the same number) and a digit-preceded range
+    # hyphen ('0.40-0.60') still match (issue #127).
+    return re.search(r"(?<![\w.])(?<!(?<!\d)-)" + core, block) is not None
 
 
 def check_value(printed, expected, block, what, env_rel, bound=None):
