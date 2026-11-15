@@ -171,7 +171,7 @@ verdict of record is
 see [manifests/README.md](manifests/README.md) for how it is regenerated.
 
 Item 5 (full corner verification) is `unmet` / `check_failed`, blocked by two
-distinct things the report names separately. Four of the nine declared spec
+distinct things the report names separately. Four of the eleven declared spec
 rows are named **gaps** with no evidence at all. And one row that does have
 evidence, `psrr_dc`, **misses its ratified Target** at 24 of its 45 points, so
 it is a failed row rather than a covered one. Every other covered row is
