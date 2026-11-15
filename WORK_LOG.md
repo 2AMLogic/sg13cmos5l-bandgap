@@ -5,6 +5,9 @@ triage agent. Newest first.
 
 ### 2026-11-15
 
+- **PR #125**: fix: admit a sentence-ending period in documented-figure literal presence
+- **Issue #121** (closed): sim: boundary-aware literal presence rejects a figure that ends a sentence
+- **PR #111**: sim: share one deck fixture across grid benches on an identical supply stimulus
 - **PR #118**: fix: checker accounts every decimal, rounds keyed cells to nearest, matches literals boundary-aware
 - **PR #117**: test: require the ratified PVT axes on check 8's reference bench
 - **PR #102**: chore: drop the ten expired .gitkeep placeholders under the grid benches
