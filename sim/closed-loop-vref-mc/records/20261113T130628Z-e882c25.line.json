@@ -1,0 +1,599 @@
+{
+  "bench": "closed-loop-vref-mc",
+  "campaign": "line",
+  "campaign_role": "population",
+  "criteria": "Reported at every point and every draw: vref_v, the closed-loop reference, with a plausible_range of [0.5 V, 2.0 V] so a converged-but-degenerate solution is graded inconclusive instead of entering the statistics. Graded at every draw: vref_settle_v = max |vref(t) - vref(2 ms)| over t in (1.5 ms, 2 ms] < 1 mV, the settle criterion decision record 0009 ratified for the closed-loop vref testbench, so a draw whose loop did not settle fails rather than contributing a number. The statistical claim itself -- mean, sigma, the 3-sigma window, the quantiles, the yield against the evidence-reporting window, its confidence interval and the sample-size verdict -- is not graded here: it is the committed klt yield report's, and decision record 0012 records what it may and may not be read as.",
+  "deck_sha256": "23f5adca8bca0bd29fa8ba5610a5cb903f9fbe7dbdff55288fa5506ecdfd7f78",
+  "envelope": "sim/closed-loop-vref-mc/envelopes/20261113T130628Z-e882c25.line.json",
+  "expectation": {
+    "detail": "every point reports a non-zero stddev",
+    "expect": "spread",
+    "met": true,
+    "offending_points": []
+  },
+  "fleet_jobs": [
+    {
+      "elapsed_seconds": 10,
+      "exit_code": "0",
+      "instance_type": "c7i.8xlarge",
+      "job_id": "klt-sim-5f0dad02cc14",
+      "lifecycle": "spot",
+      "runner_compatibility": "match",
+      "runner_klt_version": "0.9.0",
+      "runner_model_input_count": 15,
+      "staged_models_hashes_match": true,
+      "state": "done"
+    },
+    {
+      "elapsed_seconds": 11,
+      "exit_code": "0",
+      "instance_type": "c6i.8xlarge",
+      "job_id": "klt-sim-ab2d20e68b66",
+      "lifecycle": "spot",
+      "runner_compatibility": "match",
+      "runner_klt_version": "0.9.0",
+      "runner_model_input_count": 15,
+      "staged_models_hashes_match": true,
+      "state": "done"
+    },
+    {
+      "elapsed_seconds": 9,
+      "exit_code": "0",
+      "instance_type": "c7i.8xlarge",
+      "job_id": "klt-sim-cdde91e84852",
+      "lifecycle": "spot",
+      "runner_compatibility": "match",
+      "runner_klt_version": "0.9.0",
+      "runner_model_input_count": 15,
+      "staged_models_hashes_match": true,
+      "state": "done"
+    },
+    {
+      "elapsed_seconds": 46,
+      "exit_code": "0",
+      "instance_type": "c7i.8xlarge",
+      "job_id": "klt-sim-79c5d2cbe67a",
+      "lifecycle": "spot",
+      "runner_compatibility": "match",
+      "runner_klt_version": "0.9.0",
+      "runner_model_input_count": 15,
+      "staged_models_hashes_match": true,
+      "state": "done"
+    },
+    {
+      "elapsed_seconds": 12,
+      "exit_code": "0",
+      "instance_type": "m7i.4xlarge",
+      "job_id": "klt-sim-15d683b14d03",
+      "lifecycle": "spot",
+      "runner_compatibility": "match",
+      "runner_klt_version": "0.9.0",
+      "runner_model_input_count": 15,
+      "staged_models_hashes_match": true,
+      "state": "done"
+    },
+    {
+      "elapsed_seconds": 12,
+      "exit_code": "0",
+      "instance_type": "m7i.4xlarge",
+      "job_id": "klt-sim-fb948276a4cf",
+      "lifecycle": "spot",
+      "runner_compatibility": "match",
+      "runner_klt_version": "0.9.0",
+      "runner_model_input_count": 15,
+      "staged_models_hashes_match": true,
+      "state": "done"
+    },
+    {
+      "elapsed_seconds": 11,
+      "exit_code": "0",
+      "instance_type": "c7i.8xlarge",
+      "job_id": "klt-sim-1481bbd18baf",
+      "lifecycle": "spot",
+      "runner_compatibility": "match",
+      "runner_klt_version": "0.9.0",
+      "runner_model_input_count": 15,
+      "staged_models_hashes_match": true,
+      "state": "done"
+    },
+    {
+      "elapsed_seconds": 29,
+      "exit_code": "0",
+      "instance_type": "c7i.8xlarge",
+      "job_id": "klt-sim-edf298b52900",
+      "lifecycle": "spot",
+      "runner_compatibility": "match",
+      "runner_klt_version": "0.9.0",
+      "runner_model_input_count": 15,
+      "staged_models_hashes_match": true,
+      "state": "done"
+    },
+    {
+      "elapsed_seconds": 12,
+      "exit_code": "0",
+      "instance_type": "c7i.4xlarge",
+      "job_id": "klt-sim-d035b85a16ef",
+      "lifecycle": "spot",
+      "runner_compatibility": "match",
+      "runner_klt_version": "0.9.0",
+      "runner_model_input_count": 15,
+      "staged_models_hashes_match": true,
+      "state": "done"
+    },
+    {
+      "elapsed_seconds": 12,
+      "exit_code": "0",
+      "instance_type": "c7i.8xlarge",
+      "job_id": "klt-sim-d59262549c22",
+      "lifecycle": "spot",
+      "runner_compatibility": "match",
+      "runner_klt_version": "0.9.0",
+      "runner_model_input_count": 15,
+      "staged_models_hashes_match": true,
+      "state": "done"
+    },
+    {
+      "elapsed_seconds": 9,
+      "exit_code": "0",
+      "instance_type": "c7i.8xlarge",
+      "job_id": "klt-sim-2935ce82db28",
+      "lifecycle": "spot",
+      "runner_compatibility": "match",
+      "runner_klt_version": "0.9.0",
+      "runner_model_input_count": 15,
+      "staged_models_hashes_match": true,
+      "state": "done"
+    },
+    {
+      "elapsed_seconds": 10,
+      "exit_code": "0",
+      "instance_type": "c7i.8xlarge",
+      "job_id": "klt-sim-122aa94ea7e5",
+      "lifecycle": "spot",
+      "runner_compatibility": "match",
+      "runner_klt_version": "0.9.0",
+      "runner_model_input_count": 15,
+      "staged_models_hashes_match": true,
+      "state": "done"
+    },
+    {
+      "elapsed_seconds": 13,
+      "exit_code": "0",
+      "instance_type": "m6i.4xlarge",
+      "job_id": "klt-sim-857f95bf246f",
+      "lifecycle": "spot",
+      "runner_compatibility": "match",
+      "runner_klt_version": "0.9.0",
+      "runner_model_input_count": 15,
+      "staged_models_hashes_match": true,
+      "state": "done"
+    },
+    {
+      "elapsed_seconds": 12,
+      "exit_code": "0",
+      "instance_type": "m7i.4xlarge",
+      "job_id": "klt-sim-eebc71962300",
+      "lifecycle": "spot",
+      "runner_compatibility": "match",
+      "runner_klt_version": "0.9.0",
+      "runner_model_input_count": 15,
+      "staged_models_hashes_match": true,
+      "state": "done"
+    },
+    {
+      "elapsed_seconds": 9,
+      "exit_code": "0",
+      "instance_type": "c7i.8xlarge",
+      "job_id": "klt-sim-ab655414ba4a",
+      "lifecycle": "spot",
+      "runner_compatibility": "match",
+      "runner_klt_version": "0.9.0",
+      "runner_model_input_count": 15,
+      "staged_models_hashes_match": true,
+      "state": "done"
+    },
+    {
+      "elapsed_seconds": 11,
+      "exit_code": "0",
+      "instance_type": "c7i.8xlarge",
+      "job_id": "klt-sim-880e55361f57",
+      "lifecycle": "spot",
+      "runner_compatibility": "match",
+      "runner_klt_version": "0.9.0",
+      "runner_model_input_count": 15,
+      "staged_models_hashes_match": true,
+      "state": "done"
+    }
+  ],
+  "kind": "closed-loop-vref-statistical-mc",
+  "label": "SIMULATED",
+  "models_staged": {
+    "count": 15,
+    "files": [
+      {
+        "kind": "library",
+        "name": "cornerPNP.lib",
+        "sha256": "65986abd36f61498fd859b66ab1e199e897fd58174c5b6ff789498350d8a0a64"
+      },
+      {
+        "kind": "library",
+        "name": "cornerMOShv.lib",
+        "sha256": "40c4140415a2a2e92d2f42fd64e026d1c04d800708b7a5b663ef083206ddfd62"
+      },
+      {
+        "kind": "library",
+        "name": "cornerRES.lib",
+        "sha256": "bd2fdd7cf19ec817c23c1539c7ab013612e959b8b0698e0a482a7af5ca91d0f9"
+      },
+      {
+        "kind": "dependency",
+        "name": "sg13cmos5l_pnpMPA_mod.lib",
+        "sha256": "0283ad85c094dd1e1be635c5b405c4d4c96ac053423781f25e702bdfbcadaeaa"
+      },
+      {
+        "kind": "dependency",
+        "name": "sg13cmos5l_pnpMPA_stat.lib",
+        "sha256": "f8ec3f58c793d065028823248f2fee95cec2d69aceca1fb7dae0203bdc0680ad"
+      },
+      {
+        "kind": "dependency",
+        "name": "sg13g2_moshv_mod.lib",
+        "sha256": "bf75d51ba73ab6c40bdb76306c9df74f80229db42ee63e3f4cc30a1911645af2"
+      },
+      {
+        "kind": "dependency",
+        "name": "sg13g2_svaricaphv_mod.lib",
+        "sha256": "b6ae39c7334c75c222ecdee9d6b04c9be48657e91351429aebac47d1192a9abb"
+      },
+      {
+        "kind": "dependency",
+        "name": "sg13g2_moshv_mismatch.lib",
+        "sha256": "2e9612bdb8252c281f422511039dc9b3ea983892aec89f8ef3361592e68fed09"
+      },
+      {
+        "kind": "dependency",
+        "name": "sg13g2_moshv_mod_mismatch.lib",
+        "sha256": "97eba3d2d47596488e0e128f950dc30742d1da80cdeec1f7385a9e13cb460936"
+      },
+      {
+        "kind": "dependency",
+        "name": "sg13g2_svaricaphv_mod_mismatch.lib",
+        "sha256": "064e1c751508149f2674914c1791c418195c55fff7d82236d20c2c79f49030fe"
+      },
+      {
+        "kind": "dependency",
+        "name": "sg13g2_moshv_stat.lib",
+        "sha256": "cd30f22637e41fdbbaba506ebe0f17746b8438027e4651a7a87b241a39d68903"
+      },
+      {
+        "kind": "dependency",
+        "name": "resistors_mod.lib",
+        "sha256": "7c77da0c0419c8a332550da3f934f530262bd452734090db827b68ff88d09c43"
+      },
+      {
+        "kind": "dependency",
+        "name": "resistors_mod_mismatch.lib",
+        "sha256": "ce5ea8559df174fbdad8192e45e5d65772ae3af90af61ba295419b2cb5154b29"
+      },
+      {
+        "kind": "dependency",
+        "name": "resistors_stat.lib",
+        "sha256": "9e34411ed09a569323adec8181e4bdd6832af279c9e05b181f00cb2e5d696db6"
+      },
+      {
+        "kind": "dependency",
+        "name": "sg13g2_moshv_parm.lib",
+        "sha256": "eea5bbed39184cb1e2654ae29425a9ed6ee2f2341d6cb76c472591c75237bd35"
+      }
+    ],
+    "hashes_match": true,
+    "jobs_reporting": 16
+  },
+  "monte_carlo": {
+    "family_mismatch": [
+      {
+        "active": null,
+        "family": "other",
+        "note": "mismatch activity for the 'other' family is not independently verified for PDK family 'sg13cmos5l'; treat any sampled spread for it as unconfirmed."
+      },
+      {
+        "active": null,
+        "family": "mosfet",
+        "note": "mismatch activity for the 'mosfet' family is not independently verified for PDK family 'sg13cmos5l'; treat any sampled spread for it as unconfirmed."
+      },
+      {
+        "active": null,
+        "family": "bipolar",
+        "note": "mismatch activity for the 'bipolar' family is not independently verified for PDK family 'sg13cmos5l'; treat any sampled spread for it as unconfirmed."
+      }
+    ],
+    "k_sigma": 3.0,
+    "n": 300,
+    "points": 9,
+    "quantiles": [
+      0.135,
+      5.0,
+      50.0,
+      95.0,
+      99.865
+    ],
+    "seed": 20261113,
+    "seed_scope": "point",
+    "units": 2700,
+    "unseeded_sources": null,
+    "vary": "both"
+  },
+  "osdi_preload": [
+    "psp103",
+    "r3_cmc"
+  ],
+  "pdk": {
+    "name": "ihp-sg13cmos5l",
+    "pin_file": "sim/pdk.json"
+  },
+  "pdk_revision": "f7bca32694fe3d58be0cc7d9df4b9f5db7161a14",
+  "repo_git_sha": "e882c25",
+  "request_sha256": "4694971ceba147382e0ba39b64063430e1aece470c276a32cfcb854c71acc8e0",
+  "schema_version": 1,
+  "simulator": {
+    "backend": "batch",
+    "klt": "klt 0.9.2.dev887+gec7400b7d8e5",
+    "ngspice": "ngspice-47"
+  },
+  "source_commit": "52535387e6ccf0a89f6490901a9abb2b78144176",
+  "source_file_sha256": "a29624d3bbcc89e2f7132ecfb278dd793b248c84b9f74ab51685f8ecde929ad5",
+  "source_path": "design/sg13cmos5l/netlist/bandgap_top.spice",
+  "source_repo": "2AMLogic/sg13g2-bandgap",
+  "spec_rows": [],
+  "stat_scale": 1.0,
+  "stat_scale_block": "",
+  "statistics": {
+    "by_point": [
+      {
+        "corner_id": "stat/2.970V/-40C",
+        "errored": 0,
+        "inconclusive": 0,
+        "max": 1.24637,
+        "mean": 1.1978661,
+        "min": 1.15808,
+        "n": 300,
+        "quantiles": {
+          "p0.135": 1.159872206,
+          "p5": 1.1744549999999998,
+          "p50": 1.196715,
+          "p95": 1.2246115,
+          "p99.865": 1.245142904
+        },
+        "sigma_window": {
+          "high": 1.2450354953778404,
+          "k": 3.0,
+          "low": 1.1506967046221594,
+          "margin": null,
+          "status": "pass"
+        },
+        "stddev": 0.015723131792613487
+      },
+      {
+        "corner_id": "stat/2.970V/27C",
+        "errored": 0,
+        "inconclusive": 0,
+        "max": 1.27054,
+        "mean": 1.1952913666666667,
+        "min": 1.14455,
+        "n": 300,
+        "quantiles": {
+          "p0.135": 1.1477913094999999,
+          "p5": 1.164374,
+          "p50": 1.193085,
+          "p95": 1.2285645,
+          "p99.865": 1.2619543644999995
+        },
+        "sigma_window": {
+          "high": 1.2560062450164868,
+          "k": 3.0,
+          "low": 1.1345764883168465,
+          "margin": null,
+          "status": "pass"
+        },
+        "stddev": 0.020238292783273347
+      },
+      {
+        "corner_id": "stat/2.970V/125C",
+        "errored": 0,
+        "inconclusive": 0,
+        "max": 1.27133,
+        "mean": 1.1888737333333335,
+        "min": 1.12578,
+        "n": 300,
+        "quantiles": {
+          "p0.135": 1.126789125,
+          "p5": 1.1477789999999999,
+          "p50": 1.188295,
+          "p95": 1.2387380000000001,
+          "p99.865": 1.2704298605
+        },
+        "sigma_window": {
+          "high": 1.2708991283194928,
+          "k": 3.0,
+          "low": 1.106848338347174,
+          "margin": null,
+          "status": "pass"
+        },
+        "stddev": 0.027341798328719774
+      },
+      {
+        "corner_id": "stat/3.300V/-40C",
+        "errored": 0,
+        "inconclusive": 0,
+        "max": 1.24025,
+        "mean": 1.1975035,
+        "min": 1.13728,
+        "n": 300,
+        "quantiles": {
+          "p0.135": 1.143165217,
+          "p5": 1.1695735,
+          "p50": 1.1977600000000002,
+          "p95": 1.2246645000000003,
+          "p99.865": 1.238845298
+        },
+        "sigma_window": {
+          "high": 1.2465212749149093,
+          "k": 3.0,
+          "low": 1.1484857250850908,
+          "margin": null,
+          "status": "pass"
+        },
+        "stddev": 0.016339258304969708
+      },
+      {
+        "corner_id": "stat/3.300V/27C",
+        "errored": 0,
+        "inconclusive": 0,
+        "max": 1.25243,
+        "mean": 1.1980173666666667,
+        "min": 1.13993,
+        "n": 300,
+        "quantiles": {
+          "p0.135": 1.1406121685000001,
+          "p5": 1.1666219999999998,
+          "p50": 1.19691,
+          "p95": 1.2330515,
+          "p99.865": 1.2507911809999999
+        },
+        "sigma_window": {
+          "high": 1.2574119905288967,
+          "k": 3.0,
+          "low": 1.1386227428044366,
+          "margin": null,
+          "status": "pass"
+        },
+        "stddev": 0.019798207954076674
+      },
+      {
+        "corner_id": "stat/3.300V/125C",
+        "errored": 0,
+        "inconclusive": 0,
+        "max": 1.27553,
+        "mean": 1.1914273666666666,
+        "min": 1.11729,
+        "n": 300,
+        "quantiles": {
+          "p0.135": 1.1184040739999999,
+          "p5": 1.1475935000000002,
+          "p50": 1.1902599999999999,
+          "p95": 1.2383709999999999,
+          "p99.865": 1.2684984169999995
+        },
+        "sigma_window": {
+          "high": 1.2759156250814103,
+          "k": 3.0,
+          "low": 1.1069391082519229,
+          "margin": null,
+          "status": "pass"
+        },
+        "stddev": 0.028162752804914593
+      },
+      {
+        "corner_id": "stat/3.630V/-40C",
+        "errored": 0,
+        "inconclusive": 0,
+        "max": 1.23922,
+        "mean": 1.1964515333333332,
+        "min": 1.15655,
+        "n": 300,
+        "quantiles": {
+          "p0.135": 1.1586409069999999,
+          "p5": 1.1703905000000001,
+          "p50": 1.196695,
+          "p95": 1.22063,
+          "p99.865": 1.2391271604999998
+        },
+        "sigma_window": {
+          "high": 1.2414258428878595,
+          "k": 3.0,
+          "low": 1.151477223778807,
+          "margin": null,
+          "status": "pass"
+        },
+        "stddev": 0.01499143651817543
+      },
+      {
+        "corner_id": "stat/3.630V/27C",
+        "errored": 0,
+        "inconclusive": 0,
+        "max": 1.25925,
+        "mean": 1.1970954,
+        "min": 1.14284,
+        "n": 300,
+        "quantiles": {
+          "p0.135": 1.143074117,
+          "p5": 1.168013,
+          "p50": 1.195585,
+          "p95": 1.2374640000000001,
+          "p99.865": 1.257578889
+        },
+        "sigma_window": {
+          "high": 1.2615670205401797,
+          "k": 3.0,
+          "low": 1.1326237794598204,
+          "margin": null,
+          "status": "pass"
+        },
+        "stddev": 0.021490540180059903
+      },
+      {
+        "corner_id": "stat/3.630V/125C",
+        "errored": 0,
+        "inconclusive": 0,
+        "max": 1.28503,
+        "mean": 1.1911082666666666,
+        "min": 1.10783,
+        "n": 300,
+        "quantiles": {
+          "p0.135": 1.1142843635,
+          "p5": 1.1438195,
+          "p50": 1.19185,
+          "p95": 1.23943,
+          "p99.865": 1.2830077134999998
+        },
+        "sigma_window": {
+          "high": 1.277995390276116,
+          "k": 3.0,
+          "low": 1.104221143057217,
+          "margin": null,
+          "status": "pass"
+        },
+        "stddev": 0.028962374536483145
+      }
+    ],
+    "measurement": "vref_v",
+    "pooled": {
+      "errored": 0,
+      "inconclusive": 0,
+      "max": 1.28503,
+      "mean": 1.1948482925925925,
+      "min": 1.10783,
+      "n": 2700,
+      "quantiles": {
+        "p0.135": 1.1226048465,
+        "p5": 1.158347,
+        "p50": 1.1951399999999999,
+        "p95": 1.231833,
+        "p99.865": 1.2708215165
+      },
+      "sigma_window": {
+        "high": 1.2616638266919615,
+        "k": 3.0,
+        "low": 1.1280327584932235,
+        "margin": null,
+        "status": "pass"
+      },
+      "stddev": 0.022271844699789673
+    },
+    "unit": "V"
+  },
+  "status": "ok",
+  "template_sha256": "8164a9b06b4cb665ca08bf820206f807e3c37abc732d83ace08a7faadf98e92a",
+  "testbench": "sim/closed-loop-vref-mc/vref-mc.cir.tmpl",
+  "timestamp_utc": "20261113T130628Z"
+}

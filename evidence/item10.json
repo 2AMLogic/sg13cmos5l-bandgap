@@ -3,14 +3,14 @@
   "kind": "generic",
   "status": "pass",
   "t1_item": 10,
-  "summary": "T1 item 10 (Repo hygiene): 12/12 attestation checks passed (klt signoff --attest)",
+  "summary": "T1 item 10 (Repo hygiene): 13/13 attestation checks passed (klt signoff --attest)",
   "source": "attest/item10.json",
   "attestation": {
     "producer": "klt signoff --attest",
     "inventory_schema_version": 1,
     "hash_algorithm": "sha256-raw-bytes",
-    "check_count": 12,
-    "passed_count": 12,
+    "check_count": 13,
+    "passed_count": 13,
     "checks": [
       {
         "check": "present",
@@ -31,21 +31,21 @@
         "role": "hygiene",
         "path": "README.md",
         "passed": true,
-        "content_hash": "sha256:566dadbc45df116613ceddf6773f7e74613597f85350e05b876dac02762a3dcb"
+        "content_hash": "sha256:3befd514f128f7eeef7c7dd41bc45deeb83e1d187b0c63171dbf722abb524a33"
       },
       {
         "check": "present",
         "role": "hygiene",
         "path": "manifests/README.md",
         "passed": true,
-        "content_hash": "sha256:93c0821b9baee9042987006fe4ff5ca4633ec7d223b39cc9c031ce37ec547916"
+        "content_hash": "sha256:cf051244f78af3ee325a61308d2e21a3fcf1ddf7714562902d90dbaf7592b1c6"
       },
       {
         "check": "present",
         "role": "hygiene",
         "path": "spec/target-spec.md",
         "passed": true,
-        "content_hash": "sha256:2d0df5fe046ddf289e640207b8013e77ca42f7d58673ed2aeadb944ae8824a08"
+        "content_hash": "sha256:1bf9306de40a250643eff9920a06ca94b67ac7b99892f25460eab1887ca10f5b"
       },
       {
         "check": "command",
@@ -110,6 +110,18 @@
       {
         "check": "command",
         "role": "audit",
+        "name": "mc-bench-consistency-test",
+        "argv": [
+          "bash",
+          "sim/tests/test-mc-bench.sh"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true
+      },
+      {
+        "check": "command",
+        "role": "audit",
         "name": "smoke-request-test",
         "argv": [
           "bash",
@@ -143,7 +155,7 @@
         "path": "attest/item10.json",
         "scope": "repo"
       },
-      "content_hash": "sha256:7d441c3d0c48e2c3416ffce9ad5646b9c11eb96f6a6a1e3a53d794d5432536ea"
+      "content_hash": "sha256:67a506f49c877d48b6cf5329d27eb4915a2beeb1de7a09bd7998bc689ffecfb2"
     }
   }
 }

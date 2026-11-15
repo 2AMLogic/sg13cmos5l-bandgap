@@ -1,0 +1,158 @@
+{
+  "samples": "sim/closed-loop-vref-mc/yield/20261113T130628Z-e882c25.line.samples.json",
+  "limits": "sim/closed-loop-vref-mc/yield-limits.json",
+  "source": {
+    "kind": "sample-set",
+    "netlist": null,
+    "monte_carlo": null,
+    "provenance": {
+      "seed": 20261113,
+      "draws_per_population": 300
+    },
+    "sample_count": 2700
+  },
+  "schema_version": 1,
+  "confidence": 0.95,
+  "target_ci_halfwidth": 0.02,
+  "min_samples": 2,
+  "status": "reported",
+  "measurement_count": 1,
+  "measurements": [
+    {
+      "name": "vref_v",
+      "unit": "V",
+      "n": 2700,
+      "errored": 0,
+      "failed_unmeasurable": 0,
+      "censored": 0,
+      "inconclusive": 0,
+      "limits": {
+        "min": 1.18874,
+        "max": 1.20039
+      },
+      "source_corners": [
+        "stat/2.970V/-40C",
+        "stat/2.970V/27C",
+        "stat/2.970V/125C",
+        "stat/3.300V/-40C",
+        "stat/3.300V/27C",
+        "stat/3.300V/125C",
+        "stat/3.630V/-40C",
+        "stat/3.630V/27C",
+        "stat/3.630V/125C"
+      ],
+      "distribution": {
+        "model": "normal",
+        "mean": 1.194848292592589,
+        "stddev": 0.022271844699789677,
+        "min": 1.10783,
+        "max": 1.28503,
+        "median": 1.1951399999999999,
+        "skewness": 0.022791968783719776,
+        "excess_kurtosis": 0.6607843185339601,
+        "normality": {
+          "test": "anderson-darling",
+          "statistic": 3.0529723317238115,
+          "critical_value": 0.787,
+          "significance": 0.05,
+          "verdict": "rejected"
+        }
+      },
+      "yield": {
+        "empirical": {
+          "method": "clopper-pearson",
+          "estimate": 0.23666666666666666,
+          "confidence": 0.95,
+          "confidence_interval": {
+            "low": 0.22074166406414752,
+            "high": 0.25316453116260573
+          },
+          "n": 2700
+        },
+        "normal": {
+          "method": "normal-delta",
+          "estimate": 0.20630833235253565,
+          "confidence": 0.95,
+          "confidence_interval": {
+            "low": 0.2009300373767705,
+            "high": 0.2116866273283008
+          },
+          "n": 2700
+        },
+        "variance_reduced": null
+      },
+      "capability": {
+        "cp": 0.08718032533178671,
+        "cpk": 0.0829404042354792,
+        "cpk_confidence_interval": {
+          "low": 0.07017403401133065,
+          "high": 0.09570677445962775
+        },
+        "sigma_to_spec": 0.2488212127064376,
+        "sigma_to_spec_confidence_interval": {
+          "low": 0.21052210203399196,
+          "high": 0.28712032337888327
+        },
+        "limiting_side": "upper"
+      },
+      "sample_size": {
+        "n": 2700,
+        "observed_ci_halfwidth": 0.016211433549229104,
+        "target_ci_halfwidth": 0.02,
+        "required_n": 1735,
+        "required_n_for_target": null,
+        "verdict": "sufficient",
+        "method": "normal-approximation",
+        "variance_reduced": null
+      },
+      "negative_control": {
+        "description": "the same campaign with every pinned statistical magnitude tripled (sim/closed-loop-vref-mc/bench.json campaign 'inflated')",
+        "n": 900,
+        "errored": 0,
+        "failed_unmeasurable": 0,
+        "censored": 0,
+        "yield": {
+          "empirical": {
+            "method": "clopper-pearson",
+            "estimate": 0.07666666666666666,
+            "confidence": 0.95,
+            "confidence_interval": {
+              "low": 0.06013798043079087,
+              "high": 0.09602679256108931
+            },
+            "n": 900
+          },
+          "normal": {
+            "method": "normal-delta",
+            "estimate": 0.06729287685972007,
+            "confidence": 0.95,
+            "confidence_interval": {
+              "low": 0.06419153864925745,
+              "high": 0.0703942150701827
+            },
+            "n": 900
+          },
+          "variance_reduced": null
+        },
+        "nominal_empirical_estimate": 0.23666666666666666,
+        "degradation_detected": true,
+        "verdict": "detected"
+      },
+      "analytic_cross_check": null,
+      "sampling": {
+        "strategy": "plain_random",
+        "replicates": null,
+        "effective_sample_size": null
+      },
+      "status": "reported",
+      "warnings": [
+        "measurement 'vref_v': the sample set is not consistent with a normal distribution (Anderson-Darling A2* = 3.0530 > 0.787); treat the parametric yield estimate and Cpk as indicative only and prefer the empirical estimate",
+        "measurement 'vref_v': samples were pooled across 9 originating corners; each corner is its own population, so the pooled estimate is a worst-case envelope rather than a distribution anyone sampled"
+      ],
+      "spec_row": "vref_untrimmed_line_3sigma"
+    }
+  ],
+  "warnings": [
+    "no measurement declared a target_yield, so no yield claim was checked -- the estimates below are reported, never failed"
+  ]
+}

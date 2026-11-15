@@ -46,6 +46,13 @@
       ]
     },
     {
+      "name": "mc-bench-consistency-test",
+      "argv": [
+        "bash",
+        "sim/tests/test-mc-bench.sh"
+      ]
+    },
+    {
       "name": "smoke-request-test",
       "argv": [
         "bash",
