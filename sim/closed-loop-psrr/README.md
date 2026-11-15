@@ -7,7 +7,7 @@ rejection at all 5 process corners × −40/27/125 °C × 3 supplies = 45 points
 | File | Role |
 |---|---|
 | `bench.json` | Grid metadata `sim/grid-run.sh` reads: the graded criteria, the spec row id, the OSDI objects |
-| `deck.cir.tmpl` | Deck body: `closed-loop-vref-pvt/vref.cir.tmpl`'s fixture plus the `Vpsrr` perturbation handle. Also the shared fixture for `../closed-loop-psrr-op/` — that bench's `bench.json` names it (decision record [0016](../../spec/decision-records/0016-shared-deck-fixtures.md)) |
+| `deck.cir.tmpl` | Deck body: `closed-loop-vref-pvt/vref.cir.tmpl`'s fixture plus the `Vpsrr` perturbation handle. Also the shared fixture for `../closed-loop-psrr-op/` — that bench's `bench.json` names it (decision record [0017](../../spec/decision-records/0017-shared-deck-fixtures.md)) |
 | `request-grid.json` | The committed, host-portable `klt sim` request: 45 units, two DC solves each |
 | `records/`, `envelopes/` | Append-only evidence (see `sim/README.md` §PVT grids) |
 

@@ -57,7 +57,7 @@ inventory carries 10 entries, each bench contributing its **deck template** and 
 committed **`klt sim` request** — what the bench is; benches on an identical supply stimulus
 share one template, so two grids name `closed-loop-vref-pvt/vref.cir.tmpl` and the
 ungraded attribution bench `closed-loop-psrr-op` names `closed-loop-psrr/deck.cir.tmpl`
-(decision record 0016). `bench.json` and `sim/grid-run.sh` are
+(decision record 0017). `bench.json` and `sim/grid-run.sh` are
 runner plumbing and are deliberately not inventoried, the same convention that already left each
 bench's `run.sh` out. The grids themselves are not cold-started here either: they go to the
 Spot batch fleet, which a GitHub runner cannot reach any more than it can reach the PDK.

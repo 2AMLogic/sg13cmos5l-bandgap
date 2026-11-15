@@ -16,7 +16,7 @@ measurements*, nothing more.
 | File | Role |
 |---|---|
 | `bench.json` | Metadata `sim/grid-run.sh` reads: criteria text, OSDI objects, the empty `spec_rows` and why it is empty |
-| `../closed-loop-psrr/deck.cir.tmpl` | Deck fixture, shared with the PSRR bench (`bench.json` names it; decision record [0016](../../spec/decision-records/0016-shared-deck-fixtures.md) — the supply stimulus is byte-identical) |
+| `../closed-loop-psrr/deck.cir.tmpl` | Deck fixture, shared with the PSRR bench (`bench.json` names it; decision record [0017](../../spec/decision-records/0017-shared-deck-fixtures.md) — the supply stimulus is byte-identical) |
 | `request-grid.json` | The committed, host-portable `klt sim` request: 12 points, three DC `op` solves each, 141 measurements |
 | `records/`, `envelopes/` | Append-only evidence, on the same terms as the PVT grids (`../README.md` §PVT grids) |
 

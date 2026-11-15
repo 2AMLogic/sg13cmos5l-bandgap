@@ -42,7 +42,7 @@ deck template, and a committed `request-grid.json` (`request-45pt.json` in
 named by filename, so benches whose supply stimulus is identical share one file:
 `closed-loop-iq` and `closed-loop-vref-pvt-boxtc` point at
 `closed-loop-vref-pvt/vref.cir.tmpl` (decision record
-[`0016`](../spec/decision-records/0016-shared-deck-fixtures.md)). `grid-run.sh` writes
+[`0017`](../spec/decision-records/0017-shared-deck-fixtures.md)). `grid-run.sh` writes
 two artifacts per run, both append-only:
 
 - `envelopes/<UTC>-<short sha>.json` — the raw `klt sim --format json` envelope. **This is the
@@ -70,7 +70,7 @@ fixture note (its full measured story is in the bench's `README.md`); the five e
 below are shared by every fixture and live here, so a corrected fact has one place to land
 and a template edit does not force a re-attestation of four copies of the same prose. The
 templates themselves only point here. Since decision record
-[`0016`](../spec/decision-records/0016-shared-deck-fixtures.md) a bench on an already-attested
+[`0017`](../spec/decision-records/0017-shared-deck-fixtures.md) a bench on an already-attested
 stimulus names the existing fixture in its `bench.json` (`deck_template` and `testbench`)
 instead of copying it: `closed-loop-iq` and `closed-loop-vref-pvt-boxtc` run
 `closed-loop-vref-pvt/vref.cir.tmpl` unchanged, and the attribution bench `closed-loop-psrr-op`
@@ -126,7 +126,7 @@ It exists because `closed-loop-psrr/` records that the ratified PSRR @ DC Target
 24 of 45 points but holds nothing that says why. The attribution bench reads the operating
 point that grid solved — its deck's card lines are byte-identical to that bench's (so its
 `bench.json` names `../closed-loop-psrr/deck.cir.tmpl`, decision record
-[`0016`](../spec/decision-records/0016-shared-deck-fixtures.md)), its first two solves are
+[`0017`](../spec/decision-records/0017-shared-deck-fixtures.md)), its first two solves are
 that bench's own secant, and it adds a third `op` solve at `Vpsrr` = 0 from which every MOS
 device's operating point is recorded.
 

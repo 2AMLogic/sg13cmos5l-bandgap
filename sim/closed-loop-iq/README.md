@@ -7,7 +7,7 @@ block's settled quiescent supply current at all 5 process corners × −40/27/12
 | File | Role |
 |---|---|
 | `bench.json` | Grid metadata `sim/grid-run.sh` reads: the graded criteria, the spec row id, the OSDI objects |
-| `../closed-loop-vref-pvt/vref.cir.tmpl` | Deck fixture, shared with the reference bench (`bench.json` names it; decision record 0016 — the supply stimulus is byte-identical) |
+| `../closed-loop-vref-pvt/vref.cir.tmpl` | Deck fixture, shared with the reference bench (`bench.json` names it; decision record 0017 — the supply stimulus is byte-identical) |
 | `request-grid.json` | The committed, host-portable `klt sim` request: 45 units, 2 ms transient each |
 | `records/`, `envelopes/` | Append-only evidence (see `sim/README.md` §PVT grids) |
 

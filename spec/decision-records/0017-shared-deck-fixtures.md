@@ -1,4 +1,4 @@
-# 0016: Grid benches on an identical supply stimulus share one deck fixture
+# 0017: Grid benches on an identical supply stimulus share one deck fixture
 
 - **Status**: ratified, effective when the PR for issue #99 merges
 - **Amends**: decision record
@@ -13,8 +13,12 @@
   implemented by the Loom Builder agent
 - **Numbering note**: drafted as 0015 while PR #98 (issue #93) was still open;
   #98 merged first and took `0015` for
-  [`0015-psrr-dc-attribution`](0015-psrr-dc-attribution.md), so this record
-  renumbers to the next free slot. No content change.
+  [`0015-psrr-dc-attribution`](0015-psrr-dc-attribution.md); the renumbering
+  pass that followed checked only that `0015` was taken and landed on `0016`,
+  which was already held by
+  [`0016-statistical-mc-sections-and-window`](0016-statistical-mc-sections-and-window.md)
+  — the highest number on either tree at the time — so this record now takes
+  `0017`, the next free slot. No content change.
 
 ## Context
 

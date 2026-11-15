@@ -7,7 +7,7 @@ corners × 3 supplies. Every figure is **simulated**.
 | File | Role |
 |---|---|
 | `bench.json` | Grid metadata `sim/grid-run.sh` reads: the graded criteria, the spec row ids, the OSDI objects |
-| `../closed-loop-vref-pvt/vref.cir.tmpl` | Deck fixture, shared with the reference bench (`bench.json` names it; decision record 0016 — the supply stimulus is byte-identical); no transient here |
+| `../closed-loop-vref-pvt/vref.cir.tmpl` | Deck fixture, shared with the reference bench (`bench.json` names it; decision record 0017 — the supply stimulus is byte-identical); no transient here |
 | `request-grid.json` | The committed, host-portable `klt sim` request: 15 units, each a 166-point DC sweep of `TEMP` |
 | `records/`, `envelopes/` | Append-only evidence (see `sim/README.md` §PVT grids) |
 

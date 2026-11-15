@@ -184,7 +184,7 @@ for b in BENCHES:
 # deliberately not in BENCHES: item 5 cites exactly the five grids (asserted above), check 7
 # iterates the cited manifests and check 8 the five grids' corners mapping -- none of which
 # may grow. Its deck fixture and its placeholder supply, though, follow decision record
-# 0016 like any bench on an already-attested stimulus, so its bench.json joins the
+# 0017 like any bench on an already-attested stimulus, so its bench.json joins the
 # per-distinct-template fixture groups and the per-bench placeholder check only.
 FIXTURE_BENCHES = BENCHES + ["closed-loop-psrr-op"]
 for b in FIXTURE_BENCHES:
@@ -298,7 +298,7 @@ check("sim/runner-lib.sh declares CM5_DUT_SUBCKT and CM5_DUT_PINS",
 want_xdut = ["Xdut"] + (dut_pins or "").split() + [dut_subckt or ""]
 
 # Fixture assertions run once per DISTINCT template, not once per bench (issue #99, decision
-# record 0016): benches whose supply stimulus is already identical share one fixture
+# record 0017): benches whose supply stimulus is already identical share one fixture
 # (closed-loop-iq and closed-loop-vref-pvt-boxtc name closed-loop-vref-pvt/vref.cir.tmpl in
 # their bench.json, and the ungraded closed-loop-psrr-op names closed-loop-psrr/deck.cir.tmpl),
 # so six bench directories carry three fixtures between them -- checking the same file once
@@ -357,7 +357,7 @@ for tpl_rel in sorted(tmpl_benches):
         check("%s Xdut card is runner-lib.sh's cell name and pin order" % tpl_rel,
               card == want_xdut, "%s vs %s" % (card, want_xdut))
 
-# Decision record 0016, section 2: no two templates named by any bench.json may have equal
+# Decision record 0017, section 2: no two templates named by any bench.json may have equal
 # card bodies. Sharing is by filename, so a stimulus edit that silently moves several
 # benches' generated decks -- converging one named fixture's cards onto another's -- must
 # fail here and force the convention (repoint the benches at the one fixture they now
