@@ -16,9 +16,20 @@ measurements*, nothing more.
 | File | Role |
 |---|---|
 | `bench.json` | Metadata `sim/grid-run.sh` reads: criteria text, OSDI objects, the empty `spec_rows` and why it is empty |
-| `deck.cir.tmpl` | Deck body — **card-for-card byte-identical** to `../closed-loop-psrr/deck.cir.tmpl` |
+| `../closed-loop-psrr/deck.cir.tmpl` | Deck fixture, shared with the PSRR bench (`bench.json` names it; decision record [0017](../../spec/decision-records/0017-shared-deck-fixtures.md) — the supply stimulus is byte-identical) |
 | `request-grid.json` | The committed, host-portable `klt sim` request: 12 points, three DC `op` solves each, 141 measurements |
 | `records/`, `envelopes/` | Append-only evidence, on the same terms as the PVT grids (`../README.md` §PVT grids) |
+
+The deck's card lines are the PSRR bench's exactly — no longer because a copy was kept in
+byte-identical shape, but because `bench.json` names the same file: one fixture, two benches
+on it. The absorption was measured before the duplicate was deleted (the deleted
+template's card lines were byte-identical to `closed-loop-psrr/deck.cir.tmpl`'s — the check
+its header carried, `diff <(grep -v '^\*' …)` over the two templates, is empty in the git
+history of this directory), and the sharing is now enforced structurally:
+`sim/tests/test-grid-benches.sh` groups its fixture assertions by the template each
+`bench.json` names and asserts that no two named templates share identical card bodies, so
+a stimulus that diverges must reappear as a new inventoried fixture rather than as an edit
+that silently moves someone else's deck.
 
 ```bash
 source sim/env.sh && sim/grid-run.sh closed-loop-psrr-op

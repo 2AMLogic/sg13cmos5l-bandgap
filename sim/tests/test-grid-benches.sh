@@ -81,26 +81,30 @@
 #
 # Negative controls for the substrate-tie half of check 6 (issue #83), each run while writing
 # it and reverted before commit: (a) deleting the `.global sub!` card from
-# closed-loop-startup's template fails once -- "closed-loop-startup deck template declares
-# sub! global where it drives it: 0 .global cards naming sub! for 1 Vsub sub! cards", which
-# is the exact pre-#83 state of all five decks and the thing no simulated value reveals.
-# (b) widening closed-loop-iq's card to `.global sub! vdd` fails once -- "closed-loop-iq deck
-# template's .global cards name only sub!: [['.global', 'sub!', 'vdd']]" -- so the card
-# cannot quietly globalise a second net. (c) deleting closed-loop-psrr's `Vsub sub! vss dc 0`
-# card fails TWICE -- "closed-loop-psrr deck template drives sub! with a Vsub card: 0 Vsub
-# cards naming sub!" and "...declares sub! global where it drives it: 1 .global cards naming
-# sub! for 0 Vsub sub! cards" -- so dropping the tie is caught as well as dropping the card,
-# and a card left with nothing to make true is reported too. All exit 1.
+# closed-loop-startup's template fails once -- "sim/closed-loop-startup/deck.cir.tmpl deck
+# template declares sub! global where it drives it: 0 .global cards naming sub! for 1 Vsub
+# sub! cards", which is the exact pre-#83 state of all five decks and the thing no simulated
+# value reveals. (b) widening the shared DC fixture's card (the vref.cir.tmpl that
+# closed-loop-iq's bench.json names) to `.global sub! vdd` fails once -- "sim/
+# closed-loop-vref-pvt/vref.cir.tmpl deck template's .global cards name only sub!:
+# [['.global', 'sub!', 'vdd']]" -- so the card cannot quietly globalise a second net. (c)
+# deleting closed-loop-psrr's `Vsub sub! vss dc 0` card fails TWICE -- "sim/closed-loop-psrr/
+# deck.cir.tmpl deck template drives sub! with a Vsub card: 0 Vsub cards naming sub!" and
+# "...declares sub! global where it drives it: 1 .global cards naming sub! for 0 Vsub sub!
+# cards" -- so dropping the tie is caught as well as dropping the card, and a card left with
+# nothing to make true is reported too. All exit 1.
 #
 # Negative controls for the DUT-wrapper half of check 6 (issue #80), each run while writing it
 # and reverted before commit: (a) flipping sim/runner-lib.sh's CM5_DUT_PINS to the schematic
-# export's own "vdd vss vref" order fails SIX times -- once per bench ("<bench> Xdut card is
-# runner-lib.sh's cell name and pin order: ['Xdut', 'vdd', 'vref', 'vss', ...] vs ['Xdut',
-# 'vdd', 'vss', 'vref', ...]") and once on the extraction tie ("...extracted/20261113T123950Z-
-# 8422e4d.spice header equals the staged wrapper's cell name and pin order"), which is exactly
-# the `pin_order_mismatch` klt would report one submitted grid later. (b) deleting the `Xdut`
-# card from closed-loop-iq's template fails once ("closed-loop-iq deck template instantiates
-# the staged DUT exactly once: 0 Xdut cards"). Both exit 1.
+# export's own "vdd vss vref" order fails FOUR times -- once per distinct deck template (the
+# three fixtures; "sim/closed-loop-<bench>/deck.cir.tmpl Xdut card is runner-lib.sh's cell
+# name and pin order: ['Xdut', 'vdd', 'vref', 'vss', ...] vs ['Xdut', 'vdd', 'vss', 'vref',
+# ...]") and once on the extraction tie ("...extracted/20261113T123950Z-8422e4d.spice header
+# equals the staged wrapper's cell name and pin order"), which is exactly the
+# `pin_order_mismatch` klt would report one submitted grid later. (b) deleting the `Xdut`
+# card from the shared DC fixture (the vref.cir.tmpl closed-loop-iq's bench.json names) fails
+# once ("sim/closed-loop-vref-pvt/vref.cir.tmpl deck template instantiates the staged DUT
+# exactly once: 0 Xdut cards"). Both exit 1.
 #
 # Negative controls for the reference-anchor axis guard (issue #109), each run while writing
 # it and reverted before commit: check 8's cross-bench loops iterate the *reference's*
@@ -175,6 +179,25 @@ for b in BENCHES:
         requests[b] = load("sim/%s/%s" % (b, m["request"]))
     except Exception as exc:                                    # noqa: BLE001
         check("%s request readable" % b, False, str(exc))
+
+# The sixth bench (issue #93, decision record 0015-psrr-dc-attribution) is ungraded and is
+# deliberately not in BENCHES: item 5 cites exactly the five grids (asserted above), check 7
+# iterates the cited manifests and check 8 the five grids' corners mapping -- none of which
+# may grow. Its deck fixture and its placeholder supply, though, follow decision record
+# 0017 like any bench on an already-attested stimulus, so its bench.json joins the
+# per-distinct-template fixture groups and the per-bench placeholder check only.
+FIXTURE_BENCHES = BENCHES + ["closed-loop-psrr-op"]
+for b in FIXTURE_BENCHES:
+    if b in meta:
+        continue
+    m = load("sim/%s/bench.json" % b)                           # noqa: BLE001
+    missing = [k for k in ("testbench", "deck_substitutions", "deck_template") if k not in m]
+    check("%s bench.json has the keys the fixture checks read" % b, not missing, str(missing))
+    for key in ("deck_template",):
+        rel = "sim/%s/%s" % (b, m.get(key, ""))
+        check("%s %s exists (%s)" % (b, key, m.get(key)),
+              os.path.isfile(os.path.join(root, rel)))
+    meta[b] = m
 
 # ---- 2/4. spec_row tags vs bench.json vs the manifest -----------------------------------
 cited = {}
@@ -274,53 +297,89 @@ check("sim/runner-lib.sh declares CM5_DUT_SUBCKT and CM5_DUT_PINS",
       bool(dut_subckt) and bool(dut_pins), "%r %r" % (dut_subckt, dut_pins))
 want_xdut = ["Xdut"] + (dut_pins or "").split() + [dut_subckt or ""]
 
-for b in BENCHES:
+# Fixture assertions run once per DISTINCT template, not once per bench (issue #99, decision
+# record 0017): benches whose supply stimulus is already identical share one fixture
+# (closed-loop-iq and closed-loop-vref-pvt-boxtc name closed-loop-vref-pvt/vref.cir.tmpl in
+# their bench.json, and the ungraded closed-loop-psrr-op names closed-loop-psrr/deck.cir.tmpl),
+# so six bench directories carry three fixtures between them -- checking the same file once
+# per bench would re-read the same bytes and guard copies that no longer exist. The
+# placeholder check stays per bench, further down: each bench's own deck_substitutions
+# is read against the template its bench.json names, whatever directory that template sits in.
+tmpl_benches, tmpl_text, body_by_tpl = {}, {}, {}
+for b in FIXTURE_BENCHES:
     m = meta.get(b)
     if not m:
         continue
-    with open(os.path.join(root, "sim/%s/%s" % (b, m["deck_template"]))) as f:
-        tmpl = f.read()
+    tpl_rel = os.path.normpath(os.path.join("sim", b, m["deck_template"]))
+    tmpl_benches.setdefault(tpl_rel, []).append(b)
+    if tpl_rel not in tmpl_text:
+        with open(os.path.join(root, tpl_rel)) as f:
+            tmpl_text[tpl_rel] = f.read()
+
+for tpl_rel in sorted(tmpl_benches):
+    tmpl = tmpl_text[tpl_rel]
     body = [l for l in tmpl.splitlines() if l and not l.startswith("*")]
-    check("%s deck template line 1 is a comment" % b, tmpl.splitlines()[0].startswith("*"))
-    check("%s deck template has no .control block" % b,
+    body_by_tpl[tpl_rel] = body
+    check("%s deck template line 1 is a comment" % tpl_rel, tmpl.splitlines()[0].startswith("*"))
+    check("%s deck template has no .control block" % tpl_rel,
           not any(l.lower().startswith(".control") for l in body))
-    check("%s deck template has no .end card" % b,
+    check("%s deck template has no .end card" % tpl_rel,
           not any(l.strip().lower() == ".end" for l in body))
     # The substrate tie (issue #83, decision record 0014): a deck that drives `sub!` with
     # `Vsub` only ties the DUT's rppd/rhigh bulks if `sub!` is an ngspice GLOBAL net. `!` is
     # an xschem marker and the migrated netlist carries no `.global` card, so without one
     # here the bulk terminals stay per-instance local nodes (`xdut.xx1.sub!`) resolved by
     # `.options rshunt` alone -- the deck's own comment would describe a tie it does not
-    # make, and no measured value would look wrong. Checked per deck, not centrally,
-    # because each template carries its own fixture cards.
+    # make, and no measured value would look wrong. Checked once per distinct template
+    # (issue #99): benches on an identical stimulus share one fixture file.
     globals_ = [l.split() for l in body if l.split()[:1] == [".global"]]
     vsub_sub = [l for l in body
                 if l.split()[:1] and l.split()[0].lower().startswith("vsub")
                 and "sub!" in l.lower()]
     sub_global = [g for g in globals_ if "sub!" in g[1:]]
-    check("%s deck template drives sub! with a Vsub card" % b, len(vsub_sub) == 1,
+    check("%s deck template drives sub! with a Vsub card" % tpl_rel, len(vsub_sub) == 1,
           "%d Vsub cards naming sub!" % len(vsub_sub))
-    check("%s deck template declares sub! global where it drives it" % b,
+    check("%s deck template declares sub! global where it drives it" % tpl_rel,
           len(sub_global) == 1 if vsub_sub else not sub_global,
           "%d .global cards naming sub! for %d Vsub sub! cards"
           % (len(sub_global), len(vsub_sub)))
-    check("%s deck template's .global cards name only sub!" % b,
+    check("%s deck template's .global cards name only sub!" % tpl_rel,
           all(g[1:] == ["sub!"] for g in globals_), str(globals_))
-    placeholders = set(re.findall(r"@@([A-Z_]+)@@", tmpl))
-    supplied = set(m["deck_substitutions"]) | {"WORK"}
-    check("%s every deck placeholder is supplied" % b, placeholders <= supplied,
-          "unsupplied: %s" % sorted(placeholders - supplied))
     includes = [i for i, l in enumerate(body) if l.lower().startswith(".include")]
     xduts = [i for i, l in enumerate(body) if l.split()[:1] == ["Xdut"]]
-    check("%s deck template instantiates the staged DUT exactly once" % b, len(xduts) == 1,
+    check("%s deck template instantiates the staged DUT exactly once" % tpl_rel, len(xduts) == 1,
           "%d Xdut cards" % len(xduts))
     if len(xduts) == 1 and len(includes) == 1:
-        check("%s instantiates the DUT after the .include that defines it" % b,
+        check("%s instantiates the DUT after the .include that defines it" % tpl_rel,
               xduts[0] > includes[0], "Xdut at %d, .include at %d" % (xduts[0], includes[0]))
     if xduts:
         card = body[xduts[0]].split()
-        check("%s Xdut card is runner-lib.sh's cell name and pin order" % b,
+        check("%s Xdut card is runner-lib.sh's cell name and pin order" % tpl_rel,
               card == want_xdut, "%s vs %s" % (card, want_xdut))
+
+# Decision record 0017, section 2: no two templates named by any bench.json may have equal
+# card bodies. Sharing is by filename, so a stimulus edit that silently moves several
+# benches' generated decks -- converging one named fixture's cards onto another's -- must
+# fail here and force the convention (repoint the benches at the one fixture they now
+# share), not pass as a routine edit of an inventoried file.
+tpl_order = sorted(body_by_tpl)
+body_dupes = [(a, b) for i, a in enumerate(tpl_order)
+              for b in tpl_order[i + 1:] if body_by_tpl[a] == body_by_tpl[b]]
+check("no two named deck templates share identical card bodies", not body_dupes,
+      "identical card bodies: %s" % (body_dupes,))
+
+# Per bench: every @@PLACEHOLDER@@ the template this bench names uses must be one its own
+# deck_substitutions (plus the runner's @@WORK@@) supplies. A shared fixture carries exactly
+# the placeholders its stimulus needs; a bench repointed at it supplies the same map.
+for b in FIXTURE_BENCHES:
+    m = meta.get(b)
+    if not m:
+        continue
+    tpl_rel = os.path.normpath(os.path.join("sim", b, m["deck_template"]))
+    placeholders = set(re.findall(r"@@([A-Z_]+)@@", tmpl_text.get(tpl_rel, "")))
+    supplied = set(m["deck_substitutions"]) | {"WORK"}
+    check("%s every deck placeholder is supplied" % b, placeholders <= supplied,
+          "unsupplied: %s" % sorted(placeholders - supplied))
 
 # The wrapper's pin ORDER is only correct relative to the extracted netlist: `klt pex` reuses
 # the bench's positional Xdut line on both legs and fires pin_order_mismatch when the two
