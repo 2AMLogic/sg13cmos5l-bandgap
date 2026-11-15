@@ -5,6 +5,14 @@ triage agent. Newest first.
 
 ### 2026-11-15
 
+- **PR #118**: fix: checker accounts every decimal, rounds keyed cells to nearest, matches literals boundary-aware
+- **PR #117**: test: require the ratified PVT axes on check 8's reference bench
+- **PR #102**: chore: drop the ten expired .gitkeep placeholders under the grid benches
+- **PR #82**: sim: measure the untrimmed line (3σ) with a controlled Monte Carlo and cite it for T1 item 6
+- **Issue #113** (closed): sim: documented-figure coverage summary understates the unverified set, and bound rounding is applied to non-extent keyed_to values
+- **Issue #109** (closed): Check 8's reference bench has no presence guard on supply_v / temperature_c
+- **Issue #97** (closed): Remove the ten expired .gitkeep placeholders under the five grid benches' evidence directories
+- **Issue #31** (closed): T1 item 6 (Monte Carlo): closed-loop vref mismatch MC (N >= 300 per point) as klt yield evidence for the untrimmed-line row
 - **PR #112**: docs: state the declared spec-row denominator as eleven, not nine
 - **PR #110**: sim: commit the documented-figure checker with claim annotations (cell, count, range, pct_change, extremum)
 - **Issue #105** (closed): README.md and manifests/README.md say "four of the nine declared rows" are gaps; the manifest declares eleven
