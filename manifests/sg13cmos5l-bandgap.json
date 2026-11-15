@@ -56,15 +56,15 @@
     },
     "10": {
       "file": "evidence/item10.json",
-      "content_hash": "sha256:67a506f49c877d48b6cf5329d27eb4915a2beeb1de7a09bd7998bc689ffecfb2"
+      "content_hash": "sha256:b18397e055a97e17787e5e79ec60674305dd1946640269e66576928ad6a3b0d3"
     },
     "6": [
       {
-        "file": "sim/closed-loop-vref-mc/yield/20261113T130628Z-e882c25.line.yield.json",
+        "file": "sim/closed-loop-vref-mc/yield/20261115T101609Z-4197d88.line.yield.json",
         "rows": [
           "vref_untrimmed_line_3sigma"
         ],
-        "content_hash": "sha256:707840a8898b5eedcb296780fbf5c87fe0935685885abd10f7850a6fb10d28c8"
+        "content_hash": "sha256:d88387ba41be683d1ea5470b8505f41ad30a64aa8751d6911f467fc79297e250"
       }
     ]
   },
