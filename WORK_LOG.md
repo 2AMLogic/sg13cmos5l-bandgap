@@ -3,8 +3,21 @@
 Chronological record of merged PRs and closed issues, maintained by the Guide
 triage agent. Newest first.
 
+### 2026-11-15
+
+- **PR #112**: docs: state the declared spec-row denominator as eleven, not nine
+- **PR #110**: sim: commit the documented-figure checker with claim annotations (cell, count, range, pct_change, extremum)
+- **Issue #105** (closed): README.md and manifests/README.md say "four of the nine declared rows" are gaps; the manifest declares eleven
+- **Issue #103** (closed): sim: commit the documented-figure checker and extend it to prose counts, percentage summaries and rounding
+
 ### 2026-11-14
 
+- **PR #106**: test: guard the whole corners mapping across grid benches (check 8)
+- **PR #104**: docs: state committed layout, extraction and silicon status in README
+- **PR #98**: sim: attribute the psrr_dc Target miss to the mirror's output conductance against the amplifier's rail tracking
+- **Issue #101** (closed): Compare the whole corners mapping in test-grid-benches.sh check 8: supply_v and temperature_c are copied five ways with no guard
+- **Issue #94** (closed): README status paragraph says nothing is laid out or extracted, but the layout, DRC and a post-layout extraction are on main
+- **Issue #93** (closed): Attribute the PSRR @ DC Target miss: operating-point evidence at the failing 2.97 V and 3.30 V points
 - **Issue #90** (closed): Reconcile the two lists of the offline test suite: attest/item10.json misses test-smoke-request.sh, so CI never runs it
 - **PR #96**: test: attest test-smoke-request.sh and assert every offline suite is inventoried
 - **PR #92**: docs: roadmap as of 2026-11-13
