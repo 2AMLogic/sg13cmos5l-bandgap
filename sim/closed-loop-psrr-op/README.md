@@ -27,8 +27,9 @@ template's card lines were byte-identical to `closed-loop-psrr/deck.cir.tmpl`'s 
 its header carried, `diff <(grep -v '^\*' …)` over the two templates, is empty in the git
 history of this directory), and the sharing is now enforced structurally:
 `sim/tests/test-grid-benches.sh` groups its fixture assertions by the template each
-`bench.json` names, so a stimulus that diverges must reappear as a new inventoried fixture
-rather than as an edit to someone else's deck.
+`bench.json` names and asserts that no two named templates share identical card bodies, so
+a stimulus that diverges must reappear as a new inventoried fixture rather than as an edit
+that silently moves someone else's deck.
 
 ```bash
 source sim/env.sh && sim/grid-run.sh closed-loop-psrr-op

@@ -4,10 +4,10 @@
 * (for the 45-point request) the supply value come from the `klt sim` request.
 *
 * This is also the shared DC-supply fixture: closed-loop-iq and
-* closed-loop-vref-pvt-boxtc name this file in their bench.json (decision record
-* 0015) because their supply stimulus is byte-identical to this one. What a bench
-* runs is whatever deck file its bench.json names -- fixture by filename, not
-* fixture by directory.
+* closed-loop-vref-pvt-boxtc name this file in their bench.json because their
+* supply stimulus is byte-identical to this one -- see sim/README.md, "Deck
+* fixture conventions". What a bench runs is whatever deck file its bench.json
+* names -- fixture by filename, not fixture by directory.
 *
 * This bench's own fixture note: the loop starts from the solver's own operating
 * point and settles during the transient; the startup cell in the DUT is what keeps

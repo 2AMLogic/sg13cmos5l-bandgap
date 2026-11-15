@@ -284,7 +284,7 @@ want_xdut = ["Xdut"] + (dut_pins or "").split() + [dut_subckt or ""]
 # per bench would re-read the same bytes and guard copies that no longer exist. The
 # placeholder check stays per bench, further down: each bench's own deck_substitutions
 # is read against the template its bench.json names, whatever directory that template sits in.
-tmpl_benches, tmpl_text = {}, {}
+tmpl_benches, tmpl_text, body_by_tpl = {}, {}, {}
 for b in FIXTURE_BENCHES:
     m = meta.get(b)
     if not m:
@@ -298,6 +298,7 @@ for b in FIXTURE_BENCHES:
 for tpl_rel in sorted(tmpl_benches):
     tmpl = tmpl_text[tpl_rel]
     body = [l for l in tmpl.splitlines() if l and not l.startswith("*")]
+    body_by_tpl[tpl_rel] = body
     check("%s deck template line 1 is a comment" % tpl_rel, tmpl.splitlines()[0].startswith("*"))
     check("%s deck template has no .control block" % tpl_rel,
           not any(l.lower().startswith(".control") for l in body))
@@ -334,6 +335,17 @@ for tpl_rel in sorted(tmpl_benches):
         card = body[xduts[0]].split()
         check("%s Xdut card is runner-lib.sh's cell name and pin order" % tpl_rel,
               card == want_xdut, "%s vs %s" % (card, want_xdut))
+
+# Decision record 0016, section 2: no two templates named by any bench.json may have equal
+# card bodies. Sharing is by filename, so a stimulus edit that silently moves several
+# benches' generated decks -- converging one named fixture's cards onto another's -- must
+# fail here and force the convention (repoint the benches at the one fixture they now
+# share), not pass as a routine edit of an inventoried file.
+tpl_order = sorted(body_by_tpl)
+body_dupes = [(a, b) for i, a in enumerate(tpl_order)
+              for b in tpl_order[i + 1:] if body_by_tpl[a] == body_by_tpl[b]]
+check("no two named deck templates share identical card bodies", not body_dupes,
+      "identical card bodies: %s" % (body_dupes,))
 
 # Per bench: every @@PLACEHOLDER@@ the template this bench names uses must be one its own
 # deck_substitutions (plus the runner's @@WORK@@) supplies. A shared fixture carries exactly

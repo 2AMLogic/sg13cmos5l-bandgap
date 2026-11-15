@@ -73,7 +73,7 @@
         "role": "testbench",
         "path": "sim/closed-loop-vref-pvt/vref.cir.tmpl",
         "passed": true,
-        "content_hash": "sha256:73e0f7b50c69aced376bb6520ad890de081b7a3e211a8a0b49537f88fb83c510"
+        "content_hash": "sha256:3d9183ce0dc92ef6fa9414327e11c1f1fd4b8cf311636c9169ca583c28ddf885"
       },
       {
         "check": "present",
