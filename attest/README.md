@@ -40,7 +40,11 @@ Any change to the inventory or to an inventoried bench byte changes the hashes.
 its committed outcome carried through) and still re-hashes every inventoried file. A passing CI
 `--check` therefore does not re-prove the cold start; only a provisioned host's `--attest` does.
 `bash sim/tests/test-attest-pins.sh` keeps the inventory's PDK and OSDI pins equal to
-`sim/pdk.json` and `reuse.lock.json`.
+`sim/pdk.json` and `reuse.lock.json`. Its second assertion covers the *other* inventory: it
+fails if any `sim/tests/test-*.sh` suite is absent from every `attest/item10.json`
+`checks[].argv`, so a new offline suite cannot be left unattested and therefore unrun by CI
+(issue #90). The one exemption is the file itself, which `.github/workflows/signoff.yml` runs
+as its own step -- and the test grants that exemption only while the workflow still names it.
 
 ## Extending
 

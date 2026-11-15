@@ -8,32 +8,35 @@ region between the markers is machine-generated.
 
 Judge-approved PRs under a hold (`loom:blocked` or `loom:operator`) — only a human merge decision is missing.
 
-_None._
+- **#95**: feat(design): attest T1 item 1 on a normalized netlist-freshness gate
 
 ## Very Important
 
 `loom:very-important` (one counts per workspace); every stage takes these first.
 
-_None._
+- **#26**: T1 item 1 (design sources): attest the pinned SG13CMOS5L core/amp/startup/top schematics and derived netlists (or migrate them under decision record 0002)
 
 ## Important
 
 `loom:important`; taken before unlabelled work.
 
-- **#26**: T1 item 1 (design sources): attest the pinned SG13CMOS5L core/amp/startup/top schematics and derived netlists (or migrate them under decision record 0002)
-- **#30**: T1 item 5 (corner verification): 45-point closed-loop benches for the nominal, TC (box and endpoint), PSRR, Iq and startup rows as klt sim envelopes
+- **#29**: T1 item 4 (LVS clean): klt lvs of bandgap_top against its schematic netlist, with rppd and pnpMPA gaps attributed
+- **#32**: T1 item 7 (post-layout verification): klt pex re-run of the closed-loop row benches on the extracted bandgap_top
+- **#94**: README status paragraph says nothing is laid out or extracted, but the layout, DRC and a post-layout extraction are on main
 
 ## Ready
 
 Human-approved issues ready for implementation (`loom:issue`).
 
-_None._
+- **#97**: Remove the ten expired .gitkeep placeholders under the five grid benches' evidence directories
 
 ## In Progress
 
 Issues currently being built (`loom:building`).
 
-- **#30**: T1 item 5 (corner verification): 45-point closed-loop benches for the nominal, TC (box and endpoint), PSRR, Iq and startup rows as klt sim envelopes
+- **#26**: T1 item 1 (design sources): attest the pinned SG13CMOS5L core/amp/startup/top schematics and derived netlists (or migrate them under decision record 0002)
+- **#31**: T1 item 6 (Monte Carlo): closed-loop vref mismatch MC (N >= 300 per point) as klt yield evidence for the untrimmed-line row
+- **#93**: Attribute the PSRR @ DC Target miss: operating-point evidence at the failing 2.97 V and 3.30 V points
 
 ## PRs Awaiting Review
 
@@ -45,24 +48,25 @@ _None._
 
 PRs that passed review and are queued for Champion auto-merge (`loom:pr`).
 
-_None._
+- **#95**: feat(design): attest T1 item 1 on a normalized netlist-freshness gate
 
 ## Proposed
 
 Issues carrying `loom:curated`.
 
 - **#26**: T1 item 1 (design sources): attest the pinned SG13CMOS5L core/amp/startup/top schematics and derived netlists (or migrate them under decision record 0002) *(curated)*
-- **#30**: T1 item 5 (corner verification): 45-point closed-loop benches for the nominal, TC (box and endpoint), PSRR, Iq and startup rows as klt sim envelopes *(curated)*
-- **#47**: Run sim/smoke/run_smoke.sh once on a toolchain host and diff record keys after runner-lib refactor *(curated)*
+- **#31**: T1 item 6 (Monte Carlo): closed-loop vref mismatch MC (N >= 300 per point) as klt yield evidence for the untrimmed-line row *(curated)*
+- **#32**: T1 item 7 (post-layout verification): klt pex re-run of the closed-loop row benches on the extracted bandgap_top *(curated)*
+- **#93**: Attribute the PSRR @ DC Target miss: operating-point evidence at the failing 2.97 V and 3.30 V points *(curated)*
+- **#94**: README status paragraph says nothing is laid out or extracted, but the layout, DRC and a post-layout extraction are on main *(curated)*
+- **#99**: Share one deck fixture per distinct supply stimulus: the grid benches' five templates carry three distinct card bodies *(curated)*
 
 ## Proposed (Architect / Hermit)
 
-- **#61**: Single source for the §PVT corner table: run.sh and check-model-sections.py each hand-copy it *(hermit)*
-- **#64**: Remove fetch-era leftovers from the closed-loop vref runner: dead gh gate, scratch copy, stale DUT wording *(hermit)*
 - **#66**: Remove the unread model_files table from sim/pdk.json: fifth copy of the PVT section list, with a host-dependent column *(hermit)*
 - **#67**: Remove the tautological --regenerated default from attest/make-item2-envelope.py: the item-2 regeneration claim is true by construction *(hermit)*
-- **#70**: Remove template-era .gitignore rules for flow/, cocotb, a sim harness and per-corner logs that this repo does not have *(hermit)*
-- **#71**: Wire package.json test/check:ci to the four sim/tests suites: the Loom-template stubs report 'No tests configured' and exit 0 *(hermit)*
+- **#81**: Remove the vendored manifests/design-evidence-tiers.md: byte-identical to the checklist bundled in the pinned klayout-tools wheel *(hermit)*
+- **#99**: Share one deck fixture per distinct supply stimulus: the grid benches' five templates carry three distinct card bodies *(hermit)*
 
 ## Epics
 
@@ -72,14 +76,14 @@ _None._
 
 | Bucket | Count |
 |------|-------|
-| Operator merge-risk holds | 0 |
-| Very important | 0 |
-| Important | 2 |
-| Ready (`loom:issue`) | 0 |
-| In Progress (`loom:building`) | 1 |
+| Operator merge-risk holds | 1 |
+| Very important | 1 |
+| Important | 3 |
+| Ready (`loom:issue`) | 1 |
+| In Progress (`loom:building`) | 3 |
 | PRs awaiting review | 0 |
-| Approved PRs awaiting merge | 0 |
-| Curated | 3 |
-| Architect / Hermit proposals | 6 |
+| Approved PRs awaiting merge | 1 |
+| Curated | 6 |
+| Architect / Hermit proposals | 4 |
 | Active epics | 0 |
 <!-- guide:plan-body:end -->

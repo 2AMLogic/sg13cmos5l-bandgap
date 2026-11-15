@@ -1,0 +1,2811 @@
+{
+  "bench": "closed-loop-psrr-op",
+  "criteria": "UNGRADED EVIDENCE -- no limits, no spec_row tag, no manifest citation. Records, at 12 of the committed PSRR grid's 45 points (process {typ, wcs} x supply {2.970, 3.300, 3.630} V x {27, 125} C, 6 of which fail the ratified > 60 dB Target in sim/closed-loop-psrr/ and 6 of which pass), three DC `op` solves per point: the PSRR bench's own +/-0.05 V `Vpsrr` secant, which must reproduce that grid's psrr_db at the same point, and then a third solve with `Vpsrr` back at its 0 V deck default, from which every one of the 14 MOS devices' vgs, vds, vdss, gm, gds and ids is read. Derived per point: the saturation margin |vds| - |vdss| for all 14 devices (this PDK's PSP103 models expose `vdss`, not `vdsat`), the amplifier's DC gain from the measured gm/gds, how closely fb tracks the rail, and the output mirror leg's measured current excursion against what its own gm and gds predict. The purpose is to attribute the recorded `psrr_dc` miss; the pass/fail verdict on that row stays with sim/closed-loop-psrr/.",
+  "deck_sha256": "11cb65ced67790b1769dc71b79c306d528839205ab194cef96ffc49106bde19c",
+  "envelope": "sim/closed-loop-psrr-op/envelopes/20261114T055319Z-21bfd3c.json",
+  "grid": {
+    "envelope_status": "pass",
+    "failing_points": [],
+    "failing_points_truncated": false,
+    "measurements_declared": 141,
+    "measurements_with_limits": 0,
+    "points_errored": 0,
+    "points_failed": 0,
+    "points_inconclusive": 0,
+    "points_passed": 12,
+    "points_total": 12,
+    "rows": [
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/27C",
+          "value": 1.197191601121
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/125C",
+          "value": 1.188649030413
+        },
+        "name": "lo.vref",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 1.196448747111
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/27C",
+          "value": 3.58
+        },
+        "min": {
+          "corner_id": "typ/2.970V/27C",
+          "value": 2.92
+        },
+        "name": "lo.vdd",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 2.92
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/125C",
+          "value": 2.840624475302
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 2.072745726556
+        },
+        "name": "lo.fb",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 2.117163359954
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/27C",
+          "value": 0.7804587143285
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/125C",
+          "value": 0.6385247107033
+        },
+        "name": "lo.sns1",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 0.7804208483601
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/27C",
+          "value": 0.7802509182053
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/125C",
+          "value": 0.6380798468909
+        },
+        "name": "lo.sns2",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 0.7801371537389
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.300V/125C",
+          "value": 6.452739431443e-06
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 4.463403543581e-06
+        },
+        "name": "lo.m1_ids",
+        "status": "pass",
+        "unit": "A",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 4.979774842647e-06
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.300V/125C",
+          "value": 6.452758188573e-06
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 4.46341412743e-06
+        },
+        "name": "lo.m2_ids",
+        "status": "pass",
+        "unit": "A",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 4.979787164983e-06
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/125C",
+          "value": 6.428650960831e-06
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 4.446364353568e-06
+        },
+        "name": "lo.m3_ids",
+        "status": "pass",
+        "unit": "A",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 4.961011397611e-06
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/27C",
+          "value": 1.197237335665
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/125C",
+          "value": 1.188821837938
+        },
+        "name": "hi.vref",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 1.19660290862
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/27C",
+          "value": 3.68
+        },
+        "min": {
+          "corner_id": "typ/2.970V/27C",
+          "value": 3.02
+        },
+        "name": "hi.vdd",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 3.02
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/125C",
+          "value": 2.94073812039
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 2.172807947984
+        },
+        "name": "hi.fb",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 2.217227111892
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/27C",
+          "value": 0.7804619988404
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/125C",
+          "value": 0.6385321656462
+        },
+        "name": "hi.sns1",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 0.7804284035599
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/27C",
+          "value": 0.7802607950634
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/125C",
+          "value": 0.6381022849839
+        },
+        "name": "hi.sns2",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 0.7801598423664
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.300V/125C",
+          "value": 6.453016467941e-06
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 4.464613484605e-06
+        },
+        "name": "hi.m1_ids",
+        "status": "pass",
+        "unit": "A",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 4.98105703174e-06
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.300V/125C",
+          "value": 6.453034721487e-06
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 4.464623285583e-06
+        },
+        "name": "hi.m2_ids",
+        "status": "pass",
+        "unit": "A",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 4.981068515517e-06
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.300V/125C",
+          "value": 6.428543121115e-06
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 4.447879328409e-06
+        },
+        "name": "hi.m3_ids",
+        "status": "pass",
+        "unit": "A",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 4.962636925642e-06
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/27C",
+          "value": 1.19721722285
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/125C",
+          "value": 1.18873832574
+        },
+        "name": "op.vref",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 1.196527520605
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/27C",
+          "value": 3.63
+        },
+        "min": {
+          "corner_id": "typ/2.970V/27C",
+          "value": 2.97
+        },
+        "name": "op.vdd",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 2.97
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/125C",
+          "value": 2.890679989401
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 2.122776725643
+        },
+        "name": "op.fb",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 2.16719511292
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/27C",
+          "value": 0.7804604280967
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/125C",
+          "value": 0.6385285645424
+        },
+        "name": "op.sns1",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 0.780424701732
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/27C",
+          "value": 0.7802560712759
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/125C",
+          "value": 0.6380914458043
+        },
+        "name": "op.sns2",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 0.7801487250268
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "wcs/3.630V/125C",
+          "value": 0.03229694391849
+        },
+        "min": {
+          "corner_id": "typ/2.970V/27C",
+          "value": 0.003930894931857
+        },
+        "name": "op.det",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 0.003930894931857
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/27C",
+          "value": 0.725076810211
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/125C",
+          "value": 0.5652285067759
+        },
+        "name": "op.e2",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 0.7250420534528
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/27C",
+          "value": 0.7803543400111
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/125C",
+          "value": 0.6383662329577
+        },
+        "name": "op.e3",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 0.7803121650266
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "wcs/3.630V/125C",
+          "value": 2.991447867159
+        },
+        "min": {
+          "corner_id": "typ/2.970V/27C",
+          "value": 2.189575298268
+        },
+        "name": "op.m1_vds",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 2.189575298268
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/2.970V/125C",
+          "value": 0.2156273117662
+        },
+        "min": {
+          "corner_id": "wcs/3.630V/27C",
+          "value": 0.1607813872137
+        },
+        "name": "op.m1_vdss",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 0.1641853913192
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 0.8472233813342
+        },
+        "min": {
+          "corner_id": "typ/3.630V/125C",
+          "value": 0.7393201562744
+        },
+        "name": "op.m1_vgs",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 0.8028049962953
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/27C",
+          "value": 4.757144230761e-05
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/125C",
+          "value": 4.178327541881e-05
+        },
+        "name": "op.m1_gm",
+        "status": "pass",
+        "unit": "S",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 4.750365442269e-05
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/125C",
+          "value": 4.801199055221e-08
+        },
+        "min": {
+          "corner_id": "wcs/3.300V/27C",
+          "value": 3.790264896566e-08
+        },
+        "name": "op.m1_gds",
+        "status": "pass",
+        "unit": "S",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 4.313232157808e-08
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.300V/125C",
+          "value": 6.452917169808e-06
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 4.464020962598e-06
+        },
+        "name": "op.m1_ids",
+        "status": "pass",
+        "unit": "A",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 4.980430316641e-06
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "wcs/3.630V/125C",
+          "value": 2.991837568239
+        },
+        "min": {
+          "corner_id": "typ/2.970V/27C",
+          "value": 2.189851274973
+        },
+        "name": "op.m2_vds",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 2.189851274973
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/2.970V/125C",
+          "value": 0.2156274265823
+        },
+        "min": {
+          "corner_id": "wcs/3.630V/27C",
+          "value": 0.1607814326697
+        },
+        "name": "op.m2_vdss",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 0.1641854619949
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 0.8472233813342
+        },
+        "min": {
+          "corner_id": "typ/3.630V/125C",
+          "value": 0.7393201562744
+        },
+        "name": "op.m2_vgs",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 0.8028049962953
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/27C",
+          "value": 4.757150279513e-05
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/125C",
+          "value": 4.178337629158e-05
+        },
+        "name": "op.m2_gm",
+        "status": "pass",
+        "unit": "S",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 4.750373953854e-05
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/125C",
+          "value": 4.802269475792e-08
+        },
+        "min": {
+          "corner_id": "wcs/3.300V/27C",
+          "value": 3.790236441867e-08
+        },
+        "name": "op.m2_gds",
+        "status": "pass",
+        "unit": "S",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 4.313062591351e-08
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.300V/125C",
+          "value": 6.452935657376e-06
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 4.464031145056e-06
+        },
+        "name": "op.m2_ids",
+        "status": "pass",
+        "unit": "A",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 4.98044220841e-06
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "wcs/3.630V/125C",
+          "value": 2.440740559843
+        },
+        "min": {
+          "corner_id": "typ/2.970V/27C",
+          "value": 1.773472479395
+        },
+        "name": "op.m3_vds",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 1.773472479395
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/2.970V/125C",
+          "value": 0.2154910028826
+        },
+        "min": {
+          "corner_id": "wcs/3.630V/27C",
+          "value": 0.1606772999639
+        },
+        "name": "op.m3_vdss",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 0.1640788853266
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 0.8472233813342
+        },
+        "min": {
+          "corner_id": "typ/3.630V/125C",
+          "value": 0.7393201562744
+        },
+        "name": "op.m3_vgs",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 0.8028049962953
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/27C",
+          "value": 4.74498855711e-05
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/125C",
+          "value": 4.164661344645e-05
+        },
+        "name": "op.m3_gm",
+        "status": "pass",
+        "unit": "S",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 4.736862125886e-05
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/2.970V/125C",
+          "value": 5.095976721784e-08
+        },
+        "min": {
+          "corner_id": "wcs/3.630V/27C",
+          "value": 3.802108308359e-08
+        },
+        "name": "op.m3_gds",
+        "status": "pass",
+        "unit": "S",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 4.649766567345e-08
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/125C",
+          "value": 6.428348389562e-06
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 4.447138342654e-06
+        },
+        "name": "op.m3_ids",
+        "status": "pass",
+        "unit": "A",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 4.961843115368e-06
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/125C",
+          "value": 1.722183868927
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 1.026509906319
+        },
+        "name": "op.mtail_vds",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 1.068374628269
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/2.970V/125C",
+          "value": 0.2153543176521
+        },
+        "min": {
+          "corner_id": "wcs/3.630V/27C",
+          "value": 0.1604485246986
+        },
+        "name": "op.mtail_vdss",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 0.1638987787529
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 0.8472233813342
+        },
+        "min": {
+          "corner_id": "typ/3.630V/125C",
+          "value": 0.7393201562744
+        },
+        "name": "op.mtail_vgs",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 0.8028049962953
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/27C",
+          "value": 4.716746728414e-05
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/125C",
+          "value": 4.146169689526e-05
+        },
+        "name": "op.mtail_gm",
+        "status": "pass",
+        "unit": "S",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 4.708812491954e-05
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/2.970V/125C",
+          "value": 6.266722744042e-08
+        },
+        "min": {
+          "corner_id": "wcs/3.630V/27C",
+          "value": 4.480861317264e-08
+        },
+        "name": "op.mtail_gds",
+        "status": "pass",
+        "unit": "S",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 5.913236409269e-08
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.300V/125C",
+          "value": 6.395816517224e-06
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 4.411785675347e-06
+        },
+        "name": "op.mtail_ids",
+        "status": "pass",
+        "unit": "A",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 4.925420008445e-06
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "wcs/3.630V/27C",
+          "value": 1.425601923583
+        },
+        "min": {
+          "corner_id": "typ/2.970V/125C",
+          "value": 1.165805686912
+        },
+        "name": "op.mp1_vds",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 1.254078079316
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/125C",
+          "value": 0.1710142922534
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 0.1262211421845
+        },
+        "name": "op.mp1_vdss",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 0.1279841007603
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "wcs/3.630V/27C",
+          "value": 1.335804741545
+        },
+        "min": {
+          "corner_id": "typ/2.970V/125C",
+          "value": 1.102422141339
+        },
+        "name": "op.mp1_vgs",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 1.12147671207
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.300V/27C",
+          "value": 3.874861148782e-05
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/125C",
+          "value": 3.460838283804e-05
+        },
+        "name": "op.mp1_gm",
+        "status": "pass",
+        "unit": "S",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 3.87443402126e-05
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/125C",
+          "value": 7.506269637924e-08
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 5.233940861922e-08
+        },
+        "name": "op.mp1_gds",
+        "status": "pass",
+        "unit": "S",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 5.864700673147e-08
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.300V/125C",
+          "value": 3.20746364989e-06
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 2.21103470727e-06
+        },
+        "name": "op.mp1_ids",
+        "status": "pass",
+        "unit": "A",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 2.46869320371e-06
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "wcs/3.630V/27C",
+          "value": 1.425757235934
+        },
+        "min": {
+          "corner_id": "typ/2.970V/125C",
+          "value": 1.166205798624
+        },
+        "name": "op.mp2_vds",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 1.254313358121
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/125C",
+          "value": 0.1708670106376
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 0.1261380997008
+        },
+        "name": "op.mp2_vdss",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 0.1278920725138
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "wcs/3.630V/27C",
+          "value": 1.3356227155
+        },
+        "min": {
+          "corner_id": "typ/2.970V/125C",
+          "value": 1.101959330867
+        },
+        "name": "op.mp2_vgs",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 1.121200735388
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.300V/27C",
+          "value": 3.86520789029e-05
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/125C",
+          "value": 3.448213706328e-05
+        },
+        "name": "op.mp2_gm",
+        "status": "pass",
+        "unit": "S",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 3.862936840462e-05
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/125C",
+          "value": 7.477268196232e-08
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 5.217181728972e-08
+        },
+        "name": "op.mp2_gds",
+        "status": "pass",
+        "unit": "S",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 5.84523005837e-08
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.300V/125C",
+          "value": 3.191130470169e-06
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 2.201887016125e-06
+        },
+        "name": "op.mp2_ids",
+        "status": "pass",
+        "unit": "A",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 2.458030312856e-06
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "wcs/3.630V/27C",
+          "value": 0.8082573260891
+        },
+        "min": {
+          "corner_id": "typ/2.970V/125C",
+          "value": 0.6737427961797
+        },
+        "name": "op.mp3_vds",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 0.7566746175468
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/125C",
+          "value": 0.1922846137719
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 0.1424549795465
+        },
+        "name": "op.mp3_vdss",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 0.1452694935077
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "wcs/3.630V/27C",
+          "value": 0.8082574682901
+        },
+        "min": {
+          "corner_id": "typ/2.970V/125C",
+          "value": 0.673742911899
+        },
+        "name": "op.mp3_vgs",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 0.7566747290868
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/27C",
+          "value": 3.657006508729e-05
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/125C",
+          "value": 2.960754423033e-05
+        },
+        "name": "op.mp3_gm",
+        "status": "pass",
+        "unit": "S",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 3.470066042757e-05
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/125C",
+          "value": 6.505003834287e-08
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 4.126867452968e-08
+        },
+        "name": "op.mp3_gds",
+        "status": "pass",
+        "unit": "S",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 4.790211012978e-08
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/125C",
+          "value": 4.035784489224e-06
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 2.684240202167e-06
+        },
+        "name": "op.mp3_ids",
+        "status": "pass",
+        "unit": "A",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 3.025748444337e-06
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 0.8472232743574
+        },
+        "min": {
+          "corner_id": "typ/3.630V/125C",
+          "value": 0.7393200105994
+        },
+        "name": "op.mp4_vds",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 0.8028048870801
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/125C",
+          "value": 0.192297293845
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 0.1424650076804
+        },
+        "name": "op.mp4_vdss",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 0.1452798572481
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "wcs/3.630V/27C",
+          "value": 0.8082574682901
+        },
+        "min": {
+          "corner_id": "typ/2.970V/125C",
+          "value": 0.673742911899
+        },
+        "name": "op.mp4_vgs",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 0.7566747290868
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/27C",
+          "value": 3.658914272532e-05
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/125C",
+          "value": 2.963511787593e-05
+        },
+        "name": "op.mp4_gm",
+        "status": "pass",
+        "unit": "S",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 3.472260268919e-05
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/125C",
+          "value": 6.026150485531e-08
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 3.993622697576e-08
+        },
+        "name": "op.mp4_gds",
+        "status": "pass",
+        "unit": "S",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 4.615736551674e-08
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/125C",
+          "value": 4.039420396813e-06
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 2.686113520127e-06
+        },
+        "name": "op.mp4_ids",
+        "status": "pass",
+        "unit": "A",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 3.027917195583e-06
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "wcs/3.630V/27C",
+          "value": 0.6875933898429
+        },
+        "min": {
+          "corner_id": "typ/2.970V/125C",
+          "value": 0.5769206564099
+        },
+        "name": "op.mn1_vds",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 0.6475472924151
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.300V/125C",
+          "value": 0.1604027263331
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 0.1213424142844
+        },
+        "name": "op.mn1_vdss",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 0.1225832443263
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "wcs/3.630V/27C",
+          "value": 0.6875933537984
+        },
+        "min": {
+          "corner_id": "typ/2.970V/125C",
+          "value": 0.576920626167
+        },
+        "name": "op.mn1_vgs",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 0.6475472584698
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/27C",
+          "value": 4.502382749096e-05
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/125C",
+          "value": 3.95495584808e-05
+        },
+        "name": "op.mn1_gm",
+        "status": "pass",
+        "unit": "S",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 4.499364383385e-05
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.300V/125C",
+          "value": 4.06733435564e-07
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 3.461621188196e-07
+        },
+        "name": "op.mn1_gds",
+        "status": "pass",
+        "unit": "S",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 3.929707053093e-07
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.300V/125C",
+          "value": 3.20799441801e-06
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 2.210567024106e-06
+        },
+        "name": "op.mn1_ids",
+        "status": "pass",
+        "unit": "A",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 2.468425474102e-06
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "wcs/3.630V/27C",
+          "value": 0.6874380774919
+        },
+        "min": {
+          "corner_id": "typ/2.970V/125C",
+          "value": 0.5765205446974
+        },
+        "name": "op.mn2_vds",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 0.6473120136102
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/125C",
+          "value": 0.1602958774372
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 0.12127641963
+        },
+        "name": "op.mn2_vdss",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 0.1225106984601
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "wcs/3.630V/27C",
+          "value": 0.6874380414556
+        },
+        "min": {
+          "corner_id": "typ/2.970V/125C",
+          "value": 0.5765205144755
+        },
+        "name": "op.mn2_vgs",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 0.6473119796773
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/27C",
+          "value": 4.491934345336e-05
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/125C",
+          "value": 3.939540657748e-05
+        },
+        "name": "op.mn2_gm",
+        "status": "pass",
+        "unit": "S",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 4.485236929406e-05
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/125C",
+          "value": 4.049298356785e-07
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 3.449314848475e-07
+        },
+        "name": "op.mn2_gds",
+        "status": "pass",
+        "unit": "S",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 3.915165865945e-07
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/125C",
+          "value": 3.191669463095e-06
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 2.20142044365e-06
+        },
+        "name": "op.mn2_ids",
+        "status": "pass",
+        "unit": "A",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 2.457763759631e-06
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/125C",
+          "value": 2.890679989401
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 2.122776725643
+        },
+        "name": "op.mn3_vds",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 2.16719511292
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/125C",
+          "value": 0.1642664368816
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 0.1238072139105
+        },
+        "name": "op.mn3_vdss",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 0.1252915260482
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "wcs/3.630V/27C",
+          "value": 0.6875933537984
+        },
+        "min": {
+          "corner_id": "typ/2.970V/125C",
+          "value": 0.576920626167
+        },
+        "name": "op.mn3_vgs",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 0.6475472584698
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/27C",
+          "value": 5.630093848151e-05
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/125C",
+          "value": 4.508947055427e-05
+        },
+        "name": "op.mn3_gm",
+        "status": "pass",
+        "unit": "S",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 5.291090486633e-05
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/27C",
+          "value": 4.176176624632e-07
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/125C",
+          "value": 3.042197790394e-07
+        },
+        "name": "op.mn3_gds",
+        "status": "pass",
+        "unit": "S",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 3.586394340058e-07
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/125C",
+          "value": 3.996295435456e-06
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 2.671373786268e-06
+        },
+        "name": "op.mn3_ids",
+        "status": "pass",
+        "unit": "A",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 3.012516916928e-06
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/125C",
+          "value": 2.948823344662
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 2.168926183352
+        },
+        "name": "op.mn4_vds",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 2.213325382453
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/125C",
+          "value": 0.1642540757363
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 0.1238192612698
+        },
+        "name": "op.mn4_vdss",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 0.1252996943037
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "wcs/3.630V/27C",
+          "value": 0.6874380414556
+        },
+        "min": {
+          "corner_id": "typ/2.970V/125C",
+          "value": 0.5765205144755
+        },
+        "name": "op.mn4_vgs",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 0.6473119796773
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/27C",
+          "value": 5.639794949016e-05
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/125C",
+          "value": 4.513575034804e-05
+        },
+        "name": "op.mn4_gm",
+        "status": "pass",
+        "unit": "S",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 5.298018131256e-05
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/27C",
+          "value": 4.231107002853e-07
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/125C",
+          "value": 3.053215624264e-07
+        },
+        "name": "op.mn4_gds",
+        "status": "pass",
+        "unit": "S",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 3.5924187012e-07
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/125C",
+          "value": 3.996529652723e-06
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 2.675429694788e-06
+        },
+        "name": "op.mn4_ids",
+        "status": "pass",
+        "unit": "A",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 3.016336165179e-06
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "wcs/3.630V/125C",
+          "value": 0.03229694391849
+        },
+        "min": {
+          "corner_id": "typ/2.970V/27C",
+          "value": 0.003930894931857
+        },
+        "name": "op.msense_vds",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 0.003930894931857
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/125C",
+          "value": 0.1699196515839
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 0.1397699924669
+        },
+        "name": "op.msense_vdss",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 0.1677104708658
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/27C",
+          "value": 0.780460374241
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/125C",
+          "value": 0.6385285204807
+        },
+        "name": "op.msense_vgs",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 0.7804246478787
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "wcs/3.630V/125C",
+          "value": 2.642806394173e-05
+        },
+        "min": {
+          "corner_id": "typ/2.970V/27C",
+          "value": 1.138582609949e-05
+        },
+        "name": "op.msense_gm",
+        "status": "pass",
+        "unit": "S",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 1.138582609949e-05
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/2.970V/27C",
+          "value": 0.0003699823793163
+        },
+        "min": {
+          "corner_id": "wcs/3.630V/125C",
+          "value": 4.111134396209e-05
+        },
+        "name": "op.msense_gds",
+        "status": "pass",
+        "unit": "S",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 0.0003699823793163
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/125C",
+          "value": 2.274397379327e-06
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 1.238358895519e-06
+        },
+        "name": "op.msense_ids",
+        "status": "pass",
+        "unit": "A",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 1.483381206623e-06
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/125C",
+          "value": 2.890679989401
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 2.122776725643
+        },
+        "name": "op.mkfb_vds",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 2.16719511292
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/125C",
+          "value": 0.1388095227236
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 0.1057721036617
+        },
+        "name": "op.mkfb_vdss",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 0.1057721043875
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "wcs/3.630V/125C",
+          "value": 0.03229694242907
+        },
+        "min": {
+          "corner_id": "typ/2.970V/27C",
+          "value": 0.003930894750579
+        },
+        "name": "op.mkfb_vgs",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 0.003930894750579
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/125C",
+          "value": 8.693955692575e-10
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 3.489597910942e-13
+        },
+        "name": "op.mkfb_gm",
+        "status": "pass",
+        "unit": "S",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 1.805504796154e-12
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/125C",
+          "value": 1.597510767225e-11
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 8.27614357322e-15
+        },
+        "name": "op.mkfb_gds",
+        "status": "pass",
+        "unit": "S",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 3.255289990362e-14
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/125C",
+          "value": 4.750546273431e-11
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 1.378468307708e-14
+        },
+        "name": "op.mkfb_ids",
+        "status": "pass",
+        "unit": "A",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 7.041820536172e-14
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/2.970V/27C",
+          "value": 0.1
+        },
+        "min": {
+          "corner_id": "typ/2.970V/27C",
+          "value": 0.1
+        },
+        "name": "dvdd_v",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 0.1
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "wcs/2.970V/125C",
+          "value": 0.0001728075248977
+        },
+        "min": {
+          "corner_id": "typ/3.630V/125C",
+          "value": -5.5181732499e-05
+        },
+        "name": "dvref_v",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 0.0001541615086271
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "wcs/3.630V/125C",
+          "value": 67.46999597875
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/125C",
+          "value": 55.24874700214
+        },
+        "name": "psrr_db",
+        "status": "pass",
+        "unit": "dB",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 56.24048096637
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/125C",
+          "value": 0.1001136450881
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 0.1000622214284
+        },
+        "name": "dfb_v",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 0.1000637519386
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/125C",
+          "value": 1.001136450881
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 1.000622214284
+        },
+        "name": "fb_tracking",
+        "status": "pass",
+        "unit": "V/V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 1.000637519386
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 1.600851019201e-05
+        },
+        "min": {
+          "corner_id": "typ/3.630V/125C",
+          "value": -3.08432361318e-06
+        },
+        "name": "dvid_v",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 1.513342765891e-05
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/125C",
+          "value": 0.0001136450880783
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 6.222142838475e-05
+        },
+        "name": "dvgs_m3_v",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 6.375193864239e-05
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "wcs/3.630V/125C",
+          "value": 80218.88842077
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 6250.564245405
+        },
+        "name": "fb_per_dvid",
+        "status": "pass",
+        "unit": "V/V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 6612.100985578
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "wcs/3.630V/125C",
+          "value": 2.78033669411
+        },
+        "min": {
+          "corner_id": "typ/2.970V/27C",
+          "value": 2.025389906949
+        },
+        "name": "m1_marg_v",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 2.025389906949
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "wcs/3.630V/125C",
+          "value": 2.780726300935
+        },
+        "min": {
+          "corner_id": "typ/2.970V/27C",
+          "value": 2.025665812978
+        },
+        "name": "m2_marg_v",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 2.025665812978
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "wcs/3.630V/27C",
+          "value": 2.274612939554
+        },
+        "min": {
+          "corner_id": "typ/2.970V/125C",
+          "value": 1.563973342385
+        },
+        "name": "m3_marg_v",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 1.609393594069
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/125C",
+          "value": 1.506952133739
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 0.8659975405303
+        },
+        "name": "mtail_marg_v",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 0.9044758495162
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "wcs/3.630V/27C",
+          "value": 1.297874160585
+        },
+        "min": {
+          "corner_id": "typ/2.970V/125C",
+          "value": 0.9965717687804
+        },
+        "name": "mp1_marg_v",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 1.126093978556
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "wcs/3.630V/27C",
+          "value": 1.298090582086
+        },
+        "min": {
+          "corner_id": "typ/2.970V/125C",
+          "value": 0.9971249378288
+        },
+        "name": "mp2_marg_v",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 1.126421285607
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "wcs/3.630V/27C",
+          "value": 0.6631565509974
+        },
+        "min": {
+          "corner_id": "typ/2.970V/125C",
+          "value": 0.4841591166596
+        },
+        "name": "mp3_marg_v",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 0.6114051240392
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 0.704758266677
+        },
+        "min": {
+          "corner_id": "typ/3.630V/125C",
+          "value": 0.5470227167544
+        },
+        "name": "mp4_marg_v",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 0.657525029832
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "wcs/3.630V/27C",
+          "value": 0.5662344659184
+        },
+        "min": {
+          "corner_id": "typ/2.970V/125C",
+          "value": 0.4165265962704
+        },
+        "name": "mn1_marg_v",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 0.5249640480888
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "wcs/3.630V/27C",
+          "value": 0.5661253274695
+        },
+        "min": {
+          "corner_id": "typ/2.970V/125C",
+          "value": 0.4162413156402
+        },
+        "name": "mn2_marg_v",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 0.5248013151501
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/125C",
+          "value": 2.726413552519
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 1.998969511732
+        },
+        "name": "mn3_marg_v",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 2.041903586872
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/125C",
+          "value": 2.784569268926
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 2.045106922082
+        },
+        "name": "mn4_marg_v",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 2.088025688149
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "wcs/3.630V/125C",
+          "value": -0.12127150167
+        },
+        "min": {
+          "corner_id": "typ/2.970V/27C",
+          "value": -0.163779575934
+        },
+        "name": "msense_marg_v",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": -0.163779575934
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/125C",
+          "value": 2.751870466677
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 2.017004621981
+        },
+        "name": "mkfb_marg_v",
+        "status": "pass",
+        "unit": "V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 2.061423008532
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "wcs/3.630V/125C",
+          "value": 0.8682591624261
+        },
+        "min": {
+          "corner_id": "typ/3.630V/27C",
+          "value": 0.8510859602344
+        },
+        "name": "av1",
+        "status": "pass",
+        "unit": "V/V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 0.8525496145176
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/3.630V/27C",
+          "value": 0.0001120058011264
+        },
+        "min": {
+          "corner_id": "wcs/2.970V/125C",
+          "value": 8.972860501447e-05
+        },
+        "name": "gm2_s",
+        "status": "pass",
+        "unit": "S",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 0.0001053097893066
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "wcs/2.970V/125C",
+          "value": 2836904.213527
+        },
+        "min": {
+          "corner_id": "typ/3.630V/125C",
+          "value": 2130339.685795
+        },
+        "name": "rout_ohm",
+        "status": "pass",
+        "unit": "ohm",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 2470375.262797
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": 112.0547489215
+        },
+        "min": {
+          "corner_id": "typ/3.630V/125C",
+          "value": 96.04028687812
+        },
+        "name": "av_amp_derived",
+        "status": "pass",
+        "unit": "V/V",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 110.8973939322
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/2.970V/125C",
+          "value": 1.689513038188e-09
+        },
+        "min": {
+          "corner_id": "typ/3.630V/125C",
+          "value": -7.4199931214e-10
+        },
+        "name": "dids_m3_a",
+        "status": "pass",
+        "unit": "A",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 1.625528030427e-09
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/2.970V/125C",
+          "value": 1.688229460157e-09
+        },
+        "min": {
+          "corner_id": "typ/3.630V/125C",
+          "value": -7.08855043552e-10
+        },
+        "name": "dids_m3_predicted_a",
+        "status": "pass",
+        "unit": "A",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 1.622756980988e-09
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "typ/2.970V/125C",
+          "value": 5.087655446097e-09
+        },
+        "min": {
+          "corner_id": "wcs/3.630V/27C",
+          "value": 3.800089214864e-09
+        },
+        "name": "dids_m3_gds_term_a",
+        "status": "pass",
+        "unit": "A",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 4.642598417057e-09
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "wcs/2.970V/27C",
+          "value": -2.69735997544e-09
+        },
+        "min": {
+          "corner_id": "typ/3.630V/125C",
+          "value": -5.17636468893e-09
+        },
+        "name": "dids_m3_gm_term_a",
+        "status": "pass",
+        "unit": "A",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": -3.01984143607e-09
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "wcs/3.630V/27C",
+          "value": 131427.1903845
+        },
+        "min": {
+          "corner_id": "typ/3.630V/125C",
+          "value": 74368.98066637
+        },
+        "name": "rbranch_ohm",
+        "status": "pass",
+        "unit": "ohm",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 94837.8039268
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "wcs/3.630V/125C",
+          "value": 95599.19535809
+        },
+        "min": {
+          "corner_id": "typ/2.970V/27C",
+          "value": 83883.21555134
+        },
+        "name": "r1_ohm",
+        "status": "pass",
+        "unit": "ohm",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 83883.21555134
+        }
+      },
+      {
+        "limits": null,
+        "max": {
+          "corner_id": "wcs/3.630V/125C",
+          "value": 12606.61342578
+        },
+        "min": {
+          "corner_id": "typ/2.970V/27C",
+          "value": 11064.61419851
+        },
+        "name": "r2_ohm",
+        "status": "pass",
+        "unit": "ohm",
+        "worst_case": {
+          "corner_id": "typ/2.970V/27C",
+          "margin": null,
+          "value": 11064.61419851
+        }
+      }
+    ]
+  },
+  "kind": "closed-loop-psrr-op-attribution",
+  "label": "SIMULATED",
+  "models_staged": {
+    "count": 15,
+    "files": [
+      {
+        "kind": "library",
+        "name": "cornerPNP.lib",
+        "sha256": "65986abd36f61498fd859b66ab1e199e897fd58174c5b6ff789498350d8a0a64"
+      },
+      {
+        "kind": "library",
+        "name": "cornerMOShv.lib",
+        "sha256": "40c4140415a2a2e92d2f42fd64e026d1c04d800708b7a5b663ef083206ddfd62"
+      },
+      {
+        "kind": "library",
+        "name": "cornerRES.lib",
+        "sha256": "bd2fdd7cf19ec817c23c1539c7ab013612e959b8b0698e0a482a7af5ca91d0f9"
+      },
+      {
+        "kind": "dependency",
+        "name": "sg13cmos5l_pnpMPA_mod.lib",
+        "sha256": "0283ad85c094dd1e1be635c5b405c4d4c96ac053423781f25e702bdfbcadaeaa"
+      },
+      {
+        "kind": "dependency",
+        "name": "sg13cmos5l_pnpMPA_stat.lib",
+        "sha256": "f8ec3f58c793d065028823248f2fee95cec2d69aceca1fb7dae0203bdc0680ad"
+      },
+      {
+        "kind": "dependency",
+        "name": "sg13g2_moshv_mod.lib",
+        "sha256": "bf75d51ba73ab6c40bdb76306c9df74f80229db42ee63e3f4cc30a1911645af2"
+      },
+      {
+        "kind": "dependency",
+        "name": "sg13g2_svaricaphv_mod.lib",
+        "sha256": "b6ae39c7334c75c222ecdee9d6b04c9be48657e91351429aebac47d1192a9abb"
+      },
+      {
+        "kind": "dependency",
+        "name": "sg13g2_moshv_mismatch.lib",
+        "sha256": "2e9612bdb8252c281f422511039dc9b3ea983892aec89f8ef3361592e68fed09"
+      },
+      {
+        "kind": "dependency",
+        "name": "sg13g2_moshv_mod_mismatch.lib",
+        "sha256": "97eba3d2d47596488e0e128f950dc30742d1da80cdeec1f7385a9e13cb460936"
+      },
+      {
+        "kind": "dependency",
+        "name": "sg13g2_svaricaphv_mod_mismatch.lib",
+        "sha256": "064e1c751508149f2674914c1791c418195c55fff7d82236d20c2c79f49030fe"
+      },
+      {
+        "kind": "dependency",
+        "name": "sg13g2_moshv_stat.lib",
+        "sha256": "cd30f22637e41fdbbaba506ebe0f17746b8438027e4651a7a87b241a39d68903"
+      },
+      {
+        "kind": "dependency",
+        "name": "resistors_mod.lib",
+        "sha256": "7c77da0c0419c8a332550da3f934f530262bd452734090db827b68ff88d09c43"
+      },
+      {
+        "kind": "dependency",
+        "name": "resistors_mod_mismatch.lib",
+        "sha256": "ce5ea8559df174fbdad8192e45e5d65772ae3af90af61ba295419b2cb5154b29"
+      },
+      {
+        "kind": "dependency",
+        "name": "resistors_stat.lib",
+        "sha256": "9e34411ed09a569323adec8181e4bdd6832af279c9e05b181f00cb2e5d696db6"
+      },
+      {
+        "kind": "dependency",
+        "name": "sg13g2_moshv_parm.lib",
+        "sha256": "eea5bbed39184cb1e2654ae29425a9ed6ee2f2341d6cb76c472591c75237bd35"
+      }
+    ],
+    "hashes_match": true,
+    "runner_reported_count": 15
+  },
+  "osdi_preload": [
+    "psp103",
+    "r3_cmc"
+  ],
+  "pdk": {
+    "name": "ihp-sg13cmos5l",
+    "pin_file": "sim/pdk.json"
+  },
+  "pdk_revision": "f7bca32694fe3d58be0cc7d9df4b9f5db7161a14",
+  "repo_git_sha": "21bfd3c",
+  "request_sha256": "2ab6ff8f459fa89a04457179b0aa2679cbf0bccf70ebcf2c5b5f811a0e78a5d7",
+  "schema_version": 1,
+  "simulator": {
+    "backend": "batch",
+    "klt": "klt 0.9.2.dev1022+g2a9c52b27ce7",
+    "ngspice": "ngspice-47"
+  },
+  "source_commit": "52535387e6ccf0a89f6490901a9abb2b78144176",
+  "source_file_sha256": "a29624d3bbcc89e2f7132ecfb278dd793b248c84b9f74ab51685f8ecde929ad5",
+  "source_path": "design/sg13cmos5l/netlist/bandgap_top.spice",
+  "source_repo": "2AMLogic/sg13g2-bandgap",
+  "spec_rows": [],
+  "staged_dut_sha256": "718f8f7f50cabd57ee6bab8a21e11c081a6985c7a842a747f8ee94dbf0fcd45e",
+  "staged_dut_subckt": "sg13cmos5l_bandgap_top",
+  "status": "ok",
+  "template_sha256": "c20deeef99111caf24e9af760003d1b0355fec311eb3b516271a53cdae0bd234",
+  "testbench": "sim/closed-loop-psrr-op/deck.cir.tmpl",
+  "timestamp_utc": "20261114T055319Z"
+}

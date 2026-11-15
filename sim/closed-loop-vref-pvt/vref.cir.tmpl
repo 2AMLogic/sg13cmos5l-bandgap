@@ -22,7 +22,9 @@
 * addressed one level down accordingly, as v(xdut.fb) / v(xdut.sns1) / v(xdut.sns2).
 *
 * Fixture: a DC supply, vss at 0, and the substrate net `sub!` (the rppd/rhigh bulk
-* net in the source) tied to vss through a 0 V source. The loop starts from the
+* net in the source) declared global and tied to vss through a 0 V source -- the
+* `.global sub!` card below is what makes that tie reach the bulk terminals inside the
+* DUT's leaf subcircuits (issue #83, decision record 0014). The loop starts from the
 * solver's own operating point and settles during the transient; the startup cell
 * in the DUT is what keeps it off the zero state.
 * OSDI objects are loaded through the request's options.osdi_preload (as the smoke bench
@@ -40,11 +42,22 @@
 * sim/smoke/smoke.cir, whose line 1 is a comment.
 
 * rshunt/gmin: convergence aids only, far below any current read here (same values
-* the source closed-loop bench uses).
+* the source closed-loop bench uses). They are no longer what resolves the resistor
+* bulk nodes -- the `.global sub!` card below ties those to vss deliberately (decision
+* record 0014); before it, `rshunt` was the only thing holding them.
 .options rshunt=1e9 gmin=1e-9
 
 Vvdd vdd 0 dc @@VDD@@
 Vvss vss 0 dc 0
+* `.global sub!` is what makes the `Vsub` tie below actually reach the DUT (issue #83,
+* decision record 0014). `!` is an xschem global-net marker, not an ngspice one, and the
+* migrated netlist carries no `.global` card of its own, so without this the rppd/rhigh
+* bulk terminals inside `bandgap_core` and `bandgap_startup` are per-instance LOCAL nodes
+* (`xdut.xx1.sub!`, `xdut.xx3.sub!`) -- different nodes from the one `Vsub` drives, with no
+* deliberate DC path and nothing but `.options rshunt` resolving them. With the card there
+* is one `sub!` net at every hierarchy level, so the 0 V source below holds the resistor
+* bulks at vss as this comment and the schematics' `body=sub!` both say it does.
+.global sub!
 Vsub sub! vss dc 0
 
 .include "@@WORK@@/bandgap_top.spice"

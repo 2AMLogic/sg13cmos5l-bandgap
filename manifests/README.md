@@ -29,7 +29,7 @@ passing, `limits`-bearing measurement per named row and reports
 `row_coverage.row_sources` as `derived`. A row this manifest named but the
 envelope did not tag would be reported `uncovered`, not believed.
 
-Four of the nine declared rows are **gaps** — the untrimmed-line (3σ),
+Four of the eleven declared rows are **gaps** — the untrimmed-line (3σ),
 trimmed-line and Trim rows, and `supply` — and a fifth, `psrr_dc`, is cited by
 an envelope that **fails** its ratified Target at 24 of 45 points, so item 5
 grades `unmet` / `check_failed` by design (`failed_rows: ["psrr_dc"]`). The Area and Signoff rows of the spec table are

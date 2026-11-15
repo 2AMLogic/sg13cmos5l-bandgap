@@ -6,15 +6,20 @@ reduced-metal-stack sibling of IHP's SG13G2 130 nm open PDK — designed by AI
 agents driving [klayout-tools](https://github.com/2AMLogic/klayout-tools) and
 the open-source xschem + ngspice flow.
 
-**Status: specification ratified (issue #2); the schematic is simulated across
-the full PVT corner grid (issue #30,
-[`0011`](spec/decision-records/0011-corner-verification-pvt-grids.md)) and the
-untrimmed accuracy row now carries a seeded, controlled Monte Carlo (issue #31,
-[`0014`](spec/decision-records/0014-statistical-mc-sections-and-window.md)) —
-seven of the eleven spec rows carry measured corner evidence, one ratified
-Target (PSRR @ DC) is missed on that evidence, and the untrimmed line is
-measured at **±5.6 % (3σ)** by a mechanism this PDK only partly provides.
-Nothing is laid out, extracted or measured in silicon here.** The work
+**Status: specification ratified (issue #2); the schematic is now simulated
+across the full PVT corner grid (issue #30,
+[`0011`](spec/decision-records/0011-corner-verification-pvt-grids.md)) — seven
+of the eleven spec rows carry measured corner evidence, one ratified Target
+(PSRR @ DC) is missed on that evidence, and the untrimmed accuracy row also
+carries a seeded, controlled Monte Carlo (issue #31,
+[`0016`](spec/decision-records/0016-statistical-mc-sections-and-window.md))
+measured at **±5.6 % (3σ)** by a mechanism this PDK only partly provides,
+while the trimmed line remains a declared gap. The layout is committed and DRC
+clean with the deck's coverage limits disclosed
+([`layout/README.md`](layout/README.md)), the post-layout extraction is
+committed but no schematic-vs-extracted delta is producible
+([`0012`](spec/decision-records/0012-post-layout-pex-extraction-gap.md)), and
+nothing is measured in silicon here.** The work
 starts from the SG13CMOS5L branch already carried in
 [sg13g2-bandgap](https://github.com/2AMLogic/sg13g2-bandgap), not from a
 blank page.
@@ -198,7 +203,7 @@ verdict of record is
 see [manifests/README.md](manifests/README.md) for how it is regenerated.
 
 Item 5 (full corner verification) is `unmet` / `check_failed`, blocked by two
-distinct things the report names separately. Four of the nine declared spec
+distinct things the report names separately. Four of the eleven declared spec
 rows are named **gaps** with no evidence at all. And one row that does have
 evidence, `psrr_dc`, **misses its ratified Target** at 24 of its 45 points, so
 it is a failed row rather than a covered one. Every other covered row is
@@ -226,6 +231,8 @@ spec/          ratified spec + decision records + porting plan
 design/        schematics / netlists (xschem)
 sim/           testbenches + PVT corner results (ngspice)
 manifests/     T1 block manifest, vendored checklist, signoff record
+attest/        attestation inventories (signoff inputs)
+evidence/      generated per-item evidence records
 layout/        GDS + DRC/LVS reports (klayout-tools driven)
 measurements/  silicon characterization (empty until tape-out)
 ```

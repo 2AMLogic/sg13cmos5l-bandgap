@@ -37,7 +37,11 @@ netlist missing or pin unreadable (named `SOURCE_MISSING`, no record).
 whose top block is **commented out**: `**.subckt bandgap_top vdd vss vref`, the bare instances
 `Xx1`/`Xx2`/`Xx3` on nets `vdd vss vref fb sns1 sns2`, `**.ends`, then the `bandgap_core`,
 `bandgap_amp`, `bandgap_startup` subckts, no `.lib`/`.include`. The deck therefore drives
-`vdd`/`vss`, ties the `sub!` bulk net to `vss`, and supplies the model `.lib`s.
+`vdd`/`vss`, declares `sub!` global and ties that bulk net to `vss`, and supplies the model
+`.lib`s. The `.global sub!` card is what makes the tie reach the leaf resistors' bulk
+terminals: `!` is an xschem marker, not an ngspice one, so without it `Vsub sub! vss dc 0`
+drives a top-level node while the `rppd`/`rhigh` bulks sit on per-instance local nodes held
+only by `.options rshunt` (issue #83, decision record 0014).
 
 Staging (`cm5_stage_dut`) makes exactly three derived changes and never edits the source:
 the commented top header becomes a live `.subckt sg13cmos5l_bandgap_top vdd vref vss`, its

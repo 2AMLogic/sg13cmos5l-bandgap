@@ -2,7 +2,7 @@
   "schema_version": 1,
   "kind": "t1-attestation-inventory",
   "t1_item": 9,
-  "description": "T1 item 9 (Testbenches shipped). cold_start is local_only: it needs the pinned combined IHP-Open-PDK checkout, ngspice >= 43 and a built psp103.osdi (sim/README.md), none of which a GitHub runner has. It runs sim/smoke/run_smoke.sh, which appends one sim/smoke/records/*.json per run. The five PVT-grid benches (issue #30, decision record 0011) are inventoried but not cold-started here: their grids go to the batch fleet through klt sim, which a GitHub runner cannot reach either. Each bench contributes its deck template and its committed klt sim request -- what the bench IS; bench.json and sim/grid-run.sh are runner plumbing and are not inventoried, the same convention that leaves the per-bench run.sh out. See attest/README.md.",
+  "description": "T1 item 9 (Testbenches shipped). cold_start is local_only: it needs the pinned combined IHP-Open-PDK checkout, ngspice >= 43 and a built psp103.osdi (sim/README.md), none of which a GitHub runner has. It runs sim/smoke/run_smoke.sh, which appends one sim/smoke/records/*.json per run. The five PVT-grid benches (issue #30, decision record 0011) are inventoried but not cold-started here: their grids go to the batch fleet through klt sim, which a GitHub runner cannot reach either. sim/closed-loop-psrr-op (issue #93) is inventoried on the same terms and is likewise not cold-started: it is a shipped testbench, but it grades nothing -- no limits, no spec_row tag, no manifest citation -- so it appears here and nowhere else in this manifest. Each bench contributes its deck template and its committed klt sim request -- what the bench IS; bench.json and sim/grid-run.sh are runner plumbing and are not inventoried, the same convention that leaves the per-bench run.sh out. See attest/README.md.",
   "testbenches": [
     "sim/smoke/smoke.cir",
     "sim/closed-loop-vref-pvt/vref.cir.tmpl",
@@ -11,6 +11,8 @@
     "sim/closed-loop-vref-pvt-boxtc/request-grid.json",
     "sim/closed-loop-psrr/deck.cir.tmpl",
     "sim/closed-loop-psrr/request-grid.json",
+    "sim/closed-loop-psrr-op/deck.cir.tmpl",
+    "sim/closed-loop-psrr-op/request-grid.json",
     "sim/closed-loop-iq/deck.cir.tmpl",
     "sim/closed-loop-iq/request-grid.json",
     "sim/closed-loop-startup/deck.cir.tmpl",

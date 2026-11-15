@@ -3,7 +3,9 @@
 Simulation environment for the SG13CMOS5L bandgap: the PDK pin, a bring-up smoke bench
 (issue #4, T1 item 9), the five PVT-grid benches that carry T1 item 5's corner
 verification (issue #30), the statistical Monte Carlo bench behind T1 item 6
-(issue #31), and the post-layout extraction that carries T1 item 7 (issue #32).
+(issue #31), the post-layout extraction that carries T1 item 7 (issue #32), and
+one **ungraded** attribution bench that says why the `psrr_dc` row misses its Target
+(issue #93).
 
 | File | Role |
 |---|---|
@@ -13,10 +15,11 @@ verification (issue #30), the statistical Monte Carlo bench behind T1 item 6
 | `closed-loop-vref-pvt/` | Closed-loop `vref`: the Output-reference-nominal row. 45 points; also keeps `run.sh`, the single-corner local probe behind decision record 0009 |
 | `closed-loop-vref-pvt-boxtc/` | Closed-loop `vref` over temperature: the Temp-coefficient row, endpoint **and** box method. 15 units, each a 166-point DC sweep of `TEMP` |
 | `closed-loop-psrr/` | PSRR @ DC: two DC solves per point and a 0.1 V supply secant. 45 points |
+| `closed-loop-psrr-op/` | **Why that row misses.** The same deck, same secant, plus a third `op` at `Vpsrr` = 0 from which all 14 MOS devices' `vgs`/`vds`/`vdss`/`gm`/`gds`/`ids` are read. 12 points. **Grades nothing** — no `limits`, no `spec_row`, no manifest citation. Decision record 0015 |
 | `closed-loop-iq/` | Quiescent supply current, settled. 45 points |
 | `closed-loop-startup/` | Release from `vdd` = 0: self-starting **and** the settling time the inherited source bench never extracted. 45 points |
 | `closed-loop-vref-mc/` | The statistical Monte Carlo bench: the untrimmed-line (3σ) row and T1 item 6. Four campaigns — the population, a deterministic zero-spread control, a known-bad 3× control, and a per-family attribution sweep — plus the committed `klt yield` report |
-| `grid-run.sh` | The one runner for all five grids: stages the migrated DUT, renders the deck, submits the committed request to the batch fleet, writes the envelope and the record |
+| `grid-run.sh` | The one runner for every bench directory above that has a `bench.json` — the five grids and `closed-loop-psrr-op`: stages the migrated DUT, renders the deck, submits the committed request to the batch fleet, writes the envelope and the record |
 | | *Staging wraps the DUT*: `cm5_stage_dut` derives `.subckt sg13cmos5l_bandgap_top vdd vref vss` from the attested netlist's commented-out top block, without editing it, so one deck serves both legs of the item-7 delta. Decks instantiate it as `Xdut` and address internal nodes as `v(xdut.…)`. Decision record 0013 |
 | `mc-run.sh`, `mc-yield.sh` | The Monte Carlo pair: one campaign to the fleet, then `klt yield-samples` + `klt yield` over two committed envelopes |
 | `pex-bandgap-top/` | T1 item 7 (post-layout verification): the committed `klt pex --extract-only` envelope, the extracted netlist, and the schematic-vs-extracted device inventory. **No delta** — see below |
@@ -55,6 +58,38 @@ Every committed request is **host-portable**: `models.pdk` plus PDK-relative per
 libraries (no generated corner bundle, no absolute host path, which `batch` refuses),
 `$PDK_ROOT/...` OSDI entries the runner resolves on its own box, and
 `options.stage_model_inputs: true`.
+
+### The sixth bench directory: ungraded attribution evidence
+
+`sim/grid-run.sh` takes **one bench directory name** and reads `bench.json` for everything
+else, so it is not specific to the five item-5 grids. `closed-loop-psrr-op/` (issue #93,
+decision record [`0015`](../spec/decision-records/0015-psrr-dc-attribution.md)) is the first
+directory it serves that is **not** one of them, and it is run the same way:
+
+```bash
+source sim/env.sh && sim/grid-run.sh closed-loop-psrr-op
+```
+
+It exists because `closed-loop-psrr/` records that the ratified PSRR @ DC Target is missed at
+24 of 45 points but holds nothing that says why. The attribution bench reads the operating
+point that grid solved — its deck's card lines are byte-identical, and its first two solves are
+that bench's own secant — and adds a third `op` solve at `Vpsrr` = 0 from which every MOS
+device's operating point is recorded.
+
+**It grades nothing, and that is load-bearing.** Its request carries no `limits` and no
+`spec_row` tag, `bench.json`'s `spec_rows` is empty, and no `manifests/` item cites it: a bench
+that explains a miss must not also be scored as evidence that the miss is smaller, and item 5's
+citation list stays at exactly five (`tests/test-grid-benches.sh` asserts it). Its envelope's
+`status: pass` means *every declared measurement returned a value at every point*, not that any
+bound is met. Its deck template and request **are** item-9 inventoried, on the same terms as
+the five grids — it is a shipped testbench.
+
+Two PDK facts it had to work around, both measured: `klt sim --op-lint` cannot address this
+PDK's OSDI (PSP103) devices at all, so the per-device quantities are hand-written
+`@n.<path>[...]` expressions (filed as generic tool friction at
+[`klayout-tools#5637`](https://github.com/2AMLogic/klayout-tools/issues/5637)); and there is no
+`vdsat` here, PSP103 calling the saturation voltage `vdss`. See
+[`closed-loop-psrr-op/README.md`](closed-loop-psrr-op/README.md).
 
 ### What the fleet runner cannot prove (and what staging fixes)
 
@@ -220,6 +255,16 @@ corner and testbench, and embeds the `klt sim` envelope. The grid benches' `reco
 `envelopes/` are append-only on the same terms (`cm5_record_path` refuses an existing path, and
 `write_record` opens with `"x"`); a second run in the same UTC second at the same commit is the
 only case that collides, and it exits 4 rather than overwriting.
+
+The nine smoke records older than `20261113T165702Z-c786f8f.json` carry
+`klt_envelope.environment.netlist_source: "extracted"`. That is a provenance mislabel
+(issue #87): `smoke.cir` is a hand-written bring-up deck, so nothing was extracted from a
+layout to produce it, and `klt sim` takes the field as the caller's word — the same error
+decision record 0011 §8 corrected on the grid benches. The deck is not an xschem export
+either, so `run_smoke.sh` now omits the optional field rather than declaring
+`"schematic"`, and records from that one on carry no `netlist_source` key at all. The
+nine earlier records are not edited — they are append-only, and each carries the
+`deck_sha256` of what it actually ran.
 
 ## Model section check
 
