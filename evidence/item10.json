@@ -3,21 +3,21 @@
   "kind": "generic",
   "status": "pass",
   "t1_item": 10,
-  "summary": "T1 item 10 (Repo hygiene): 11/11 attestation checks passed (klt signoff --attest)",
+  "summary": "T1 item 10 (Repo hygiene): 12/12 attestation checks passed (klt signoff --attest)",
   "source": "attest/item10.json",
   "attestation": {
     "producer": "klt signoff --attest",
     "inventory_schema_version": 1,
     "hash_algorithm": "sha256-raw-bytes",
-    "check_count": 11,
-    "passed_count": 11,
+    "check_count": 12,
+    "passed_count": 12,
     "checks": [
       {
         "check": "present",
         "role": "hygiene",
         "path": ".github/workflows/signoff.yml",
         "passed": true,
-        "content_hash": "sha256:cf5f97ef950bf59e38b51f325dae0382b26a246d96c838ead532ebc3a5584b95"
+        "content_hash": "sha256:41739d7777741870e3f60c7be58763ccad82cf838328c7506cdcadf87b0a6f1a"
       },
       {
         "check": "present",
@@ -31,21 +31,21 @@
         "role": "hygiene",
         "path": "README.md",
         "passed": true,
-        "content_hash": "sha256:c8ade42e3b2482ff1f5b7b3dfa5886cd397ca10a986799ef4e8c4009c5ed5c66"
+        "content_hash": "sha256:3befd514f128f7eeef7c7dd41bc45deeb83e1d187b0c63171dbf722abb524a33"
       },
       {
         "check": "present",
         "role": "hygiene",
         "path": "manifests/README.md",
         "passed": true,
-        "content_hash": "sha256:d978537a8d1ab78c6641240a2f294c18a0c45a20d94d03a020c89d2265aa3f02"
+        "content_hash": "sha256:cf051244f78af3ee325a61308d2e21a3fcf1ddf7714562902d90dbaf7592b1c6"
       },
       {
         "check": "present",
         "role": "hygiene",
         "path": "spec/target-spec.md",
         "passed": true,
-        "content_hash": "sha256:23cb9c139561ecf5cad782e399762cc4faae9e9de72c8a1a25c0d62b75519d3a"
+        "content_hash": "sha256:1bf9306de40a250643eff9920a06ca94b67ac7b99892f25460eab1887ca10f5b"
       },
       {
         "check": "command",
@@ -118,6 +118,18 @@
         "cwd": ".",
         "exit_status": 0,
         "passed": true
+      },
+      {
+        "check": "command",
+        "role": "audit",
+        "name": "smoke-request-test",
+        "argv": [
+          "bash",
+          "sim/tests/test-smoke-request.sh"
+        ],
+        "cwd": ".",
+        "exit_status": 0,
+        "passed": true
       }
     ]
   },
@@ -131,7 +143,7 @@
         "path": "attest/item10.json",
         "scope": "repo"
       },
-      "content_hash": "sha256:25116abcff52c27d41762cc364d8372508a0f055516a5409544d8f41622127da"
+      "content_hash": "sha256:2af6a87f5157ec6088a3276ce6dce28a03623d1734da795d9a15186a4677ba83"
     }
   }
 }
