@@ -83,6 +83,10 @@ check("bench.json has every key mc-run.sh and mc-yield.sh read", not missing, st
 check("bench.json 'bench' matches its directory", meta.get("bench") == BENCH, meta.get("bench"))
 check("deck template exists (%s)" % meta.get("deck_template"),
       exists("%s/%s" % (BD, meta.get("deck_template", ""))))
+tpl_rel = os.path.normpath("%s/%s" % (BD, meta.get("deck_template", "")))
+tb_rel = os.path.normpath(meta.get("testbench", ""))
+check("%s deck_template and testbench resolve to the same file" % BENCH, tpl_rel == tb_rel,
+      "deck_template->%s vs testbench->%s" % (tpl_rel, tb_rel))
 
 campaigns = {c["name"]: c for c in meta.get("campaigns", [])}
 requests = {}

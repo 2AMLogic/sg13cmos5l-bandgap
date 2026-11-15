@@ -376,6 +376,9 @@ for b in FIXTURE_BENCHES:
     if not m:
         continue
     tpl_rel = os.path.normpath(os.path.join("sim", b, m["deck_template"]))
+    tb_rel = os.path.normpath(m.get("testbench", ""))
+    check("%s deck_template and testbench resolve to the same file" % b, tpl_rel == tb_rel,
+          "deck_template->%s vs testbench->%s" % (tpl_rel, tb_rel))
     placeholders = set(re.findall(r"@@([A-Z_]+)@@", tmpl_text.get(tpl_rel, "")))
     supplied = set(m["deck_substitutions"]) | {"WORK"}
     check("%s every deck placeholder is supplied" % b, placeholders <= supplied,
