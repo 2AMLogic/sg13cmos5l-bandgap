@@ -1,62 +1,27 @@
-* sg13cmos5l closed-loop vref bench
 * sg13cmos5l-bandgap -- closed-loop vref bench body (issue #14, Part of #5).
-* Template: run.sh substitutes @@VDD@@ and @@WORK@@ and writes the deck to
+* Template: sim/grid-run.sh substitutes @@VDD@@ and @@WORK@@ and writes the deck to
 * sim/build/closed-loop-vref-pvt/deck.cir. Model `.lib` cards, temperature and
 * (for the 45-point request) the supply value come from the `klt sim` request.
 *
-* The DUT is the in-repo netlist design/sg13cmos5l/netlist/bandgap_top.spice, migrated
-* byte-for-byte from the commit pinned in reuse.lock.json (decision record 0006). run.sh
-* stages it below as sim/build/closed-loop-vref-pvt/bandgap_top.spice; the source file
-* itself is never edited. The netlist is a flattened xschem export: a commented-out top
-* block holding the bare instance lines Xx1 (core), Xx2 (amp), Xx3 (startup) on nets
-* vdd vss vref fb sns1 sns2, then the three .subckt definitions.
+* This is also the shared DC-supply fixture: closed-loop-iq and
+* closed-loop-vref-pvt-boxtc name this file in their bench.json because their
+* supply stimulus is byte-identical to this one -- see sim/README.md, "Deck
+* fixture conventions". What a bench runs is whatever deck file its bench.json
+* names -- fixture by filename, not fixture by directory.
 *
-* Staging makes that top block LIVE as `.subckt sg13cmos5l_bandgap_top vdd vref vss`
-* and drops the final `.end` card (decision record 0013); this deck instantiates it as
-* `Xdut` below. The wrapper is what lets the same deck be pointed at the layout-extracted
-* netlist, which `klt extract` always emits `.SUBCKT`-wrapped under that same cell name
-* and pin order: a flat DUT makes `klt pex` fire `flat_dut_mismatch`, and a wrapper in the
-* schematic export's own `vdd vss vref` order makes it fire `pin_order_mismatch`.
-* Electrically a no-op -- measured, not assumed: at typ/27 C/3.30 V every measurement
-* below is identical to the flat deck's to all reported digits. Internal nodes are
-* addressed one level down accordingly, as v(xdut.fb) / v(xdut.sns1) / v(xdut.sns2).
+* This bench's own fixture note: the loop starts from the solver's own operating
+* point and settles during the transient; the startup cell in the DUT is what keeps
+* it off the zero state. This bench's measured story is in README.md.
 *
-* Fixture: a DC supply, vss at 0, and the substrate net `sub!` (the rppd/rhigh bulk
-* net in the source) declared global and tied to vss through a 0 V source -- the
-* `.global sub!` card below is what makes that tie reach the bulk terminals inside the
-* DUT's leaf subcircuits (issue #83, decision record 0014). The loop starts from the
-* solver's own operating point and settles during the transient; the startup cell
-* in the DUT is what keeps it off the zero state.
-* OSDI objects are loaded through the request's options.osdi_preload (as the smoke bench
-* does), not a .control block: a .control block here would land inside the deck `klt sim`
-* `.include`s, not in the top deck it generates, so its commands would never run.
-*
-* NO SPICE TITLE LINE (issue #19). `klt sim` writes its own top deck (title
-* `* klt sim -- generated corner deck, do not edit`) and pulls this deck in with
-* `.include`, so line 1 here is NOT in title position -- it is parsed as a netlist
-* element. A bare `sg13cmos5l closed-loop vref bench` title line was read as an
-* S-prefix (voltage-controlled switch) instance with no model, which failed the whole
-* run with "Unable to find definition of model" before any analysis started. Every line
-* of this template is therefore a comment or a card; run.sh also writes its own leading
-* `*` line so the generated deck has an inert line 1 either way. Same convention as
-* sim/smoke/smoke.cir, whose line 1 is a comment.
+* The five explanations shared by every grid deck fixture (NO SPICE TITLE LINE,
+* rshunt/gmin as convergence aids, the `.global sub!` substrate tie, the `Xdut`
+* staged-DUT wrapper, osdi_preload instead of a .control block) are stated once in
+* sim/README.md under "Deck fixture conventions", not repeated per template.
 
-* rshunt/gmin: convergence aids only, far below any current read here (same values
-* the source closed-loop bench uses). They are no longer what resolves the resistor
-* bulk nodes -- the `.global sub!` card below ties those to vss deliberately (decision
-* record 0014); before it, `rshunt` was the only thing holding them.
 .options rshunt=1e9 gmin=1e-9
 
 Vvdd vdd 0 dc @@VDD@@
 Vvss vss 0 dc 0
-* `.global sub!` is what makes the `Vsub` tie below actually reach the DUT (issue #83,
-* decision record 0014). `!` is an xschem global-net marker, not an ngspice one, and the
-* migrated netlist carries no `.global` card of its own, so without this the rppd/rhigh
-* bulk terminals inside `bandgap_core` and `bandgap_startup` are per-instance LOCAL nodes
-* (`xdut.xx1.sub!`, `xdut.xx3.sub!`) -- different nodes from the one `Vsub` drives, with no
-* deliberate DC path and nothing but `.options rshunt` resolving them. With the card there
-* is one `sub!` net at every hierarchy level, so the 0 V source below holds the resistor
-* bulks at vss as this comment and the schematics' `body=sub!` both say it does.
 .global sub!
 Vsub sub! vss dc 0
 

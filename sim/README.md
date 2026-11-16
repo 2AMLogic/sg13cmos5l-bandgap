@@ -38,7 +38,11 @@ source sim/env.sh && sim/grid-run.sh closed-loop-psrr      # or any of the five 
 
 Each bench directory carries `bench.json` (the graded criteria and which files to use), a
 deck template, and a committed `request-grid.json` (`request-45pt.json` in
-`closed-loop-vref-pvt`, whose name decision record 0009 already cites). `grid-run.sh` writes
+`closed-loop-vref-pvt`, whose name decision record 0009 already cites). The deck template is
+named by filename, so benches whose supply stimulus is identical share one file:
+`closed-loop-iq` and `closed-loop-vref-pvt-boxtc` point at
+`closed-loop-vref-pvt/vref.cir.tmpl` (decision record
+[`0017`](../spec/decision-records/0017-shared-deck-fixtures.md)). `grid-run.sh` writes
 two artifacts per run, both append-only:
 
 - `envelopes/<UTC>-<short sha>.json` — the raw `klt sim --format json` envelope. **This is the
@@ -59,6 +63,54 @@ libraries (no generated corner bundle, no absolute host path, which `batch` refu
 `$PDK_ROOT/...` OSDI entries the runner resolves on its own box, and
 `options.stage_model_inputs: true`.
 
+### Deck fixture conventions, stated once for the grid benches
+
+The grid benches' deck templates each carry one small circuit section plus that bench's own
+fixture note (its full measured story is in the bench's `README.md`); the five explanations
+below are shared by every fixture and live here, so a corrected fact has one place to land
+and a template edit does not force a re-attestation of four copies of the same prose. The
+templates themselves only point here. Since decision record
+[`0017`](../spec/decision-records/0017-shared-deck-fixtures.md) a bench on an already-attested
+stimulus names the existing fixture in its `bench.json` (`deck_template` and `testbench`)
+instead of copying it: `closed-loop-iq` and `closed-loop-vref-pvt-boxtc` run
+`closed-loop-vref-pvt/vref.cir.tmpl` unchanged, and the attribution bench `closed-loop-psrr-op`
+below runs `closed-loop-psrr/deck.cir.tmpl` the same way.
+
+- **No SPICE title line (issue #19).** `klt sim` writes its own top deck (title
+  `* klt sim -- generated corner deck, do not edit`) and pulls the bench deck in with
+  `.include`, so line 1 of a template is **not** in title position — it is parsed as a netlist
+  element. A bare `sg13cmos5l … bench` title line was read as an `S`-prefix
+  (voltage-controlled switch) instance with no model, which failed the whole run with
+  "Unable to find definition of model" before any analysis started. Every line of every
+  template is therefore a comment or a card, and `grid-run.sh` writes its own leading `*`
+  line so the generated deck has an inert line 1 either way (same convention as
+  `sim/smoke/smoke.cir`, whose line 1 is a comment).
+- **`.options rshunt=1e9 gmin=1e-9` are convergence aids only**, far below any current or
+  voltage read here (the values the inherited source closed-loop bench uses). They are not
+  what resolves the resistor bulk nodes — the `.global sub!` card below ties those to `vss`
+  deliberately (decision record 0014); before it, `rshunt` was the only thing holding them.
+- **The substrate tie (issue #83, decision record 0014).** Every fixture declares the
+  substrate net `sub!` global (`.global sub!`) and ties it to `vss` through
+  `Vsub sub! vss dc 0`. `!` is an xschem global-net marker, not an ngspice one, and the
+  migrated netlist carries no `.global` card of its own, so without the card the
+  `rppd`/`rhigh` bulk terminals inside `bandgap_core` and `bandgap_startup` stay per-instance
+  LOCAL nodes (`xdut.xx1.sub!`, `xdut.xx3.sub!`) — different nodes from the one `Vsub` drives,
+  with no deliberate DC path and nothing but `rshunt` resolving them. With the card there is
+  one `sub!` net at every hierarchy level, so the 0 V source holds the resistor bulks at
+  `vss` as the schematics' `body=sub!` say it should.
+- **The staged DUT wrapper (decision record 0013).** `sim/runner-lib.sh`'s `cm5_stage_dut`
+  makes the xschem export's commented-out top block live as
+  `.subckt sg13cmos5l_bandgap_top vdd vref vss` and drops the final `.end` card, without
+  editing the attested source. That cell name and pin order are the layout-extracted
+  netlist's, so one deck can be pointed at either leg for the T1 item-7 delta: a flat DUT
+  makes `klt pex` fire `flat_dut_mismatch`, and a wrapper in the export's own
+  `vdd vss vref` order makes it fire `pin_order_mismatch`. Electrically a no-op — measured,
+  not assumed (decision record 0013). Internal nodes are addressed one level down
+  accordingly: `v(xdut.fb)`, `v(xdut.sns1)`, `v(xdut.sns2)`, `v(xdut.xx3.det)`.
+- **OSDI objects load through the request's `options.osdi_preload`, not a `.control`
+  block**: a `.control` block here would land inside the deck `klt sim` `.include`s, not in
+  the top deck it generates, so its commands would never run.
+
 ### The sixth bench directory: ungraded attribution evidence
 
 `sim/grid-run.sh` takes **one bench directory name** and reads `bench.json` for everything
@@ -72,8 +124,10 @@ source sim/env.sh && sim/grid-run.sh closed-loop-psrr-op
 
 It exists because `closed-loop-psrr/` records that the ratified PSRR @ DC Target is missed at
 24 of 45 points but holds nothing that says why. The attribution bench reads the operating
-point that grid solved — its deck's card lines are byte-identical, and its first two solves are
-that bench's own secant — and adds a third `op` solve at `Vpsrr` = 0 from which every MOS
+point that grid solved — its deck's card lines are byte-identical to that bench's (so its
+`bench.json` names `../closed-loop-psrr/deck.cir.tmpl`, decision record
+[`0017`](../spec/decision-records/0017-shared-deck-fixtures.md)), its first two solves are
+that bench's own secant, and it adds a third `op` solve at `Vpsrr` = 0 from which every MOS
 device's operating point is recorded.
 
 **It grades nothing, and that is load-bearing.** Its request carries no `limits` and no
@@ -332,7 +386,13 @@ re-derives the value from the envelope's full-precision `corners[].measurements[
 rounds **once** to the printed literal's own decimal places, and requires the printed literal
 to occur in the covered block as a standalone number — the presence match is boundary-aware,
 so a short literal is not satisfied by a longer number containing it (`0` is not satisfied by
-the `0` inside `3.30`) while sign-leading literals such as `−68.7` still match. Editing the
+the `0` inside `3.30`) while sign-leading literals such as `−68.7` still match, and a figure
+may abut a sentence-ending period — a following dot is excluded only when it starts a decimal
+fraction (`2.97` still does not match inside `2.970V`). For an unsigned figure the left
+boundary is also sign-aware: a preceding `-` blocks the match only when it reads as a sign,
+so an unsigned printed value is not satisfied by prose stating its negation (`68.7` does not
+match `−68.7`), while a `+` prefix (`+172.9` satisfies `172.9` — the same number, not a flip)
+and a digit-preceded range hyphen (`0.40-0.60`) still match. Editing the
 prose without the annotation fails, and editing the annotation without the prose fails too.
 A second rounding of a rounded value (the PR #98
 `got/req` bug) is exactly what this forbids. Extent claims (`range` endpoints, plain

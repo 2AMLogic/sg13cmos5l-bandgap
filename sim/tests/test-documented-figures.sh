@@ -13,7 +13,11 @@
 # -> 1, unreadable manifest -> 2); unit scaling (V recorded -> uV / mV printed);
 # single vs double rounding of a derived cell; the keyed_to path compares the
 # nearest rounding while a plain extremum keeps the directional bound (issue
-# #113 item 2); boundary-aware literal presence (item 4); degenerate
+# #113 item 2); boundary-aware literal presence, admitting a figure that
+# abuts a sentence-ending period while still rejecting a longer number
+# (item 4; issue #121), and a sign-aware left boundary that rejects an
+# unsigned figure satisfied only via a sign-like '-' while '+' prefixes and
+# range hyphens still match (issue #127); degenerate
 # single-valued ranges pin the documented straddle (item 3); and a real-tree
 # run requiring exit 0 against the committed sim/closed-loop-psrr/README.md
 # plus the per-document decimal accounting (item 1).
@@ -94,7 +98,16 @@ E7='[
  {"corner_id":"typ/27C","process":"typ","supply_v":{"Vvdd":3.3},"temperature_c":27,"status":"pass",
   "measurements":[{"name":"z","unit":"V","value":0.0}]}]'
 
-for e in 1 2 3 4 5 6 7; do
+# Issue #121: a count figure stated with a trailing full stop (the most
+# exposed kind, since count has no unit to separate it from the period), and
+# a 2.97 figure that must still not pass via the 2.97 inside 2.970V.
+E8='[
+ {"corner_id":"typ/27C","process":"typ","supply_v":{"Vvdd":3.3},"temperature_c":27,"status":"pass",
+  "measurements":[{"name":"z","unit":"V","value":2.97}]},
+ {"corner_id":"wcs/2.970V/125C","process":"wcs","supply_v":{"Vvdd":2.97},"temperature_c":125,"status":"fail",
+  "measurements":[{"name":"z","unit":"V","value":2.97}]}]'
+
+for e in 1 2 3 4 5 6 7 8; do
   var="E${e}"; mkenv "${tmp}/envs/e${e}.json" "${!var}"
 done
 
@@ -165,6 +178,48 @@ cat > "${d}/sim/bench/README.md" <<'EOF'
 The residual is 0 V at the 3.30 V operating point.
 EOF
 expect "single-digit literal passes when the figure is stated standalone" "${d}" 0
+
+# Issue #121: a count figure abutting a sentence-ending period. The literal
+# is present; only the period follows it, and a period that starts a decimal
+# fraction must stay excluded while a sentence-ending one is admitted.
+d="$(mkcase literal-trailing-stop e8.json)"
+cat > "${d}/sim/bench/README.md" <<'EOF'
+<!-- figure: {"envelope":"envelopes/cited.json","kind":"count","subset":{},"printed":{"value":"2"}} -->
+Corners meeting the pass criterion: 2.
+EOF
+expect "count figure stated with a trailing full stop passes" "${d}" 0
+
+cat > "${d}/sim/bench/README.md" <<'EOF'
+<!-- figure: {"envelope":"envelopes/cited.json","kind":"cell","corner":"wcs/2.970V/125C","measurement":"z","printed":{"value":"2.97","unit":"V"}} -->
+At the wcs/2.970V/125C corner the value is not restated.
+EOF
+expect3 "decimal literal still not satisfied by the digits of a longer number" "${d}" 1 \
+  "sim/bench/README.md" "cell z" "printed literal 2.97 absent from covered block"
+
+# Issue #127: the left boundary is sign-aware for an unsigned literal. A
+# preceding '-' blocks the match only when it reads as a sign — one that is
+# not itself digit-preceded — so an unsigned printed figure is not satisfied
+# by its negation in the prose. A '+' prefix is the same number, not a flip,
+# and a digit-preceded hyphen is a range separator; neither blocks.
+d="$(mkcase literal-sign e1.json)"
+cat > "${d}/sim/bench/README.md" <<'EOF'
+<!-- figure: {"envelope":"envelopes/cited.json","kind":"cell","corner":"typ/3.300V/27C","measurement":"m","printed":{"value":"10.0","unit":"V"}} -->
+The shift is -10.0 V at the typ corner.
+EOF
+expect3 "unsigned literal not satisfied by its sign-flipped negation" "${d}" 1 \
+  "sim/bench/README.md" "cell m" "printed literal 10.0 absent from covered block"
+
+cat > "${d}/sim/bench/README.md" <<'EOF'
+<!-- figure: {"envelope":"envelopes/cited.json","kind":"cell","corner":"typ/3.300V/27C","measurement":"m","printed":{"value":"10.0","unit":"V"}} -->
+The shift is +10.0 V at the typ corner.
+EOF
+expect "plus-prefixed occurrence still satisfies an unsigned literal" "${d}" 0
+
+cat > "${d}/sim/bench/README.md" <<'EOF'
+<!-- figure: {"envelope":"envelopes/cited.json","kind":"range","measurement":"r","subset":{},"printed":{"min":"0.37","max":"0.64","unit":"V"}} -->
+The error span is 0.37-0.64 V.
+EOF
+expect "digit-preceded hyphen stays a range separator, not a sign" "${d}" 0
 
 # ---- PR #98 error shape 2: a range that is not the subset's min/max ----------
 d="$(mkcase range e1.json)"
