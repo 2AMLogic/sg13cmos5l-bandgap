@@ -262,7 +262,7 @@
       "citation": null,
       "citations_graded": [
         {
-          "citation": "sim/closed-loop-vref-mc/yield/20261113T130628Z-e882c25.line.yield.json",
+          "citation": "sim/closed-loop-vref-mc/yield/20261115T101609Z-4197d88.line.yield.json",
           "rows": [
             "vref_untrimmed_line_3sigma"
           ],

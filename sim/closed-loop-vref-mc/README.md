@@ -8,23 +8,27 @@ bench was asked to make, and what it may and may not be read as, are recorded in
 
 Everything here is **SIMULATED**.
 
-**Provenance: the deck in tree is newer than the committed campaign, on purpose.**
-The committed campaign (`repo_git_sha` `e882c25`, 2026-11-13) ran under the staging
-then in tree — the DUT netlist included flat, and no `.global sub!` card, so the
-resistor bulk nodes sat on per-instance local nets resolved by `rshunt`, the exact
-arrangement main's decision records
-[`0013`](../../spec/decision-records/0013-subckt-wrapped-staged-dut.md) and
-[`0014`](../../spec/decision-records/0014-substrate-net-global.md) later documented
-and changed (#83/#84 re-took the item-5 evidence on the new arrangement). This
-directory's deck has since been brought up to that arrangement — it instantiates the
-wrapped staged DUT and declares `sub!` global — and `sim/tests/test-mc-bench.sh`
-§6 checks both. The committed `records/*.json` still bind the deck bytes **as run**
-(`template_sha256` `8164a9b0…`, `deck_sha256` `23f5adca…`) and are append-only, so
-they evidence that campaign, not this file's current bytes; a byte-exact re-run of
-it is possible only at its recorded commit. The item-5 anchor the zero control
-reproduces is unchanged across the re-takes (1.19696 V at typ/3.30 V/27 °C in all
-three committed item-5 envelopes). Re-taking the campaign on the current arrangement
-is filed as [#115](https://github.com/2AMLogic/sg13cmos5l-bandgap/issues/115).
+**Provenance: the committed campaign matches the deck in tree, and the older one is
+kept as history.** The current campaign (`repo_git_sha` `4197d88`, 2026-11-15) ran on
+the current arrangement — the deck instantiates the wrapped staged DUT
+(`Xdut vdd vref vss sg13cmos5l_bandgap_top`), declares `.global sub!` (decision
+records [`0013`](../../spec/decision-records/0013-subckt-wrapped-staged-dut.md) and
+[`0014`](../../spec/decision-records/0014-substrate-net-global.md)), and the four
+requests probe the wrapper's internal nodes hierarchically (`v(xdut.fb)`,
+`v(xdut.sns1)`, `v(xdut.sns2)`, the same fix #84 applied to the vref-pvt request);
+`sim/tests/test-mc-bench.sh` §6 checks the deck side of this. `sim/` is append-only
+(CLAUDE.md), so the first campaign — `repo_git_sha` `e882c25`, 2026-11-13, taken
+under the staging then in tree (DUT included flat, no `.global sub!` card, flat-node
+probes) — is **not deleted**: its records still bind the deck bytes as run
+(`template_sha256` `8164a9b0…`; `deck_sha256` `23f5adca…` for `zero`/`families`/`line`,
+`d6896ed4…` for `inflated`) and are the superseded historical evidence. The re-take
+(issue #115) reproduced the historical campaign's figures at the fixed seed
+`20261113` — same means, same sigmas, same yield to every published digit, all nine
+zero-control per-point means bit-identical — but not byte-for-byte: 3 of the 16,720
+graded measurement values differ by one printed LSB (`vref_v` twice, `sns2_v` once),
+and `vref_settle_v`, a nanovolt settle residual graded against this bench's 1 mV
+criterion, differs throughout. The arrangement change demonstrably moved no published
+figure, and every filename cited below is a current artifact.
 
 ```bash
 source sim/env.sh
@@ -214,7 +218,7 @@ with the real amplifier, settled (`vref_settle_v` < 1 mV graded at every one of 
 ### The untrimmed line
 
 `line` campaign, 9 points × 300 draws = 2700 samples
-(`envelopes/20261113T130628Z-e882c25.line.json`):
+(`envelopes/20261115T101609Z-4197d88.line.json`):
 
 | | pooled over the 9 points |
 |---|---|
@@ -250,7 +254,7 @@ what the spec row asks for, and what its fit is worth is part of the evidence.
 ### Where the spread comes from
 
 `families` campaign, 4 × 100 draws at 3.300 V / 27 °C — one family's statistical
-section on at a time (`envelopes/20261113T130110Z-d384aed.families.json`):
+section on at a time (`envelopes/20261115T101048Z-4197d88.families.json`):
 
 | Statistical family | σ(`vref`) | share |
 |---|---|---|
@@ -277,14 +281,16 @@ Q1/Q2/Q3 matching error, which has no model to sample at all.
 ### The controls
 
 **Deterministic (zero-spread).** `zero` campaign, 9 points × 20 draws
-(`envelopes/20261113T125843Z-d384aed.zero.json`): `stddev` exactly `0.0` and
+(`envelopes/20261115T100805Z-4197d88.zero.json`): `stddev` exactly `0.0` and
 `min == max` at **all nine** points, and each point's value equals the one the
 deterministic item-5 grid recorded at the same corner, to all six digits — including
-the ratified nominal **1.19696 V** at typ/3.300 V/27 °C. The spread the `line`
+the ratified nominal **1.19696 V** at typ/3.300 V/27 °C. The same holds against the
+superseded historical campaign: the re-taken zero control's nine per-point means are
+bit-identical to the `e882c25` record's. The spread the `line`
 campaign reports is the model sections' and nothing else's.
 
 **Known-bad (3× sigma).** `inflated` campaign, 9 points × 100 draws
-(`envelopes/20261113T130254Z-d384aed.inflated.json`): pooled σ **68.93 mV**, which is
+(`envelopes/20261115T101233Z-4197d88.inflated.json`): pooled σ **68.93 mV**, which is
 **3.06×** the `families` `stat_all` σ — the deck-level scale demonstrably reached the
 draws. Graded by `klt yield` against the same window, its yield is **7.67 %
 [6.01, 9.60]** against the nominal's **23.67 % [22.07, 25.32]**: the intervals do not
@@ -292,7 +298,7 @@ overlap, so the verdict is **`detected`**. The statistics do catch a degraded de
 
 ### The `klt yield` report (cited for T1 item 6)
 
-`yield/20261113T130628Z-e882c25.line.yield.json`, produced by **klt 0.9.1** with the
+`yield/20261115T101609Z-4197d88.line.yield.json`, produced by **klt 0.9.2** with the
 `[yield]` extra (`yield/…line.yield-record.json` records the build, every input and
 its sha256):
 

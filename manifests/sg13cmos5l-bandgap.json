@@ -60,11 +60,11 @@
     },
     "6": [
       {
-        "file": "sim/closed-loop-vref-mc/yield/20261113T130628Z-e882c25.line.yield.json",
+        "file": "sim/closed-loop-vref-mc/yield/20261115T101609Z-4197d88.line.yield.json",
         "rows": [
           "vref_untrimmed_line_3sigma"
         ],
-        "content_hash": "sha256:707840a8898b5eedcb296780fbf5c87fe0935685885abd10f7850a6fb10d28c8"
+        "content_hash": "sha256:aeb86d95af52bb4b89ee19e28cf9ebcbd20255fe501c4c704f1f79f0e070e8ce"
       }
     ]
   },
