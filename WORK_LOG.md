@@ -125,7 +125,6 @@ triage agent. Newest first.
 
 ### 2026-10-20
 
-- **PR #13**: fix(sim): check each smoke result key separately
 - **PR #8**: ci: add klt signoff manifest, T1 checklist, verdict record and workflow
 - **Issue #3** (closed): Add the T1 signoff scaffolding: block manifest, vendored checklist and CI (item 10)
 
