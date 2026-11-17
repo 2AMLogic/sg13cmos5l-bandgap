@@ -5,6 +5,7 @@ triage agent. Newest first.
 
 ### 2026-11-17
 
+- **PR #141**: chore(loom): resync installed Loom to v0.19.1306
 - **PR #140**: sim: check decision-record numbering for prefix collisions and H1 mismatches
 - **Issue #123** (closed): spec: two decision records now claim the number 0016; record-number uniqueness is unguarded after five renumbers
 - **PR #138**: spec: scope the vref-mc re-take "only ... differ" claim (issue #124)
