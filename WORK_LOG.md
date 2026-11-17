@@ -3,6 +3,11 @@
 Chronological record of merged PRs and closed issues, maintained by the Guide
 triage agent. Newest first.
 
+### 2026-11-17
+
+- **PR #138**: spec: scope the vref-mc re-take "only ... differ" claim (issue #124)
+- **Issue #124** (closed): spec/target-spec.md: scope the vref-mc re-take "only ... differ" claim (8 ungraded one-LSB values fall outside it)
+
 ### 2026-11-16
 
 - **PR #120**: sim: re-take the vref-mc campaign on the wrapped-DUT staging; fix its internal-node probes
