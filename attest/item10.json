@@ -65,6 +65,13 @@
         "bash",
         "sim/tests/test-documented-figures.sh"
       ]
+    },
+    {
+      "name": "decision-record-numbers-test",
+      "argv": [
+        "bash",
+        "sim/tests/test-decision-record-numbers.sh"
+      ]
     }
   ]
 }
