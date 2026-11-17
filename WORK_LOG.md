@@ -5,6 +5,8 @@ triage agent. Newest first.
 
 ### 2026-11-17
 
+- **PR #140**: sim: check decision-record numbering for prefix collisions and H1 mismatches
+- **Issue #123** (closed): spec: two decision records now claim the number 0016; record-number uniqueness is unguarded after five renumbers
 - **PR #138**: spec: scope the vref-mc re-take "only ... differ" claim (issue #124)
 - **Issue #124** (closed): spec/target-spec.md: scope the vref-mc re-take "only ... differ" claim (8 ungraded one-LSB values fall outside it)
 
@@ -123,6 +125,7 @@ triage agent. Newest first.
 
 ### 2026-10-20
 
+- **PR #13**: fix(sim): check each smoke result key separately
 - **PR #8**: ci: add klt signoff manifest, T1 checklist, verdict record and workflow
 - **Issue #3** (closed): Add the T1 signoff scaffolding: block manifest, vendored checklist and CI (item 10)
 
