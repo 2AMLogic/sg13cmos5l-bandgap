@@ -3,6 +3,12 @@
 Chronological record of merged PRs and closed issues, maintained by the Guide
 triage agent. Newest first.
 
+### 2026-11-16
+
+- **PR #120**: sim: re-take the vref-mc campaign on the wrapped-DUT staging; fix its internal-node probes
+- **PR #133**: chore(loom): resync installed Loom to v0.19.1302
+- **Issue #115** (closed): Re-take the closed-loop-vref-mc campaign on the wrapped-DUT staging (post-#83/#84 arrangement)
+
 ### 2026-11-15
 
 - **PR #131**: test: assert bench.json deck_template and testbench resolve to the same file
