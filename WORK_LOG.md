@@ -3,6 +3,12 @@
 Chronological record of merged PRs and closed issues, maintained by the Guide
 triage agent. Newest first.
 
+### 2026-11-18
+
+- **Issue #135** (closed): post-verdict.sh: the final head.sha read has no timeout, so one hung connection stalls a verdict indefinitely
+- **PR #146**: docs: ratify DR-0018 — keep the #240 nSD rings, disclose runset-engine pnpMPA blindness
+- **Issue #145** (closed): PDK runset cannot recognise the committed layout's pnpMPA devices: the #240 nSD rings sit in bjt_derivations.lvs's pnp_exclude, so pnp_b derives empty
+
 ### 2026-11-17
 
 - **PR #141**: chore(loom): resync installed Loom to v0.19.1306
