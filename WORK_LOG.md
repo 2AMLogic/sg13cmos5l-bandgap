@@ -5,6 +5,8 @@ triage agent. Newest first.
 
 ### 2026-11-18
 
+- **PR #149**: ci: add the merge_group trigger to the required-check workflow(s)
+- **Issue #148** (closed): Merge queue: add the merge_group trigger to the required-check workflow(s)
 - **Issue #135** (closed): post-verdict.sh: the final head.sha read has no timeout, so one hung connection stalls a verdict indefinitely
 - **PR #146**: docs: ratify DR-0018 — keep the #240 nSD rings, disclose runset-engine pnpMPA blindness
 - **Issue #145** (closed): PDK runset cannot recognise the committed layout's pnpMPA devices: the #240 nSD rings sit in bjt_derivations.lvs's pnp_exclude, so pnp_b derives empty
