@@ -104,7 +104,7 @@ the cited envelope of each):
 |---|---|---|---|---|
 | Temp coefficient, box | < 100 ppm/°C | < 50 ppm/°C | 39.186 ppm/°C | met |
 | Temp coefficient, endpoint | < 100 ppm/°C | < 50 ppm/°C | 38.758 ppm/°C | met |
-| PSRR @ DC | > 50 dB | > 60 dB | 55.249 dB | **not met** (fallback met) |
+| PSRR @ DC | > 50 dB | > 60 dB | 55.248 dB | **not met** (fallback met) |
 | Iq | < 100 µA | < 50 µA | 41.085 µA | met |
 | Startup | self-starting | self-starting, < 1 ms | 100 µs, 45/45 self-starting | met |
 

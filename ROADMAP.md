@@ -36,7 +36,7 @@ closed loop, schematic netlist): TC worst 39.186 ppm/°C box at `bcs` / 3.63 V
 (< 50, met); Iq worst 41.085 µA at `bcs` / 3.63 V / 125 °C (< 50, met);
 startup settles in 100 µs worst case at `wcs` / 2.97 V / −40 °C (< 1 ms,
 met); `vref` 1.19696 V at typ / 27 °C / 3.30 V. **PSRR @ DC misses**: worst
-55.249 dB at `wcs` / 2.97 V / 125 °C against > 60 dB, failing at every 2.97 V
+55.248 dB at `wcs` / 2.97 V / 125 °C against > 60 dB, failing at every 2.97 V
 point and 9 of 15 at 3.30 V. Nothing is measured in silicon.
 
 ## Now
