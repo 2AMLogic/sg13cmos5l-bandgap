@@ -4,6 +4,7 @@ Roadmap generated from GitHub label state by the Guide triage agent. Only the
 region between the markers is machine-generated.
 
 <!-- guide:plan-body:start -->
+_Generated: 2026-11-18T23:45:00Z (snapshot; compare against live labels)_
 ## Operator Attention: Merge-Risk-Hold Pileup
 
 Judge-approved PRs under a hold (`loom:blocked` or `loom:operator`) — only a human merge decision is missing.
@@ -33,13 +34,13 @@ _None._
 
 Issues currently being built (`loom:building`).
 
-_None._
+- **#114**: docs: the closed-loop PSRR worst case is now printed two ways — 55.248 dB in the bench README, 55.249 dB in seven other documents
 
 ## PRs Awaiting Review
 
 PRs waiting on Judge (`loom:review-requested`).
 
-_None._
+- **#152**: docs: restate closed-loop PSRR worst case to conservative rounding at unratified sites
 
 ## Approved (Awaiting Merge)
 
@@ -54,6 +55,7 @@ Issues carrying `loom:curated`.
 - **#26**: T1 item 1 (design sources): attest the pinned SG13CMOS5L core/amp/startup/top schematics and derived netlists (or migrate them under decision record 0002) *(curated)*
 - **#32**: T1 item 7 (post-layout verification): klt pex re-run of the closed-loop row benches on the extracted bandgap_top *(curated)* *(held)*
 - **#99**: Share one deck fixture per distinct supply stimulus: the grid benches' five templates carry three distinct card bodies *(curated)* *(held)*
+- **#114**: docs: the closed-loop PSRR worst case is now printed two ways — 55.248 dB in the bench README, 55.249 dB in seven other documents *(curated)*
 
 ## Proposed (Architect / Hermit)
 
@@ -73,10 +75,10 @@ _None._
 | Very important | 1 |
 | Important | 2 |
 | Ready (`loom:issue`, net of holds/building/merge-pending) | 0 |
-| In Progress (`loom:building`) | 0 |
-| PRs awaiting review | 0 |
+| In Progress (`loom:building`) | 1 |
+| PRs awaiting review | 1 |
 | Approved PRs awaiting merge | 1 |
-| Curated | 3 |
+| Curated | 4 |
 | Architect / Hermit proposals | 3 |
 | Active epics | 0 |
 <!-- guide:plan-body:end -->
