@@ -412,6 +412,17 @@ against the nearest rounding instead of the directional bound — a floored rest
 keyed cell is rejected (issue #113 deliberately reversed the behaviour on that path; no
 committed document uses `keyed_to`, so no committed figure changes).
 
+**Scope of the convention.** The conservative-rounding convention applies to unratified
+documents (bench READMEs, `README.md`, `ROADMAP.md`). Ratified text stays as recorded and is
+never rewritten for it: a ratified record is superseded, never rewritten, so it may print the
+nearest rounding of a figure a bench README prints as a bound. The known cases are
+`spec/target-spec.md`, `spec/decision-records/0011-corner-verification-pvt-grids.md` and
+`spec/decision-records/0015-psrr-dc-attribution.md`, which print the closed-loop PSRR worst
+case as `55.249` dB (and `+172.8` µV for its `dvref_v` maximum) where
+`sim/closed-loop-psrr-op/README.md` prints the floored `55.248` and ceilinged `+172.9`. Both
+are the same measurement, `55.24874687691` dB and `+1.728075273892e-04` V; a reader
+comparing them is seeing two roundings, not two results.
+
 Five annotation kinds, one per claim class: `cell` (one corner's measurement), `count`
 (corners satisfying a `predicate`, carrying a `status`, or the subset size; printed `N` or
 `N/total`), `range` (min/max over a `subset`, endpoints compared directionally as above),

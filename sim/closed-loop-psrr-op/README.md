@@ -2,7 +2,7 @@
 
 **Why the `psrr_dc` Target is missed** (issue #93). `sim/closed-loop-psrr/` records that the
 ratified **PSRR @ DC** Target of `spec/target-spec.md` (> 60 dB) fails at 24 of its 45 points,
-worst 55.249 dB at `wcs`/2.970 V/125 °C. It records the miss; nothing committed said what
+worst 55.248 dB at `wcs`/2.970 V/125 °C. It records the miss; nothing committed said what
 limits it. This bench measures the operating point that grid solved and attributes the miss to
 it. Every figure is **simulated**.
 
@@ -134,7 +134,7 @@ Full argument, the arithmetic and what it rules out: decision record
 | `wcs`/2.970 V/27 °C | 55.858 | +161.1 | +1.515 | +4.210 | −2.697 | 972.7 | 622.2 | 0.640 |
 | `wcs`/3.300 V/27 °C | 58.816 | +114.6 | +1.047 | +3.957 | −2.911 | 912.9 | 670.8 | 0.735 |
 | `wcs`/3.630 V/27 °C | 65.497 | +53.1 | +0.404 | +3.800 | −3.371 | 875.5 | 776.2 | 0.887 |
-| **`wcs`/2.970 V/125 °C** | **55.249** | **+172.8** | +1.596 | +4.604 | −3.009 | 1107.4 | 722.5 | 0.652 |
+| **`wcs`/2.970 V/125 °C** | **55.248** | **+172.9** | +1.596 | +4.604 | −3.009 | 1107.4 | 722.5 | 0.652 |
 | `wcs`/3.300 V/125 °C | 61.367 | +85.4 | +0.735 | +4.267 | −3.530 | 1024.5 | 846.9 | 0.827 |
 | `wcs`/3.630 V/125 °C | 67.470 | **−42.3** | **−0.550** | +4.055 | −4.574 | 971.9 | 1096.8 | **1.128** |
 
