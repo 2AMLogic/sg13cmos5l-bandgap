@@ -420,8 +420,10 @@ nearest rounding of a figure a bench README prints as a bound. The known cases a
 `spec/decision-records/0015-psrr-dc-attribution.md`, which print the closed-loop PSRR worst
 case as `55.249` dB (and `+172.8` µV for its `dvref_v` maximum) where
 `sim/closed-loop-psrr-op/README.md` prints the floored `55.248` and ceilinged `+172.9`. Both
-are the same measurement, `55.24874687691` dB and `+1.728075273892e-04` V; a reader
-comparing them is seeing two roundings, not two results.
+come from two benches that agree to ~1e-7 dB (record `0015:203-204`): `closed-loop-psrr`
+gives `55.24874687691` dB and `+1.728075273892e-04` V, `closed-loop-psrr-op` gives
+`55.24874700214` dB and `+1.728075248977e-04` V; a reader comparing them is seeing two
+roundings, not two results.
 
 **A worst-case row inside a per-corner table.** Annotation kind follows the claim the document
 makes about a figure, not its position in the table. A row (or cell) the document presents as
