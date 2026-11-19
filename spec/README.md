@@ -14,6 +14,7 @@ Decision records:
 - [`0002-sg13g2-bandgap-branch-reuse.md`](decision-records/0002-sg13g2-bandgap-branch-reuse.md): the SG13CMOS5L branch is pinned in `/reuse.lock.json`, not migrated
 - [`0010-retire-pvt-section-name-caveat.md`](decision-records/0010-retire-pvt-section-name-caveat.md): §PVT's section names are verified at the `dev` pin; records the git-checkout vs PDK-store install difference and its v0.3.0 sibling-tree hazard
 - [`0011-corner-verification-pvt-grids.md`](decision-records/0011-corner-verification-pvt-grids.md): the five closed-loop PVT-grid benches that carry T1 item 5, what each measured, and the ratified **Target** column as the bound every grid is graded at — on which the PSRR @ DC row fails 24 of its 45 points
+- [`0019-declared-row-set-eleven.md`](decision-records/0019-declared-row-set-eleven.md): corrects the two counts in 0011 §5 by supersession — the declared `spec_rows.5` set is eleven (four gaps, seven non-gap), not nine; 0011 itself is untouched
 
 Rules: spec changes go through a decision record; a ratified record is
 superseded, never rewritten; no row is relaxed to make a result pass.
