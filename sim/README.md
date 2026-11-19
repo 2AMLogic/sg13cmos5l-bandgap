@@ -423,6 +423,18 @@ case as `55.249` dB (and `+172.8` µV for its `dvref_v` maximum) where
 are the same measurement, `55.24874687691` dB and `+1.728075273892e-04` V; a reader
 comparing them is seeing two roundings, not two results.
 
+**A worst-case row inside a per-corner table.** Annotation kind follows the claim the document
+makes about a figure, not its position in the table. A row (or cell) the document presents as
+the bench's worst case is an extent claim and is annotated plain `extremum` (directional
+rounding); the other rows of the same table are `cell` (nearest rounding). Both kinds can stack
+above one table, each narrowed to its row by `anchor`. So in the 12-row mechanism table of
+`sim/closed-loop-psrr-op/README.md`, the bolded `wcs`/2.970 V/125 °C row prints `55.248` dB
+(floored minimum) and `+172.9` µV (ceilinged maximum) as `extremum`, while its 11 siblings print
+nearest roundings (`55.858`, `+161.1`, ...) as `cell`. Annotating that row `cell` would be
+rejected by the checker, since it requires the nearest `55.249` / `+172.8`; that is the
+rounding the #114 ruling restated away at this site. (The annotations themselves are #107's
+job; this paragraph only fixes the convention they follow.)
+
 Five annotation kinds, one per claim class: `cell` (one corner's measurement), `count`
 (corners satisfying a `predicate`, carrying a `status`, or the subset size; printed `N` or
 `N/total`), `range` (min/max over a `subset`, endpoints compared directionally as above),

@@ -138,6 +138,11 @@ Full argument, the arithmetic and what it rules out: decision record
 | `wcs`/3.300 V/125 °C | 61.367 | +85.4 | +0.735 | +4.267 | −3.530 | 1024.5 | 846.9 | 0.827 |
 | `wcs`/3.630 V/125 °C | 67.470 | **−42.3** | **−0.550** | +4.055 | −4.574 | 971.9 | 1096.8 | **1.128** |
 
+The bolded `wcs`/2.970 V/125 °C row is the bench's worst case, so it prints bounds: psrr
+floored (`55.248` dB) and Δvref ceilinged (`+172.9` µV). Every other row prints the nearest
+rounding (the same corner's nearest roundings are `55.249` dB and `+172.8` µV). Both are the
+same measurement; see the scope note in [`../README.md`](../README.md#documented-figure-check).
+
 `ΔI_M3` is `dids_m3_a`, measured; the two columns beside it are `dids_m3_gds_term_a` and
 `dids_m3_gm_term_a`, the only two terms XM3's own measured `gm` and `gds` predict for it. Their
 sum (`dids_m3_predicted_a`) matches the measured value to 0.03–0.20 % at the eight points where
