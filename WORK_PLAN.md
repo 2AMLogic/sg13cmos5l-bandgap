@@ -4,7 +4,7 @@ Roadmap generated from GitHub label state by the Guide triage agent. Only the
 region between the markers is machine-generated.
 
 <!-- guide:plan-body:start -->
-_Generated: 2026-11-18T23:45:00Z (snapshot; compare against live labels)_
+_Generated: 2026-11-19T04:27:25Z (snapshot; compare against live labels)_
 ## Operator Attention: Merge-Risk-Hold Pileup
 
 Judge-approved PRs under a hold (`loom:blocked` or `loom:operator`) — only a human merge decision is missing.
@@ -40,7 +40,7 @@ Issues currently being built (`loom:building`).
 
 PRs waiting on Judge (`loom:review-requested`).
 
-- **#152**: docs: restate closed-loop PSRR worst case to conservative rounding at unratified sites
+_None._
 
 ## Approved (Awaiting Merge)
 
@@ -76,7 +76,7 @@ _None._
 | Important | 2 |
 | Ready (`loom:issue`, net of holds/building/merge-pending) | 0 |
 | In Progress (`loom:building`) | 1 |
-| PRs awaiting review | 1 |
+| PRs awaiting review | 0 |
 | Approved PRs awaiting merge | 1 |
 | Curated | 4 |
 | Architect / Hermit proposals | 3 |
