@@ -3,8 +3,16 @@
 Chronological record of merged PRs and closed issues, maintained by the Guide
 triage agent. Newest first.
 
+### 2026-11-19
+
+- **PR #157**: docs: name each closed-loop PSRR bench's raw values in sim/README
+- **PR #155**: docs: classify worst-case row in per-corner table as extremum
+- **Issue #156** (closed): sim/README.md:423 quotes one bench's raw value for a two-bench comparison
+- **Issue #153** (closed): sim/README.md: say whether an extremum row inside a per-corner table is a cell or an extremum before #107 annotates closed-loop-psrr-op
+
 ### 2026-11-18
 
+- **PR #152**: docs: restate closed-loop PSRR worst case to conservative rounding at unratified sites
 - **PR #149**: ci: add the merge_group trigger to the required-check workflow(s)
 - **Issue #148** (closed): Merge queue: add the merge_group trigger to the required-check workflow(s)
 - **Issue #135** (closed): post-verdict.sh: the final head.sha read has no timeout, so one hung connection stalls a verdict indefinitely
