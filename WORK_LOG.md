@@ -5,6 +5,8 @@ triage agent. Newest first.
 
 ### 2026-11-19
 
+- **PR #163**: docs(spec): complete the decision-record index in spec/README.md
+- **Issue #162** (closed): spec: spec/README.md's decision-record list names 5 of 16 records — complete it or say it is a highlights list
 - **PR #157**: docs: name each closed-loop PSRR bench's raw values in sim/README
 - **PR #155**: docs: classify worst-case row in per-corner table as extremum
 - **Issue #156** (closed): sim/README.md:423 quotes one bench's raw value for a two-bench comparison
