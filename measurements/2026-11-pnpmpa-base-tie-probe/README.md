@@ -4,7 +4,7 @@
 `design/`, `layout/`, `manifests/`, `evidence/`, `attest/` or any ratified
 record changed for it, and no generated stream is committed; the scratch GDS
 is quoted by hash and reproduced by the recipe below. Decision record
-[0018](../../../spec/decision-records/0018-pdk-runset-pnpmpa-nsd-ring.md) §4
+[0018](../../spec/decision-records/0018-pdk-runset-pnpmpa-nsd-ring.md) §4
 (reopen condition) is the governing question: *does a `bandgap_top` without
 the ten `pnpMPA` base-ring `nSD` shapes derive `pnpMPA` on the PDK runset and
 still grade its base tie?*
@@ -49,8 +49,8 @@ The core's one retained shape is the mirror-well `nSD` tap island; the
 `rhigh` body marker is among startup's retained 63. Hierarchical
 merged-polygon XOR on `(7, 0)`: **exactly 10 removals, 0 additions**, each
 removal one closed frame (wall 0.29 µm, 2.78 × 3.3 µm outer; Q1 at
-`(-1.39, 28.35)–(1.39, 31.65)`, Q2×8 on the y=30 row, Q3 at
-`(215.42, -1.96)–(218.82, 1.96)`). Expected 105 → 65 confirmed.
+`(-1.39, 28.35)–(1.39, 31.65)`, Q2×8 on the y=30 row, Q3's removed
+ring bounding box from the 7/0 XOR is `(215.73, -1.65)–(218.51, 1.65)` µm). Expected 105 → 65 confirmed.
 
 ## Measurement A — `klt extract --engine klayout-runset` (runset engine, klt 0.9.3.dev2572)
 
@@ -72,7 +72,7 @@ match candidate. Device recognition is purely geometric in the runset's
 | Stream | extract devices/nets | pex devices/nets, `body_bias` | normalized netlist sha |
 |---|---|---|---|
 | committed | 17 (`nfet` 6, `pfet` 8, `rppd` 2, `rhigh` 1) / 13 | 17 / 13, `biased`, 0 unbiased | `103d0f15f8cb…` |
-| scratch | identical | identical (extracted netlists byte-equal, sha `1d359847555d…`) | `103d0f15f8cb…` |
+| scratch | identical | identical (extracted netlists byte-equal, sha `1d359847555d…`, with `--pins vdd,vss,vref --rename-declared-pins`; the default pin options give `bd5a517c5044…`) | `103d0f15f8cb…` |
 
 **Is each base well tied to its base net through `tap_nplus_complement`? No —
 and it never was.** The curated deck declares no bipolar class, so a PNP well
@@ -80,8 +80,10 @@ or derived tap leaves no netlist trace; the byte-identical outputs prove *no
 regression*, not a working tie. The tie question is settled by the geometry
 and by ERC (C): in both streams the derived tap region — `tap_nplus`
 (`Activ ∩ nSD`, committed) or `tap_nplus_complement` (`Activ ∩ NWell − pSD`,
-either stream) — is an isolated conductor, because **no `Cont` exists on the
-base ring to bridge it to the Metal1 ring**.
+either stream) — shares a node with the NWell (the extractor connects the NWell to its
+derived tap, `l2n.connect(nwell, tap)`), but that node has no connection to the
+`vss` Metal1 ring, because **no `Cont` exists on the base ring to bridge the
+n+ tap to Metal1**. The open circuit is at the contact.
 
 ## Measurement C — `klt erc` (klt 0.8.0), three spec variants × two streams
 
@@ -93,7 +95,7 @@ coverage (no `tap_boxes`/`well_boxes` used).
 
 | Spec | PNP tie form (`net vss`) | committed | scratch |
 |---|---|---|---|
-| `erc-spec-baseline` (sibling's, one `vdd` tie over all wells) | — (all wells graded against `vdd`) | 10 × `erc.missing_tie` "not connected to 'vdd'" | 10 × same |
+| `erc-spec-baseline` (sibling's, one `vdd` tie over all wells) | — (all wells graded against `vdd`) | 10 × `erc.missing_tie` "not connected to 'vdd'" | 10 × `erc.missing_tie`, same count and rule ID but a different reason: no `nwell_tap_vdd` tap is detected for the ten wells (the marker the tap was keyed on is gone) |
 | `erc-spec-population-markerfree` | wells: `31/0` minus poly (`well_excludes ["5/0"]`); tap: `1/0 ∩ 6/0` | 10 × "tap not connected to 'vss'" | 10 × same |
 | `erc-spec-population-markerkeyed` | same wells; tap: `1/0 ∩ 6/0 ∩ 7/0` | 10 × "**no tap contact drawn**" | 10 × same |
 
@@ -131,9 +133,9 @@ overlap `nSD`, both MOS tap islands. The collector ring does not share the
 defect (`d3act = 0.35` → 0.21 µm usable → one contact per position), which is
 why the substrate/collector tie is real while the base tie is not. The
 `2AMLogic/sg13g2-bandgap` stream `1b07a94d…` has the same census (filed as
-sg13g2-bandgap#633). The n+ `Activ` ring, the `NWell` base region and the
-`vss` Metal1 ring are three unconnected conductors in both streams of this
-probe.
+sg13g2-bandgap#633). On both streams all ten ring footprints overlap the well and
+active diffusion with zero `Cont` intersections, so the NWell and its n+ tap
+share a node that has no connection to the `vss` Metal1 ring.
 
 ## The `rppd`/`rhigh` shift 0018 left untraced: explained
 
@@ -157,11 +159,15 @@ base rings.
   grade a tie that is not drawn. The blocking behaviour is **not a klt gap**;
   it is layout defect #170 (follow-up with its own decision record per 0018
   §4, naming the items 2/3 re-runs a contact fix forces).
-- Tool gap found and filed separately (generic form):
-  klayout-tools#6954 — `klt erc`'s `ties[]` cannot express a complement-form
-  tap boolean (`tap = layer − implant`), so a PDK-idiom marker-free tap stays
-  undeclarable without literal `tap_boxes` assertions even once #170 is fixed
-  marker-free. Cross-linked from #29 and #32.
+- ERC limitation, scoped to klt 0.8.0: `ties[]` could not express a
+  complement-form tap, so a marker-free tap was undeclarable without literal
+  `tap_boxes` assertions. klayout-tools#6954 was closed as a duplicate of the
+  shipped `ties[].tap_excludes` feature, which 0.8.0 rejects as an unknown
+  field. A later build (`0.9.2.dev111+g978f7464fae1`) checks a PNP tie with
+  `tap_layer "1/0"`, `tap_requires ["31/0","6/0"]`, `tap_excludes ["14/0","5/0"]`
+  on both streams and reports ten PNP wells with no drawn tap contact on each.
+  So ERC can check the condition on newer builds; the physical absence of a
+  passing base-to-`vss` tie is a layout fact (#170), independent of the tool.
 
 ## Signoff comparison (acceptance criterion)
 
