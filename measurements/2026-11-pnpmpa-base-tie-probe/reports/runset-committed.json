@@ -1,0 +1,529 @@
+{
+  "schema_version": 4,
+  "engine": "klayout-runset",
+  "file": {
+    "path": "layout/sg13cmos5l-bandgap_top/sg13cmos5l-bandgap_top.gds",
+    "scope": "repo"
+  },
+  "deck": null,
+  "deck_file": "/home/ubuntu/share/pdk/ihp-sg13cmos5l/libs.tech/klayout/tech/lvs/sg13cmos5l.lvs",
+  "deck_vars": {},
+  "top": "sg13cmos5l_bandgap_top",
+  "dbu_um": 0.001,
+  "netlist_path": "/home/ubuntu/GitHub/sg13cmos5l-bandgap/.loom/worktrees/issue-166/layout/sg13cmos5l-bandgap_top/sg13cmos5l-bandgap_top.spice",
+  "netlist_sha256": "41fa7fb3dfc3468a5fc34eb8ff630c2609c4e94fe41839ce04bf5809c8405da4",
+  "netlist_normalized_sha256": "adaa0223b7cfd2ab3c431d468ecc45c39de947fc51b52660770e3ceb641b0f4e",
+  "status": "extracted",
+  "device_count": 17,
+  "net_count": 13,
+  "pin_count": 0,
+  "device_counts": {
+    "rhigh": 1,
+    "rppd": 2,
+    "sg13_hv_nmos": 6,
+    "sg13_hv_pmos": 8
+  },
+  "device_classes": [
+    "rhigh",
+    "rppd",
+    "sg13_hv_nmos",
+    "sg13_hv_pmos"
+  ],
+  "devices": [
+    {
+      "name": "$1",
+      "class": "sg13_hv_nmos",
+      "nets": {
+        "s": "\\$1",
+        "g": "\\$34",
+        "d": "\\$33",
+        "b": "\\$1"
+      },
+      "params": {
+        "l_um": 1.0,
+        "w_um": 10.0,
+        "as_um2": 4.0,
+        "ad_um2": 4.0,
+        "ps_um": 20.8,
+        "pd_um": 20.8
+      },
+      "instance_path": []
+    },
+    {
+      "name": "$10",
+      "class": "sg13_hv_pmos",
+      "nets": {
+        "s": "\\$34",
+        "g": "\\$17",
+        "d": "\\$44",
+        "b": "\\$29"
+      },
+      "params": {
+        "l_um": 1.0,
+        "w_um": 20.0,
+        "as_um2": 8.0,
+        "ad_um2": 8.0,
+        "ps_um": 40.8,
+        "pd_um": 40.8
+      },
+      "instance_path": []
+    },
+    {
+      "name": "$11",
+      "class": "sg13_hv_pmos",
+      "nets": {
+        "s": "\\$37",
+        "g": "\\$7",
+        "d": "\\$44",
+        "b": "\\$29"
+      },
+      "params": {
+        "l_um": 1.0,
+        "w_um": 20.0,
+        "as_um2": 8.0,
+        "ad_um2": 8.0,
+        "ps_um": 40.8,
+        "pd_um": 40.8
+      },
+      "instance_path": []
+    },
+    {
+      "name": "$12",
+      "class": "sg13_hv_pmos",
+      "nets": {
+        "s": "\\$44",
+        "g": "\\$33",
+        "d": "\\$29",
+        "b": "\\$29"
+      },
+      "params": {
+        "l_um": 1.0,
+        "w_um": 10.0,
+        "as_um2": 4.0,
+        "ad_um2": 4.0,
+        "ps_um": 20.8,
+        "pd_um": 20.8
+      },
+      "instance_path": []
+    },
+    {
+      "name": "$13",
+      "class": "sg13_hv_pmos",
+      "nets": {
+        "s": "\\$33",
+        "g": "\\$35",
+        "d": "\\$29",
+        "b": "\\$29"
+      },
+      "params": {
+        "l_um": 1.0,
+        "w_um": 10.0,
+        "as_um2": 4.0,
+        "ad_um2": 4.0,
+        "ps_um": 20.8,
+        "pd_um": 20.8
+      },
+      "instance_path": []
+    },
+    {
+      "name": "$14",
+      "class": "sg13_hv_pmos",
+      "nets": {
+        "s": "\\$35",
+        "g": "\\$35",
+        "d": "\\$29",
+        "b": "\\$29"
+      },
+      "params": {
+        "l_um": 1.0,
+        "w_um": 10.0,
+        "as_um2": 4.0,
+        "ad_um2": 4.0,
+        "ps_um": 20.8,
+        "pd_um": 20.8
+      },
+      "instance_path": []
+    },
+    {
+      "name": "$15",
+      "class": "rppd",
+      "nets": {
+        "rppd_1": "\\$4",
+        "rppd_2": "\\$3",
+        "rppd_sub": "\\$1"
+      },
+      "params": {},
+      "instance_path": []
+    },
+    {
+      "name": "$16",
+      "class": "rppd",
+      "nets": {
+        "rppd_1": "\\$17",
+        "rppd_2": "\\$9",
+        "rppd_sub": "\\$1"
+      },
+      "params": {},
+      "instance_path": []
+    },
+    {
+      "name": "$17",
+      "class": "rhigh",
+      "nets": {
+        "rhigh_1": "\\$29",
+        "rhigh_2": "\\$36",
+        "rhigh_sub": "\\$1"
+      },
+      "params": {},
+      "instance_path": []
+    },
+    {
+      "name": "$2",
+      "class": "sg13_hv_nmos",
+      "nets": {
+        "s": "\\$1",
+        "g": "\\$34",
+        "d": "\\$34",
+        "b": "\\$1"
+      },
+      "params": {
+        "l_um": 1.0,
+        "w_um": 10.0,
+        "as_um2": 4.0,
+        "ad_um2": 4.0,
+        "ps_um": 20.8,
+        "pd_um": 20.8
+      },
+      "instance_path": []
+    },
+    {
+      "name": "$3",
+      "class": "sg13_hv_nmos",
+      "nets": {
+        "s": "\\$1",
+        "g": "\\$37",
+        "d": "\\$37",
+        "b": "\\$1"
+      },
+      "params": {
+        "l_um": 1.0,
+        "w_um": 10.0,
+        "as_um2": 4.0,
+        "ad_um2": 4.0,
+        "ps_um": 20.8,
+        "pd_um": 20.8
+      },
+      "instance_path": []
+    },
+    {
+      "name": "$4",
+      "class": "sg13_hv_nmos",
+      "nets": {
+        "s": "\\$1",
+        "g": "\\$37",
+        "d": "\\$35",
+        "b": "\\$1"
+      },
+      "params": {
+        "l_um": 1.0,
+        "w_um": 10.0,
+        "as_um2": 4.0,
+        "ad_um2": 4.0,
+        "ps_um": 20.8,
+        "pd_um": 20.8
+      },
+      "instance_path": []
+    },
+    {
+      "name": "$5",
+      "class": "sg13_hv_nmos",
+      "nets": {
+        "s": "\\$1",
+        "g": "\\$7",
+        "d": "\\$36",
+        "b": "\\$1"
+      },
+      "params": {
+        "l_um": 0.5,
+        "w_um": 10.0,
+        "as_um2": 4.0,
+        "ad_um2": 4.0,
+        "ps_um": 20.8,
+        "pd_um": 20.8
+      },
+      "instance_path": []
+    },
+    {
+      "name": "$6",
+      "class": "sg13_hv_nmos",
+      "nets": {
+        "s": "\\$1",
+        "g": "\\$36",
+        "d": "\\$33",
+        "b": "\\$1"
+      },
+      "params": {
+        "l_um": 0.5,
+        "w_um": 2.0,
+        "as_um2": 0.8,
+        "ad_um2": 0.8,
+        "ps_um": 4.8,
+        "pd_um": 4.8
+      },
+      "instance_path": []
+    },
+    {
+      "name": "$7",
+      "class": "sg13_hv_pmos",
+      "nets": {
+        "s": "\\$7",
+        "g": "\\$33",
+        "d": "\\$29",
+        "b": "\\$29"
+      },
+      "params": {
+        "l_um": 1.0,
+        "w_um": 10.0,
+        "as_um2": 4.0,
+        "ad_um2": 4.0,
+        "ps_um": 20.8,
+        "pd_um": 20.8
+      },
+      "instance_path": []
+    },
+    {
+      "name": "$8",
+      "class": "sg13_hv_pmos",
+      "nets": {
+        "s": "\\$17",
+        "g": "\\$33",
+        "d": "\\$29",
+        "b": "\\$29"
+      },
+      "params": {
+        "l_um": 1.0,
+        "w_um": 10.0,
+        "as_um2": 4.0,
+        "ad_um2": 4.0,
+        "ps_um": 20.8,
+        "pd_um": 20.8
+      },
+      "instance_path": []
+    },
+    {
+      "name": "$9",
+      "class": "sg13_hv_pmos",
+      "nets": {
+        "s": "\\$4",
+        "g": "\\$33",
+        "d": "\\$29",
+        "b": "\\$29"
+      },
+      "params": {
+        "l_um": 1.0,
+        "w_um": 10.0,
+        "as_um2": 4.0,
+        "ad_um2": 4.0,
+        "ps_um": 20.8,
+        "pd_um": 20.8
+      },
+      "instance_path": []
+    }
+  ],
+  "nets": [
+    {
+      "name": "\\$1",
+      "pin": false,
+      "device_count": 15,
+      "net_id": 1,
+      "pin_index": null,
+      "label_positions_um": []
+    },
+    {
+      "name": "\\$17",
+      "pin": false,
+      "device_count": 3,
+      "net_id": 6,
+      "pin_index": null,
+      "label_positions_um": []
+    },
+    {
+      "name": "\\$29",
+      "pin": false,
+      "device_count": 15,
+      "net_id": 7,
+      "pin_index": null,
+      "label_positions_um": []
+    },
+    {
+      "name": "\\$3",
+      "pin": false,
+      "device_count": 1,
+      "net_id": 2,
+      "pin_index": null,
+      "label_positions_um": []
+    },
+    {
+      "name": "\\$33",
+      "pin": false,
+      "device_count": 7,
+      "net_id": 8,
+      "pin_index": null,
+      "label_positions_um": []
+    },
+    {
+      "name": "\\$34",
+      "pin": false,
+      "device_count": 4,
+      "net_id": 9,
+      "pin_index": null,
+      "label_positions_um": []
+    },
+    {
+      "name": "\\$35",
+      "pin": false,
+      "device_count": 4,
+      "net_id": 10,
+      "pin_index": null,
+      "label_positions_um": []
+    },
+    {
+      "name": "\\$36",
+      "pin": false,
+      "device_count": 3,
+      "net_id": 11,
+      "pin_index": null,
+      "label_positions_um": []
+    },
+    {
+      "name": "\\$37",
+      "pin": false,
+      "device_count": 4,
+      "net_id": 12,
+      "pin_index": null,
+      "label_positions_um": []
+    },
+    {
+      "name": "\\$4",
+      "pin": false,
+      "device_count": 2,
+      "net_id": 3,
+      "pin_index": null,
+      "label_positions_um": []
+    },
+    {
+      "name": "\\$44",
+      "pin": false,
+      "device_count": 3,
+      "net_id": 13,
+      "pin_index": null,
+      "label_positions_um": []
+    },
+    {
+      "name": "\\$7",
+      "pin": false,
+      "device_count": 3,
+      "net_id": 4,
+      "pin_index": null,
+      "label_positions_um": []
+    },
+    {
+      "name": "\\$9",
+      "pin": false,
+      "device_count": 1,
+      "net_id": 5,
+      "pin_index": null,
+      "label_positions_um": []
+    }
+  ],
+  "device_models": null,
+  "params_not_carried": {
+    "rhigh": [
+      "b",
+      "l",
+      "m",
+      "ps",
+      "w"
+    ],
+    "rppd": [
+      "b",
+      "l",
+      "m",
+      "ps",
+      "w"
+    ],
+    "sg13_hv_nmos": [
+      "AD",
+      "AS",
+      "L",
+      "PD",
+      "PS",
+      "W"
+    ],
+    "sg13_hv_pmos": [
+      "AD",
+      "AS",
+      "L",
+      "PD",
+      "PS",
+      "W"
+    ]
+  },
+  "instantiated_device_counts": {
+    "rhigh": 1,
+    "rppd": 2,
+    "sg13_hv_nmos": 6,
+    "sg13_hv_pmos": 8
+  },
+  "extra_circuits": [],
+  "parasitics": null,
+  "pdk": null,
+  "warnings": [
+    "device class 'rhigh' is written as an X call onto subcircuit 'rhigh' with no parameters: the measured b, l, m, ps, w are not carried onto the card, so the subcircuit's own declared defaults apply (every measured value this report has a field for is in devices[].params). The klayout-runset engine does not guess a per-PDK unit rescale or parameter spelling -- see docs/cli/extract.md, 'Engine'",
+    "device class 'rppd' is written as an X call onto subcircuit 'rppd' with no parameters: the measured b, l, m, ps, w are not carried onto the card, so the subcircuit's own declared defaults apply (every measured value this report has a field for is in devices[].params). The klayout-runset engine does not guess a per-PDK unit rescale or parameter spelling -- see docs/cli/extract.md, 'Engine'",
+    "device class 'sg13_hv_nmos' is written as an X call onto subcircuit 'sg13_hv_nmos' with no parameters: the measured AD, AS, L, PD, PS, W are not carried onto the card, so the subcircuit's own declared defaults apply (every measured value this report has a field for is in devices[].params). The klayout-runset engine does not guess a per-PDK unit rescale or parameter spelling -- see docs/cli/extract.md, 'Engine'",
+    "device class 'sg13_hv_pmos' is written as an X call onto subcircuit 'sg13_hv_pmos' with no parameters: the measured AD, AS, L, PD, PS, W are not carried onto the card, so the subcircuit's own declared defaults apply (every measured value this report has a field for is in devices[].params). The klayout-runset engine does not guess a per-PDK unit rescale or parameter spelling -- see docs/cli/extract.md, 'Engine'"
+  ],
+  "provenance": {
+    "klt_version": "0.9.3.dev2572+g75c6350d487d",
+    "klt_git_commit": "75c6350d487d0ea474c6eb446385ce310d7661f7",
+    "klt_reinstall_spec": "klayout-tools @ git+https://github.com/2AMLogic/klayout-tools@75c6350d487d0ea474c6eb446385ce310d7661f7",
+    "klayout_version": "0.30.12",
+    "pdk": null,
+    "deck": {
+      "name": "sg13cmos5l.lvs",
+      "content_hash": "sha256:0d91cb6e4c4aba974ffb07175614c183faab1cb8c6b7fab483e38d3cfcb5df5c",
+      "released": null
+    },
+    "input": {
+      "content_hash": "sha256:4e4e4f85fa0875651c294c95a1f65792fa1913dd20d027fbe6905f2d001cb330",
+      "role": "layout"
+    },
+    "runset": {
+      "deck_file": "/home/ubuntu/share/pdk/ihp-sg13cmos5l/libs.tech/klayout/tech/lvs/sg13cmos5l.lvs",
+      "deck_vars": {},
+      "content_hash": "sha256:0d91cb6e4c4aba974ffb07175614c183faab1cb8c6b7fab483e38d3cfcb5df5c",
+      "klayout_application_version": "0.30.12",
+      "exit_status": 0,
+      "engine_error_lines": []
+    }
+  },
+  "metrics": {
+    "extract__device__count": 17,
+    "extract__net__count": 13,
+    "extract__pin__count": 0
+  },
+  "timing": {
+    "stages": {
+      "layout_load": 0.083,
+      "runset": 6.712,
+      "lvsdb_read": 0.017,
+      "netlist_write": 0.001,
+      "netlist_hash": 0.0,
+      "describe_devices": 0.001,
+      "describe_nets": 0.0
+    },
+    "total_seconds": 6.997,
+    "unattributed_seconds": 0.184
+  }
+}
