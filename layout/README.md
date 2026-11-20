@@ -71,6 +71,60 @@ is the same deck-coverage gap the generators' own docstrings describe for LVS �
 confirmed upstream as klayout-tools#4927 (closed) — reaching extraction, where
 `klt lvs`'s runset-engine escape hatch has no counterpart.
 
+## ERC (T1 item 11, structural half)
+
+`klt erc` (`klayout-tools==0.8.0`, klayout 0.30.13) with
+[`sg13cmos5l-bandgap_top/erc-supply-spec.json`](sg13cmos5l-bandgap_top/erc-supply-spec.json)
+on the committed `top` stream
+(`sha256:4e4e4f85fa08…`): `erc_status: "clean"`, zero findings. The report
+is committed beside the spec as `erc_report.json`
+(`sg13cmos5l-bandgap_top/erc_report.json`); freshness:
+`klt erc --check layout/sg13cmos5l-bandgap_top/erc_report.json --rerun`
+(run from the repo root — the report's paths are repo-scoped) →
+`status: "match"`. Both rails resolve `vdd`/`vss` to 1 of 1 expected
+islands; no `erc.unconnected_net`, no `erc.supply_short`. Decision record
+[`0020`](../spec/decision-records/0020-migrate-erc-supply-spec.md) migrates
+the spec from the pinned source and records the runs.
+
+The spec's `ties[]` declares the three well populations separately, every
+tap in boolean form (`tap_requires`, never a bare `tap_layer`):
+
+- `nwell_tap_vdd` — the two MOS shared wells (selected by
+  `well_requires: ["5/0"]`, the only `NWell` islands carrying gates), each
+  tied by its #240 `nSD`-covered `Activ` tap island through `Cont` to
+  `Metal1` and the `vdd` rail.
+- `pnp_base_well_tap_vss` — the ten `pnpMPA` base wells (the gate-free
+  complement, `well_excludes: ["5/0"]`), each tied by its #240 `nSD`-marked
+  base ring (record
+  [`0018`](../spec/decision-records/0018-pdk-runset-pnpmpa-nsd-ring.md))
+  through `Cont` to the `Metal1` base ring labelled `vss`.
+- `substrate_tap_vss` — the native p-substrate (`well_layer: null`,
+  `well_complement_of: ["31/0"]`: top-cell extent minus the merged n-well
+  union), tied by the ten `pSD`-covered collector rings outside every well
+  (10 polygons, 75.74 µm²) to `vss`.
+
+Finding attribution (issue #167's acceptance criterion): the baseline run
+with the migrated spec **unedited** reproduced the source's ten
+`erc.missing_tie` findings on `nwell_tap_vdd` — one per `pnpMPA` base well,
+each bbox naming the device, `erc_status: "violations"`, both rails still
+1 of 1 (record 0020 §Decision 2 keeps it as evidence). Each of the ten is
+attributed to a **spec declaration gap** — the single `vdd`-only tie grading
+wells whose correct tie is `vss` — and nothing else: not a layout defect
+(no follow-up issue owed) and not a `klt erc` gap (no upstream issue owed);
+splitting the declarations per population is the whole fix, and the rerun
+grades all three ties in `erc_coverage.checked` with nothing `skipped`.
+Zero findings is not the whole coverage story: the two `nwell_tap_vdd`
+wells and ten `pnp_base_well_tap_vss` wells are graded as drawn geometry
+per merged island, while `substrate_tap_vss` additionally appears in
+`erc_coverage.checked_by_well_assertion` — an asserted region with no drawn
+layer to corroborate it, the weaker provenance stated in the report itself.
+`layers_in_stream_without_declaration` is
+`["28/0", "44/0", "63/0", "111/0", "128/0"]` (resistor/pin layers outside
+the ERC model; 14/0 left the list when the substrate tie declared it).
+
+The LVS supply pairing, the item-11 manifest citation and the signoff CI
+re-run are #36's half of item 11 and are untouched here.
+
 ## DRC (T1 item 3)
 
 `klt drc --deck sg13cmos5l` (`klayout-tools==0.8.0`, klayout 0.30.12, deck
