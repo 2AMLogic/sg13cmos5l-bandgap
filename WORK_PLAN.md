@@ -4,7 +4,7 @@ Roadmap generated from GitHub label state by the Guide triage agent. Only the
 region between the markers is machine-generated.
 
 <!-- guide:plan-body:start -->
-_Generated: 2026-11-19T09:42:39Z (snapshot; compare against live labels)_
+_Generated: 2026-11-20T07:39:44Z (snapshot; compare against live labels)_
 ## Operator Attention: Merge-Risk-Hold Pileup
 
 Judge-approved PRs under a hold (`loom:blocked` or `loom:operator`) — only a human merge decision is missing.
@@ -23,7 +23,7 @@ Judge-approved PRs under a hold (`loom:blocked` or `loom:operator`) — only a h
 `loom:important`; taken before unlabelled work.
 
 - **#29**: T1 item 4 (LVS clean): klt lvs of bandgap_top against its schematic netlist, with rppd and pnpMPA gaps attributed *(held)*
-- **#32**: T1 item 7 (post-layout verification): klt pex re-run of the closed-loop row benches on the extracted bandgap_top *(held)*
+- **#32**: T1 item 7 (post-layout verification): klt pex re-run of the closed-loop row benches on the extracted bandgap_top
 
 ## Ready
 
@@ -55,7 +55,7 @@ PRs that passed review and are queued for Champion auto-merge (`loom:pr`).
 Issues carrying `loom:curated`.
 
 - **#26**: T1 item 1 (design sources): attest the pinned SG13CMOS5L core/amp/startup/top schematics and derived netlists (or migrate them under decision record 0002) *(curated)*
-- **#32**: T1 item 7 (post-layout verification): klt pex re-run of the closed-loop row benches on the extracted bandgap_top *(curated)* *(held)*
+- **#32**: T1 item 7 (post-layout verification): klt pex re-run of the closed-loop row benches on the extracted bandgap_top *(curated)*
 - **#99**: Share one deck fixture per distinct supply stimulus: the grid benches' five templates carry three distinct card bodies *(curated)* *(held)*
 - **#108**: spec: decision record 0011 §5 reports the declared row set as nine; the manifest declares eleven, and the same paragraph implies seven *(curated)*
 - **#114**: docs: the closed-loop PSRR worst case is now printed two ways — 55.248 dB in the bench README, 55.249 dB in seven other documents *(curated)* *(held)*
