@@ -3,6 +3,13 @@
 Chronological record of merged PRs and closed issues, maintained by the Guide
 triage agent. Newest first.
 
+### 2026-11-21
+
+- **PR #174**: docs(layout): add SG13CMOS5L layer numbers section to layout README
+- **Issue #172** (closed): Dangling cross-reference: layout/README.md has no "SG13CMOS5L layer numbers" section
+- **PR #171**: measure: pnpMPA base-tie probe — ring-free runset recognition succeeds; base rings carry zero contacts (#166)
+- **Issue #166** (closed): Scratch probe: does bandgap_top without the ten pnpMPA base-ring nSD shapes derive pnpMPA on the PDK runset and still grade its base tie? (decision record 0018 reopen condition)
+
 ### 2026-11-20
 
 - **PR #169**: feat(layout): migrate the ERC supply spec, split ties per well population, commit the clean klt 0.8.0 report
