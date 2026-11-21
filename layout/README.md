@@ -21,7 +21,7 @@ in this repo is graded against these numbers. Each pair was read from the resolv
 CMOS5L technology's own layer-properties file
 (`ihp-sg13cmos5l/libs.tech/klayout/tech/sg13cmos5l.lyp`, IHP release v0.2.0
 as installed at `~/share/pdk/ihp-sg13cmos5l`) — not copied from SG13G2's
-table, whose numbers merely happen to coincide on the layers both PDKs share.
+table and not assumed identical to it.
 The 14 entries of `LAYER_NAMES`:
 
 | `L_*` constant | Name (`LAYER_NAMES`) | GDS layer/datatype |
@@ -41,10 +41,12 @@ The 14 entries of `LAYER_NAMES`:
 | `L_EXTBLOCK` | EXTBlock.drawing | 111/0 |
 | `L_POLYRES` | PolyRes.drawing | 128/0 |
 
-The two `.pin` rows carry names rather than geometry: `klt`'s curated
-`sg13cmos5l` extraction deck reads net names from `Metal1.pin` (8/2) and well
-names from `NWell.pin` (31/2), so the generators draw those layers as text
-only (`common_sg13cmos5l.py` documents why).
+`Metal1.pin` (8/2) carries net-name text only, never geometry: `klt`'s curated
+`sg13cmos5l` extraction deck reads net names from it. `NWell.pin` (31/2) is the
+deck's well label layer, but this layout deliberately draws nothing on it:
+since the `nSD` marker ring (issue #240), the deck's `tap_nplus` derivation
+connects each `pnpMPA` base well to its base-ring net without a label
+(`common_sg13cmos5l.py:593-600`).
 
 ## Regenerate
 
