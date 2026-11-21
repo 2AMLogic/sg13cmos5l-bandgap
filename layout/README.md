@@ -31,12 +31,20 @@ byte-for-byte (checked with `cmp`, klayout 0.30.12). Run `git diff` after.
 ## Evidence
 
 T1 item 2 cites `evidence/item2.json`, bound to the top GDS
-(`sha256:4e4e4f85fa08…`) with a regeneration claim. klayout-tools 0.8.0 has no
+(`sha256:10c43369670f…`) with a regeneration claim. klayout-tools 0.8.0 has no
 verb that emits an item-2 envelope (`klt signoff --attest` covers items 1, 9
 and 10), so `attest/make-item2-envelope.py` writes it; it does not run the
 generator. After regenerating, pass the fresh stream with `--regenerated`,
 update the cited `content_hash` in the manifest, and regenerate the signoff
 record (`manifests/README.md`).
+
+The current envelope is [0021](../spec/decision-records/0021-pnpmpa-base-tie-contacts.md)'s
+regeneration (#170's base-tie repair: base-ring contacts added, the ten PNP
+`nSD` markers removed). The committed stream is the repaired one, its rerun
+verified byte-identical with `cmp`, and the item-2/item-3 hashes and the
+signoff record refreshed in the same change — items 2 and 3 both remain
+`met`. Superseded stream of record: `sha256:4e4e4f85fa08…` (item 2 committed
+at `33249ff` / PR #41, item 3 at `fce5dca` / PR #44; both cited by 0021).
 
 ## Assembled-top area (layout-derived, not simulated)
 
@@ -44,19 +52,25 @@ From `klt stats` on `sg13cmos5l-bandgap_top.gds`, top cell
 `sg13cmos5l_bandgap_top` (`area.json`):
 
 - Bounding box: 248.0 × 135.514 µm = **33 607.5 µm²** (the cell footprint; the
-  Area row of `spec/target-spec.md` is "whole `bandgap_top` cell").
-- Drawn area, all layers, overlaps unioned: 21 177.4 µm²
-  (raw sum 21 279.96 µm²).
+  Area row of `spec/target-spec.md` is "whole `bandgap_top` cell"). Unchanged
+  by the 0021 repair — the base-ring walls widen inward from the fixed PCell
+  outer extents.
+- Drawn area, all layers, overlaps unioned: 21 153.96 µm²
+  (raw sum 21 253.49 µm²; down from 21 177.44 / 21 279.96 on the superseded
+  stream — the ten removed `nSD` rings outweigh the widened base walls).
 
 This gives the number only; no budget is set, and the Area row stays
 `target-only`. The stream is not claimed to be LVS-clean (issue #29).
 
 ## Extraction (T1 item 7)
 
-The same `top` stream extracts, under the same pinned deck, into a
+The `top` stream extracts, under the same pinned deck, into a
 parasitic-annotated netlist with a clean `parasitic_integrity` result (13 nets,
 0 findings) and fully biased device bodies — committed with its `klt pex`
 envelope under [`sim/pex-bandgap-top/`](../sim/pex-bandgap-top/README.md).
+[0021](../spec/decision-records/0021-pnpmpa-base-tie-contacts.md)'s
+regeneration forced a fresh extract-only run on the repaired stream (the
+record pins the layout hash); the delta/measurement half stays #32's.
 
 What it does **not** yield is a post-layout figure for any spec row. The curated
 `sg13cmos5l` extraction deck declares no bipolar device class, so the core's
@@ -69,22 +83,43 @@ decision record
 [`0012`](../spec/decision-records/0012-post-layout-pex-extraction-gap.md). This
 is the same deck-coverage gap the generators' own docstrings describe for LVS —
 confirmed upstream as klayout-tools#4927 (closed) — reaching extraction, where
-`klt lvs`'s runset-engine escape hatch has no counterpart.
+`klt lvs`'s runset-engine escape hatch has no counterpart. On the repaired
+stream that escape hatch itself now derives the full `pnpMPA` inventory with
+every base terminal on one shared `vss` net
+([0021](../spec/decision-records/0021-pnpmpa-base-tie-contacts.md),
+[measurement](../measurements/2026-11-pnpmpa-base-tie-repair/README.md)) —
+0018's runset disclosure has lapsed for this stream; the curated-deck gap
+0012 records has not moved.
 
 ## ERC (T1 item 11, structural half)
 
 `klt erc` (`klayout-tools==0.8.0`, klayout 0.30.13) with
 [`sg13cmos5l-bandgap_top/erc-supply-spec.json`](sg13cmos5l-bandgap_top/erc-supply-spec.json)
-on the committed `top` stream
-(`sha256:4e4e4f85fa08…`): `erc_status: "clean"`, zero findings. The report
+on the `top` stream it graded, the pre-0021
+`sha256:4e4e4f85fa08…`: `erc_status: "clean"`, zero findings. The report
 is committed beside the spec as `erc_report.json`
-(`sg13cmos5l-bandgap_top/erc_report.json`); freshness:
-`klt erc --check layout/sg13cmos5l-bandgap_top/erc_report.json --rerun`
-(run from the repo root — the report's paths are repo-scoped) →
-`status: "match"`. Both rails resolve `vdd`/`vss` to 1 of 1 expected
-islands; no `erc.unconnected_net`, no `erc.supply_short`. Decision record
+(`sg13cmos5l-bandgap_top/erc_report.json`); its freshness check
+(`klt erc --check layout/sg13cmos5l-bandgap_top/erc_report.json --rerun`,
+run from the repo root — the report's paths are repo-scoped) matches that
+stream hash. Decision record
 [`0020`](../spec/decision-records/0020-migrate-erc-supply-spec.md) migrates
 the spec from the pinned source and records the runs.
+
+**Binding after 0021** (#170's repair): the committed stream is now the
+repaired `sha256:10c43369670f…`, and this production spec — #167's file,
+unchanged here — keys its PNP tie on the #240 `nSD` marker the repaired
+stream no longer draws, so run against the repaired stream it reports ten
+"no tap contact drawn" findings. That marker-only form is the known weak
+control: it passed the known-bad superseded stream precisely because a
+marker without a contact grades nothing. The repaired stream's base tie is
+graded by the contact-qualified population spec
+(`tap_requires ["6/0"]`, wells `31/0` minus poly): ten
+`erc.missing_tie` on the superseded hash as the negative control, zero
+findings and both rails 1 of 1 on the repaired hash —
+[0021](../spec/decision-records/0021-pnpmpa-base-tie-contacts.md) and its
+[measurement](../measurements/2026-11-pnpmpa-base-tie-repair/README.md)
+carry the runs. Migrating the production spec itself to the
+contact-qualified form is #167's domain, not this file's change.
 
 The spec's `ties[]` declares the three well populations separately, every
 tap in boolean form (`tap_requires`, never a bare `tap_layer`):
@@ -94,9 +129,10 @@ tap in boolean form (`tap_requires`, never a bare `tap_layer`):
   tied by its #240 `nSD`-covered `Activ` tap island through `Cont` to
   `Metal1` and the `vdd` rail.
 - `pnp_base_well_tap_vss` — the ten `pnpMPA` base wells (the gate-free
-  complement, `well_excludes: ["5/0"]`), each tied by its #240 `nSD`-marked
-  base ring (record
-  [`0018`](../spec/decision-records/0018-pdk-runset-pnpmpa-nsd-ring.md))
+  complement, `well_excludes: ["5/0"]`), tied by the #240 `nSD`-marked base
+  ring this declaration keys on (record
+  [`0018`](../spec/decision-records/0018-pdk-runset-pnpmpa-nsd-ring.md);
+  a marker the repaired stream no longer draws — see the binding note above)
   through `Cont` to the `Metal1` base ring labelled `vss`.
 - `substrate_tap_vss` — the native p-substrate (`well_layer: null`,
   `well_complement_of: ["31/0"]`: top-cell extent minus the merged n-well
