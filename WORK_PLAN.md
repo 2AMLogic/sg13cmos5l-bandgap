@@ -4,7 +4,7 @@ Roadmap generated from GitHub label state by the Guide triage agent. Only the
 region between the markers is machine-generated.
 
 <!-- guide:plan-body:start -->
-_Generated: 2026-11-20T07:39:44Z (snapshot; compare against live labels)_
+_Generated: 2026-11-21T00:11:50Z (snapshot; compare against live labels)_
 ## Operator Attention: Merge-Risk-Hold Pileup
 
 Judge-approved PRs under a hold (`loom:blocked` or `loom:operator`) — only a human merge decision is missing.
@@ -29,19 +29,22 @@ Judge-approved PRs under a hold (`loom:blocked` or `loom:operator`) — only a h
 
 Human-approved issues (`loom:issue`) ready for implementation — excluding held (`loom:blocked`/`loom:operator`/`loom:frozen`), `loom:building`, and issues closed by an open `loom:pr` PR (listed under Approved).
 
-_None._
+- **#172**: Dangling cross-reference: layout/README.md has no "SG13CMOS5L layer numbers" section
 
 ## In Progress
 
 Issues currently being built (`loom:building`).
 
 - **#108**: spec: decision record 0011 §5 reports the declared row set as nine; the manifest declares eleven, and the same paragraph implies seven
+- **#166**: Scratch probe: does bandgap_top without the ten pnpMPA base-ring nSD shapes derive pnpMPA on the PDK runset and still grade its base tie? (decision record 0018 reopen condition)
+- **#168**: psrr_dc design iteration: bench a candidate amplifier change against the measured mechanism (record 0015) on the 45-point grid, without touching the committed design
+- **#170**: pnpMPA base rings carry zero contacts: the base tie does not exist as drawn (draw_pnpmpa cont_array underflow at w=1u l=2u)
 
 ## PRs Awaiting Review
 
 PRs waiting on Judge (`loom:review-requested`).
 
-_None._
+- **#171**: measure: pnpMPA base-tie probe — ring-free runset recognition succeeds; base rings carry zero contacts (#166)
 
 ## Approved (Awaiting Merge)
 
@@ -59,6 +62,10 @@ Issues carrying `loom:curated`.
 - **#99**: Share one deck fixture per distinct supply stimulus: the grid benches' five templates carry three distinct card bodies *(curated)* *(held)*
 - **#108**: spec: decision record 0011 §5 reports the declared row set as nine; the manifest declares eleven, and the same paragraph implies seven *(curated)*
 - **#114**: docs: the closed-loop PSRR worst case is now printed two ways — 55.248 dB in the bench README, 55.249 dB in seven other documents *(curated)* *(held)*
+- **#166**: Scratch probe: does bandgap_top without the ten pnpMPA base-ring nSD shapes derive pnpMPA on the PDK runset and still grade its base tie? (decision record 0018 reopen condition) *(curated)*
+- **#168**: psrr_dc design iteration: bench a candidate amplifier change against the measured mechanism (record 0015) on the 45-point grid, without touching the committed design *(curated)*
+- **#170**: pnpMPA base rings carry zero contacts: the base tie does not exist as drawn (draw_pnpmpa cont_array underflow at w=1u l=2u) *(curated)*
+- **#172**: Dangling cross-reference: layout/README.md has no "SG13CMOS5L layer numbers" section *(curated)*
 
 ## Proposed (Architect / Hermit)
 
@@ -77,11 +84,11 @@ _None._
 | Operator merge-risk holds | 2 |
 | Very important | 1 |
 | Important | 2 |
-| Ready (`loom:issue`, net of holds/building/merge-pending) | 0 |
-| In Progress (`loom:building`) | 1 |
-| PRs awaiting review | 0 |
+| Ready (`loom:issue`, net of holds/building/merge-pending) | 1 |
+| In Progress (`loom:building`) | 4 |
+| PRs awaiting review | 1 |
 | Approved PRs awaiting merge | 2 |
-| Curated | 5 |
+| Curated | 9 |
 | Architect / Hermit proposals | 3 |
 | Active epics | 0 |
 <!-- guide:plan-body:end -->
