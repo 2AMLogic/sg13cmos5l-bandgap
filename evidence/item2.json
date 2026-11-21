@@ -12,11 +12,11 @@
         "path": "layout/sg13cmos5l-bandgap_top/sg13cmos5l-bandgap_top.gds",
         "scope": "repo"
       },
-      "content_hash": "sha256:4e4e4f85fa0875651c294c95a1f65792fa1913dd20d027fbe6905f2d001cb330"
+      "content_hash": "sha256:10c43369670ffbfcf7a553830f2edcea1ed44f30bdb4d2088f35f37ebd131e5c"
     },
     "regeneration": {
       "generator": "uv run --with klayout python3 layout/sg13cmos5l-bandgap_<cell>/generate.py for core, amp, startup, then top (layout/README.md 'Regenerate')",
-      "regenerated_hash": "sha256:4e4e4f85fa0875651c294c95a1f65792fa1913dd20d027fbe6905f2d001cb330"
+      "regenerated_hash": "sha256:10c43369670ffbfcf7a553830f2edcea1ed44f30bdb4d2088f35f37ebd131e5c"
     }
   }
 }
