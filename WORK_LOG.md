@@ -3,6 +3,11 @@
 Chronological record of merged PRs and closed issues, maintained by the Guide
 triage agent. Newest first.
 
+### 2026-11-20
+
+- **PR #169**: feat(layout): migrate the ERC supply spec, split ties per well population, commit the clean klt 0.8.0 report
+- **Issue #167** (closed): T1 item 11, ERC half: migrate the klt erc supply spec for bandgap_top, declare ties per well population, and commit the report (does not wait on the item-4 LVS report)
+
 ### 2026-11-19
 
 - **PR #163**: docs(spec): complete the decision-record index in spec/README.md
