@@ -1,0 +1,516 @@
+{
+  "schema_version": 2,
+  "file": {
+    "path": "layout/sg13cmos5l-bandgap_top/sg13cmos5l-bandgap_top.gds",
+    "scope": "repo"
+  },
+  "spec": "erc/spec-baseline.json",
+  "pdk": null,
+  "findings_only": false,
+  "gate_role": "GatPoly",
+  "gate_count": 7,
+  "antenna_tables_omitted": false,
+  "gates": [
+    {
+      "gate_id": "gate0",
+      "net": "in_n,sns1",
+      "gate_area_um2": 25.0,
+      "antenna_verdict": "unchecked",
+      "levels": [
+        {
+          "layer": "GatPoly",
+          "step_area_um2": 50.166,
+          "cumulative_area_um2": 50.166,
+          "antenna_ratio": 2.00664,
+          "antenna_ratio_max": null,
+          "antenna_ratio_source": null,
+          "verdict": "unchecked",
+          "remedy": null
+        },
+        {
+          "layer": "Metal1",
+          "step_area_um2": 194.5976,
+          "cumulative_area_um2": 244.7636,
+          "antenna_ratio": 9.790544,
+          "antenna_ratio_max": null,
+          "antenna_ratio_source": null,
+          "verdict": "unchecked",
+          "remedy": null
+        }
+      ]
+    },
+    {
+      "gate_id": "gate1",
+      "net": "e2,in_p,sns2",
+      "gate_area_um2": 20.0,
+      "antenna_verdict": "unchecked",
+      "levels": [
+        {
+          "layer": "GatPoly",
+          "step_area_um2": 215.115,
+          "cumulative_area_um2": 215.115,
+          "antenna_ratio": 10.75575,
+          "antenna_ratio_max": null,
+          "antenna_ratio_source": null,
+          "verdict": "unchecked",
+          "remedy": null
+        },
+        {
+          "layer": "Metal1",
+          "step_area_um2": 366.8758,
+          "cumulative_area_um2": 581.9908,
+          "antenna_ratio": 29.09954,
+          "antenna_ratio_max": null,
+          "antenna_ratio_source": null,
+          "verdict": "unchecked",
+          "remedy": null
+        }
+      ]
+    },
+    {
+      "gate_id": "gate2",
+      "net": "det,vdd",
+      "gate_area_um2": 1.0,
+      "antenna_verdict": "unchecked",
+      "levels": [
+        {
+          "layer": "GatPoly",
+          "step_area_um2": 1440.987,
+          "cumulative_area_um2": 1440.987,
+          "antenna_ratio": 1440.987,
+          "antenna_ratio_max": null,
+          "antenna_ratio_source": null,
+          "verdict": "unchecked",
+          "remedy": null
+        },
+        {
+          "layer": "Metal1",
+          "step_area_um2": 104.9716,
+          "cumulative_area_um2": 1545.9586,
+          "antenna_ratio": 1545.9586,
+          "antenna_ratio_max": null,
+          "antenna_ratio_source": null,
+          "verdict": "unchecked",
+          "remedy": null
+        }
+      ]
+    },
+    {
+      "gate_id": "gate3",
+      "net": "fb,out",
+      "gate_area_um2": 40.0,
+      "antenna_verdict": "unchecked",
+      "levels": [
+        {
+          "layer": "GatPoly",
+          "step_area_um2": 113.184,
+          "cumulative_area_um2": 113.184,
+          "antenna_ratio": 2.8296,
+          "antenna_ratio_max": null,
+          "antenna_ratio_source": null,
+          "verdict": "unchecked",
+          "remedy": null
+        },
+        {
+          "layer": "Metal1",
+          "step_area_um2": 240.2385,
+          "cumulative_area_um2": 353.4225,
+          "antenna_ratio": 8.835562,
+          "antenna_ratio_max": null,
+          "antenna_ratio_source": null,
+          "verdict": "unchecked",
+          "remedy": null
+        }
+      ]
+    },
+    {
+      "gate_id": "gate4",
+      "net": "d2",
+      "gate_area_um2": 20.0,
+      "antenna_verdict": "unchecked",
+      "levels": [
+        {
+          "layer": "GatPoly",
+          "step_area_um2": 30.36,
+          "cumulative_area_um2": 30.36,
+          "antenna_ratio": 1.518,
+          "antenna_ratio_max": null,
+          "antenna_ratio_source": null,
+          "verdict": "unchecked",
+          "remedy": null
+        },
+        {
+          "layer": "Metal1",
+          "step_area_um2": 17.8675,
+          "cumulative_area_um2": 48.2275,
+          "antenna_ratio": 2.411375,
+          "antenna_ratio_max": null,
+          "antenna_ratio_source": null,
+          "verdict": "unchecked",
+          "remedy": null
+        }
+      ]
+    },
+    {
+      "gate_id": "gate5",
+      "net": "pn",
+      "gate_area_um2": 20.0,
+      "antenna_verdict": "unchecked",
+      "levels": [
+        {
+          "layer": "GatPoly",
+          "step_area_um2": 35.36,
+          "cumulative_area_um2": 35.36,
+          "antenna_ratio": 1.768,
+          "antenna_ratio_max": null,
+          "antenna_ratio_source": null,
+          "verdict": "unchecked",
+          "remedy": null
+        },
+        {
+          "layer": "Metal1",
+          "step_area_um2": 21.247,
+          "cumulative_area_um2": 56.607,
+          "antenna_ratio": 2.83035,
+          "antenna_ratio_max": null,
+          "antenna_ratio_source": null,
+          "verdict": "unchecked",
+          "remedy": null
+        }
+      ]
+    },
+    {
+      "gate_id": "gate6",
+      "net": "d1",
+      "gate_area_um2": 20.0,
+      "antenna_verdict": "unchecked",
+      "levels": [
+        {
+          "layer": "GatPoly",
+          "step_area_um2": 30.36,
+          "cumulative_area_um2": 30.36,
+          "antenna_ratio": 1.518,
+          "antenna_ratio_max": null,
+          "antenna_ratio_source": null,
+          "verdict": "unchecked",
+          "remedy": null
+        },
+        {
+          "layer": "Metal1",
+          "step_area_um2": 17.8675,
+          "cumulative_area_um2": 48.2275,
+          "antenna_ratio": 2.411375,
+          "antenna_ratio_max": null,
+          "antenna_ratio_source": null,
+          "verdict": "unchecked",
+          "remedy": null
+        }
+      ]
+    }
+  ],
+  "nets": [
+    {
+      "name": "vdd",
+      "matched_islands": 1,
+      "expected_islands": 1,
+      "roles": [],
+      "unlabelled_islands": null,
+      "unlabelled_area_um2": null,
+      "unlabelled_bbox": null,
+      "unlabelled_allowed_islands": null
+    },
+    {
+      "name": "vss",
+      "matched_islands": 1,
+      "expected_islands": 1,
+      "roles": [],
+      "unlabelled_islands": null,
+      "unlabelled_area_um2": null,
+      "unlabelled_bbox": null,
+      "unlabelled_allowed_islands": null
+    }
+  ],
+  "erc_findings": [
+    {
+      "rule": "erc.missing_tie",
+      "description": "well/tub tap is not connected to declared net 'vdd'",
+      "net": "vdd",
+      "other_net": null,
+      "gate_id": null,
+      "layer": "nwell_tap_vdd",
+      "bbox": {
+        "left": 215420,
+        "bottom": -1960,
+        "right": 218820,
+        "top": 1960
+      },
+      "islands": null
+    },
+    {
+      "rule": "erc.missing_tie",
+      "description": "well/tub tap is not connected to declared net 'vdd'",
+      "net": "vdd",
+      "other_net": null,
+      "gate_id": null,
+      "layer": "nwell_tap_vdd",
+      "bbox": {
+        "left": -1700,
+        "bottom": 28040,
+        "right": 1700,
+        "top": 31960
+      },
+      "islands": null
+    },
+    {
+      "rule": "erc.missing_tie",
+      "description": "well/tub tap is not connected to declared net 'vdd'",
+      "net": "vdd",
+      "other_net": null,
+      "gate_id": null,
+      "layer": "nwell_tap_vdd",
+      "bbox": {
+        "left": 122050,
+        "bottom": 28040,
+        "right": 125450,
+        "top": 31960
+      },
+      "islands": null
+    },
+    {
+      "rule": "erc.missing_tie",
+      "description": "well/tub tap is not connected to declared net 'vdd'",
+      "net": "vdd",
+      "other_net": null,
+      "gate_id": null,
+      "layer": "nwell_tap_vdd",
+      "bbox": {
+        "left": 128050,
+        "bottom": 28040,
+        "right": 131450,
+        "top": 31960
+      },
+      "islands": null
+    },
+    {
+      "rule": "erc.missing_tie",
+      "description": "well/tub tap is not connected to declared net 'vdd'",
+      "net": "vdd",
+      "other_net": null,
+      "gate_id": null,
+      "layer": "nwell_tap_vdd",
+      "bbox": {
+        "left": 134050,
+        "bottom": 28040,
+        "right": 137450,
+        "top": 31960
+      },
+      "islands": null
+    },
+    {
+      "rule": "erc.missing_tie",
+      "description": "well/tub tap is not connected to declared net 'vdd'",
+      "net": "vdd",
+      "other_net": null,
+      "gate_id": null,
+      "layer": "nwell_tap_vdd",
+      "bbox": {
+        "left": 140050,
+        "bottom": 28040,
+        "right": 143450,
+        "top": 31960
+      },
+      "islands": null
+    },
+    {
+      "rule": "erc.missing_tie",
+      "description": "well/tub tap is not connected to declared net 'vdd'",
+      "net": "vdd",
+      "other_net": null,
+      "gate_id": null,
+      "layer": "nwell_tap_vdd",
+      "bbox": {
+        "left": 146050,
+        "bottom": 28040,
+        "right": 149450,
+        "top": 31960
+      },
+      "islands": null
+    },
+    {
+      "rule": "erc.missing_tie",
+      "description": "well/tub tap is not connected to declared net 'vdd'",
+      "net": "vdd",
+      "other_net": null,
+      "gate_id": null,
+      "layer": "nwell_tap_vdd",
+      "bbox": {
+        "left": 152050,
+        "bottom": 28040,
+        "right": 155450,
+        "top": 31960
+      },
+      "islands": null
+    },
+    {
+      "rule": "erc.missing_tie",
+      "description": "well/tub tap is not connected to declared net 'vdd'",
+      "net": "vdd",
+      "other_net": null,
+      "gate_id": null,
+      "layer": "nwell_tap_vdd",
+      "bbox": {
+        "left": 158050,
+        "bottom": 28040,
+        "right": 161450,
+        "top": 31960
+      },
+      "islands": null
+    },
+    {
+      "rule": "erc.missing_tie",
+      "description": "well/tub tap is not connected to declared net 'vdd'",
+      "net": "vdd",
+      "other_net": null,
+      "gate_id": null,
+      "layer": "nwell_tap_vdd",
+      "bbox": {
+        "left": 164050,
+        "bottom": 28040,
+        "right": 167450,
+        "top": 31960
+      },
+      "islands": null
+    }
+  ],
+  "erc_finding_count": 10,
+  "erc_status": "violations",
+  "status": "violations",
+  "coverage": {
+    "scope": "antenna",
+    "schema_version": 1,
+    "known": true,
+    "checked": [],
+    "skipped": [
+      {
+        "id": "antenna:[\"gate0\",\"Metal1\"]",
+        "reason": "missing_antenna_pdk"
+      },
+      {
+        "id": "antenna:[\"gate1\",\"Metal1\"]",
+        "reason": "missing_antenna_pdk"
+      },
+      {
+        "id": "antenna:[\"gate2\",\"Metal1\"]",
+        "reason": "missing_antenna_pdk"
+      },
+      {
+        "id": "antenna:[\"gate3\",\"Metal1\"]",
+        "reason": "missing_antenna_pdk"
+      },
+      {
+        "id": "antenna:[\"gate4\",\"Metal1\"]",
+        "reason": "missing_antenna_pdk"
+      },
+      {
+        "id": "antenna:[\"gate5\",\"Metal1\"]",
+        "reason": "missing_antenna_pdk"
+      },
+      {
+        "id": "antenna:[\"gate6\",\"Metal1\"]",
+        "reason": "missing_antenna_pdk"
+      }
+    ],
+    "inapplicable": [
+      {
+        "id": "antenna:[\"gate0\",\"GatPoly\"]",
+        "reason": "gate_reference_level"
+      },
+      {
+        "id": "antenna:[\"gate1\",\"GatPoly\"]",
+        "reason": "gate_reference_level"
+      },
+      {
+        "id": "antenna:[\"gate2\",\"GatPoly\"]",
+        "reason": "gate_reference_level"
+      },
+      {
+        "id": "antenna:[\"gate3\",\"GatPoly\"]",
+        "reason": "gate_reference_level"
+      },
+      {
+        "id": "antenna:[\"gate4\",\"GatPoly\"]",
+        "reason": "gate_reference_level"
+      },
+      {
+        "id": "antenna:[\"gate5\",\"GatPoly\"]",
+        "reason": "gate_reference_level"
+      },
+      {
+        "id": "antenna:[\"gate6\",\"GatPoly\"]",
+        "reason": "gate_reference_level"
+      }
+    ],
+    "unknown": [],
+    "nothing_checked": true,
+    "nothing_checked_reasons": [
+      "gate_reference_level",
+      "missing_antenna_pdk"
+    ]
+  },
+  "erc_coverage": {
+    "scope": "connectivity",
+    "schema_version": 1,
+    "known": true,
+    "checked": [
+      "erc.floating_gate:[\"gate0\"]",
+      "erc.floating_gate:[\"gate1\"]",
+      "erc.floating_gate:[\"gate2\"]",
+      "erc.floating_gate:[\"gate3\"]",
+      "erc.floating_gate:[\"gate4\"]",
+      "erc.floating_gate:[\"gate5\"]",
+      "erc.floating_gate:[\"gate6\"]",
+      "erc.missing_tie:[\"nwell_tap_vdd\"]",
+      "erc.net_connectivity:[\"vdd\"]",
+      "erc.net_connectivity:[\"vss\"]"
+    ],
+    "skipped": [],
+    "inapplicable": [],
+    "unknown": [],
+    "nothing_checked": false,
+    "nothing_checked_reasons": [],
+    "checked_by_assertion": [],
+    "checked_by_well_assertion": [],
+    "layers_in_stream_without_declaration": [
+      "14/0",
+      "28/0",
+      "44/0",
+      "63/0",
+      "111/0",
+      "128/0"
+    ],
+    "well_assertion_coverage": []
+  },
+  "ties_disclosure": null,
+  "provenance": {
+    "klt_version": "0.8.0",
+    "klayout_version": "0.30.13",
+    "pdk": null,
+    "deck": null,
+    "input": {
+      "content_hash": "sha256:4e4e4f85fa0875651c294c95a1f65792fa1913dd20d027fbe6905f2d001cb330",
+      "role": "layout"
+    },
+    "spec": {
+      "content_hash": "sha256:c7e16d576bd746081ea0900fddf2846ec82f4c30c1b9f2a9e9b5de5106d7ddf7"
+    },
+    "devices": [],
+    "net_exclusions": [],
+    "label_layers": [
+      {
+        "name": "Metal1",
+        "label_layer": "8/2",
+        "label_text_count": 80
+      }
+    ]
+  }
+}

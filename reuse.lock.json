@@ -65,6 +65,16 @@
     },
     {
       "repo": "2AMLogic/sg13g2-bandgap",
+      "commit": "52535387e6ccf0a89f6490901a9abb2b78144176",
+      "mode": "migrate",
+      "decision_record": "spec/decision-records/0020-migrate-erc-supply-spec.md",
+      "paths": [
+        "layout/sg13cmos5l-bandgap_top/erc-supply-spec.json"
+      ],
+      "note": "Copied byte-identical (blob SHA-1 2888bc22797f, see the record), then ties[] and the comment block revised here per decision record 0020; the divergence is the record's Decision 3. The source's erc_report.json is not migrated: it was run on a different stream."
+    },
+    {
+      "repo": "2AMLogic/sg13g2-bandgap",
       "commit": "66f9d846130fc6f06ecaa24b1021c3304496f6b9",
       "mode": "pin",
       "block": "osdi_build",
