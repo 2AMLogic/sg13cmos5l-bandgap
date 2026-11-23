@@ -42,6 +42,13 @@ jobs:
       - name: Check the item-9 attestation envelope has not drifted
         run: klt signoff --attest 9 --inventory attest/item9.json --check evidence/item9.json --format text
 
+      # Reruns the four layout generators in a temp copy (klayout only, no PDK) and
+      # compares the rebuilt item-2 envelope with the committed one.
+      - name: Check the item-2 envelope against a fresh generator rerun
+        run: |
+          pip install klayout
+          python3 -I attest/make-item2-envelope.py --check
+
       - name: Re-run klt signoff and compare against the committed record
         run: |
           set -uo pipefail
