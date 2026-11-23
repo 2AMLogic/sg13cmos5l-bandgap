@@ -14,7 +14,7 @@ complement idiom so the PDK runset's `pnp` derivation recognises the devices
 (it excludes `nsd_drw` regions). The two MOS well-tap `nSD` islands and the
 `rhigh` body marker are untouched.
 
-Run 2026-11-21 on the `#170` repair branch by the Loom Builder.
+Runs of record 2026-11-23 on the `#170` repair branch by the Loom Builder.
 
 ## Provenance
 
@@ -28,7 +28,7 @@ Run 2026-11-21 on the `#170` repair branch by the Loom Builder.
 | PDK | `~/share/pdk/ihp-sg13cmos5l`, revision `f7bca32694fe3d58be0cc7d9df4b9f5db7161a14` (store marker `.pdk-store.json`) |
 | PDK LVS runset | `libs.tech/klayout/tech/lvs/sg13cmos5l.lvs`, `sha256:0d91cb6e4c4aba974ffb07175614c183faab1cb8c6b7fab483e38d3cfcb5df5c` (0018's hash, unchanged) |
 | klt, ERC/census-adjacent rows | `0.8.0` (CI pin, `uvx --from "klayout-tools==0.8.0"`), klayout module `0.30.13` |
-| klt, runset rows | host `0.9.3.dev2575+g6bd18bbc8637`, standalone klayout `0.30.12` (`--engine klayout-runset` does not exist at the 0.8.0 pin — same split as the #166 probe) |
+| klt, runset rows | host `0.9.3.dev3808+g1ad4a837f657`, standalone klayout `0.30.12` (`--engine klayout-runset` does not exist at the 0.8.0 pin — same split as the #166 probe) |
 | klt, DRC / signoff | `0.8.0` with `klayout==0.30.12` (the pin's tested engine) |
 
 ## Measurement A — geometry census (`census.py`, klayout 0.30.13)
@@ -79,7 +79,7 @@ contract (no sg13cmos5l antenna table exists); the verdict field is
 `erc_status`. This run, on the repaired committed hash, is also what names
 the runset's shared base net: it is `vss`.
 
-## Measurement C — `klt extract --engine klayout-runset` (klt 0.9.3.dev2575)
+## Measurement C — `klt extract --engine klayout-runset` (klt 0.9.3.dev3808)
 
 | Run | status | device counts | PNP base nets |
 |---|---|---|---|
