@@ -26,6 +26,7 @@ Decision records:
 - [`0017-shared-deck-fixtures.md`](decision-records/0017-shared-deck-fixtures.md): grid benches on an identical supply stimulus share one deck fixture (amends 0011 §6 and 0014's Decision §1)
 - [`0018-pdk-runset-pnpmpa-nsd-ring.md`](decision-records/0018-pdk-runset-pnpmpa-nsd-ring.md): the `nSD` rings stay — every runset-engine result on this stream discloses that the PDK runset derives no `pnpMPA`
 - [`0020-migrate-erc-supply-spec.md`](decision-records/0020-migrate-erc-supply-spec.md): migrates the ERC supply spec from the pinned source and splits its `ties[]` per well population — the ten baseline `erc.missing_tie` findings were a spec declaration gap, and the klt 0.8.0 rerun is `erc_status: "clean"` (amends 0002 for this file only)
+- [`0021-remove-vendored-tiers-checklist.md`](decision-records/0021-remove-vendored-tiers-checklist.md): the vendored T1 checklist (the #3 deliverable) is removed and the pinned klayout-tools release alone selects it — operator ruling 2026-11-23, effective on merge of #81's PR
 - [`0022-pnpmpa-base-tie-contacts.md`](decision-records/0022-pnpmpa-base-tie-contacts.md): the pnpMPA base tie is repaired as drawn geometry — base-ring walls widened to hold contacts, the ten `nSD` rings removed, items 2/3 re-attested against the regenerated stream (supersedes 0018 §1/§2 for that stream per its §4)
 
 Rules: spec changes go through a decision record; a ratified record is
