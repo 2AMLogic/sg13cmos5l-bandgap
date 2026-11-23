@@ -35,11 +35,11 @@ the inventory, which is the state this directory records.
 
 ## The run of record
 
-`20261123T113843Z-2e66606` — `klt pex --extract-only --deck sg13cmos5l` on
+`20261123T211655Z-3e72491` — `klt pex --extract-only --deck sg13cmos5l` on
 `layout/sg13cmos5l-bandgap_top/sg13cmos5l-bandgap_top.gds`
-(`sha256:7f6e35d5fa145…`, the repaired stream [0022](../../spec/decision-records/0022-pnpmpa-base-tie-contacts.md)
-cites for items 2 and 3 — this directory's record pins the layout hash, so
-the 0022 regeneration forced this re-run), top cell
+(`sha256:7222dd7e542c…`, the stream items 2 and 3 cite after issue #177 cleared the
+collector rings' bottom contact rows from their side columns — this directory's record
+pins the layout hash, so that regeneration forced this re-run), top cell
 `sg13cmos5l_bandgap_top`, `--pins vdd,vss,vref --rename-declared-pins`, `--pdk
 ihp-sg13cmos5l` at the pinned PDK revision `f7bca326…`.
 
@@ -68,7 +68,15 @@ ihp-sg13cmos5l` at the pinned PDK revision `f7bca326…`.
   device terminals, not a distributed RC ladder; **quasi-static** — one frequency-independent R
   and C per net, no skin effect, no transmission-line behaviour.
 
-### The superseded run and its preserved stream
+### The superseded runs and their preserved streams
+
+`20261123T113843Z-2e66606` (envelope, netlist and record, all retained) measured the
+0022 repaired stream `sha256:7f6e35d5fa145…`, which issue #177 / PR #183 superseded. Same
+rule as below: its bytes are preserved unchanged at
+[`superseded/7f6e35d5fa14-bandgap_top.gds`](superseded/7f6e35d5fa14-bandgap_top.gds) and
+its record's `layout.path` points there (`layout.relocated_by`). The extraction is
+identical in device and net counts (17 devices, 13 nets, 66 R / 13 C cards); the
+`pnpMPA` devices stay unrecognised (0012).
 
 `20261113T123950Z-8422e4d` (envelope, netlist and record, all retained) measured the
 pre-0022 stream `sha256:4e4e4f85fa08…`. Its record originally pinned that hash at the
@@ -92,7 +100,7 @@ netlists: no PDK, no simulator, no klt, no network.
 ```bash
 python3 -I sim/tools/pex_device_inventory.py \
     --schematic design/sg13cmos5l/netlist/bandgap_top.spice \
-    --extracted sim/pex-bandgap-top/extracted/20261123T113843Z-2e66606.spice \
+    --extracted sim/pex-bandgap-top/extracted/20261123T211655Z-3e72491.spice \
     --extracted-top sg13cmos5l_bandgap_top
 ```
 

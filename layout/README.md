@@ -69,7 +69,7 @@ byte-for-byte (checked with `cmp`, klayout 0.30.12). Run `git diff` after.
 ## Evidence
 
 T1 item 2 cites `evidence/item2.json`, bound to the top GDS
-(`sha256:7f6e35d5fa145…`) with a regeneration claim. klayout-tools 0.8.0 has no
+(`sha256:7222dd7e542cd…`) with a regeneration claim. klayout-tools 0.8.0 has no
 verb that emits an item-2 envelope (`klt signoff --attest` covers items 1, 9
 and 10), so `attest/make-item2-envelope.py` writes it; it does not run the
 generator. After regenerating, pass the fresh stream with `--regenerated`,
@@ -84,6 +84,15 @@ signoff record refreshed in the same change — items 2 and 3 both remain
 `met`. Superseded stream of record: `sha256:4e4e4f85fa08…` (item 2 committed
 at `33249ff` / PR #41, item 3 at `fce5dca` / PR #44; both cited by 0022).
 
+Issue #177 (PR #183) regenerated the streams once more: the `pnpMPA` collector ring's
+bottom `Cont` row now stops `CNT_B` short of the side columns, as #170's follow-up
+already did for the base ring, so no L-shaped `ContBar`-class polygons remain in the
+collector ring. The committed top stream is `sha256:7222dd7e542cd…` (rerun byte-identical),
+DRC is clean on `core` and `top` at klayout 0.30.12, and the item-2/item-3 hashes, the
+item-7 `klt pex` extraction and the signoff record were refreshed in the same change.
+The 0022 stream `sha256:7f6e35d5fa145…` is preserved at
+`sim/pex-bandgap-top/superseded/7f6e35d5fa14-bandgap_top.gds`.
+
 ## Assembled-top area (layout-derived, not simulated)
 
 From `klt stats` on `sg13cmos5l-bandgap_top.gds`, top cell
@@ -93,9 +102,11 @@ From `klt stats` on `sg13cmos5l-bandgap_top.gds`, top cell
   Area row of `spec/target-spec.md` is "whole `bandgap_top` cell"). Unchanged
   by the 0022 repair — the base-ring walls widen inward from the fixed PCell
   outer extents.
-- Drawn area, all layers, overlaps unioned: 21 153.49 µm²
-  (raw sum 21 252.98 µm²; down from 21 177.44 / 21 279.96 on the superseded
-  stream — the ten removed `nSD` rings outweigh the widened base walls).
+- Drawn area, all layers, overlaps unioned: 21 153.10 µm²
+  (raw sum 21 252.47 µm²; down from 21 177.44 / 21 279.96 on the pre-0022
+  stream — the ten removed `nSD` rings outweigh the widened base walls — and from
+  21 153.49 / 21 252.98 on the 0022 stream: the collector rows' end cuts no longer
+  overlap the side columns', #177).
 
 This gives the number only; no budget is set, and the Area row stays
 `target-only`. The stream is not claimed to be LVS-clean (issue #29).
@@ -144,7 +155,7 @@ stream hash. Decision record
 the spec from the pinned source and records the runs.
 
 **Binding after 0022** (#170's repair): the committed stream is now the
-repaired `sha256:7f6e35d5fa145…`, and this production spec — #167's file,
+repaired stream (`sha256:7f6e35d5fa145…` at 0022, `sha256:7222dd7e542cd…` after #177; the ten findings are identical on both, measured with `klt erc` 0.8.0 / klayout 0.30.12), and this production spec — #167's file,
 unchanged here — keys its PNP tie on the #240 `nSD` marker the repaired
 stream no longer draws, so run against the repaired stream it reports ten
 "no tap contact drawn" findings. That marker-only form is the known weak

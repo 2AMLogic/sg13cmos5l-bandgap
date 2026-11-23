@@ -635,7 +635,14 @@ def draw_pnpmpa(
     b.ring(L_METAL1, *collector_ring_m1, width=d["d3act"] - 0.04, open_top=True)
     cont_array(b, cr_x0 + CNT_C, cr_y0 + CNT_C, cr_x0 + d["d3act"] - CNT_C, cr_y1 - CNT_C)
     cont_array(b, cr_x1 - d["d3act"] + CNT_C, cr_y0 + CNT_C, cr_x1 - CNT_C, cr_y1 - CNT_C)
-    cont_array(b, cr_x0 + CNT_C, cr_y0 + CNT_C, cr_x1 - CNT_C, cr_y0 + d["d3act"] - CNT_C)
+    # Issue #177: the bottom row stops ``CNT_B`` short of the side-column
+    # windows. Spanning the full width let its end cuts overlap the side
+    # columns' bottom cuts at both corners, and the merged L-shaped Cont
+    # polygons classify as ContBar in the PDK deck (CntB.a/a1/b2).
+    cont_array(
+        b, cr_x0 + d["d3act"] - CNT_C + CNT_B, cr_y0 + CNT_C,
+        cr_x1 - d["d3act"] + CNT_C - CNT_B, cr_y0 + d["d3act"] - CNT_C,
+    )
     collector_ring = (cr_x0, cr_y0, cr_x1, cr_y1)
     b.net_label(collector_net, cr_x0 + d["d3act"] / 2, y0)
 
