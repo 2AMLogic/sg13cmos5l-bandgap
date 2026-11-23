@@ -12,14 +12,14 @@
     "height": 135.514
   },
   "total": {
-    "area_um2": 21279.9558,
-    "density": 0.6331912081932256,
-    "merged_area_um2": 21177.442300000002,
-    "merged_density": 0.6301408895021916,
-    "polygon_count": 2816,
-    "vertex_count": 11264,
-    "flattened_polygon_count": 2816,
-    "flattened_vertex_count": 11264
+    "area_um2": 21252.4658,
+    "density": 0.6323732353329046,
+    "merged_area_um2": 21153.0998,
+    "merged_density": 0.6294165714100721,
+    "polygon_count": 2996,
+    "vertex_count": 11984,
+    "flattened_polygon_count": 2996,
+    "flattened_vertex_count": 11984
   },
   "layers": null,
   "density_windows": null
