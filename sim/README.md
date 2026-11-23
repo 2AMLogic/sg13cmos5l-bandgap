@@ -9,7 +9,7 @@ one **ungraded** attribution bench that says why the `psrr_dc` row misses its Ta
 
 | File | Role |
 |---|---|
-| `pdk.json` | The pin: IHP-Open-PDK `dev` @ `f7bca326…`, model files, OSDI objects, minimum ngspice |
+| `pdk.json` | The pin: IHP-Open-PDK `dev` @ `f7bca326…`, its dated 12/12 section-verification record, OSDI objects, minimum ngspice |
 | `env.sh` | Sourced; resolves `PDK_ROOT`/`PDK`, **refuses** unless the install is the pinned revision |
 | `smoke/` | `.op`-style smoke deck (one `sg13_hv_nmos`, one `pnpMPA`, typ/27 °C/3.3 V), runner, append-only `records/` |
 | `closed-loop-vref-pvt/` | Closed-loop `vref`: the Output-reference-nominal row. 45 points; also keeps `run.sh`, the single-corner local probe behind decision record 0009 |
@@ -359,15 +359,20 @@ which of them the Monte Carlo benches use is deliberately **not** decided here.
 Second finding — **the store bundle materializes the shared files, and that matters.** An
 upstream combined git checkout at this pin carries the SG13G2-shared models as relative
 symlinks into `../ihp-sg13g2` (`pdk.json` `variant_of_checkout`); the store bundle ships them
-as real files, so every `model_files` entry now reads `real_file: true` and the checker's
-`defined_in` stays inside `ihp-sg13cmos5l/`. This is load-bearing rather than cosmetic: the
-store's sibling `ihp-sg13g2` tree is pinned at **v0.3.0, not at this dev commit**, and
-`cornerRES.lib`, `sg13g2_moshv_mod.lib` and `resistors_mod.lib` differ in content between the
-two trees. Live symlinks on this host would therefore resolve the SG13CMOS5L models to v0.3.0
-content while `env.sh` still reported the `f7bca32` pin. Materialized copies are what keep the
-models at the pin. A host that installs a raw combined git checkout instead will see these as
-symlinks (`real_file: false`) into whatever revision its own `ihp-sg13g2` holds, so the
-`real_file` column describes the install, not the PDK.
+as real files. Read this from the checker's own output, not from the pin file: every section
+row carries a `defined_in` realpath — the file that defines the section — and each of its
+`.include` targets gets its own `defined_in` realpath, so a path that lands inside
+`ihp-sg13g2/` means that install resolves that shared file through a symlink. On the verified
+store host every such path stays inside `ihp-sg13cmos5l/`, and that is load-bearing rather
+than cosmetic: the store's sibling `ihp-sg13g2` tree is pinned at **v0.3.0, not at this dev
+commit**, and `cornerRES.lib`, `sg13g2_moshv_mod.lib` and `resistors_mod.lib` differ in
+content between the two trees. Live symlinks on this host would therefore resolve the
+SG13CMOS5L models to v0.3.0 content while `env.sh` still reported the `f7bca32` pin.
+Materialized copies are what keep the models at the pin. A host that installs a raw combined
+git checkout at the same pin instead resolves the same sections and includes through those
+symlinks, into whatever revision its own `ihp-sg13g2` holds — where `defined_in` lands
+describes the install, not the PDK, which is why the per-file inventory of it that
+`pdk.json` used to carry was removed (issue #66) in favour of this live read.
 
 `spec/target-spec.md` §PVT still carries its pre-verification caveat ("not verified at the
 `dev` pin") and its unqualified symlink statement; retiring both needs a decision record, so

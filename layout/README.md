@@ -12,6 +12,42 @@ Files are byte-for-byte the source's, unedited; the record lists each blob.
 | `sg13cmos5l-bandgap_top/generate.py` + `.gds` | assembly: instantiates the three leaf GDS and draws the inter-cell routing |
 | `area.json` | `klt stats` envelope of the top GDS (layout-derived area, see below) |
 
+## SG13CMOS5L layer numbers
+
+Every GDS `(layer, datatype)` pair the generators draw is defined once, as the
+`L_*` constant block and `LAYER_NAMES` mapping in
+[`common_sg13cmos5l.py`](common_sg13cmos5l.py), and every ERC/DRC/LVS artifact
+in this repo is graded against these numbers. Each pair was read from the resolved
+CMOS5L technology's own layer-properties file
+(`ihp-sg13cmos5l/libs.tech/klayout/tech/sg13cmos5l.lyp`, IHP release v0.2.0
+as installed at `~/share/pdk/ihp-sg13cmos5l`) — not copied from SG13G2's
+table and not assumed identical to it.
+The 14 entries of `LAYER_NAMES`:
+
+| `L_*` constant | Name (`LAYER_NAMES`) | GDS layer/datatype |
+|---|---|---|
+| `L_ACTIV` | Activ.drawing | 1/0 |
+| `L_GATPOLY` | GatPoly.drawing | 5/0 |
+| `L_CONT` | Cont.drawing | 6/0 |
+| `L_NSD` | nSD.drawing | 7/0 |
+| `L_METAL1` | Metal1.drawing | 8/0 |
+| `L_METAL1_PIN` | Metal1.pin | 8/2 |
+| `L_PSD` | pSD.drawing | 14/0 |
+| `L_SALBLOCK` | SalBlock.drawing | 28/0 |
+| `L_NWELL` | NWell.drawing | 31/0 |
+| `L_NWELL_PIN` | NWell.pin | 31/2 |
+| `L_THICKGATEOX` | ThickGateOx.drawing | 44/0 |
+| `L_TEXT` | TEXT.drawing | 63/0 |
+| `L_EXTBLOCK` | EXTBlock.drawing | 111/0 |
+| `L_POLYRES` | PolyRes.drawing | 128/0 |
+
+`Metal1.pin` (8/2) carries net-name text only, never geometry: `klt`'s curated
+`sg13cmos5l` extraction deck reads net names from it. `NWell.pin` (31/2) is the
+deck's well label layer, but this layout deliberately draws nothing on it:
+since the `nSD` marker ring (issue #240), the deck's `tap_nplus` derivation
+connects each `pnpMPA` base well to its base-ring net without a label
+(`common_sg13cmos5l.py:593-600`).
+
 ## Regenerate
 
 The generators use only `klayout.db`: no PDK checkout and no files outside

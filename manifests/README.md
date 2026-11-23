@@ -74,9 +74,11 @@ extracted-netlist and schematic-DUT sha256s plus the device inventory, and
 `sim/tests/test-pex-device-inventory.sh` re-derives that inventory from the committed netlists
 on every CI run (it is inventoried under item 10).
 
-- `design-evidence-tiers.md` is the checklist, vendored byte-identical from
-  `2AMLogic/klayout-tools` `docs/design-evidence-tiers.md` at commit
-  `44cc42323184` (git blob `2f7f69825f8c`).
+- The T1 checklist is not vendored here: it is the
+  `docs/design-evidence-tiers.md` bundled in the pinned `klayout-tools`
+  wheel ([2AMLogic/klayout-tools at the
+  v0.8.0 tag](https://github.com/2AMLogic/klayout-tools/blob/v0.8.0/docs/design-evidence-tiers.md)),
+  so the pin alone selects it.
 - `sg13cmos5l-bandgap.signoff.json` is the verdict of record: the committed
   output of `klt signoff`, pinned to `klayout-tools==0.8.0` (the first release with `--attest`).
 
@@ -126,17 +128,21 @@ grader, so it is not done. Filed generically as
 
 ## Regenerating the record
 
-Run from the repo root (the record embeds the `--tiers-doc` path). Exit 3
+Run from the repo root. No `--tiers-doc` is passed: the checklist is the
+one bundled in the pinned wheel, and the record's `source_doc` names it
+canonically as `docs/design-evidence-tiers.md` (a path inside the
+klayout-tools distribution, not this repo; `source_doc_content_hash` is the
+byte-identity check). Exit 3
 means "grader ran, items unmet" and is expected until T1 is reached.
 
 ```
 uvx --from "klayout-tools==0.8.0" klt signoff \
     --manifest manifests/sg13cmos5l-bandgap.json \
-    --tiers-doc manifests/design-evidence-tiers.md \
     --format json > manifests/sg13cmos5l-bandgap.signoff.json
 ```
 
-Any change to the manifest, the checklist or cited evidence must regenerate
+Any change to the manifest, the pinned klayout-tools release (whose bundled
+checklist this grades against) or cited evidence must regenerate
 the record in the same PR. `.github/workflows/signoff.yml` re-runs the
 command with the same pin (0.8.0), accepts exit 0 and 3 only, and byte-compares.
 
