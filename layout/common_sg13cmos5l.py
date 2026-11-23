@@ -522,7 +522,7 @@ def draw_pnpmpa(
       inside the n-well, contacted to a Metal1 pad;
     * **base** -- an n+ ``Activ`` ring inside the *same* n-well (no ``pSD``
       and no ``nSD`` over it: the PCell's own complement idiom, restored by
-      DR-0021), contacted to a Metal1 ring: the well itself is the base;
+      DR-0022), contacted to a Metal1 ring: the well itself is the base;
     * **collector** -- a p+ ``Activ`` ring **outside** the n-well
       (``pSD``-covered), i.e. a substrate tie: the p-substrate is the
       collector. This is why the schematic wires collector and base
@@ -580,7 +580,7 @@ def draw_pnpmpa(
     # ``dw2act = max(wact, 0.3) >= 0.30`` and contacting only those.
     wall = max(min(d["dw2act"], d["dh2act"]), CNT_A + 2 * CNT_C)
     b.ring(L_ACTIV, br_x0, br_y0, br_x1, br_y1, wall)
-    # No ``nSD`` marker over this ring (DR-0021 supersedes the #240 draw and
+    # No ``nSD`` marker over this ring (DR-0022 supersedes the #240 draw and
     # 0018's keep). The PCell idiom draws the n+ base as ``pSD``'s complement
     # with no marker of its own, and the PDK runset's ``pnp`` derivation
     # *excludes* ``nsd_drw``-covered regions (``bjt_derivations.lvs``:
@@ -607,7 +607,7 @@ def draw_pnpmpa(
         br_x0 + wall - CNT_C + CNT_B, br_y0 + CNT_C,
         br_x1 - wall + CNT_C - CNT_B, br_y0 + wall - CNT_C,
     )
-    base_ring =(br_x0, br_y0, br_x1, br_y1)
+    base_ring = (br_x0, br_y0, br_x1, br_y1)
     b.net_label(base_net, br_x0 + wall / 2, y0)
 
     # -- the well itself: the PNP's base region ----------------------------

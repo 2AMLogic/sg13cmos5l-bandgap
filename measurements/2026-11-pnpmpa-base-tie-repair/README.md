@@ -1,7 +1,7 @@
 # 2026-11 pnpMPA base-tie repair (#170): contacted base rings, markers removed
 
 **Evidence of record for the repaired stream** (decision record
-[`0021`](../../spec/decision-records/0021-pnpmpa-base-tie-contacts.md), which
+[`0022`](../../spec/decision-records/0022-pnpmpa-base-tie-contacts.md), which
 supersedes [`0018`](../../spec/decision-records/0018-pdk-runset-pnpmpa-nsd-ring.md)
 §4's keep). The repair changes `draw_pnpmpa`
 (`layout/common_sg13cmos5l.py`) two ways: the base-ring wall widens from

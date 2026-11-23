@@ -1,4 +1,4 @@
-# 0021: The pnpMPA base tie is repaired as drawn geometry — base-ring contacts added, the ten `nSD` rings removed, items 2/3 re-attested
+# 0022: The pnpMPA base tie is repaired as drawn geometry — base-ring contacts added, the ten `nSD` rings removed, items 2/3 re-attested
 
 - **Status**: ratified, effective when the PR for issue #170 merges
 - **Date**: 2026-11-21

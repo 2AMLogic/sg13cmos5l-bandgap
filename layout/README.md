@@ -44,9 +44,11 @@ The 14 entries of `LAYER_NAMES`:
 `Metal1.pin` (8/2) carries net-name text only, never geometry: `klt`'s curated
 `sg13cmos5l` extraction deck reads net names from it. `NWell.pin` (31/2) is the
 deck's well label layer, but this layout deliberately draws nothing on it:
-since the `nSD` marker ring (issue #240), the deck's `tap_nplus` derivation
-connects each `pnpMPA` base well to its base-ring net without a label
-(`common_sg13cmos5l.py:593-600`).
+since the base ring's own `Cont` rows (issue #170, decision record
+[0022](../spec/decision-records/0022-pnpmpa-base-tie-contacts.md)) connect each
+`pnpMPA` base well, through the ring's n+ `Activ` and its Metal1, to the
+base-ring net label without any well text (`common_sg13cmos5l.py:606-616`).
+The #240 `nSD` marker ring that used to be cited here is gone.
 
 ## Regenerate
 
@@ -74,13 +76,13 @@ generator. After regenerating, pass the fresh stream with `--regenerated`,
 update the cited `content_hash` in the manifest, and regenerate the signoff
 record (`manifests/README.md`).
 
-The current envelope is [0021](../spec/decision-records/0021-pnpmpa-base-tie-contacts.md)'s
+The current envelope is [0022](../spec/decision-records/0022-pnpmpa-base-tie-contacts.md)'s
 regeneration (#170's base-tie repair: base-ring contacts added, the ten PNP
 `nSD` markers removed). The committed stream is the repaired one, its rerun
 verified byte-identical with `cmp`, and the item-2/item-3 hashes and the
 signoff record refreshed in the same change — items 2 and 3 both remain
 `met`. Superseded stream of record: `sha256:4e4e4f85fa08…` (item 2 committed
-at `33249ff` / PR #41, item 3 at `fce5dca` / PR #44; both cited by 0021).
+at `33249ff` / PR #41, item 3 at `fce5dca` / PR #44; both cited by 0022).
 
 ## Assembled-top area (layout-derived, not simulated)
 
@@ -89,7 +91,7 @@ From `klt stats` on `sg13cmos5l-bandgap_top.gds`, top cell
 
 - Bounding box: 248.0 × 135.514 µm = **33 607.5 µm²** (the cell footprint; the
   Area row of `spec/target-spec.md` is "whole `bandgap_top` cell"). Unchanged
-  by the 0021 repair — the base-ring walls widen inward from the fixed PCell
+  by the 0022 repair — the base-ring walls widen inward from the fixed PCell
   outer extents.
 - Drawn area, all layers, overlaps unioned: 21 153.49 µm²
   (raw sum 21 252.98 µm²; down from 21 177.44 / 21 279.96 on the superseded
@@ -104,7 +106,7 @@ The `top` stream extracts, under the same pinned deck, into a
 parasitic-annotated netlist with a clean `parasitic_integrity` result (13 nets,
 0 findings) and fully biased device bodies — committed with its `klt pex`
 envelope under [`sim/pex-bandgap-top/`](../sim/pex-bandgap-top/README.md).
-[0021](../spec/decision-records/0021-pnpmpa-base-tie-contacts.md)'s
+[0022](../spec/decision-records/0022-pnpmpa-base-tie-contacts.md)'s
 regeneration forced a fresh extract-only run on the repaired stream (the
 record pins the layout hash); the delta/measurement half stays #32's.
 
@@ -122,7 +124,7 @@ confirmed upstream as klayout-tools#4927 (closed) — reaching extraction, where
 `klt lvs`'s runset-engine escape hatch has no counterpart. On the repaired
 stream that escape hatch itself now derives the full `pnpMPA` inventory with
 every base terminal on one shared `vss` net
-([0021](../spec/decision-records/0021-pnpmpa-base-tie-contacts.md),
+([0022](../spec/decision-records/0022-pnpmpa-base-tie-contacts.md),
 [measurement](../measurements/2026-11-pnpmpa-base-tie-repair/README.md)) —
 0018's runset disclosure has lapsed for this stream; the curated-deck gap
 0012 records has not moved.
@@ -131,7 +133,7 @@ every base terminal on one shared `vss` net
 
 `klt erc` (`klayout-tools==0.8.0`, klayout 0.30.13) with
 [`sg13cmos5l-bandgap_top/erc-supply-spec.json`](sg13cmos5l-bandgap_top/erc-supply-spec.json)
-on the `top` stream it graded, the pre-0021
+on the `top` stream it graded, the pre-0022
 `sha256:4e4e4f85fa08…`: `erc_status: "clean"`, zero findings. The report
 is committed beside the spec as `erc_report.json`
 (`sg13cmos5l-bandgap_top/erc_report.json`); its freshness check
@@ -141,7 +143,7 @@ stream hash. Decision record
 [`0020`](../spec/decision-records/0020-migrate-erc-supply-spec.md) migrates
 the spec from the pinned source and records the runs.
 
-**Binding after 0021** (#170's repair): the committed stream is now the
+**Binding after 0022** (#170's repair): the committed stream is now the
 repaired `sha256:7f6e35d5fa145…`, and this production spec — #167's file,
 unchanged here — keys its PNP tie on the #240 `nSD` marker the repaired
 stream no longer draws, so run against the repaired stream it reports ten
@@ -152,7 +154,7 @@ graded by the contact-qualified population spec
 (`tap_requires ["6/0"]`, wells `31/0` minus poly): ten
 `erc.missing_tie` on the superseded hash as the negative control, zero
 findings and both rails 1 of 1 on the repaired hash —
-[0021](../spec/decision-records/0021-pnpmpa-base-tie-contacts.md) and its
+[0022](../spec/decision-records/0022-pnpmpa-base-tie-contacts.md) and its
 [measurement](../measurements/2026-11-pnpmpa-base-tie-repair/README.md)
 carry the runs. Migrating the production spec itself to the
 contact-qualified form is #167's domain, not this file's change.

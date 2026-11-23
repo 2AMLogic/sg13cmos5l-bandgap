@@ -37,9 +37,9 @@ the inventory, which is the state this directory records.
 
 `20261123T113843Z-2e66606` — `klt pex --extract-only --deck sg13cmos5l` on
 `layout/sg13cmos5l-bandgap_top/sg13cmos5l-bandgap_top.gds`
-(`sha256:7f6e35d5fa145…`, the repaired stream [0021](../../spec/decision-records/0021-pnpmpa-base-tie-contacts.md)
+(`sha256:7f6e35d5fa145…`, the repaired stream [0022](../../spec/decision-records/0022-pnpmpa-base-tie-contacts.md)
 cites for items 2 and 3 — this directory's record pins the layout hash, so
-the 0021 regeneration forced this re-run), top cell
+the 0022 regeneration forced this re-run), top cell
 `sg13cmos5l_bandgap_top`, `--pins vdd,vss,vref --rename-declared-pins`, `--pdk
 ihp-sg13cmos5l` at the pinned PDK revision `f7bca326…`.
 
@@ -71,8 +71,8 @@ ihp-sg13cmos5l` at the pinned PDK revision `f7bca326…`.
 ### The superseded run and its preserved stream
 
 `20261113T123950Z-8422e4d` (envelope, netlist and record, all retained) measured the
-pre-0021 stream `sha256:4e4e4f85fa08…`. Its record originally pinned that hash at the
-live layout path, which the 0021 regeneration replaced — so the superseded bytes are
+pre-0022 stream `sha256:4e4e4f85fa08…`. Its record originally pinned that hash at the
+live layout path, which the 0022 regeneration replaced — so the superseded bytes are
 preserved unchanged at
 [`superseded/4e4e4f85fa08-bandgap_top.gds`](superseded/4e4e4f85fa08-bandgap_top.gds)
 and the old record's `layout.path` points there (noted in the record's own
