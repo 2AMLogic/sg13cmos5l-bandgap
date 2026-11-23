@@ -35,9 +35,11 @@ the inventory, which is the state this directory records.
 
 ## The run of record
 
-`20261113T123950Z-8422e4d` — `klt pex --extract-only --deck sg13cmos5l` on
+`20261123T113843Z-2e66606` — `klt pex --extract-only --deck sg13cmos5l` on
 `layout/sg13cmos5l-bandgap_top/sg13cmos5l-bandgap_top.gds`
-(`sha256:4e4e4f85fa08…`, the same stream items 2 and 3 cite), top cell
+(`sha256:7f6e35d5fa145…`, the repaired stream [0022](../../spec/decision-records/0022-pnpmpa-base-tie-contacts.md)
+cites for items 2 and 3 — this directory's record pins the layout hash, so
+the 0022 regeneration forced this re-run), top cell
 `sg13cmos5l_bandgap_top`, `--pins vdd,vss,vref --rename-declared-pins`, `--pdk
 ihp-sg13cmos5l` at the pinned PDK revision `f7bca326…`.
 
@@ -46,7 +48,11 @@ ihp-sg13cmos5l` at the pinned PDK revision `f7bca326…`.
   `sha256:5a43b8eb0e1a…` — the same deck revision `layout/README.md` records for DRC.
 - `status: not_checked`, `measurement.mode: "extract-only"`, `delta: []`, exit 4 — by design
   for this mode (klayout-tools#3739): there is no measurement leg to pass or fail.
-- `extraction`: **17 devices, 13 nets**, 66 parasitic resistor cards and 13 capacitor cards.
+- `extraction`: **17 devices, 13 nets**, 66 parasitic resistor cards and 13 capacitor cards
+  — counts identical to the superseded run; the repaired base tie changes the curated-deck
+  netlist only by net-ID renumbering and a contact-area capacitance delta on one net
+  (80.8727 → 80.8936 fF). The base rings' new contacts reach the curated deck as ordinary
+  `vss`-side geometry; the `pnpMPA` devices themselves remain unrecognised (0012).
   `parasitic_integrity`: 13 nets checked, **0** with findings — no open net, island, orphan
   node, suspicious resistor, short candidate or capacitance mismatch.
 - `body_bias`: **`"biased"`**, `unbiased_device_count: 0`, no unbiased PMOS body net. Item 7's
@@ -62,6 +68,20 @@ ihp-sg13cmos5l` at the pinned PDK revision `f7bca326…`.
   device terminals, not a distributed RC ladder; **quasi-static** — one frequency-independent R
   and C per net, no skin effect, no transmission-line behaviour.
 
+### The superseded run and its preserved stream
+
+`20261113T123950Z-8422e4d` (envelope, netlist and record, all retained) measured the
+pre-0022 stream `sha256:4e4e4f85fa08…`. Its record originally pinned that hash at the
+live layout path, which the 0022 regeneration replaced — so the superseded bytes are
+preserved unchanged at
+[`superseded/4e4e4f85fa08-bandgap_top.gds`](superseded/4e4e4f85fa08-bandgap_top.gds)
+and the old record's `layout.path` points there (noted in the record's own
+`layout.relocated_by`): every hash the record names still resolves, which is exactly
+what `sim/tests/test-pex-device-inventory.sh` checks offline. Any future stream
+regeneration that supersedes a committed record's layout pin follows the same rule:
+preserve the measured bytes, repoint the record, disclose it in the superseding
+decision record.
+
 ## The device inventory: the extraction is complete except for the bipolars
 
 `sim/tools/pex_device_inventory.py` tallies the leaf devices each side instantiates, per
@@ -72,7 +92,7 @@ netlists: no PDK, no simulator, no klt, no network.
 ```bash
 python3 -I sim/tools/pex_device_inventory.py \
     --schematic design/sg13cmos5l/netlist/bandgap_top.spice \
-    --extracted sim/pex-bandgap-top/extracted/20261113T123950Z-8422e4d.spice \
+    --extracted sim/pex-bandgap-top/extracted/20261123T113843Z-2e66606.spice \
     --extracted-top sg13cmos5l_bandgap_top
 ```
 
@@ -163,8 +183,10 @@ than the tool's. Both are **closed** by issue #80 / decision record
    the path gains the wrapper prefix.
 
 **Measured, one corner, local, typ / 27 °C / 3.30 V** (decision record 0013 "What was
-measured"): the unmodified `sim/closed-loop-startup` deck loads and runs with its `.include`
-pointed at either the staged schematic DUT **or** `extracted/20261113T123950Z-8422e4d.spice`,
+measured", against the then-current netlist of the superseded
+`20261113T123950Z-8422e4d` run): the unmodified `sim/closed-loop-startup` deck loads and
+runs with its `.include` pointed at either the staged schematic DUT **or**
+`extracted/20261113T123950Z-8422e4d.spice`,
 with **zero** unknown-subckt, pin-count or unconnected-pin errors on either leg and the
 extracted devices appearing under the instance (`xdut.x$1…`). Reproduce it with
 

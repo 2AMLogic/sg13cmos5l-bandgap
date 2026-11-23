@@ -115,9 +115,10 @@
   "kind": "pex-extract-only",
   "label": "LAYOUT-DERIVED (extraction only; no simulation leg)",
   "layout": {
-    "path": "layout/sg13cmos5l-bandgap_top/sg13cmos5l-bandgap_top.gds",
+    "path": "sim/pex-bandgap-top/superseded/4e4e4f85fa08-bandgap_top.gds",
     "sha256": "4e4e4f85fa0875651c294c95a1f65792fa1913dd20d027fbe6905f2d001cb330",
-    "top_cell": "sg13cmos5l_bandgap_top"
+    "top_cell": "sg13cmos5l_bandgap_top",
+    "relocated_by": "DR-0022: the live path this record originally named now holds the repaired stream; the superseded bytes it measured are preserved at this path unchanged (sha256 above)"
   },
   "measurement": {
     "command": null,
