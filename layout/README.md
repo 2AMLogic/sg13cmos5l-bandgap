@@ -67,7 +67,7 @@ byte-for-byte (checked with `cmp`, klayout 0.30.12). Run `git diff` after.
 ## Evidence
 
 T1 item 2 cites `evidence/item2.json`, bound to the top GDS
-(`sha256:4e4e4f85fa08…`) with a regeneration claim. klayout-tools 0.8.0 has no
+(`sha256:f4712c5150577…`) with a regeneration claim. klayout-tools 0.8.0 has no
 verb that emits an item-2 envelope (`klt signoff --attest` covers items 1, 9
 and 10), so `attest/make-item2-envelope.py` writes it; it does not run the
 generator. After regenerating, pass the fresh stream with `--regenerated`,
@@ -112,7 +112,7 @@ confirmed upstream as klayout-tools#4927 (closed) — reaching extraction, where
 `klt erc` (`klayout-tools==0.8.0`, klayout 0.30.13) with
 [`sg13cmos5l-bandgap_top/erc-supply-spec.json`](sg13cmos5l-bandgap_top/erc-supply-spec.json)
 on the committed `top` stream
-(`sha256:4e4e4f85fa08…`): `erc_status: "clean"`, zero findings. The report
+(`sha256:f4712c5150577…`): `erc_status: "clean"`, zero findings. The report
 is committed beside the spec as `erc_report.json`
 (`sg13cmos5l-bandgap_top/erc_report.json`); freshness:
 `klt erc --check layout/sg13cmos5l-bandgap_top/erc_report.json --rerun`
