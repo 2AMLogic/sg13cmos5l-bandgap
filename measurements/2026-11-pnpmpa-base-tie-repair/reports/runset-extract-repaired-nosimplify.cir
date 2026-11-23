@@ -1,0 +1,61 @@
+* extracted by klt extract --engine klayout-runset --deck-file sg13cmos5l.lvs
+* no parasitics: this engine extracts devices and connectivity only
+* no device parameters: each device is an X call onto its class's subcircuit with no parameters, so the subcircuit's own declared defaults apply -- the measured geometry is in the report's devices[].params, and warnings[] names it per class
+
+* cell sg13cmos5l_bandgap_top
+.SUBCKT sg13cmos5l_bandgap_top
+* device instance $1 r0 *1 0,80 sg13_hv_nmos
+X$1 \$1 \$26 \$23 \$1 sg13_hv_nmos
+* device instance $2 r0 *1 20,80 sg13_hv_nmos
+X$2 \$1 \$26 \$26 \$1 sg13_hv_nmos
+* device instance $3 r0 *1 45,80 sg13_hv_nmos
+X$3 \$1 \$27 \$27 \$1 sg13_hv_nmos
+* device instance $4 r0 *1 65,80 sg13_hv_nmos
+X$4 \$1 \$27 \$24 \$1 sg13_hv_nmos
+* device instance $5 r0 *1 155,80 sg13_hv_nmos
+X$5 \$1 \$5 \$25 \$1 sg13_hv_nmos
+* device instance $6 r0 *1 180,80 sg13_hv_nmos
+X$6 \$1 \$25 \$23 \$1 sg13_hv_nmos
+* device instance $7 r0 *1 0,60 sg13_hv_pmos
+X$7 \$5 \$23 \$19 \$19 sg13_hv_pmos
+* device instance $8 r0 *1 45,60 sg13_hv_pmos
+X$8 \$7 \$23 \$19 \$19 sg13_hv_pmos
+* device instance $9 r0 *1 180,60 sg13_hv_pmos
+X$9 \$3 \$23 \$19 \$19 sg13_hv_pmos
+* device instance $10 r0 *1 20,100 sg13_hv_pmos
+X$10 \$26 \$7 \$34 \$19 sg13_hv_pmos
+* device instance $11 r0 *1 45,100 sg13_hv_pmos
+X$11 \$27 \$5 \$34 \$19 sg13_hv_pmos
+* device instance $12 r0 *1 20,120 sg13_hv_pmos
+X$12 \$34 \$23 \$19 \$19 sg13_hv_pmos
+* device instance $13 r0 *1 45,120 sg13_hv_pmos
+X$13 \$23 \$24 \$19 \$19 sg13_hv_pmos
+* device instance $14 r0 *1 70,120 sg13_hv_pmos
+X$14 \$24 \$24 \$19 \$19 sg13_hv_pmos
+* device instance $15 r0 *1 214.37,-3.01 pnpMPA
+X$15 \$1 \$1 \$2 pnpMPA
+* device instance $16 r0 *1 -2.75,26.99 pnpMPA
+X$16 \$1 \$1 \$5 pnpMPA
+* device instance $17 r0 *1 121,26.99 pnpMPA
+X$17 \$1 \$1 \$6 pnpMPA
+* device instance $18 r0 *1 127,26.99 pnpMPA
+X$18 \$1 \$1 \$6 pnpMPA
+* device instance $19 r0 *1 133,26.99 pnpMPA
+X$19 \$1 \$1 \$6 pnpMPA
+* device instance $20 r0 *1 139,26.99 pnpMPA
+X$20 \$1 \$1 \$6 pnpMPA
+* device instance $21 r0 *1 145,26.99 pnpMPA
+X$21 \$1 \$1 \$6 pnpMPA
+* device instance $22 r0 *1 151,26.99 pnpMPA
+X$22 \$1 \$1 \$6 pnpMPA
+* device instance $23 r0 *1 157,26.99 pnpMPA
+X$23 \$1 \$1 \$6 pnpMPA
+* device instance $24 r0 *1 163,26.99 pnpMPA
+X$24 \$1 \$1 \$6 pnpMPA
+* device instance $25 r0 *1 179.995,14.995 rppd
+X$25 \$3 \$2 \$1 rppd
+* device instance $26 r0 *1 44.995,43.995 rppd
+X$26 \$7 \$6 \$1 rppd
+* device instance $27 r0 *1 99.995,87.995 rhigh
+X$27 \$19 \$25 \$1 rhigh
+.ENDS sg13cmos5l_bandgap_top

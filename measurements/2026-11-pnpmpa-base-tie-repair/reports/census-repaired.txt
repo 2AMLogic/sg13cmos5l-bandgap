@@ -1,0 +1,18 @@
+# layout/sg13cmos5l-bandgap_top/sg13cmos5l-bandgap_top.gds: top=sg13cmos5l_bandgap_top dbu=0.001
+raw Cont boxes (hierarchy walk): 1883
+merged Cont polygons overlapping nSD: 2
+NWell islands: 12 (gate-carrying MOS wells: 2, gate-free PNP wells: 10)
+PNP well  0 bbox=(-1.70,28.04): baseActiv=1p baseCont=24p bridged(Activ&M1)=24p emitCont=18p emitBridged=18p
+PNP well  1 bbox=(122.05,28.04): baseActiv=1p baseCont=24p bridged(Activ&M1)=24p emitCont=18p emitBridged=18p
+PNP well  2 bbox=(128.05,28.04): baseActiv=1p baseCont=24p bridged(Activ&M1)=24p emitCont=18p emitBridged=18p
+PNP well  3 bbox=(134.05,28.04): baseActiv=1p baseCont=24p bridged(Activ&M1)=24p emitCont=18p emitBridged=18p
+PNP well  4 bbox=(140.05,28.04): baseActiv=1p baseCont=24p bridged(Activ&M1)=24p emitCont=18p emitBridged=18p
+PNP well  5 bbox=(146.05,28.04): baseActiv=1p baseCont=24p bridged(Activ&M1)=24p emitCont=18p emitBridged=18p
+PNP well  6 bbox=(152.05,28.04): baseActiv=1p baseCont=24p bridged(Activ&M1)=24p emitCont=18p emitBridged=18p
+PNP well  7 bbox=(158.05,28.04): baseActiv=1p baseCont=24p bridged(Activ&M1)=24p emitCont=18p emitBridged=18p
+PNP well  8 bbox=(164.05,28.04): baseActiv=1p baseCont=24p bridged(Activ&M1)=24p emitCont=18p emitBridged=18p
+PNP well  9 bbox=(215.42,-1.96): baseActiv=1p baseCont=24p bridged(Activ&M1)=24p emitCont=18p emitBridged=18p
+total bridged base contacts across PNP wells: 240
+base-ring Cont polygons that are not an exact 0.16 x 0.16 um box: 0
+base-ring Cont space violations (< Cnt.b = 0.18 um): 0
+contacts touching both base Activ and in-well pSD: 0

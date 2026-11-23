@@ -521,8 +521,8 @@ def draw_pnpmpa(
     * **emitter** -- a ``w x l`` p+ ``Activ`` window (``pSD``-covered)
       inside the n-well, contacted to a Metal1 pad;
     * **base** -- an n+ ``Activ`` ring inside the *same* n-well (no ``pSD``
-      over it; since issue #240 it carries an explicit ``nSD`` marker ring,
-      see below), contacted to a Metal1 ring: the well itself is the base;
+      and no ``nSD`` over it: the PCell's own complement idiom, restored by
+      DR-0022), contacted to a Metal1 ring: the well itself is the base;
     * **collector** -- a p+ ``Activ`` ring **outside** the n-well
       (``pSD``-covered), i.e. a substrate tie: the p-substrate is the
       collector. This is why the schematic wires collector and base
@@ -562,47 +562,64 @@ def draw_pnpmpa(
     # -- base: n+ Activ ring in the same NWell + Metal1 ring ---------------
     br_x0, br_y0 = x0 - d["w2act"] - d["dw2act"], y0 - d["h2act"] - d["dh2act"]
     br_x1, br_y1 = x0 + d["w2act"] + d["dw2act"], y0 + d["h2act"] + d["dh2act"]
-    b.ring(L_ACTIV, br_x0, br_y0, br_x1, br_y1, min(d["dw2act"], d["dh2act"]))
-    # Issue #240: an explicit ``nSD`` ring over the same four walls. The n+
-    # base ring has always been n+ *electrically* (the well is the PNP's
-    # base, and this ring is its contact), but CMOS5L's own PCell idiom
-    # draws n+ as pSD's complement -- no implant marker on the ring -- so
-    # any marker-keyed derivation (klt erc's ``ties[]`` boolean, the deck's
-    # ``tap_nplus``) was structurally blind to it. Drawing the marker makes
-    # the physically-real tie gradeable: same coordinates, same wall width
-    # as the ``Activ`` ring above, and strictly inside the well (``wnwell``
-    # clears the ring's outer edge by 0.31 um for every instantiated size,
-    # per :func:`pnpmpa_extent`'s own formulae). It does deviate from the
-    # PDK PCell's own mask set -- the documented trade issue #240 names for
-    # this cause -- and it must never reach the emitter's ``pSD`` (this
-    # ring's inner edge sits ``PSD_C`` outside it, the same implant spacing
-    # the PCell itself keeps between the two).
-    b.ring(L_NSD, br_x0, br_y0, br_x1, br_y1, min(d["dw2act"], d["dh2act"]))
+    # The wall must be able to hold one contact: ``Cnt_a`` wide plus its two
+    # ``Cnt_c`` Activ enclosures, 0.16 + 2*0.07 = 0.30 um. The PCell's own
+    # thin-wall intermediate ``dh2act = 0.29`` falls 0.01 um short of that,
+    # which is exactly the underflow #170 found: at a wall below
+    # ``Cnt_a + 2*Cnt_c`` every base-ring ``cont_array`` below spans less
+    # than one contact in its thin dimension and silently draws nothing,
+    # leaving the n+ ring, the NWell base region and the Metal1 ring three
+    # electrically unconnected conductors -- a base tie that exists in the
+    # schematic but not in the stream. The wall widens inward from the
+    # PCell's own outer extents (``br_*`` above, unchanged), so every
+    # outer-edge clearance -- the 0.31 um NWell margin, the collector-ring
+    # spacing, the callers' routing coordinates against ``*_ring_m1`` -- is
+    # exactly what it was; only the ring's inner edge moves, by the 0.01 um
+    # the PCell's ``dh2act`` was short. The PCell itself avoids the same
+    # underflow on its side walls by keying their width to
+    # ``dw2act = max(wact, 0.3) >= 0.30`` and contacting only those.
+    wall = max(min(d["dw2act"], d["dh2act"]), CNT_A + 2 * CNT_C)
+    b.ring(L_ACTIV, br_x0, br_y0, br_x1, br_y1, wall)
+    # No ``nSD`` marker over this ring (DR-0022 supersedes the #240 draw and
+    # 0018's keep). The PCell idiom draws the n+ base as ``pSD``'s complement
+    # with no marker of its own, and the PDK runset's ``pnp`` derivation
+    # *excludes* ``nsd_drw``-covered regions (``bjt_derivations.lvs``:
+    # ``bjt_exclude = gatpoly.join(pwell_block).join(nsd_drw)``), so the
+    # marker was exactly what blocked ``pnpMPA`` recognition on the runset
+    # engine -- and it never made the tie gradeable anyway, because no
+    # contact existed under it (#170: the marker-keyed ERC form reported
+    # "no tap contact drawn" on the very stream that drew the marker). The
+    # tie is graded on drawn contacts now, not implant markers. The two MOS
+    # well-tap ``nSD`` islands (:func:`draw_well_tap`) and the ``rhigh``
+    # body marker (``_draw_poly_res``) are untouched.
     base_ring_m1 = (br_x0 + 0.02, br_y0 + 0.02, br_x1 - 0.02, br_y1 - 0.02)
     b.ring(
         L_METAL1, *base_ring_m1,
-        width=min(d["dw2act"], d["dh2act"]) - 0.04, open_top=True,
+        width=wall - 0.04, open_top=True,
     )
-    wall = min(d["dw2act"], d["dh2act"])
     cont_array(b, br_x0 + CNT_C, br_y0 + CNT_C, br_x0 + wall - CNT_C, br_y1 - CNT_C)
     cont_array(b, br_x1 - wall + CNT_C, br_y0 + CNT_C, br_x1 - CNT_C, br_y1 - CNT_C)
-    cont_array(b, br_x0 + CNT_C, br_y0 + CNT_C, br_x1 - CNT_C, br_y0 + wall - CNT_C)
+    # The bottom row stops CNT_B short of the two side columns: spanning the
+    # full width overlapped their bottom contacts at both corners and merged
+    # into L-shaped (ContBar-class) polygons.
+    cont_array(
+        b,
+        br_x0 + wall - CNT_C + CNT_B, br_y0 + CNT_C,
+        br_x1 - wall + CNT_C - CNT_B, br_y0 + wall - CNT_C,
+    )
     base_ring = (br_x0, br_y0, br_x1, br_y1)
     b.net_label(base_net, br_x0 + wall / 2, y0)
 
     # -- the well itself: the PNP's base region ----------------------------
     # Left deliberately unlabelled (no ``NWell.pin`` text): the well *is*
-    # the PNP's base, and since issue #240's explicit ``nSD`` marker ring
-    # the deck's ``tap_nplus`` derivation (klayout-tools#1414, in klt
-    # builds from 0.5.0 on) connects it to the base ring's own net without
-    # any label -- the marker-keyed tap is the connection, which is the
-    # whole reason the marker is drawn. A ``NWell.pin`` text on top would
-    # name the same net a second way but change nothing else, so it stays
-    # off rather than doubling the label surface. (Pre-#240, against the
-    # 0.3.0-era deck that declared no tap derivation at all, this well
-    # extracted as an isolated region a label could not connect -- the
-    # floating-well evidence ``layout/README.md`` "SG13CMOS5L: LVS
-    # -- ``mismatch``, fully attributed", cause 4, documents.)
+    # the PNP's base, and since #170's repair the base ring's own ``Cont``
+    # rows connect it -- through the ring's n+ ``Activ`` and its Metal1 --
+    # to the ``base_net`` label without any well text of its own. A
+    # ``NWell.pin`` text on top would name the same net a second way but
+    # change nothing else, so it stays off rather than doubling the label
+    # surface. (Before the repair, with zero contacts on the ring, this well
+    # was a floating node no label could connect -- the ten-floating-base
+    # runset evidence #166 recorded and #170 cites.)
     b.box(L_NWELL, x0 - d["wnwell"], y0 - d["hnwell"], x0 + d["wnwell"], y0 + d["hnwell"])
 
     # -- collector: p+ substrate ring outside the well ---------------------
