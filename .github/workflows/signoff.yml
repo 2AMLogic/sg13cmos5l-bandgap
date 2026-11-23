@@ -2,9 +2,12 @@ name: klt signoff
 
 # The block's T1 tier state is graded, not hand-read: re-render the
 # tier-verdict report from the committed block manifest and byte-compare it
-# against the committed verdict of record. A manifest, vendored checklist or
-# cited-evidence change without a regenerated record fails here.
-# See manifests/README.md.
+# against the committed verdict of record. The T1 checklist is not vendored
+# here: it is the docs/design-evidence-tiers.md bundled in the pinned
+# klayout-tools release (2AMLogic/klayout-tools at the v0.8.0 tag), so a
+# checklist change can only arrive as a pin bump, and this comparison is
+# what catches it. A manifest or cited-evidence change without a
+# regenerated record fails here. See manifests/README.md.
 
 on:
   push:
@@ -44,7 +47,6 @@ jobs:
           set -uo pipefail
           rc=0
           klt signoff --manifest manifests/sg13cmos5l-bandgap.json \
-                      --tiers-doc manifests/design-evidence-tiers.md \
                       --format json > "$RUNNER_TEMP/fresh-signoff.json" || rc=$?
           # 0 = every T1 item met; 3 = grader ran clean, some item unmet.
           # Anything else is a hard error.

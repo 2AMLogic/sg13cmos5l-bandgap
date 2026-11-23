@@ -230,7 +230,7 @@ no bound is relaxed). Filed upstream as
 spec/          ratified spec + decision records + porting plan
 design/        schematics / netlists (xschem)
 sim/           testbenches + PVT corner results (ngspice)
-manifests/     T1 block manifest, vendored checklist, signoff record
+manifests/     T1 block manifest, signoff record
 attest/        attestation inventories (signoff inputs)
 evidence/      generated per-item evidence records
 layout/        GDS + DRC/LVS reports (klayout-tools driven)
