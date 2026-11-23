@@ -31,7 +31,7 @@ byte-for-byte (checked with `cmp`, klayout 0.30.12). Run `git diff` after.
 ## Evidence
 
 T1 item 2 cites `evidence/item2.json`, bound to the top GDS
-(`sha256:10c43369670f…`) with a regeneration claim. klayout-tools 0.8.0 has no
+(`sha256:7f6e35d5fa145…`) with a regeneration claim. klayout-tools 0.8.0 has no
 verb that emits an item-2 envelope (`klt signoff --attest` covers items 1, 9
 and 10), so `attest/make-item2-envelope.py` writes it; it does not run the
 generator. After regenerating, pass the fresh stream with `--regenerated`,
@@ -55,8 +55,8 @@ From `klt stats` on `sg13cmos5l-bandgap_top.gds`, top cell
   Area row of `spec/target-spec.md` is "whole `bandgap_top` cell"). Unchanged
   by the 0021 repair — the base-ring walls widen inward from the fixed PCell
   outer extents.
-- Drawn area, all layers, overlaps unioned: 21 153.96 µm²
-  (raw sum 21 253.49 µm²; down from 21 177.44 / 21 279.96 on the superseded
+- Drawn area, all layers, overlaps unioned: 21 153.49 µm²
+  (raw sum 21 252.98 µm²; down from 21 177.44 / 21 279.96 on the superseded
   stream — the ten removed `nSD` rings outweigh the widened base walls).
 
 This gives the number only; no budget is set, and the Area row stays
@@ -106,7 +106,7 @@ stream hash. Decision record
 the spec from the pinned source and records the runs.
 
 **Binding after 0021** (#170's repair): the committed stream is now the
-repaired `sha256:10c43369670f…`, and this production spec — #167's file,
+repaired `sha256:7f6e35d5fa145…`, and this production spec — #167's file,
 unchanged here — keys its PNP tie on the #240 `nSD` marker the repaired
 stream no longer draws, so run against the repaired stream it reports ten
 "no tap contact drawn" findings. That marker-only form is the known weak

@@ -35,9 +35,9 @@ the inventory, which is the state this directory records.
 
 ## The run of record
 
-`20261121T073638Z-5968a91` — `klt pex --extract-only --deck sg13cmos5l` on
+`20261123T113843Z-2e66606` — `klt pex --extract-only --deck sg13cmos5l` on
 `layout/sg13cmos5l-bandgap_top/sg13cmos5l-bandgap_top.gds`
-(`sha256:10c43369670f…`, the repaired stream [0021](../../spec/decision-records/0021-pnpmpa-base-tie-contacts.md)
+(`sha256:7f6e35d5fa145…`, the repaired stream [0021](../../spec/decision-records/0021-pnpmpa-base-tie-contacts.md)
 cites for items 2 and 3 — this directory's record pins the layout hash, so
 the 0021 regeneration forced this re-run), top cell
 `sg13cmos5l_bandgap_top`, `--pins vdd,vss,vref --rename-declared-pins`, `--pdk
@@ -92,7 +92,7 @@ netlists: no PDK, no simulator, no klt, no network.
 ```bash
 python3 -I sim/tools/pex_device_inventory.py \
     --schematic design/sg13cmos5l/netlist/bandgap_top.spice \
-    --extracted sim/pex-bandgap-top/extracted/20261121T073638Z-5968a91.spice \
+    --extracted sim/pex-bandgap-top/extracted/20261123T113843Z-2e66606.spice \
     --extracted-top sg13cmos5l_bandgap_top
 ```
 

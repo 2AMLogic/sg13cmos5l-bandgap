@@ -46,12 +46,18 @@ never contacts its `dh2act = 0.29` thin walls.
    NWell margin, the collector-ring spacing, the cell bbox and every
    routing coordinate against `*_ring_m1` are exactly what they were; only
    the ring's inner edge moves, by the 0.01 µm `dh2act` was short (the
-   pSD-to-base-Activ gap in the thin wall goes 0.18 → 0.17 µm, DRC-clean).
-   Each ring now draws 26 `Cont` boxes (9 left + 9 right + 8 bottom,
-   `Cnt_a` on a `Cnt_a + Cnt_b` pitch with exact `Cnt_c` enclosures),
-   merging to 24 polygons at the two bottom corners where the side and
-   bottom rows meet — the same corner-merge the collector ring has always
-   had. The Metal1 ring keeps its 0.02 µm insets (`width = wall − 0.04`),
+   pSD-to-base-Activ gap in the thin wall goes 0.18 → 0.17 µm; the PDK's
+   `pSD.d1` floor for that gap is 0.03 µm, a rule the curated `sg13cmos5l`
+   deck does not implement — see Evidence).
+   Each ring now draws 24 `Cont` boxes (9 left + 9 right + 6 bottom,
+   `Cnt_a` on a `Cnt_a + Cnt_b` pitch with exact `Cnt_c` enclosures). The
+   bottom row's span is trimmed by `Cnt_b` at each end so it clears the two
+   side columns' bottom contacts: spanning the full width (the first
+   revision of this repair) overlapped them at both corners and merged
+   into 20 L-shaped, non-square `Cont` polygons chip-wide, which the PDK
+   deck classes as `ContBar` and fails against `CntB.a`/`CntB.a1`/`CntB.b2`.
+   Every merged base-ring `Cont` polygon is now an exact 0.16 × 0.16 µm
+   box, checked directly by the census. The Metal1 ring keeps its 0.02 µm insets (`width = wall − 0.04`),
    which at the new wall gives exactly `M1_c1` coverage on both sides of
    the contact row. The `cont_array` guard itself is unchanged and correct.
 
@@ -73,7 +79,7 @@ never contacts its `dh2act = 0.29` thin walls.
    updated, and the signoff record regenerated — plus one re-run the
    committed evidence itself forced: `sim/pex-bandgap-top`'s record pins
    the layout hash it measured, so `sim/pex-run.sh` was re-run on the
-   repaired stream (`20261121T073638Z-5968a91`: same 17 devices / 13 nets /
+   repaired stream (`20261123T113843Z-2e66606`: same 17 devices / 13 nets /
    66 R / 13 C cards, `parasitic_integrity` clean, `body_bias` biased, the
    same `not_checked` extract-only status and the same pnpMPA inventory
    mismatch 0012 records) and the manifest's item-7 citation now names the
@@ -87,7 +93,7 @@ never contacts its `dh2act = 0.29` thin walls.
    `unmet / check_failed`, unchanged. **Superseded commits of record**:
    item 2 at `33249ff` (PR #41), item 3 at `fce5dca` (PR #44). **Streams
    of record**: superseded top `sha256:4e4e4f85fa08…`, repaired top
-   `sha256:10c43369670ff…` (core `832b570e7d10…` → `fb6af4dc470f…`).
+   `sha256:7f6e35d5fa145…` (core `832b570e7d10…` → `7fc6bb248e7b…`).
 
 4. **0018's disclosure rule lapses for the repaired stream** — its own §4
    condition is met: a runset-engine extraction of the repaired committed
@@ -115,6 +121,17 @@ negative control; `erc_status: "clean"` at the repaired hash, both supplies
 runs. Every row carries its tool versions and input hashes in its report
 file.
 
+**What the curated DRC deck does not cover.** `klt drc --deck sg13cmos5l`
+checks only `5.1 NWell`, `5.5 Activ`, `5.8 GatPoly`, `5.16 Metal1`, `5.17
+Metaln` and `5.19–5.22 Via/TopMetal` (`layout/sg13cmos5l-bandgap_top/drc.json`
+→ `coverage.deck_scope`); it has no `5.14 Cont` / `5.15 ContBar` rule and no
+`5.10 pSD` rule. The base-ring contact shape and spacing are therefore graded
+by `census.py` (every merged base-ring `Cont` polygon an exact 0.16 × 0.16 µm
+box, minimum contact space ≥ `Cnt.b` = 0.18 µm), and the 0.17 µm pSD-to-base-
+Activ gap is held against the PDK's own `pSD.d1` (min pSD space to N+ Activ
+in NWell, 0.03 µm, `sg13cmos5l_maximal.drc`), not against the curated deck.
+The emitter-to-base `Activ` gap (0.35 µm vs `activ.space.1` 0.21 µm) is the
+one the curated deck does check.
 The production ERC spec (`erc-supply-spec.json`, DR-0020) keeps its
 marker-keyed `pnp_base_well_tap_vss` tie and its committed report stays
 bound to the superseded `4e4e4f85` stream: #167 owns that file, the
@@ -139,7 +156,8 @@ diff with identical contact content. A centre-row placement that "fits" the
 layout, not for the PDK: the simplified footprint's uniform-wall idiom and
 its three-wall (open-top) contact scheme are what the callers' straps and
 escape routes were built and DRC-proven against; the guidance for this
-repair keeps them and requires the corner check instead.
+repair keeps them and requires the corner check instead (the bottom row is
+trimmed to clear the side columns by `Cnt_b`).
 
 ## Consequences
 

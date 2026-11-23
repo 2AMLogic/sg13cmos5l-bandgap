@@ -47,7 +47,7 @@
         }
       },
       "entry": "sg13cmos5l_bandgap_top",
-      "netlist": "sim/pex-bandgap-top/extracted/20261121T073638Z-5968a91.spice",
+      "netlist": "sim/pex-bandgap-top/extracted/20261123T113843Z-2e66606.spice",
       "parasitic_and_primitive_cards": {
         "capacitor_cards": 13,
         "inductor_cards": 0,
@@ -96,8 +96,8 @@
       "warnings": []
     }
   },
-  "envelope": "sim/pex-bandgap-top/envelopes/20261121T073638Z-5968a91.json",
-  "extracted_netlist": "sim/pex-bandgap-top/extracted/20261121T073638Z-5968a91.spice",
+  "envelope": "sim/pex-bandgap-top/envelopes/20261123T113843Z-2e66606.json",
+  "extracted_netlist": "sim/pex-bandgap-top/extracted/20261123T113843Z-2e66606.spice",
   "extraction": {
     "device_count": 17,
     "model": {
@@ -116,7 +116,7 @@
   "label": "LAYOUT-DERIVED (extraction only; no simulation leg)",
   "layout": {
     "path": "layout/sg13cmos5l-bandgap_top/sg13cmos5l-bandgap_top.gds",
-    "sha256": "10c43369670ffbfcf7a553830f2edcea1ed44f30bdb4d2088f35f37ebd131e5c",
+    "sha256": "7f6e35d5fa145a71b3883e9be0304662631b089ce7dcc498262899a1ba322d75",
     "top_cell": "sg13cmos5l_bandgap_top"
   },
   "measurement": {
@@ -131,7 +131,7 @@
     "pin_file": "sim/pdk.json"
   },
   "pdk_revision": "f7bca32694fe3d58be0cc7d9df4b9f5db7161a14",
-  "repo_git_sha": "5968a91",
+  "repo_git_sha": "2e66606",
   "schema_version": 1,
   "schematic_dut": {
     "path": "design/sg13cmos5l/netlist/bandgap_top.spice",
@@ -150,7 +150,7 @@
   ],
   "status": "failed",
   "t1_item": 7,
-  "timestamp_utc": "20261121T073638Z",
+  "timestamp_utc": "20261123T113843Z",
   "tool": {
     "deck": "sg13cmos5l",
     "deck_content_hash": "sha256:5a43b8eb0e1a4c228169cd33d820bf75ca5640812587f68c07f24f4aa2a1738f",

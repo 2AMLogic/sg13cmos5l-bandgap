@@ -53,6 +53,9 @@ def main(path):
     in_well_psd = psd.inside(pnp_wells)
 
     total_bridged = 0
+    non_box = 0
+    min_space = None
+    cnt_a, cnt_b = round(0.16 / ly.dbu), round(0.18 / ly.dbu)
     for i, well in enumerate(sorted(pnp_wells.each(), key=lambda p: (p.bbox().left, p.bbox().bottom))):
         wr = kdb.Region(well)
         wb = well.bbox()
@@ -64,6 +67,17 @@ def main(path):
         emit_cont = wc.interacting(emitter_activ)
         emit_bridged = emit_cont.interacting(m1)
         total_bridged += base_bridged.count()
+        # Contact shape/space checked here directly: the curated klt DRC deck
+        # has no 5.14 Cont / 5.15 ContBar rules, so DRC does not cover them.
+        polys = list(base_cont.each())
+        non_box += sum(
+            1 for q in polys
+            if not (q.is_box() and q.bbox().width() == cnt_a and q.bbox().height() == cnt_a)
+        )
+        sp = base_cont.space_check(cnt_b - 1, False, kdb.Region.Euclidian)
+        well_min = sp.count()
+        if well_min:
+            min_space = (min_space or 0) + well_min
         print(
             f"PNP well {i:2d} bbox=({wb.left * ly.dbu:.2f},{wb.bottom * ly.dbu:.2f}): "
             f"baseActiv={base_activ.count()}p "
@@ -71,6 +85,8 @@ def main(path):
             f"emitCont={emit_cont.count()}p emitBridged={emit_bridged.count()}p"
         )
     print(f"total bridged base contacts across PNP wells: {total_bridged}")
+    print(f"base-ring Cont polygons that are not an exact 0.16 x 0.16 um box: {non_box}")
+    print(f"base-ring Cont space violations (< Cnt.b = 0.18 um): {min_space or 0}")
 
     base_all = act.inside(pnp_wells).not_interacting(psd)
     shared = cont.interacting(base_all).interacting(in_well_psd)

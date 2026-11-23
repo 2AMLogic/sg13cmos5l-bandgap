@@ -724,10 +724,10 @@
       "released": true
     },
     "input": {
-      "content_hash": "sha256:10c43369670ffbfcf7a553830f2edcea1ed44f30bdb4d2088f35f37ebd131e5c",
+      "content_hash": "sha256:7f6e35d5fa145a71b3883e9be0304662631b089ce7dcc498262899a1ba322d75",
       "role": "layout"
     },
-    "klayout_version": "0.30.13",
+    "klayout_version": "0.30.14",
     "klt_version": "0.8.0",
     "pdk": {
       "name": "ihp-sg13cmos5l",

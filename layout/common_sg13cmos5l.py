@@ -599,8 +599,15 @@ def draw_pnpmpa(
     )
     cont_array(b, br_x0 + CNT_C, br_y0 + CNT_C, br_x0 + wall - CNT_C, br_y1 - CNT_C)
     cont_array(b, br_x1 - wall + CNT_C, br_y0 + CNT_C, br_x1 - CNT_C, br_y1 - CNT_C)
-    cont_array(b, br_x0 + CNT_C, br_y0 + CNT_C, br_x1 - CNT_C, br_y0 + wall - CNT_C)
-    base_ring = (br_x0, br_y0, br_x1, br_y1)
+    # The bottom row stops CNT_B short of the two side columns: spanning the
+    # full width overlapped their bottom contacts at both corners and merged
+    # into L-shaped (ContBar-class) polygons.
+    cont_array(
+        b,
+        br_x0 + wall - CNT_C + CNT_B, br_y0 + CNT_C,
+        br_x1 - wall + CNT_C - CNT_B, br_y0 + wall - CNT_C,
+    )
+    base_ring =(br_x0, br_y0, br_x1, br_y1)
     b.net_label(base_net, br_x0 + wall / 2, y0)
 
     # -- the well itself: the PNP's base region ----------------------------

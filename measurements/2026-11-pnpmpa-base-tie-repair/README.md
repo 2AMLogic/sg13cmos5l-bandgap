@@ -21,8 +21,8 @@ Run 2026-11-21 on the `#170` repair branch by the Loom Builder.
 | Item | Value |
 |---|---|
 | Superseded top stream | `4e4e4f85fa0875651c294c95a1f65792fa1913dd20d027fbe6905f2d001cb330` (main `5968a91`, 0018's stream; extracted with `git show` for the control runs) |
-| Repaired top stream | `layout/sg13cmos5l-bandgap_top/sg13cmos5l-bandgap_top.gds`, `sha256:10c43369670ffbfcf7a553830f2edcea1ed44f30bdb4d2088f35f37ebd131e5c` |
-| Superseded / repaired core leaf | `832b570e7d10…` → `fb6af4dc470f…` |
+| Repaired top stream | `layout/sg13cmos5l-bandgap_top/sg13cmos5l-bandgap_top.gds`, `sha256:7f6e35d5fa145a71b3883e9be0304662631b089ce7dcc498262899a1ba322d75` |
+| Superseded / repaired core leaf | `832b570e7d10…` → `7fc6bb248e7b…` |
 | Retained leaves | amp `f277d9855772…`, startup `a18f8c052af3…` — byte-identical, untouched |
 | Regeneration | `uv run --with klayout python3 layout/sg13cmos5l-bandgap_{core,top}/generate.py` (amp/startup committed); a second full regeneration is byte-identical (`cmp`, both streams) |
 | PDK | `~/share/pdk/ihp-sg13cmos5l`, revision `f7bca32694fe3d58be0cc7d9df4b9f5db7161a14` (store marker `.pdk-store.json`) |
@@ -42,15 +42,20 @@ emitter-window contacts.
 | Stream | raw Cont boxes | Cont∩nSD | gate-free wells | base contacts/well (bridged) | emitter contacts/well |
 |---|---|---|---|---|---|
 | superseded | 1643 | 2 | 10 | **0** (0) | 18 |
-| repaired | 1903 | 2 | 10 | **24** (24) | 18 |
+| repaired | 1883 | 2 | 10 | **24** (24) | 18 |
 
 The superseded row reproduces #166's census exactly (1643 / 2 / 0 / 18). The
-repaired stream draws 26 Cont boxes per ring (9 left + 9 right + 8 bottom,
-`cont_array` on the 0.30 µm wall) that merge into 24 polygons at the two
-bottom corners where the side and bottom rows meet — the corner-merge the
-issue's implementation guidance names; the collector ring has always merged
-the same way (its `d3act = 0.35` wall yields one contact per position). DRC
-(measurement D) checks the spacing. No contact touches both base Activ and
+repaired stream draws 24 Cont boxes per ring (9 left + 9 right + 6 bottom,
+`cont_array` on the 0.30 µm wall), the bottom row trimmed by `Cnt_b` at each
+end so it clears the side columns; all 24 are separate, exact 0.16 × 0.16 µm
+squares. (The first revision of this repair spanned the bottom row full
+width, overlapping the side columns' bottom contacts and merging into 20
+L-shaped polygons chip-wide — caught in review, fixed, and now caught by the
+census itself: that revision reports 20 non-box polygons.) `census.py`
+checks directly that every merged base-ring Cont polygon is an exact box and
+that no two are closer than `Cnt.b` = 0.18 µm (both 0 violations on the
+repaired stream); the curated DRC deck has no `Cont` rule, so measurement D
+does not cover contact shape or spacing. No contact touches both base Activ and
 in-well pSD on either stream: the emitter stays isolated from the ring. The
 2 Cont∩nSD are the two MOS well-tap islands — the only nSD left in the
 stream besides startup's `rhigh` body marker.
@@ -99,8 +104,15 @@ neither form has a floating base). Net names: the runset reads none from
 Reports committed as `layout/sg13cmos5l-bandgap_{core,top}/drc.json`
 (input-hash refresh only; coverage identical to the superseded baseline:
 same 24 `rules_skipped`, all `no_applicable_geometry`, same rule-free layer
-list). The 0.17 µm pSD-to-base-Activ gap the inward widening leaves (0.18 →
-0.17 in the thin wall's inner edge) is clean on this deck.
+list). The curated deck's scope is `5.1 NWell`, `5.5 Activ`, `5.8 GatPoly`,
+`5.16 Metal1`, `5.17 Metaln`, `5.19–5.22`; `rules_checked` has **no**
+`5.14 Cont`/`5.15 ContBar` and **no** `5.10 pSD` rule, so this row says nothing
+about contacts or pSD. The 0.17 µm pSD-to-base-Activ gap the inward widening
+leaves (0.18 → 0.17 in the thin wall's inner edge) is held against the PDK's
+`pSD.d1` (min pSD space to N+ Activ in NWell = 0.03 µm,
+`sg13cmos5l_maximal.drc`), which the curated deck does not implement; the
+emitter-to-base `Activ` gap (0.35 µm vs `activ.space.1` 0.21 µm) is the one
+it does check.
 
 ## Files
 
