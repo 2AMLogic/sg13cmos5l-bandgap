@@ -30,8 +30,14 @@ jobs:
         with:
           python-version: "3.10"
 
+      # klayout is pinned next to klt because the item-2 rerun below
+      # byte-compares GDS that this klayout writes; like the klt pin, a
+      # klayout writer-output change must arrive here as a deliberate pin
+      # bump together with a regenerated envelope, never as job-time
+      # version drift. 0.30.14 is measured to reproduce the committed
+      # stream (issue #184).
       - name: Install pinned klt
-        run: pip install klayout-tools==0.8.0
+        run: pip install klayout-tools==0.8.0 klayout==0.30.14
 
       - name: Check the item-9 inventory pins and that every offline suite is attested under item 10
         run: bash sim/tests/test-attest-pins.sh
@@ -43,11 +49,10 @@ jobs:
         run: klt signoff --attest 9 --inventory attest/item9.json --check evidence/item9.json --format text
 
       # Reruns the four layout generators in a temp copy (klayout only, no PDK) and
-      # compares the rebuilt item-2 envelope with the committed one.
+      # compares the rebuilt item-2 envelope with the committed one. klayout comes
+      # from the pinned install above, so the rerun sees the same writer as klt.
       - name: Check the item-2 envelope against a fresh generator rerun
-        run: |
-          pip install klayout
-          python3 -I attest/make-item2-envelope.py --check
+        run: python3 -I attest/make-item2-envelope.py --check
 
       - name: Re-run klt signoff and compare against the committed record
         run: |
