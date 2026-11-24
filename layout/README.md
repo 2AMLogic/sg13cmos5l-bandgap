@@ -71,9 +71,14 @@ byte-for-byte (checked with `cmp`, klayout 0.30.12). Run `git diff` after.
 T1 item 2 cites `evidence/item2.json`, bound to the top GDS
 (`sha256:7222dd7e542cd…`) with a regeneration claim. klayout-tools 0.8.0 has no
 verb that emits an item-2 envelope (`klt signoff --attest` covers items 1, 9
-and 10), so `attest/make-item2-envelope.py` writes it; it does not run the
-generator. After regenerating, pass the fresh stream with `--regenerated`,
-update the cited `content_hash` in the manifest, and regenerate the signoff
+and 10), so `attest/make-item2-envelope.py` writes it. The script reruns the
+four generators itself in a temp copy of `layout/` and hashes that fresh top
+stream as `regenerated_hash`; `content_hash` is the committed stream. A stale
+committed stream gives differing hashes (the grader's `stale_artifact`).
+`python3 -I attest/make-item2-envelope.py --check` rebuilds the envelope and
+compares it with `evidence/item2.json` without writing (`signoff.yml` runs it;
+it needs only `klayout`). After regenerating, rerun the script without
+`--check`, update the cited `content_hash` in the manifest, and regenerate the signoff
 record (`manifests/README.md`).
 
 The current envelope is [0022](../spec/decision-records/0022-pnpmpa-base-tie-contacts.md)'s

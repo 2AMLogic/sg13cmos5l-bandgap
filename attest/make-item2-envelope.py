@@ -4,19 +4,33 @@
 klt 0.8.0's `klt signoff --attest` covers items 1, 9 and 10 only; no `klt`
 verb emits the artifact-anchored generic envelope item 2 needs. This script
 writes that envelope in the shape `klt signoff --manifest` grades: bound to the
-committed top-level GDS, plus a regeneration claim naming the generator and
-the hash a fresh run produced. It never runs the generator: pass the stream a
-fresh run wrote with --regenerated (default: the committed stream itself, which
-is only meaningful after you have confirmed the rerun is byte-identical, see
-layout/README.md).
+committed top-level GDS (`content_hash`), plus a regeneration claim naming the
+generator and the hash a fresh run produced (`regenerated_hash`).
+
+The fresh run is measured, not assumed: the script copies layout/ to a temp
+directory, deletes the four .gds files in the copy, reruns the four generators
+there leaves-first (core, amp, startup, top) and hashes the temp top stream.
+The committed files are never touched. A stale committed stream therefore gives
+differing hashes, which the grader renders as `stale_artifact`. The generators
+need only `klayout` (no PDK): the current interpreter is used if it can import
+klayout, otherwise `uv run --with klayout`.
 
 Run from the repo root:
 
-    python3 -I attest/make-item2-envelope.py [--regenerated PATH]
+    python3 -I attest/make-item2-envelope.py            # write evidence/item2.json
+    python3 -I attest/make-item2-envelope.py --check    # compare, write nothing
+
+--check rebuilds the envelope in memory and compares it byte-for-byte with the
+committed evidence/item2.json; it exits 1 on drift (signoff.yml runs it).
 """
 import argparse
 import hashlib
 import json
+import os
+import shutil
+import subprocess
+import sys
+import tempfile
 
 GDS = "layout/sg13cmos5l-bandgap_top/sg13cmos5l-bandgap_top.gds"
 OUT = "evidence/item2.json"
@@ -26,16 +40,48 @@ GENERATOR = (
 )
 
 
+CELLS = ("core", "amp", "startup", "top")  # leaves first: the top reads their GDS
+
+
 def sha256(path):
     with open(path, "rb") as f:
         return "sha256:" + hashlib.sha256(f.read()).hexdigest()
 
 
+def generator_cmd():
+    try:
+        import klayout.db  # noqa: F401
+        return [sys.executable]
+    except ImportError:
+        if shutil.which("uv"):
+            return ["uv", "run", "--with", "klayout", "python3"]
+    sys.exit("error: needs the klayout Python module (pip install klayout) or uv on PATH")
+
+
+def regenerate():
+    """Rerun the four generators in a temp copy of layout/; return the top stream hash."""
+    cmd = generator_cmd()
+    with tempfile.TemporaryDirectory() as tmp:
+        shutil.copytree("layout", os.path.join(tmp, "layout"))
+        for dirpath, _, names in os.walk(os.path.join(tmp, "layout")):
+            for n in names:
+                if n.endswith(".gds"):
+                    os.remove(os.path.join(dirpath, n))
+        for c in CELLS:
+            gen = os.path.join(tmp, "layout", "sg13cmos5l-bandgap_" + c, "generate.py")
+            r = subprocess.run(cmd + [gen], cwd=tmp, capture_output=True, text=True)
+            if r.returncode != 0:
+                sys.exit("error: generator for %s failed (exit %d):\n%s" % (c, r.returncode, r.stderr))
+        return sha256(os.path.join(tmp, GDS))
+
+
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--regenerated", default=GDS, help="stream a fresh generator run wrote")
+    ap.add_argument("--check", action="store_true",
+                    help="compare the rebuilt envelope with the committed %s; write nothing" % OUT)
     args = ap.parse_args()
     committed = sha256(GDS)
+    regenerated = regenerate()
     envelope = {
         "schema_version": 1,
         "kind": "generic",
@@ -52,14 +98,21 @@ def main():
             "input": {"path": {"path": GDS, "scope": "repo"}, "content_hash": committed},
             "regeneration": {
                 "generator": GENERATOR,
-                "regenerated_hash": sha256(args.regenerated),
+                "regenerated_hash": regenerated,
             },
         },
     }
-    with open(OUT, "w") as f:
-        json.dump(envelope, f, indent=2)
-        f.write("\n")
-    print(OUT, committed)
+    envelope_bytes = (json.dumps(envelope, indent=2) + "\n").encode("utf-8")
+    if args.check:
+        with open(OUT, "rb") as f:
+            if f.read() != envelope_bytes:
+                sys.exit("error: %s differs from the rebuilt envelope (committed %s, regenerated %s)"
+                         % (OUT, committed, regenerated))
+        print(OUT, "is current", committed)
+        return
+    with open(OUT, "wb") as f:
+        f.write(envelope_bytes)
+    print(OUT, committed, "regenerated", regenerated)
 
 
 if __name__ == "__main__":
