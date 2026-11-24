@@ -102,16 +102,16 @@ def main():
             },
         },
     }
-    text = json.dumps(envelope, indent=2) + "\n"
+    envelope_bytes = (json.dumps(envelope, indent=2) + "\n").encode("utf-8")
     if args.check:
-        with open(OUT) as f:
-            if f.read() != text:
+        with open(OUT, "rb") as f:
+            if f.read() != envelope_bytes:
                 sys.exit("error: %s differs from the rebuilt envelope (committed %s, regenerated %s)"
                          % (OUT, committed, regenerated))
         print(OUT, "is current", committed)
         return
-    with open(OUT, "w") as f:
-        f.write(text)
+    with open(OUT, "wb") as f:
+        f.write(envelope_bytes)
     print(OUT, committed, "regenerated", regenerated)
 
 
