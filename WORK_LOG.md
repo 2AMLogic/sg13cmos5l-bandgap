@@ -3,6 +3,26 @@
 Chronological record of merged PRs and closed issues, maintained by the Guide
 triage agent. Newest first.
 
+### 2026-11-24
+
+- **PR #185**: ci: pin klayout alongside klt in the signoff job
+- **PR #182**: attest: measure item 2 regenerated hash by rerunning the generators
+- **Issue #184** (closed): Pin klayout for the item-2 fresh-rerun check in signoff.yml
+- **Issue #67** (closed): Remove the tautological --regenerated default from attest/make-item2-envelope.py: the item-2 regeneration claim is true by construction
+
+### 2026-11-23
+
+- **PR #183**: layout: keep pnpMPA collector bottom contacts clear of side columns
+- **PR #181**: spec: index decision record 0021 and require every record in the README index
+- **PR #179**: sim: drop the unread model_files inventory from pdk.json
+- **PR #178**: chore: stop vendoring the T1 checklist — the pinned klayout-tools release selects it
+- **PR #175**: fix(layout): draw the pnpMPA base tie as real geometry and drop its nSD markers (DR-0022)
+- **Issue #180** (closed): spec/README.md's decision-record list omits 0021-remove-vendored-tiers-checklist.md (landed unindexed in #178)
+- **Issue #177** (closed): layout(pnpMPA): collector-ring bottom contact row overlaps side columns at corners (20 non-square Cont polygons)
+- **Issue #170** (closed): pnpMPA base rings carry zero contacts: the base tie does not exist as drawn (draw_pnpmpa cont_array underflow at w=1u l=2u)
+- **Issue #81** (closed): Remove the vendored manifests/design-evidence-tiers.md: byte-identical to the checklist bundled in the pinned klayout-tools wheel
+- **Issue #66** (closed): Remove the unread model_files table from sim/pdk.json: fifth copy of the PVT section list, with a host-dependent column
+
 ### 2026-11-21
 
 - **PR #174**: docs(layout): add SG13CMOS5L layer numbers section to layout README
