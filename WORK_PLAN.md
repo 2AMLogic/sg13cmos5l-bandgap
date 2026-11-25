@@ -4,10 +4,10 @@ Roadmap generated from GitHub label state by the Guide triage agent. Only the
 region between the markers is machine-generated.
 
 <!-- guide:plan-body:start -->
-_Generated: 2026-11-21T08:28:06Z (snapshot; compare against live labels)_
+_Generated: 2026-11-25T21:13:10Z (snapshot; compare against live labels)_
 ## Operator Attention: Merge-Risk-Hold Pileup
 
-Judge-approved PRs under a hold (`loom:blocked` or `loom:operator`) — only a human merge decision is missing.
+Judge-approved PRs under a hold (`loom:blocked` or `loom:operator`) that require operator attention.
 
 - **#95**: feat(design): attest T1 item 1 on a normalized netlist-freshness gate
 - **#161**: docs: add decision record 0019 — the declared spec_rows.5 set is eleven, not nine
@@ -35,14 +35,13 @@ _None._
 
 Issues currently being built (`loom:building`).
 
-- **#108**: spec: decision record 0011 §5 reports the declared row set as nine; the manifest declares eleven, and the same paragraph implies seven
-- **#170**: pnpMPA base rings carry zero contacts: the base tie does not exist as drawn (draw_pnpmpa cont_array underflow at w=1u l=2u)
+_None._
 
 ## PRs Awaiting Review
 
 PRs waiting on Judge (`loom:review-requested`).
 
-- **#175**: fix(layout): draw the pnpMPA base tie as real geometry and drop its nSD markers (DR-0021)
+_None._
 
 ## Approved (Awaiting Merge)
 
@@ -61,13 +60,10 @@ Issues carrying `loom:curated`.
 - **#108**: spec: decision record 0011 §5 reports the declared row set as nine; the manifest declares eleven, and the same paragraph implies seven *(curated)*
 - **#114**: docs: the closed-loop PSRR worst case is now printed two ways — 55.248 dB in the bench README, 55.249 dB in seven other documents *(curated)* *(held)*
 - **#168**: psrr_dc design iteration: bench a candidate amplifier change against the measured mechanism (record 0015) on the 45-point grid, without touching the committed design *(curated)* *(held)*
-- **#170**: pnpMPA base rings carry zero contacts: the base tie does not exist as drawn (draw_pnpmpa cont_array underflow at w=1u l=2u) *(curated)*
 
 ## Proposed (Architect / Hermit)
 
-- **#66**: Remove the unread model_files table from sim/pdk.json: fifth copy of the PVT section list, with a host-dependent column *(hermit)* *(held)*
-- **#67**: Remove the tautological --regenerated default from attest/make-item2-envelope.py: the item-2 regeneration claim is true by construction *(hermit)* *(held)*
-- **#81**: Remove the vendored manifests/design-evidence-tiers.md: byte-identical to the checklist bundled in the pinned klayout-tools wheel *(hermit)* *(held)*
+_None._
 
 ## Epics
 
@@ -81,10 +77,10 @@ _None._
 | Very important | 1 |
 | Important | 2 |
 | Ready (`loom:issue`, net of holds/building/merge-pending) | 0 |
-| In Progress (`loom:building`) | 2 |
-| PRs awaiting review | 1 |
+| In Progress (`loom:building`) | 0 |
+| PRs awaiting review | 0 |
 | Approved PRs awaiting merge | 2 |
-| Curated | 7 |
-| Architect / Hermit proposals | 3 |
+| Curated | 6 |
+| Architect / Hermit proposals | 0 |
 | Active epics | 0 |
 <!-- guide:plan-body:end -->
