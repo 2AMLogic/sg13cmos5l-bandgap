@@ -126,27 +126,25 @@
 # reference's whole `corners` mapping fails without a traceback -- the three guard FAILs
 # ("...: null" for each axis) plus the stale-declaration and REQUIRED-selection failures
 # downstream. All exit 1.
+#
+# Checks 3, 5 and 6, the per-bench deck_template/testbench path agreement and the cited
+# envelopes' point coverage are shared with sim/tests/test-mc-bench.sh through
+# sim/tests/bench_checks.py (issue #192), which also owns this suite's `check`/`load`
+# helpers. The assertion names the negative controls above quote are emitted there
+# unchanged.
 set -u
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-python3 -I - "${root}" <<'PY'
+python3 -I - "${root}" "${root}/sim/tests" <<'PY'
 import glob, importlib.util, json, os, re, sys
 
-root = sys.argv[1]
-fails = []
+root, libdir = sys.argv[1], sys.argv[2]
+sys.path.insert(0, libdir)
+from bench_checks import (CheckRunner, check_deck_path_agreement, check_deck_template,
+                          check_envelope_coverage, check_manifest_spec_rows,
+                          check_request_portability, read_runner_dut_contract)
 
-
-def check(name, ok, detail=""):
-    if ok:
-        print("PASS " + name)
-    else:
-        print("FAIL %s%s" % (name, (": " + detail) if detail else ""))
-        fails.append(name)
-
-
-def load(rel):
-    with open(os.path.join(root, rel)) as f:
-        return json.load(f)
-
+checks = CheckRunner(root)
+check, load = checks.check, checks.load
 
 BENCHES = [
     "closed-loop-vref-pvt",
@@ -235,46 +233,11 @@ for b in BENCHES:
                                             sorted(declared)))
 
 # ---- 3. the declared row set, and the spec's own Row id column ---------------------------
-spec_rows = manifest["spec_rows"]["5"]
-ids = [r["id"] for r in spec_rows]
-check("spec_rows.5 has no duplicate row id", len(ids) == len(set(ids)))
-gaps = {r["id"] for r in spec_rows if r.get("gap")}
-covered = {row for e in manifest["evidence"]["5"] for row in e["rows"]}
-check("every declared row is cited or a declared gap", covered | gaps == set(ids),
-      "unaccounted: %s" % sorted(set(ids) - (covered | gaps)))
-check("no row is both cited and a declared gap", not (covered & gaps), sorted(covered & gaps))
-
-with open(os.path.join(root, "spec/target-spec.md")) as f:
-    spec_text = f.read()
-spec_ids = set()
-for line in spec_text.splitlines():
-    if not line.startswith("| "):
-        continue
-    cells = re.split(r"(?<!\\)\|", line)
-    if len(cells) >= 3:
-        for token in re.findall(r"`([a-z0-9_]+)`", cells[2]):
-            spec_ids.add(token)
-for rid in ids:
-    check("row id %r appears in spec/target-spec.md's Row id column" % rid, rid in spec_ids)
+check_manifest_spec_rows(checks, manifest, "5")
 
 # ---- 5. no host-local path in a committed request ---------------------------------------
 for b, req in requests.items():
-    blob = json.dumps({k: v for k, v in req.items() if k != "_comment"})
-    for bad in ("/home/", "/Users/", os.path.expanduser("~")):
-        check("%s request has no %s path" % (b, bad), bad not in blob)
-    for proc in req.get("corners", {}).get("process", []):
-        for sec in proc.get("sections", []):
-            lib = sec.get("lib", "") if isinstance(sec, dict) else ""
-            check("%s corner lib %r is PDK-relative" % (b, lib),
-                  bool(lib) and not lib.startswith("/") and not lib.startswith("$"))
-    check("%s request declares models.pdk" % b, "pdk" in req.get("models", {}))
-    check("%s request stages its model inputs" % b,
-          req.get("options", {}).get("stage_model_inputs") is True)
-    for entry in req.get("options", {}).get("osdi_preload", []):
-        check("%s osdi_preload %r is runner-resolvable" % (b, entry),
-              entry.startswith("$PDK_ROOT/"))
-    check("%s request declares netlist_source schematic" % b,
-          req.get("netlist_source") == "schematic", req.get("netlist_source"))
+    check_request_portability(checks, b, req)
 
 # ---- 6. deck templates ------------------------------------------------------------------
 # The DUT wrapper (issue #80, decision record 0013): cm5_stage_dut emits the staged
@@ -283,19 +246,7 @@ for b, req in requests.items():
 # the same discipline check 8 applies to the checker's REQUIRED: a drift between the staging
 # header and an `Xdut` card would otherwise surface as an "unknown subckt" at load time on
 # the fleet, one submitted grid later, instead of failing offline here.
-with open(os.path.join(root, "sim/runner-lib.sh")) as f:
-    runner_lib = f.read()
-
-
-def shvar(name):
-    m = re.search(r'^%s="([^"]*)"$' % name, runner_lib, re.M)
-    return m.group(1) if m else None
-
-
-dut_subckt, dut_pins = shvar("CM5_DUT_SUBCKT"), shvar("CM5_DUT_PINS")
-check("sim/runner-lib.sh declares CM5_DUT_SUBCKT and CM5_DUT_PINS",
-      bool(dut_subckt) and bool(dut_pins), "%r %r" % (dut_subckt, dut_pins))
-want_xdut = ["Xdut"] + (dut_pins or "").split() + [dut_subckt or ""]
+dut_subckt, dut_pins, want_xdut = read_runner_dut_contract(checks)
 
 # Fixture assertions run once per DISTINCT template, not once per bench (issue #99, decision
 # record 0017): benches whose supply stimulus is already identical share one fixture
@@ -317,45 +268,7 @@ for b in FIXTURE_BENCHES:
             tmpl_text[tpl_rel] = f.read()
 
 for tpl_rel in sorted(tmpl_benches):
-    tmpl = tmpl_text[tpl_rel]
-    body = [l for l in tmpl.splitlines() if l and not l.startswith("*")]
-    body_by_tpl[tpl_rel] = body
-    check("%s deck template line 1 is a comment" % tpl_rel, tmpl.splitlines()[0].startswith("*"))
-    check("%s deck template has no .control block" % tpl_rel,
-          not any(l.lower().startswith(".control") for l in body))
-    check("%s deck template has no .end card" % tpl_rel,
-          not any(l.strip().lower() == ".end" for l in body))
-    # The substrate tie (issue #83, decision record 0014): a deck that drives `sub!` with
-    # `Vsub` only ties the DUT's rppd/rhigh bulks if `sub!` is an ngspice GLOBAL net. `!` is
-    # an xschem marker and the migrated netlist carries no `.global` card, so without one
-    # here the bulk terminals stay per-instance local nodes (`xdut.xx1.sub!`) resolved by
-    # `.options rshunt` alone -- the deck's own comment would describe a tie it does not
-    # make, and no measured value would look wrong. Checked once per distinct template
-    # (issue #99): benches on an identical stimulus share one fixture file.
-    globals_ = [l.split() for l in body if l.split()[:1] == [".global"]]
-    vsub_sub = [l for l in body
-                if l.split()[:1] and l.split()[0].lower().startswith("vsub")
-                and "sub!" in l.lower()]
-    sub_global = [g for g in globals_ if "sub!" in g[1:]]
-    check("%s deck template drives sub! with a Vsub card" % tpl_rel, len(vsub_sub) == 1,
-          "%d Vsub cards naming sub!" % len(vsub_sub))
-    check("%s deck template declares sub! global where it drives it" % tpl_rel,
-          len(sub_global) == 1 if vsub_sub else not sub_global,
-          "%d .global cards naming sub! for %d Vsub sub! cards"
-          % (len(sub_global), len(vsub_sub)))
-    check("%s deck template's .global cards name only sub!" % tpl_rel,
-          all(g[1:] == ["sub!"] for g in globals_), str(globals_))
-    includes = [i for i, l in enumerate(body) if l.lower().startswith(".include")]
-    xduts = [i for i, l in enumerate(body) if l.split()[:1] == ["Xdut"]]
-    check("%s deck template instantiates the staged DUT exactly once" % tpl_rel, len(xduts) == 1,
-          "%d Xdut cards" % len(xduts))
-    if len(xduts) == 1 and len(includes) == 1:
-        check("%s instantiates the DUT after the .include that defines it" % tpl_rel,
-              xduts[0] > includes[0], "Xdut at %d, .include at %d" % (xduts[0], includes[0]))
-    if xduts:
-        card = body[xduts[0]].split()
-        check("%s Xdut card is runner-lib.sh's cell name and pin order" % tpl_rel,
-              card == want_xdut, "%s vs %s" % (card, want_xdut))
+    body_by_tpl[tpl_rel] = check_deck_template(checks, tpl_rel, tmpl_text[tpl_rel], want_xdut)
 
 # Decision record 0017, section 2: no two templates named by any bench.json may have equal
 # card bodies. Sharing is by filename, so a stimulus edit that silently moves several
@@ -376,9 +289,7 @@ for b in FIXTURE_BENCHES:
     if not m:
         continue
     tpl_rel = os.path.normpath(os.path.join("sim", b, m["deck_template"]))
-    tb_rel = os.path.normpath(m.get("testbench", ""))
-    check("%s deck_template and testbench resolve to the same file" % b, tpl_rel == tb_rel,
-          "deck_template->%s vs testbench->%s" % (tpl_rel, tb_rel))
+    check_deck_path_agreement(checks, b, m)
     placeholders = set(re.findall(r"@@([A-Z_]+)@@", tmpl_text.get(tpl_rel, "")))
     supplied = set(m["deck_substitutions"]) | {"WORK"}
     check("%s every deck placeholder is supplied" % b, placeholders <= supplied,
@@ -420,15 +331,8 @@ for b, entry in cited.items():
           env.get("status") == want_status, str(env.get("status")))
     check("%s cited envelope graded at least one limit" % b,
           (env.get("coverage") or {}).get("measurements_with_limits", 0) > 0)
-    # Coverage is "every expanded point returned a verdict", pass or fail -- not "every point
-    # passed". An errored or inconclusive point is a hole in the grid and is never allowed.
-    passed, failed = env.get("passed") or 0, env.get("failed") or 0
-    check("%s cited envelope covers every expanded point" % b,
-          passed + failed == env.get("corner_count") and not env.get("errored")
-          and not env.get("inconclusive"),
-          "%s pass + %s fail of %s (errored %s, inconclusive %s)"
-          % (passed, failed, env.get("corner_count"), env.get("errored"),
-             env.get("inconclusive")))
+    failed = env.get("failed") or 0
+    check_envelope_coverage(checks, "%s cited envelope covers every expanded point" % b, env)
     if exp:
         check("%s declared failing rows equal bench.json's spec_rows" % b,
               exp.get("rows") == meta[b]["spec_rows"],
@@ -589,8 +493,5 @@ if required is not None:
         check("%s selects exactly REQUIRED minus %s:%s" % ((b,) + STAT_EXEMPT), got == want,
               "missing %s; unexpected %s" % (sorted(want - got), sorted(got - want)))
 
-print("" if fails else "all grid-bench consistency checks passed")
-if fails:
-    print("%d failure(s)" % len(fails))
-sys.exit(1 if fails else 0)
+sys.exit(checks.finish("all grid-bench consistency checks passed"))
 PY
