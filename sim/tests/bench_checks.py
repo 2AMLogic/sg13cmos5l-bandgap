@@ -194,7 +194,7 @@ def check_manifest_spec_rows(checks, manifest, item_key, require_citations_exist
     checks.check("every declared row is cited or a declared gap", covered | gaps == set(ids),
                  "unaccounted: %s" % sorted(set(ids) - (covered | gaps)))
     checks.check("no row is both cited and a declared gap", not (covered & gaps),
-                 sorted(covered & gaps))
+                 str(sorted(covered & gaps)))
     if require_citations_exist:
         for e in evidence:
             checks.check("item-%s citation %s is committed" % (item_key, e.get("file")),
