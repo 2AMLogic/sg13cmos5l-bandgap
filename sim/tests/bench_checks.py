@@ -47,6 +47,11 @@ class CheckRunner:
         return 1 if self.fails else 0
 
 
+def _list(v):
+    """`v` when it is a list, else []: a wrong-typed container reads empty, never raises."""
+    return v if isinstance(v, list) else []
+
+
 def check_request_portability(checks, label, req):
     """No host-local path in a committed request, and it stages its model inputs.
 
@@ -58,8 +63,11 @@ def check_request_portability(checks, label, req):
     blob = json.dumps({k: v for k, v in req.items() if k != "_comment"})
     for bad in ("/home/", "/Users/", os.path.expanduser("~")):
         checks.check("%s request has no %s path" % (label, bad), bad not in blob)
-    for proc in req.get("corners", {}).get("process", []):
-        for sec in proc.get("sections", []):
+    corners = req.get("corners")
+    for proc in _list(corners.get("process") if isinstance(corners, dict) else None):
+        if not isinstance(proc, dict):
+            continue
+        for sec in _list(proc.get("sections")):
             lib = sec.get("lib", "") if isinstance(sec, dict) else ""
             checks.check("%s corner lib %r is PDK-relative" % (label, lib),
                          bool(lib) and not lib.startswith("/") and not lib.startswith("$"))
@@ -70,7 +78,7 @@ def check_request_portability(checks, label, req):
         checks.check("%s osdi_preload %r is runner-resolvable" % (label, entry),
                      entry.startswith("$PDK_ROOT/"))
     checks.check("%s request declares netlist_source schematic" % label,
-                 req.get("netlist_source") == "schematic", req.get("netlist_source"))
+                 req.get("netlist_source") == "schematic", str(req.get("netlist_source")))
 
 
 def read_runner_dut_contract(checks):
