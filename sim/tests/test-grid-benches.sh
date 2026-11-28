@@ -96,11 +96,12 @@
 #
 # Negative controls for the DUT-wrapper half of check 6 (issue #80), each run while writing it
 # and reverted before commit: (a) flipping sim/runner-lib.sh's CM5_DUT_PINS to the schematic
-# export's own "vdd vss vref" order fails FOUR times -- once per distinct deck template (the
+# export's own "vdd vss vref" order fails SIX times -- once per distinct deck template (the
 # three fixtures; "sim/closed-loop-<bench>/deck.cir.tmpl Xdut card is runner-lib.sh's cell
 # name and pin order: ['Xdut', 'vdd', 'vref', 'vss', ...] vs ['Xdut', 'vdd', 'vss', 'vref',
-# ...]") and once on the extraction tie ("...extracted/20261113T123950Z-8422e4d.spice header
-# equals the staged wrapper's cell name and pin order"), which is exactly the
+# ...]") and once on the extraction tie per committed netlist (three under
+# sim/pex-bandgap-top/extracted/ as of this writing; "...extracted/20261113T123950Z-8422e4d.spice
+# header equals the staged wrapper's cell name and pin order"), which is exactly the
 # `pin_order_mismatch` klt would report one submitted grid later. (b) deleting the `Xdut`
 # card from the shared DC fixture (the vref.cir.tmpl closed-loop-iq's bench.json names) fails
 # once ("sim/closed-loop-vref-pvt/vref.cir.tmpl deck template instantiates the staged DUT

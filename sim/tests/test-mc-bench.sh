@@ -268,7 +268,7 @@ placeholders = set(re.findall(r"@@([A-Z_]+)@@", tmpl))
 supplied = set(meta["deck_substitutions"]) | {"WORK", "STAT_SCALE_BLOCK"}
 check("every deck placeholder is supplied", placeholders <= supplied,
       "unsupplied: %s" % sorted(placeholders - supplied))
-for token in placeholders:
+for token in sorted(placeholders):
     check("placeholder %s appears exactly once (a comment holding it would expand into "
           "live cards)" % token, tmpl.count("@@%s@@" % token) == 1,
           str(tmpl.count("@@%s@@" % token)))
