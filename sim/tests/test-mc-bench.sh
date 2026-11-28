@@ -20,8 +20,8 @@
 #  4. The line campaign really does draw N >= 300 per point, which is the sample size
 #     the issue and T1 item 6 ask a statistical claim to carry.
 #  5. No committed request names a path that only exists on the submitting host, and each
-#     stages its model inputs -- the same portability contract the item-5 grids have
-#     (sim/tests/test-grid-benches.sh check 5), for the same reason.
+#     stages its model inputs -- the same portability contract the item-5 grids have, for
+#     the same reason.
 #  6. The deck template carries no SPICE title line, no `.control` block and no `.end`
 #     card (issue #19), every @@PLACEHOLDER@@ it uses is one the runner supplies, and it
 #     instantiates the wrapped staged DUT exactly once with runner-lib.sh's cell name and
@@ -46,32 +46,26 @@
 # no statistical section"); dropping the line campaign's n to 299 fails check 4; deleting
 # the record beside an envelope fails check 7. All exit 1. Inventoried as a T1 item-10
 # hygiene check (attest/item10.json), so CI re-runs it through `klt signoff --attest 10`.
+#
+# Check 5, the deck-template half of check 6, check 7's point coverage, check 9 and the
+# deck_template/testbench path agreement are shared with sim/tests/test-grid-benches.sh
+# through sim/tests/bench_checks.py (issue #192), which also owns this suite's
+# `check`/`load`/`exists` helpers.
 set -u
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
-python3 -I - "${root}" <<'PY'
+python3 -I - "${root}" "${root}/sim/tests" <<'PY'
 import json, os, re, sys
 
-root = sys.argv[1]
+root, libdir = sys.argv[1], sys.argv[2]
+sys.path.insert(0, libdir)
+from bench_checks import (CheckRunner, check_deck_path_agreement, check_deck_template,
+                          check_envelope_coverage, check_manifest_spec_rows,
+                          check_request_portability, read_runner_dut_contract)
+
 BENCH = "closed-loop-vref-mc"
 BD = "sim/%s" % BENCH
-fails = []
-
-
-def check(name, ok, detail=""):
-    if ok:
-        print("PASS " + name)
-    else:
-        print("FAIL %s%s" % (name, (": " + detail) if detail else ""))
-        fails.append(name)
-
-
-def load(rel):
-    with open(os.path.join(root, rel)) as f:
-        return json.load(f)
-
-
-def exists(rel):
-    return os.path.isfile(os.path.join(root, rel))
+checks = CheckRunner(root)
+check, load, exists = checks.check, checks.load, checks.exists
 
 
 # ---- 1. the bench directory is well formed ----------------------------------------------
@@ -83,10 +77,7 @@ check("bench.json has every key mc-run.sh and mc-yield.sh read", not missing, st
 check("bench.json 'bench' matches its directory", meta.get("bench") == BENCH, meta.get("bench"))
 check("deck template exists (%s)" % meta.get("deck_template"),
       exists("%s/%s" % (BD, meta.get("deck_template", ""))))
-tpl_rel = os.path.normpath("%s/%s" % (BD, meta.get("deck_template", "")))
-tb_rel = os.path.normpath(meta.get("testbench", ""))
-check("%s deck_template and testbench resolve to the same file" % BENCH, tpl_rel == tb_rel,
-      "deck_template->%s vs testbench->%s" % (tpl_rel, tb_rel))
+check_deck_path_agreement(checks, BENCH, meta)
 
 campaigns = {c["name"]: c for c in meta.get("campaigns", [])}
 requests = {}
@@ -192,78 +183,20 @@ for name, req in requests.items():
 
 # ---- 5. no host-local path in a committed request ---------------------------------------
 for name, req in requests.items():
-    blob = json.dumps({k: v for k, v in req.items() if k != "_comment"})
-    for bad in ("/home/", "/Users/", os.path.expanduser("~")):
-        check("%s request has no %s path" % (name, bad), bad not in blob)
-    for p in req["corners"]["process"]:
-        for sec in p["sections"]:
-            lib = sec.get("lib", "")
-            check("%s corner lib %r is PDK-relative" % (name, lib),
-                  bool(lib) and not lib.startswith("/") and not lib.startswith("$"))
-    check("%s request declares models.pdk" % name, "pdk" in req.get("models", {}))
-    check("%s request stages its model inputs" % name,
-          req.get("options", {}).get("stage_model_inputs") is True)
-    for entry in req.get("options", {}).get("osdi_preload", []):
-        check("%s osdi_preload %r is runner-resolvable" % (name, entry),
-              entry.startswith("$PDK_ROOT/"))
-    check("%s request declares netlist_source schematic" % name,
-          req.get("netlist_source") == "schematic", req.get("netlist_source"))
+    check_request_portability(checks, name, req)
 
 # ---- 6. the deck template ----------------------------------------------------------------
 # The staged DUT is wrapped in a subckt (issue #80, decision record 0013) and the deck
-# instantiates it, so the cell name and pin order live in TWO places that must agree.
-# They are read from sim/runner-lib.sh here rather than retyped, the same discipline
-# sim/tests/test-grid-benches.sh applies to the five grid benches: a drift between the
-# staging header and an `Xdut` card would otherwise surface as an "unknown subckt" at
-# load time on the fleet, one submitted campaign later, instead of failing offline here.
-# The substrate tie (issue #83, decision record 0014-substrate-net-global) is checked
-# the same way: a deck that drives `sub!` with `Vsub` only ties the DUT's rppd/rhigh
-# bulks if `sub!` is an ngspice GLOBAL net, and no measured value would look wrong
-# without one.
-with open(os.path.join(root, "sim/runner-lib.sh")) as f:
-    runner_lib = f.read()
-
-
-def shvar(name):
-    m = re.search(r'^%s="([^"]*)"$' % name, runner_lib, re.M)
-    return m.group(1) if m else None
-
-
-dut_subckt, dut_pins = shvar("CM5_DUT_SUBCKT"), shvar("CM5_DUT_PINS")
-check("sim/runner-lib.sh declares CM5_DUT_SUBCKT and CM5_DUT_PINS",
-      bool(dut_subckt) and bool(dut_pins), "%r %r" % (dut_subckt, dut_pins))
-want_xdut = ["Xdut"] + (dut_pins or "").split() + [dut_subckt or ""]
+# instantiates it, so the cell name and pin order live in TWO places that must agree; the
+# substrate tie (issue #83, decision record 0014-substrate-net-global) needs `sub!` to be
+# an ngspice GLOBAL net, and no measured value would look wrong without one. Both are
+# checked by the helper the grid benches share (sim/tests/bench_checks.py), so a drift
+# between the staging header and an `Xdut` card fails offline here instead of as an
+# "unknown subckt" at load time on the fleet, one submitted campaign later.
+_, _, want_xdut = read_runner_dut_contract(checks)
 with open(os.path.join(root, BD, meta["deck_template"])) as f:
     tmpl = f.read()
-body = [l for l in tmpl.splitlines() if l and not l.startswith("*")]
-check("deck template line 1 is a comment", tmpl.splitlines()[0].startswith("*"))
-check("deck template has no .control block",
-      not any(l.lower().startswith(".control") for l in body))
-check("deck template has no .end card", not any(l.strip().lower() == ".end" for l in body))
-vsub_sub = [l for l in body
-            if l.split()[:1] and l.split()[0].lower().startswith("vsub")
-            and "sub!" in l.lower()]
-globals_ = [l.split() for l in body if l.split()[:1] == [".global"]]
-sub_global = [g for g in globals_ if "sub!" in g[1:]]
-check("deck template drives sub! with a Vsub card", len(vsub_sub) == 1,
-      "%d Vsub cards naming sub!" % len(vsub_sub))
-check("deck template declares sub! global where it drives it",
-      len(sub_global) == 1 if vsub_sub else not sub_global,
-      "%d .global cards naming sub! for %d Vsub sub! cards"
-      % (len(sub_global), len(vsub_sub)))
-check("deck template's .global cards name only sub!",
-      all(g[1:] == ["sub!"] for g in globals_), str(globals_))
-includes = [i for i, l in enumerate(body) if l.lower().startswith(".include")]
-xduts = [i for i, l in enumerate(body) if l.split()[:1] == ["Xdut"]]
-check("deck template instantiates the staged DUT exactly once", len(xduts) == 1,
-      "%d Xdut cards" % len(xduts))
-if len(xduts) == 1 and len(includes) == 1:
-    check("deck template instantiates the DUT after the .include that defines it",
-          xduts[0] > includes[0], "Xdut at %d, .include at %d" % (xduts[0], includes[0]))
-if xduts:
-    card = body[xduts[0]].split()
-    check("Xdut card is runner-lib.sh's cell name and pin order",
-          card == want_xdut, "%s vs %s" % (card, want_xdut))
+check_deck_template(checks, None, tmpl, want_xdut)
 placeholders = set(re.findall(r"@@([A-Z_]+)@@", tmpl))
 supplied = set(meta["deck_substitutions"]) | {"WORK", "STAT_SCALE_BLOCK"}
 check("every deck placeholder is supplied", placeholders <= supplied,
@@ -309,12 +242,7 @@ for name in envelopes:
           json.dumps(rec.get("expectation")))
     check("%s record status is ok" % name, rec.get("status") == "ok", str(rec.get("status")))
     env = load(rel)
-    check("%s covers every expanded unit with a verdict" % name,
-          (env.get("passed") or 0) + (env.get("failed") or 0) == env.get("corner_count")
-          and not env.get("errored") and not env.get("inconclusive"),
-          "%s pass + %s fail of %s (errored %s, inconclusive %s)"
-          % (env.get("passed"), env.get("failed"), env.get("corner_count"),
-             env.get("errored"), env.get("inconclusive")))
+    check_envelope_coverage(checks, "%s covers every expanded unit with a verdict" % name, env)
     if rec.get("campaign") == "zero":
         pts = (rec.get("statistics") or {}).get("by_point") or []
         bad = [p["corner_id"] for p in pts if p.get("stddev") != 0.0 or p.get("min") != p.get("max")]
@@ -384,34 +312,7 @@ for name in reports:
           is not None)
 
 # ---- 9. the manifest's item-6 declaration ------------------------------------------------
-rows6 = manifest.get("spec_rows", {}).get("6")
-check("the manifest declares an item-6 row set", isinstance(rows6, list) and bool(rows6))
-if isinstance(rows6, list):
-    ids = [r["id"] for r in rows6]
-    check("spec_rows.6 has no duplicate row id", len(ids) == len(set(ids)))
-    gaps = {r["id"] for r in rows6 if r.get("gap")}
-    ev6 = manifest.get("evidence", {}).get("6") or []
-    covered = {row for e in ev6 for row in e.get("rows", [])}
-    check("every declared item-6 row is cited or a declared gap",
-          covered | gaps == set(ids), "unaccounted: %s" % sorted(set(ids) - (covered | gaps)))
-    check("no item-6 row is both cited and a declared gap", not (covered & gaps),
-          str(sorted(covered & gaps)))
-    for e in ev6:
-        check("item-6 citation %s is committed" % e.get("file"), exists(e.get("file", "")))
-    with open(os.path.join(root, "spec/target-spec.md")) as f:
-        spec_text = f.read()
-    spec_ids = set()
-    for line in spec_text.splitlines():
-        if line.startswith("| "):
-            cells = re.split(r"(?<!\\)\|", line)
-            if len(cells) >= 3:
-                spec_ids.update(re.findall(r"`([a-z0-9_]+)`", cells[2]))
-    for rid in ids:
-        check("item-6 row id %r appears in spec/target-spec.md's Row id column" % rid,
-              rid in spec_ids)
+check_manifest_spec_rows(checks, manifest, "6", require_citations_exist=True)
 
-print("" if fails else "all Monte Carlo bench consistency checks passed")
-if fails:
-    print("%d failure(s)" % len(fails))
-sys.exit(1 if fails else 0)
+sys.exit(checks.finish("all Monte Carlo bench consistency checks passed"))
 PY
