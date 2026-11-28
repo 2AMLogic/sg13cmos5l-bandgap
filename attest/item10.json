@@ -72,6 +72,13 @@
         "bash",
         "sim/tests/test-decision-record-numbers.sh"
       ]
+    },
+    {
+      "name": "malformed-request-fake-tree-test",
+      "argv": [
+        "bash",
+        "sim/tests/test-malformed-request.sh"
+      ]
     }
   ]
 }

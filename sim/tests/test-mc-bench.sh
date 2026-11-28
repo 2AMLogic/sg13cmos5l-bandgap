@@ -47,6 +47,15 @@
 # the record beside an envelope fails check 7. All exit 1. Inventoried as a T1 item-10
 # hygiene check (attest/item10.json), so CI re-runs it through `klt signoff --attest 10`.
 #
+# Malformed-request controls (issue #194), run by sim/tests/test-malformed-request.sh rather
+# than by hand: a campaign request whose `corners` is missing or wrong-typed, whose
+# `sections` is an object or a string, whose `supply_v` has no `Vvdd`, whose `temperature_c`
+# is not a list, whose `measurements` or `monte_carlo` is absent, or whose `netlist_source`
+# is not a string is reported as FAIL lines naming the campaign and the key ("zero request
+# declares a corners mapping: None"), and the suite still runs to its closing "N failure(s)"
+# line. Before issue #194 the same input raised out of sections()/axes() or
+# check_request_portability, printed no FAIL line, and skipped every check after it.
+#
 # Check 5, the deck-template half of check 6, check 7's point coverage, check 9 and the
 # deck_template/testbench path agreement are shared with sim/tests/test-grid-benches.sh
 # through sim/tests/bench_checks.py (issue #192), which also owns this suite's
@@ -139,38 +148,90 @@ check("the yield limits tag the measurement with the spec row it is about",
 STAT = re.compile(r"stat|mismatch")
 
 
-def sections(req):
-    return [s["section"] for p in req["corners"]["process"] for s in p["sections"]]
+def sections_and_axes(name, req):
+    """(section names, (Vvdd, temperature_c)) a campaign's request declares, each axis
+    sorted. A missing or wrong-typed `corners`, `process`, `sections`, `supply_v` or
+    `temperature_c` fails by name and reads empty, so a malformed request is reported and
+    the checks after it still run instead of a traceback (issue #194)."""
+    c = req.get("corners")
+    if not isinstance(c, dict):
+        check("%s request declares a corners mapping" % name, False, repr(c))
+        c = {}
+    procs = c.get("process")
+    if not isinstance(procs, list):
+        check("%s request declares corners.process as a list" % name, False, repr(procs))
+        procs = []
+    secs = []
+    for p in procs:
+        if not isinstance(p, dict):
+            check("%s corners.process entry is an object" % name, False, repr(p))
+            continue
+        entries = p.get("sections")
+        if not isinstance(entries, list):
+            check("%s corner %r sections is a list" % (name, p.get("name")), False, repr(entries))
+            continue
+        for s in entries:
+            if not isinstance(s, dict):
+                check("%s corner %r sections entry is an object" % (name, p.get("name")),
+                      False, repr(s))
+            elif not isinstance(s.get("section"), str):
+                check("%s corner %r sections entry names a section" % (name, p.get("name")),
+                      False, repr(s))
+            else:
+                secs.append(s["section"])
+    supply = c.get("supply_v")
+    if not isinstance(supply, dict):
+        check("%s request declares a corners.supply_v mapping" % name, False, repr(supply))
+        supply = {}
+    axes = []
+    for key, v in (("supply_v.Vvdd", supply.get("Vvdd")),
+                   ("temperature_c", c.get("temperature_c"))):
+        if not isinstance(v, list):
+            check("%s request declares corners.%s as a list" % (name, key), False, repr(v))
+            v = []
+        axes.append(sorted(v, key=repr))
+    return secs, tuple(axes)
 
 
-def axes(req):
-    c = req["corners"]
-    return (sorted(c["supply_v"]["Vvdd"]), sorted(c["temperature_c"]),
-            sorted(p["name"] for p in c["process"]))
+def measurement_names(name, req):
+    """A request's measurement names, in order. A missing or wrong-typed `measurements` or
+    entry fails by name and reads empty (issue #194)."""
+    ms = req.get("measurements")
+    if not isinstance(ms, list):
+        check("%s request declares measurements as a list" % name, False, repr(ms))
+        return []
+    names = []
+    for m in ms:
+        if not isinstance(m, dict):
+            check("%s measurement entry is an object" % name, False, repr(m))
+        elif not isinstance(m.get("name"), str):
+            check("%s measurement entry names a measurement" % name, False, repr(m))
+        else:
+            names.append(m["name"])
+    return names
 
 
+secs, ax = {}, {}
+for name, req in requests.items():
+    secs[name], ax[name] = sections_and_axes(name, req)
 if "zero" in requests:
-    secs = sections(requests["zero"])
     check("zero campaign selects no statistical section",
-          not any(STAT.search(s) for s in secs), str(sorted(set(secs))))
+          not any(STAT.search(s) for s in secs["zero"]), str(sorted(set(secs["zero"]))))
 for name in ("line", "inflated", "families"):
     if name in requests:
-        secs = sections(requests[name])
         check("%s campaign selects at least one statistical section" % name,
-              any(STAT.search(s) for s in secs), str(sorted(set(secs))))
+              any(STAT.search(s) for s in secs[name]), str(sorted(set(secs[name]))))
 if "line" in requests and "zero" in requests:
-    check("zero control runs the same axes as the line campaign",
-          axes(requests["zero"])[:2] == axes(requests["line"])[:2])
+    check("zero control runs the same axes as the line campaign", ax["zero"] == ax["line"])
 if "line" in requests and "inflated" in requests:
     ln, inf = requests["line"], requests["inflated"]
-    check("negative control runs the same axes as the line campaign",
-          axes(inf)[:2] == axes(ln)[:2])
+    check("negative control runs the same axes as the line campaign", ax["inflated"] == ax["line"])
     check("negative control declares the same measurements as the line campaign",
-          [m["name"] for m in inf["measurements"]] == [m["name"] for m in ln["measurements"]])
+          measurement_names("inflated", inf) == measurement_names("line", ln))
     check("negative control is the inflated campaign and line is not",
           campaigns["inflated"]["stat_scale"] > campaigns["line"]["stat_scale"] == 1)
 if "line" in requests:
-    mc = requests["line"]["monte_carlo"]
+    mc = requests["line"].get("monte_carlo") or {}
     check("line campaign draws N >= 300 per point", mc.get("n", 0) >= 300, str(mc.get("n")))
     check("line campaign declares an integer seed", isinstance(mc.get("seed"), int),
           repr(mc.get("seed")))
